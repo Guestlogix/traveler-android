@@ -8,7 +8,7 @@ public class TravelerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Traveler.initialize("apiKey", getApplicationContext());
+        Traveler.initialize("testtesttesttesttest", getApplicationContext());
     }
 
 }
