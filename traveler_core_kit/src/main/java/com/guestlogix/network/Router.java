@@ -23,21 +23,21 @@ public class Router {
     public static final String CONTENT_TYPE = "Content-Type";
 
 
-    public static NetworkRequest authenticate(String apiKey, Context applicationContext) throws MalformedURLException {
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put(X_API_KEY, "testtesttesttesttest");
-
-        Map<String, String> payload = new HashMap<>();
-        payload.put(DEVICE_ID, "android_123");
-        payload.put(OS_VERSION, "oreo");
-        payload.put(LANGUAGE, "en");
-        payload.put(LOCALE, "en_POSIX");
-        payload.put(REGION, "US");
-        payload.put(APPLICATION_ID, "555");
-
-        return new NetworkRequest(NetworkRequest.Method.POST, new URL(BASE_URL + END_POINT_AUTH_TOKEN), payload, headers);
-
-
-    }
+//    public static NetworkRequest authenticate(String apiKey, Context applicationContext) throws MalformedURLException {
+//
+//        Map<String, String> headers = new HashMap<>();
+//        headers.put(X_API_KEY, "testtesttesttesttest");
+//
+//        Map<String, String> payload = new HashMap<>();
+//        payload.put(DEVICE_ID, "android_123");
+//        payload.put(OS_VERSION, "oreo");
+//        payload.put(LANGUAGE, "en");
+//        payload.put(LOCALE, "en_POSIX");
+//        payload.put(REGION, "US");
+//        payload.put(APPLICATION_ID, "555");
+//
+//        return new NetworkRequest(NetworkRequest.Method.POST, new URL(BASE_URL + END_POINT_AUTH_TOKEN), payload, headers);
+//
+//
+//    }
 }
