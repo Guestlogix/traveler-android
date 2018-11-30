@@ -6,11 +6,11 @@ import java.util.concurrent.Semaphore;
 
 class TaskWrapper implements Runnable, TaskObserver {
     private Task mTask;
-    private Semaphore mSemaphore;
+    private Semaphore mSemephore;
 
     TaskWrapper(Task task) {
         mTask = task;
-        mSemaphore = new Semaphore(0);
+        mSemephore = new Semaphore(0);
     }
 
     @Override
@@ -20,7 +20,7 @@ class TaskWrapper implements Runnable, TaskObserver {
         mTask.start();
 
         try {
-            mSemaphore.acquire();
+            mSemephore.acquire();
         } catch (InterruptedException e) {
             Log.e("TaskWrapper", "Could not block thread");
         }
@@ -34,7 +34,7 @@ class TaskWrapper implements Runnable, TaskObserver {
             case RUNNING:
                 break;
             case FINISHED:
-                mSemaphore.release();
+                mSemephore.release();
             case READY:
                 break;
         }

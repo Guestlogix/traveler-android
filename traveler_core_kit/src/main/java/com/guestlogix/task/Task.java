@@ -3,6 +3,7 @@ package com.guestlogix.task;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
 public class Task implements TaskObserver {
@@ -11,11 +12,16 @@ public class Task implements TaskObserver {
         READY, RUNNING, FINISHED
     }
 
+    interface Performer {
+        void onPerform(Task task);
+    }
+
     private State mState;
     private ArrayList<TaskObserver> mObservers;
     private ArrayList<Task> mDependentTasks;
     private boolean mCancelled = false;
     private Semaphore mSemaphore;
+    private Performer mPerformer = null;
 
     public Task() {
         mObservers = new ArrayList<>();
@@ -25,6 +31,10 @@ public class Task implements TaskObserver {
 
     final public State getState() {
         return mState;
+    }
+
+    final void setPerformer(Performer performer) {
+        mPerformer = performer;
     }
 
     final public void start() {
@@ -56,7 +66,11 @@ public class Task implements TaskObserver {
 
         setState(State.RUNNING);
 
-        execute();
+        if (mPerformer == null) {
+            execute();
+        } else {
+            mPerformer.onPerform(this);
+        }
     }
 
     public void execute() {
@@ -65,6 +79,7 @@ public class Task implements TaskObserver {
 
     public final void finish() {
         setState(State.FINISHED);
+        mPerformer = null;
     }
 
     public final void cancel() {
@@ -82,9 +97,8 @@ public class Task implements TaskObserver {
     private void setState(State state) {
         mState = state;
 
-        for (TaskObserver observer :
-                mObservers) {
-            //observer.onStateChanged(this);
+        for (int i = 0; i < mObservers.size(); i++) {
+            mObservers.get(i).onStateChanged(this);
         }
     }
 
