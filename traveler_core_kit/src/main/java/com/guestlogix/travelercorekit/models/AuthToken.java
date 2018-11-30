@@ -33,7 +33,6 @@ public class AuthToken {
 
     //static inner class for MappingFactory<T> implementation
     public static class AuthTokenMappingFactory implements MappingFactory<AuthToken> {
-
         @Override
         public AuthToken instantiate(JSONObject jsonObject) throws MappingException {
             return new AuthToken(jsonObject);
