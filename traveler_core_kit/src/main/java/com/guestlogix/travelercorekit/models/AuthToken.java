@@ -7,28 +7,27 @@ import org.json.JSONObject;
 
 public class AuthToken {
 
-    String token;
+    String mValue;
 
-    public AuthToken(String token) {
-        this.token = token;
+    public AuthToken(String mValue) {
+        this.mValue = mValue;
     }
 
     public AuthToken(JSONObject jsonObject) throws MappingException {
 
         try {
-            this.token = jsonObject.getString("token");
+            this.mValue = jsonObject.getString("token");
         } catch (JSONException e) {
             throw new MappingException();
         }
-
     }
 
-    public String getToken() {
-        return token;
+    public String getValue() {
+        return mValue;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setValue(String token) {
+        this.mValue = token;
     }
 
     //static inner class for MappingFactory<T> implementation
