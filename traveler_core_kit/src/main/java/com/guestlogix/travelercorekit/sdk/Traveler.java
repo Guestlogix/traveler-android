@@ -37,7 +37,7 @@ public class Traveler {
         JsonObjectMapper<AuthToken> jsonObjectMapper = new JsonObjectMapper<>(new AuthToken.AuthTokenMappingFactory(), new JsonObjectMapper.Callback<AuthToken>() {
             @Override
             public void onSuccess(AuthToken token) {
-                Log.v("Traveler", "Token:" + token.getToken());
+                Log.v("Traveler", "Token:" + token.getValue());
             }
 
             @Override
