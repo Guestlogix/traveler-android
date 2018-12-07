@@ -1,6 +1,7 @@
 package com.guestlogix.task;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import com.guestlogix.travelercorekit.models.AuthToken;
 
@@ -14,6 +15,7 @@ public class AuthTokenFetchTask extends Task {
     public AuthTokenFetchTask(String apiKey, Context context) {
         this.mContext = context;
         this.mApiKey = apiKey;
+        this.mToken = new AuthToken("");
     }
 
     public AuthToken getToken() {
