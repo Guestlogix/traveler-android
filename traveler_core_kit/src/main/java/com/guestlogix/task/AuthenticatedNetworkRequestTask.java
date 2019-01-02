@@ -54,10 +54,9 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         networkTask.addDependency(verifyTokenBlockTask);
         networkBlockTask.addDependency(networkTask);
         authTokenFetchTask.addDependency(networkBlockTask);
-        authTokenFetchBlockTask.addDependency(authTokenFetchBlockTask);
+        authTokenFetchBlockTask.addDependency(authTokenFetchTask);
         retryNetworkTask.addDependency(authTokenFetchBlockTask);
         retryNetworkBlockTask.addDependency(retryNetworkTask);
-
 
         mTaskManager.addTask(verifyTokenBlockTask);
         mTaskManager.addTask(networkTask);

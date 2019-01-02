@@ -11,15 +11,19 @@ public class AuthTokenFetchTask extends Task {
     private Context mContext;
     private String mApiKey;
     private AuthToken mToken;
+    private Error mError;
 
     public AuthTokenFetchTask(String apiKey, Context context) {
         this.mContext = context;
         this.mApiKey = apiKey;
-        this.mToken = new AuthToken("");
     }
 
     public AuthToken getToken() {
         return mToken;
+    }
+
+    public Error getError() {
+        return mError;
     }
 
     @Override
@@ -45,6 +49,7 @@ public class AuthTokenFetchTask extends Task {
             @Override
             public void onError(Error error) {
                 Log.v("Traveler", error.getMessage());
+                mError = error;
             }
         }));
 
