@@ -2,6 +2,7 @@ package com.guestlogix.task;
 
 import android.content.Context;
 import android.util.Log;
+import com.guestlogix.travelercorekit.models.Session;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 
 public class Router {
-    static final String BASE_URL = "https://guest-api-dev-1.guestlogix.io";
+    static final String BASE_URL = "https://guest-traveler-api-develop.guestlogix.io";
 
     private static URL createURL(String path, Map<?, ?> queryParams) {
         try {
@@ -43,13 +44,13 @@ public class Router {
         return request;
     }
 
-    public static NetworkTask.Request getCatalogue(String token, String id) {
+    public static NetworkTask.Request getCatalogue(Session session, String id) {
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("flight-ids", id);
 
 
-        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), token);
+        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getAuthToken().getValue());
 
         return request;
     }
