@@ -11,6 +11,14 @@ import java.util.Map;
 
 public class NetworkTask extends Task {
 
+    private Request mRequest;
+    private Error mError;
+    private ResponseHandler mResponseHandler;
+
+    public enum ErrorCode {
+        BAD_URL, CONNECTION_ERROR, NO_REQUEST, FORBIDDEN, UNAUTHORIZED, SERVER_ERROR
+    }
+
     public interface Request {
         enum Method {
             GET, POST, PUT, DELETE, PATCH
@@ -29,10 +37,6 @@ public class NetworkTask extends Task {
         void onHandleResponse(InputStream stream) throws IOException;
     }
 
-    public enum ErrorCode {
-        BAD_URL, CONNECTION_ERROR, NO_REQUEST, FORBIDDEN, UNAUTHORIZED, SERVER_ERROR
-    }
-
     public class NetworkTaskError extends Error {
         private ErrorCode mCode;
         private String mMessage;
@@ -47,13 +51,9 @@ public class NetworkTask extends Task {
         }
     }
 
-    private Request mRequest;
-    private Error mError;
-    private ResponseHandler mResponsehandler;
-
     public NetworkTask(Request request, ResponseHandler responseHandler) {
         mRequest = request;
-        mResponsehandler = responseHandler;
+        mResponseHandler = responseHandler;
     }
 
     public Error getError() {
@@ -156,8 +156,8 @@ public class NetworkTask extends Task {
             } else {
                 InputStream is = urlConnection.getInputStream();
 
-                if (mResponsehandler != null) {
-                    mResponsehandler.onHandleResponse(is);
+                if (mResponseHandler != null) {
+                    mResponseHandler.onHandleResponse(is);
                 }
 
                 is.close();
