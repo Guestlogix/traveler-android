@@ -21,7 +21,6 @@ public class Traveler {
 
         if (mLocalInstance != null) {
             TravelerLog.e("SDK already initialized");
-
         } else {
             mLocalInstance = new Traveler(apiKey, applicationContext);
         }
@@ -30,8 +29,7 @@ public class Traveler {
     private Traveler(String apiKey, Context context) {
         this.mSession = new Session(apiKey, context);
 
-
-        //read token from dist
+        //read token from disk
         SessionBeginTask sessionBeginTask = new SessionBeginTask(this.mSession);
         //fetch token from backend if disk does not have one
         AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.mSession.getApiKey(), mSession.getContext());
@@ -49,7 +47,7 @@ public class Traveler {
             @Override
             protected void main() {
                 if (TextUtils.isEmpty(sessionBeginTask.getSession().getAuthToken().getValue())) {
-                    Log.v("Traveler", "Could not Find Token on disk initiating fetch...");
+                    Log.v("Traveler", "Could not Find Token on disk, continue fetch token task...");
                 } else {
                     Log.v("Traveler", "Found Token on disk: " + sessionBeginTask.getSession().getAuthToken().getValue());
                     Log.v("Traveler", "Cancelling fetch token tasks");
@@ -103,26 +101,26 @@ public class Traveler {
 //        }
 //    }
 //
-//    private void getCatalog(String id, NetworkTask.ResponseHandler responseHandler) {
-//
-//
-//        BlockTask getCatalogRequestBlockTask = new BlockTask() {
-//            @Override
-//            protected void main() {
-//
-//            }
-//        };
-//
-//        Router.getCatalogue(mSession, id);
-//        AuthenticatedNetworkRequestTask getCatalogRequestTask = new AuthenticatedNetworkRequestTask();
-//
-//    }
-//
-//
-//    public interface CatalogResponseHandler {
-//        void onSuccess(Catalog catalog);
-//
-//        void onError(Error e);
-//    }
+    private void getCatalog(String id, NetworkTask.ResponseHandler responseHandler) {
+
+
+        BlockTask getCatalogRequestBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+
+            }
+        };
+
+        Router.getCatalogue(mSession, id);
+        AuthenticatedNetworkRequestTask getCatalogRequestTask = new AuthenticatedNetworkRequestTask();
+
+    }
+
+
+    public interface CatalogResponseHandler {
+        void onSuccess(Catalog catalog);
+
+        void onError(Error e);
+    }
 
 }
