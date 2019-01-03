@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
-public class Task implements TaskObserver {
+public abstract class Task implements TaskObserver {
 
     public enum State {
         READY, RUNNING, FINISHED
@@ -19,7 +19,7 @@ public class Task implements TaskObserver {
     private State mState;
     private ArrayList<TaskObserver> mObservers;
     private ArrayList<Task> mDependentTasks;
-    private boolean mCancelled = false;
+    private volatile boolean mCancelled = false;
     private Semaphore mSemaphore;
     private Performer mPerformer = null;
 
@@ -27,6 +27,7 @@ public class Task implements TaskObserver {
         mObservers = new ArrayList<>();
         mDependentTasks = new ArrayList<>();
         mSemaphore = new Semaphore(0);
+        setState(State.READY);
     }
 
     final public State getState() {
@@ -37,7 +38,7 @@ public class Task implements TaskObserver {
         mPerformer = performer;
     }
 
-    final public void start() {
+    final void start() {
         if (mState == State.FINISHED) {
             Log.d("TASK", "Task already finished.");
             return;
@@ -45,11 +46,6 @@ public class Task implements TaskObserver {
 
         if (mState == State.RUNNING) {
             Log.d("TASK", "Task already running.");
-            return;
-        }
-
-        if (mCancelled) {
-            setState(State.FINISHED);
             return;
         }
 
@@ -64,6 +60,11 @@ public class Task implements TaskObserver {
             }
         }
 
+        if (mCancelled) {
+            setState(State.FINISHED);
+            return;
+        }
+
         setState(State.RUNNING);
 
         if (mPerformer == null) {
@@ -73,9 +74,7 @@ public class Task implements TaskObserver {
         }
     }
 
-    public void execute() {
-        // This method can be overriden
-    }
+    public abstract void execute();
 
     public final void finish() {
         setState(State.FINISHED);
@@ -83,6 +82,7 @@ public class Task implements TaskObserver {
     }
 
     public final void cancel() {
+        Log.d("Traveler", "Cancelling:" + this.getClass().getSimpleName());
         mCancelled = true;
     }
 
