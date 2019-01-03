@@ -33,7 +33,6 @@ class UnauthenticatedRequest implements NetworkTask.Request {
         headers.put("Accept", "application/json");
         headers.put("x-api-key", this.mApiKey);
 
-
         return headers;
     }
 
