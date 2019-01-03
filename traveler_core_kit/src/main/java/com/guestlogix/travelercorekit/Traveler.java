@@ -3,11 +3,13 @@ package com.guestlogix.travelercorekit;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import com.guestlogix.travelercorekit.network.Router;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
-import com.guestlogix.travelercorekit.task.*;
-import com.guestlogix.travelercorekit.models.Catalog;
+import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
+import com.guestlogix.travelercorekit.network.Router;
+import com.guestlogix.travelercorekit.task.*;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,9 +40,9 @@ public class Traveler {
         BlockTask authTokenFetchBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                Log.v("Traveler", "Setting Session token:" + authTokenFetchTask.getToken().getValue());
+                //Log.v("Traveler", "Setting Session token:" + authTokenFetchTask.getAuthToken().getValue());
 
-                mSession.setAuthToken(authTokenFetchTask.getToken());
+                mSession.setAuthToken(authTokenFetchTask.getAuthToken());
             }
         };
 
@@ -71,57 +73,29 @@ public class Traveler {
     }
 
 
-    //    public static void getCatalog(String id, CatalogResponseHandler catalogResponseHandler) {
-//        if (null == mLocalInstance) {
-//            catalogResponseHandler.onError(new Error("SDK not initialized, Initialize by calling Traveler.initialize(); "));
-//        } else {
-//            mLocalInstance.getCatalog(id, new JsonObjectMapper<>(new Catalog.CatalogMappingFactory(), new JsonObjectMapper.Callback<Catalog>() {
-//                @Override
-//                public void onSuccess(Catalog catalog) {
-//                    Log.v("Traveler", "Fetched  Catalog");
-//                    catalogResponseHandler.onSuccess(catalog);
-//                }
-//
-//                @Override
-//                public void onError(Error error) {
-//                    catalogResponseHandler.onError(error);
-//                    //In case of authentication error fetch auth token and re run this call
-//
-//                    if ("Authentication Error".equals(error.getMessage())) {
-//
-//                        //TODO: Look if we can chain or group tasks
-//                        //mTaskManager.addTask();
-//
-//                    } else {
-//
-//                        Log.v("Traveler", error.getMessage());
-//                        catalogResponseHandler.onError(error);
-//                    }
-//                }
-//            }));
-//        }
-//    }
-//
-    private void getCatalog(String id, NetworkTask.ResponseHandler responseHandler) {
+    public static void flightSearch(FlightQuery query, FlightSearchCallback flightSearchCallback) {
 
+        if (null == mLocalInstance) {
+            flightSearchCallback.onFlightSearchError(new Error("SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+            AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
 
-        BlockTask getCatalogRequestBlockTask = new BlockTask() {
-            @Override
-            protected void main() {
+            AuthenticatedNetworkRequestTask searchFlightTask = new AuthenticatedNetworkRequestTask(mLocalInstance.mSession, request);
 
-            }
-        };
+            BlockTask searchFlightBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
 
-        Router.getCatalogue(mSession, id);
-        AuthenticatedNetworkRequestTask getCatalogRequestTask = new AuthenticatedNetworkRequestTask();
+                }
+            };
 
+            searchFlightBlockTask.addDependency(searchFlightTask);
+
+            mLocalInstance.mTaskManager.addTask(searchFlightTask);
+            mLocalInstance.mTaskManager.addTask(searchFlightBlockTask);
+
+        }
     }
 
-
-    public interface CatalogResponseHandler {
-        void onSuccess(Catalog catalog);
-
-        void onError(Error e);
-    }
 
 }
