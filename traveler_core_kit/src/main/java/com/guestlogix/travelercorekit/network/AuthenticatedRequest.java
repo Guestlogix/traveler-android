@@ -1,4 +1,4 @@
-package com.guestlogix.task;
+package com.guestlogix.travelercorekit.task;
 
 import org.json.JSONObject;
 
@@ -7,33 +7,22 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
 
-class UnauthenticatedRequest implements NetworkTask.Request {
+public class AuthenticatedRequest implements NetworkTask.Request {
+
     private Method mMethod;
     private URL mURL;
     private JSONObject mPayload;
-    private String mApiKey;
+    private String token;
 
-    UnauthenticatedRequest(Method method, URL url, String apiKey) {
-        this(method, url, apiKey, null);
+    public AuthenticatedRequest(Method mMethod, URL mURL, String token, JSONObject mPayload) {
+        this.mMethod = mMethod;
+        this.mURL = mURL;
+        this.token = token;
+        this.mPayload = mPayload;
     }
 
-    UnauthenticatedRequest(Method method, URL url, String apiKey, JSONObject payload) {
-        this.mMethod = method;
-        this.mURL = url;
-        this.mApiKey = apiKey;
-        this.mPayload = payload;
-    }
-
-    @Override
-    public HashMap<String, String> getHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
-
-        headers.put("Content-Type", "application/json");
-        headers.put("Accept", "application/json");
-        headers.put("x-api-key", this.mApiKey);
-
-
-        return headers;
+    public AuthenticatedRequest(Method method, URL url, String token) {
+        this(method, url, token, null);
     }
 
     @Override
@@ -44,6 +33,19 @@ class UnauthenticatedRequest implements NetworkTask.Request {
     @Override
     public URL getURL() {
         return mURL;
+    }
+
+    @Override
+    public HashMap<String, String> getHeaders() {
+
+        HashMap<String, String> headers = new HashMap<>();
+
+        headers.put("Content-Type", "application/json");
+        headers.put("Accept", "application/json");
+//        headers.put("x-api-key", this.token);
+
+        return headers;
+
     }
 
     @Override
