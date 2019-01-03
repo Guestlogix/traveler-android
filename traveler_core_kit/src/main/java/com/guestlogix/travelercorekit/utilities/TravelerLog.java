@@ -1,4 +1,4 @@
-package com.guestlogix;
+package com.guestlogix.travelercorekit.utilities;
 
 import android.os.SystemClock;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package com.guestlogix.task;
+package com.guestlogix.travelercorekit.task;
 
 import android.util.Log;
 import com.guestlogix.travelercorekit.models.Session;

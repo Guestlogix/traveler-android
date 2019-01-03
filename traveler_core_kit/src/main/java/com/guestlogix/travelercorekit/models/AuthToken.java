@@ -1,7 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
-import com.guestlogix.network.MappingException;
-import com.guestlogix.network.MappingFactory;
+import com.guestlogix.travelercorekit.network.MappingException;
+import com.guestlogix.travelercorekit.network.MappingFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 

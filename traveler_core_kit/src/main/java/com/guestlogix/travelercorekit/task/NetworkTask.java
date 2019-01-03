@@ -1,4 +1,6 @@
-package com.guestlogix.task;
+package com.guestlogix.travelercorekit.task;
+
+import com.guestlogix.travelercorekit.utilities.InputStreamHelper;
 
 import java.io.IOException;
 import java.io.InputStream;

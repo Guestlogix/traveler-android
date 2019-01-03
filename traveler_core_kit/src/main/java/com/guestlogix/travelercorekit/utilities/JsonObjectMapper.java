@@ -1,6 +1,7 @@
-package com.guestlogix.task;
+package com.guestlogix.travelercorekit.utilities;
 
-import com.guestlogix.network.MappingFactory;
+import com.guestlogix.travelercorekit.network.MappingFactory;
+import com.guestlogix.travelercorekit.task.NetworkTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,7 +47,7 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
             mCallback.onError(new Error());
         } catch (JSONException e) {
             mCallback.onError(new Error());
-        } catch (com.guestlogix.network.MappingException e) {
+        } catch (com.guestlogix.travelercorekit.network.MappingException e) {
             e.printStackTrace();
         }
     }

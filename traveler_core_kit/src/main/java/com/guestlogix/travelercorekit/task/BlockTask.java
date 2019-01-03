@@ -1,4 +1,4 @@
-package com.guestlogix.task;
+package com.guestlogix.travelercorekit.task;
 
 public abstract class BlockTask extends Task {
     public void execute() {

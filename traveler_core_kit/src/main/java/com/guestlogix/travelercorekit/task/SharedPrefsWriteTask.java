@@ -1,4 +1,4 @@
-package com.guestlogix.task;
+package com.guestlogix.travelercorekit.task;
 
 import android.content.Context;
 import android.text.TextUtils;

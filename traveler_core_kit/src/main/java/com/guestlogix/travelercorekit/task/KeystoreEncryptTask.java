@@ -1,4 +1,4 @@
-package com.guestlogix.task;
+package com.guestlogix.travelercorekit.task;
 
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
@@ -9,7 +9,7 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import java.security.*;
 
-import static com.guestlogix.task.KeystoreEncryptTask.ErrorCode.ENCRYPTION_ERROR;
+import static com.guestlogix.travelercorekit.task.KeystoreEncryptTask.ErrorCode.ENCRYPTION_ERROR;
 
 public class KeystoreEncryptTask extends Task {
 

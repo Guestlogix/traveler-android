@@ -1,7 +1,7 @@
 package com.guestlogix.traveler.application;
 
 import android.app.Application;
-import com.guestlogix.travelercorekit.sdk.Traveler;
+import com.guestlogix.travelercorekit.Traveler;
 
 public class TravelerApplication extends Application {
 

@@ -1,10 +1,11 @@
-package com.guestlogix.travelercorekit.sdk;
+package com.guestlogix.travelercorekit;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import com.guestlogix.TravelerLog;
-import com.guestlogix.task.*;
+import com.guestlogix.travelercorekit.network.Router;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.Session;
 import org.jetbrains.annotations.NotNull;

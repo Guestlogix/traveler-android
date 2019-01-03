@@ -1,7 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
-import com.guestlogix.task.MappingException;
-import com.guestlogix.task.MappingFactory;
+import com.guestlogix.travelercorekit.utilities.MappingException;
+import com.guestlogix.travelercorekit.utilities.MappingFactory;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
