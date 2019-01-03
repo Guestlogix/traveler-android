@@ -53,6 +53,10 @@ public class NetworkTask extends Task {
         }
     }
 
+    public void setRequest(Request mRequest) {
+        this.mRequest = mRequest;
+    }
+
     public NetworkTask(Request request, ResponseHandler responseHandler) {
         mRequest = request;
         mResponseHandler = responseHandler;
