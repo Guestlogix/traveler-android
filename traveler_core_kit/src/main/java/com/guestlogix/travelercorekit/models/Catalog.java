@@ -8,23 +8,23 @@ import java.util.ArrayList;
 
 public class Catalog {
 
-    ArrayList<Group> mGroups;
+    ArrayList<Group> groups;
 
     public Catalog(JSONObject jsonObject) throws MappingException {
 
 //        try {
-//            this.mGroups = jsonObject.getString("token");
+//            this.groups = jsonObject.getString("token");
 //        } catch (JSONException e) {
 //            throw new MappingException();
 //        }
     }
 
     public ArrayList<Group> getGroups() {
-        return mGroups;
+        return groups;
     }
 
     public void setGroups(ArrayList<Group> groups) {
-        this.mGroups = groups;
+        this.groups = groups;
     }
 
     public static class CatalogMappingFactory implements MappingFactory<Catalog> {
