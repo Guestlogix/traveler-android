@@ -1,4 +1,4 @@
-package com.guestlogix.network;
+package com.guestlogix.travelercorekit.network;
 
 public interface JsonObjectMapperCallback<T> {
     void onSuccess(T responseObject);

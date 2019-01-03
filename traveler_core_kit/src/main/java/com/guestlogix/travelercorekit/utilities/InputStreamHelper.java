@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.utilities;
 
 import java.io.BufferedReader;
 import java.io.IOException;

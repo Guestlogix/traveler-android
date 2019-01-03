@@ -1,8 +1,9 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.network;
 
 import android.content.Context;
 import android.util.Log;
 import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.task.NetworkTask;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;

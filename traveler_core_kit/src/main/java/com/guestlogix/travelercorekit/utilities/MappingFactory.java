@@ -1,5 +1,6 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.utilities;
 
+import com.guestlogix.travelercorekit.utilities.MappingException;
 import org.json.JSONObject;
 
 //MappingFactory

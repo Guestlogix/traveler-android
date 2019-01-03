@@ -2,10 +2,7 @@ package com.guestlogix.traveler.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import com.guestlogix.traveler.R;
-import com.guestlogix.travelercorekit.models.Catalog;
-import com.guestlogix.travelercorekit.sdk.Traveler;
 
 public class MainActivity extends AppCompatActivity {
 
