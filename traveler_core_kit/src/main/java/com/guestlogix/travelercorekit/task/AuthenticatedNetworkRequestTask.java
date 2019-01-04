@@ -14,7 +14,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
     private TaskManager mTaskManager = new TaskManager();
     private Session mSession;
     private AuthenticatedRequest mRequest;
-    private NetworkTask.ResponseHandler mResponseHandler;
+    protected NetworkTask.ResponseHandler mResponseHandler;
 
     public AuthenticatedNetworkRequestTask(Session mSession, AuthenticatedRequest mRequest) {
         this.mSession = mSession;

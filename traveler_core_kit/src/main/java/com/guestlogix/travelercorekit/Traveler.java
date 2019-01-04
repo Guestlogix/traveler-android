@@ -80,7 +80,7 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
 
-            AuthenticatedNetworkRequestTask searchFlightTask = new AuthenticatedNetworkRequestTask(mLocalInstance.mSession, request);
+            AuthenticatedNetworkRequestTask searchFlightTask = new FlightFetchTask(mLocalInstance.mSession, request);
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
