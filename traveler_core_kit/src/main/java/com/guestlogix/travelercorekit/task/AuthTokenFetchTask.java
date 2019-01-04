@@ -11,7 +11,7 @@ public class AuthTokenFetchTask extends Task {
     private TaskManager mTaskManager = new TaskManager();
     private Context mContext;
     private String mApiKey;
-    private AuthToken mToken;
+    private AuthToken mAuthToken;
     private Error mError;
 
     public AuthTokenFetchTask(String apiKey, Context context) {
@@ -19,8 +19,8 @@ public class AuthTokenFetchTask extends Task {
         this.mApiKey = apiKey;
     }
 
-    public AuthToken getToken() {
-        return mToken;
+    public AuthToken getAuthToken() {
+        return mAuthToken;
     }
 
     public Error getError() {
@@ -44,7 +44,7 @@ public class AuthTokenFetchTask extends Task {
                 Log.v("Traveler", "Fetched  Token:" + token.getValue());
                 //keystoreEncryptTask.setData(token.getValue().getBytes());
                 sharedPrefsWriteTask.setData(token.getValue());
-                mToken = token;
+                mAuthToken = token;
             }
 
             @Override

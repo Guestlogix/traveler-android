@@ -13,17 +13,19 @@ public class AuthenticatedRequest implements NetworkTask.Request {
     private Method mMethod;
     private URL mURL;
     private JSONObject mPayload;
-    private String token;
+    private String mToken;
+    private String mApiKey;
 
-    public AuthenticatedRequest(Method mMethod, URL mURL, String token, JSONObject mPayload) {
-        this.mMethod = mMethod;
-        this.mURL = mURL;
-        this.token = token;
-        this.mPayload = mPayload;
+    public AuthenticatedRequest(Method method, URL URL, String apiKey, String token, JSONObject payload) {
+        this.mMethod = method;
+        this.mURL = URL;
+        this.mApiKey = apiKey;
+        this.mToken = token;
+        this.mPayload = payload;
     }
 
-    public AuthenticatedRequest(Method method, URL url, String token) {
-        this(method, url, token, null);
+    public AuthenticatedRequest(Method method, URL url, String apiKey, String token) {
+        this(method, url, apiKey, token, null);
     }
 
     @Override
@@ -43,10 +45,14 @@ public class AuthenticatedRequest implements NetworkTask.Request {
 
         headers.put("Content-Type", "application/json");
         headers.put("Accept", "application/json");
-//        headers.put("x-api-key", this.token);
+        headers.put("x-api-key", this.mApiKey);
+        headers.put("Authorization", String.format("Bearer %s", this.mToken));
 
         return headers;
+    }
 
+    public void setToken(String mToken) {
+        this.mToken = mToken;
     }
 
     @Override
