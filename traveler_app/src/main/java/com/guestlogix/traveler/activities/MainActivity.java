@@ -1,10 +1,18 @@
 package com.guestlogix.traveler.activities;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.guestlogix.traveler.BuildConfig;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import com.guestlogix.traveler.R;
+import com.guestlogix.traveler.fragments.FlightSearchResultsFragment;
 import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.models.Flight;
@@ -16,7 +24,7 @@ import com.microsoft.appcenter.crashes.Crashes;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FlightSearchResultsFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +33,19 @@ public class MainActivity extends AppCompatActivity {
         setupAppCenter();
 
         demoFlightSearch();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(findViewById(R.id.my_nav_host_fragment))) || super.onOptionsItemSelected(item);
     }
 
     private void demoFlightSearch() {
@@ -64,5 +85,10 @@ public class MainActivity extends AppCompatActivity {
                 Analytics.class, Crashes.class);
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
 
+    @Override
+    public void onListFragmentInteraction(Flight item) {
+        //Navigation.(R.id.next_action, null)
+        NavController navController = Navigation.findNavController(findViewById(R.id.my_nav_host_fragment));
+        navController.navigate(R.id.home_action);
     }
 }
