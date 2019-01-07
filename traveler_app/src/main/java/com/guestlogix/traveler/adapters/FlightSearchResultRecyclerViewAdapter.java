@@ -10,22 +10,17 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.fragments.FlightSearchResultsFragment.OnListFragmentInteractionListener;
 import com.guestlogix.travelercorekit.models.Flight;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Flight} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<FlightSearchResultRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Flight> mValues;
-    private final OnListFragmentInteractionListener mListener;
-
-    public FlightSearchResultRecyclerViewAdapter(List<Flight> items, OnListFragmentInteractionListener listener) {
-        mValues = items;
-        mListener = listener;
-    }
+    private ArrayList<Flight> mFlightsArrayList = new ArrayList<>();
+    private OnListFragmentInteractionListener mListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -36,26 +31,31 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.departureCityTextView.setText(mValues.get(position).getDepartureAirport().getCity());
-        holder.arrivalCityTextView.setText(mValues.get(position).getArrivalAirport().getCity());
+        holder.mItem = mFlightsArrayList.get(position);
+        holder.departureCityTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCity());
+        holder.arrivalCityTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCity());
 
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
+        holder.mView.setOnClickListener(v -> {
+            if (null != mListener) {
+                mListener.onListFragmentInteraction(holder.mItem);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return mFlightsArrayList.size();
+    }
+
+    public void setInteractionListener(OnListFragmentInteractionListener mListener) {
+        this.mListener = mListener;
+    }
+
+    public void update(ArrayList<Flight> flightsArrayList) {
+        mFlightsArrayList.clear();
+        mFlightsArrayList.addAll(flightsArrayList);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -63,7 +63,6 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         public final TextView departureCityTextView;
         public final TextView departureIataTextView;
         public final TextView departureTimeTextView;
-
         public final TextView arrivalCityTextView;
         public final TextView arrivalIataTextView;
         public final TextView arrivalTimeTextView;
