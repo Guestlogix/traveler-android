@@ -5,6 +5,7 @@ import android.util.Log;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.task.NetworkTask;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -50,7 +51,7 @@ public class Router {
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("flight-number", query.getNumber());
-        queryParams.put("departure-date", "2019-01-03T15:18:40.048Z");//TODO convert and use date from query to server compliant date format
+        queryParams.put("departure-date", DateHelper.getDateAsString(query.getDate()));
 
         AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams),session.getApiKey(), session.getAuthToken().getValue());
 
