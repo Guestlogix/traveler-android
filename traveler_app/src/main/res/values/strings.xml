@@ -3,4 +3,9 @@
     <string name="add_flight_message">Enter your flight details below to receive the latest updates and personalize your
         experience
     </string>
+    <string name="flight_search_error">Invalid flight number</string>
+    <string name="flight_number">Flight Number</string>
+    <string name="departure_date">Departure Date</string>
+    <string name="search_flights">Search Flights</string>
+    <string name="empty_date_error">Date must not be empty</string>
 </resources>
