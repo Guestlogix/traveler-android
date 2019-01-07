@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.viewmodels.SearchFlightViewModel;
+import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,7 +40,7 @@ public class FlightSearchFragment extends Fragment {
     @BindView(R.id.searchFlightsButton)
     TextView searchFlightsButton;
 
-    private SearchFlightViewModel mViewModel;
+    private FlightSearchViewModel mViewModel;
 
     final Calendar myCalendar = Calendar.getInstance();
 
@@ -48,29 +50,37 @@ public class FlightSearchFragment extends Fragment {
         return new FlightSearchFragment();
     }
 
+    View mView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_flight_search, container, false);
-        ButterKnife.bind(this, view);
+        mView = inflater.inflate(R.layout.fragment_flight_search, container, false);
+        ButterKnife.bind(this, mView);
 
         departureDateEditText.setShowSoftInputOnFocus(false);
         departureDateEditText.setOnClickListener(departureDateOnClickListener);
         searchFlightsButton.setOnClickListener(searchFlightOnClickListener);
-        return view;
+        return mView;
 
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(SearchFlightViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(FlightSearchViewModel.class);
         // TODO: Use the ViewModel
     }
 
-    View.OnClickListener searchFlightOnClickListener = Navigation.createNavigateOnClickListener(R.id.flight_search_result_action, null);
+    View.OnClickListener searchFlightOnClickListener = v -> navigateToFlightSearchResults();
+
+    private void navigateToFlightSearchResults() {
+        FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction("2019-01-03T15:18:40.048Z", "AC1");
+        Navigation.findNavController(mView).navigate(directions);
+    }
+
 
     View.OnClickListener departureDateOnClickListener = new View.OnClickListener() {
         @Override

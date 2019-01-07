@@ -6,13 +6,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.activities.dummy.DummyContent;
 import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
+import com.guestlogix.traveler.viewmodels.FlightSearchResultViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.travelercorekit.models.FlightQuery;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A fragment representing a list of Items.
@@ -22,35 +31,40 @@ import com.guestlogix.travelercorekit.models.Flight;
  */
 public class FlightSearchResultsFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    @BindView(R.id.flightResultRecyclerView)
+    RecyclerView flightResultRecyclerView;
+
     private OnListFragmentInteractionListener mListener;
+    private FlightSearchResultViewModel mFlightSearchResultViewModel;
+    private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public FlightSearchResultsFragment() {
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static FlightSearchResultsFragment newInstance(int columnCount) {
-        FlightSearchResultsFragment fragment = new FlightSearchResultsFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+        FlightSearchResultsFragmentArgs arg = FlightSearchResultsFragmentArgs.fromBundle(getArguments());
+
+        String departureDate = arg.getDepartureDate();
+        String flightNumber = arg.getFlightNumber();
+
+        //String string = "2019-01-03T15:18:40.048Z";
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(departureDate);
+            FlightQuery flightQuery = new FlightQuery(flightNumber, date);
+
+            mFlightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
+            mFlightSearchResultViewModel.getFlightsObservable().observe(this, flights -> {
+                flightSearchResultRecyclerViewAdapter.update(flights);
+            });
+            mFlightSearchResultViewModel.flightSearch(flightQuery);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -59,20 +73,10 @@ public class FlightSearchResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new FlightSearchResultRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+        setupView(view);
+
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -91,6 +95,17 @@ public class FlightSearchResultsFragment extends Fragment {
         mListener = null;
     }
 
+    private void setupView(View view) {
+
+        ButterKnife.bind(this, view);
+
+        flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
+        flightSearchResultRecyclerViewAdapter.setInteractionListener(mListener);
+        flightResultRecyclerView.setAdapter(flightSearchResultRecyclerViewAdapter);
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -102,7 +117,6 @@ public class FlightSearchResultsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Flight item);
     }
 }

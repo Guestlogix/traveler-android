@@ -49,9 +49,10 @@
         <action
                 android:id="@+id/home_action"
                 app:destination="@+id/home_dest"/>
+        <argument android:name="departure_date" app:argType="string"/>
+        <argument android:name="flight_number" app:argType="string"/>
 
     </fragment>
-
 
 
 </navigation>
