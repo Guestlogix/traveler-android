@@ -1,9 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
+import android.util.JsonReader;
+import android.util.Log;
 import com.guestlogix.travelercorekit.network.MappingException;
 import com.guestlogix.travelercorekit.network.MappingFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class AuthToken {
 
@@ -11,15 +13,6 @@ public class AuthToken {
 
     public AuthToken(String mValue) {
         this.mValue = mValue;
-    }
-
-    public AuthToken(JSONObject jsonObject) throws MappingException {
-
-        try {
-            this.mValue = jsonObject.getString("token");
-        } catch (JSONException e) {
-            throw new MappingException();
-        }
     }
 
     public String getValue() {
@@ -33,8 +26,30 @@ public class AuthToken {
     //static inner class for MappingFactory<T> implementation
     public static class AuthTokenMappingFactory implements MappingFactory<AuthToken> {
         @Override
-        public AuthToken instantiate(JSONObject jsonObject) throws MappingException {
-            return new AuthToken(jsonObject);
+        public AuthToken instantiate(JsonReader reader) throws MappingException {
+            try {
+                return readAuthToken(reader);
+            } catch (IOException e) {
+                Log.e("AuthToken", "Error while reading token");
+                throw new MappingException();
+            }
+        }
+
+        private AuthToken readAuthToken(JsonReader reader) throws IOException {
+            String value = "";
+
+            reader.beginObject();
+            while (reader.hasNext()) {
+                String name = reader.nextString();
+
+                if (name.equals("token")) {
+                    value = reader.nextString();
+                } else {
+                    reader.skipValue();
+                }
+            }
+            reader.endObject();
+            return new AuthToken(value);
         }
     }
 }
