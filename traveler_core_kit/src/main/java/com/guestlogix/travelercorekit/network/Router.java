@@ -12,7 +12,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -53,7 +56,7 @@ public class Router {
         queryParams.put("flight-number", query.getNumber());
         queryParams.put("departure-date", DateHelper.getDateAsString(query.getDate()));
 
-        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams),session.getApiKey(), session.getAuthToken().getValue());
+        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams), session.getApiKey(), session.getAuthToken().getValue());
 
         return request;
     }
@@ -64,7 +67,7 @@ public class Router {
         queryParams.put("flight-ids", id);
 
 
-        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams),session.getApiKey(), session.getAuthToken().getValue());
+        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
 
         return request;
     }

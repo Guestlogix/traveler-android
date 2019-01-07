@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -77,7 +78,12 @@ public class FlightSearchFragment extends Fragment {
     View.OnClickListener searchFlightOnClickListener = v -> navigateToFlightSearchResults();
 
     private void navigateToFlightSearchResults() {
-        FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction("2019-01-03T15:18:40.048Z", "AC1");
+
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+        String departureDate = format.format(myCalendar.getTime());
+        String flightNumber = flightNumberEditText.getText().toString();
+
+        FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);
         Navigation.findNavController(mView).navigate(directions);
     }
 

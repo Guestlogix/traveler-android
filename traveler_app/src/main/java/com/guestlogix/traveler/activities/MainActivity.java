@@ -1,16 +1,15 @@
 package com.guestlogix.traveler.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.activities.dummy.DummyContent;
 import com.guestlogix.traveler.fragments.FlightSearchResultsFragment;
 import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements FlightSearchResul
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        demoFlightSearch();
+        //demoFlightSearch();
     }
 
     @Override

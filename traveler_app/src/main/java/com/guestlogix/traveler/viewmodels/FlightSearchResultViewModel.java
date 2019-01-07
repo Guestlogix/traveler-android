@@ -33,7 +33,7 @@ public class FlightSearchResultViewModel extends ViewModel {
         @Override
         public void onFlightSearchSuccess(ArrayList<Flight> flights) {
             Log.v("FlightSearch", "onFlightSearchSuccess()");
-            flightsArrayList.setValue(flights);
+            flightsArrayList.postValue(flights);
         }
 
         @Override
