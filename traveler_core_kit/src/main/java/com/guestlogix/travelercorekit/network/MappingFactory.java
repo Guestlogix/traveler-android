@@ -1,9 +1,11 @@
 package com.guestlogix.travelercorekit.network;
 
-import org.json.JSONObject;
+import android.util.JsonReader;
+
+import java.io.IOException;
 
 //MappingFactory
 public interface MappingFactory<T> {
 
-    T instantiate(JSONObject jsonObject) throws MappingException;
+    T instantiate(JsonReader reader) throws MappingException, IOException;
 }
