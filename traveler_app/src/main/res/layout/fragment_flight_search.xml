@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            app:errorEnabled="true"
             app:hintEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,10 +31,9 @@
                 android:id="@+id/flightNumberEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Flight Number"
+                android:hint="@string/flight_number"
                 android:inputType="textCapCharacters"
                 android:maxLength="6"
-                app:errorEnabled="true"
                 app:hintEnabled="false"
                 android:textAllCaps="true"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -55,7 +53,7 @@
                 android:id="@+id/departureDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Departure Date"
+                android:hint="@string/departure_date"
                 android:inputType="textCapCharacters"
                 app:errorEnabled="true"
                 app:hintEnabled="false"

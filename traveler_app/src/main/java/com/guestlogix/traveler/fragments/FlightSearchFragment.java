@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static androidx.navigation.Navigation.findNavController;
@@ -64,9 +65,24 @@ public class FlightSearchFragment extends Fragment {
 
         departureDateEditText.setShowSoftInputOnFocus(false);
         departureDateEditText.setOnClickListener(departureDateOnClickListener);
+
+        flightNumberEditText.setOnFocusChangeListener((view, focus) -> {
+            if (!focus) {
+                String flightNumber = ((TextView) view).getText().toString();
+
+                validateFlightNumber(flightNumber);
+            }
+        });
+
+        departureDateEditText.setOnFocusChangeListener((view, focus) -> {
+            if (!focus) {
+                String date = ((TextView) view).getText().toString();
+
+                validateFlightDate(date);
+            }
+        });
         searchFlightsButton.setOnClickListener(searchFlightOnClickListener);
         return mView;
-
     }
 
     @Override
@@ -79,12 +95,16 @@ public class FlightSearchFragment extends Fragment {
     View.OnClickListener searchFlightOnClickListener = v -> navigateToFlightSearchResults();
 
     private void navigateToFlightSearchResults() {
-
-        String departureDate = DateHelper.getDateAsString(myCalendar.getTime());
         String flightNumber = flightNumberEditText.getText().toString();
+        String departureDate = DateHelper.getDateAsString(myCalendar.getTime());
 
-        FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);
-        Navigation.findNavController(mView).navigate(directions);
+        if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
+            FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);
+            Navigation.findNavController(mView).navigate(directions);
+        } else {
+            validateFlightNumber(flightNumber);
+            validateFlightDate(departureDate);
+        }
     }
 
 
@@ -111,6 +131,23 @@ public class FlightSearchFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         departureDateEditText.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    private Boolean isFlightNumberValid(String flightNumber) {
+        Matcher m = FLIGHT_NUMBER_PATTERN.matcher(flightNumber);
+        return m.find();
+    }
+
+    private void validateFlightNumber(String s) {
+        if (null == s || !isFlightNumberValid(s)) {
+            flightNumberEditText.setError(getString(R.string.flight_search_error));
+        }
+    }
+
+    private void validateFlightDate(String date) {
+        if (null == date || date.isEmpty()) {
+            departureDateEditText.setError(getString(R.string.empty_date_error));
+        }
     }
 
 }
