@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -79,8 +80,7 @@ public class FlightSearchFragment extends Fragment {
 
     private void navigateToFlightSearchResults() {
 
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
-        String departureDate = format.format(myCalendar.getTime());
+        String departureDate = DateHelper.getDateAsString(myCalendar.getTime());
         String flightNumber = flightNumberEditText.getText().toString();
 
         FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);

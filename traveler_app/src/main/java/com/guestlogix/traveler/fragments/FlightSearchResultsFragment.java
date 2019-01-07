@@ -16,6 +16,7 @@ import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.FlightSearchResultViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -50,11 +51,8 @@ public class FlightSearchResultsFragment extends Fragment {
         String departureDate = arg.getDepartureDate();
         String flightNumber = arg.getFlightNumber();
 
-        //String string = "2019-01-03T15:18:40.048Z";
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
-        Date date = null;
         try {
-            date = format.parse(departureDate);
+            Date date = DateHelper.getDateAsObject(departureDate);
             FlightQuery flightQuery = new FlightQuery(flightNumber, date);
 
             mFlightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
