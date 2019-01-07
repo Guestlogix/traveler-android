@@ -5,11 +5,13 @@ import android.util.Log;
 import com.guestlogix.travelercorekit.network.MappingException;
 import com.guestlogix.travelercorekit.network.MappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
+
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 
-public class Flight {
+public class Flight implements Serializable {
     String id;
     String number;
     Airport departureAirport;
@@ -109,7 +111,7 @@ public class Flight {
             return new Flight(id, number, origin, destination, departure, arrival);
         }
 
-        private Airport readAirport (JsonReader reader) throws IOException {
+        private Airport readAirport(JsonReader reader) throws IOException {
             String name = "";
             String code = "";
             String city = "";

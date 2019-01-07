@@ -25,6 +25,7 @@
         <action
                 android:id="@+id/flight_add_action"
                 app:destination="@+id/flight_search_dest"/>
+        <argument android:name="flight" app:argType="com.guestlogix.travelercorekit.models.Flight"/>
 
     </fragment>
 
@@ -49,6 +50,7 @@
         <action
                 android:id="@+id/home_action"
                 app:destination="@+id/home_dest"/>
+
         <argument android:name="departure_date" app:argType="string"/>
         <argument android:name="flight_number" app:argType="string"/>
 
