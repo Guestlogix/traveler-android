@@ -1,6 +1,5 @@
 package com.guestlogix.traveler.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +7,7 @@ import com.guestlogix.traveler.BuildConfig;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements FlightSearchResul
         setContentView(R.layout.activity_main);
         setupAppCenter();
 
-        demoFlightSearch();
+        //demoFlightSearch();
     }
 
     @Override

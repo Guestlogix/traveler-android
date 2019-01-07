@@ -87,7 +87,7 @@ public class Traveler {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
 
             AuthenticatedNetworkRequestTask searchFlightTask = new AuthenticatedNetworkRequestTask(mLocalInstance.mSession, request, new JsonObjectMapper<>((reader -> {
-                List<Flight> flights = new ArrayList<>();
+                ArrayList<Flight> flights = new ArrayList<>();
                 Flight.FlightMappingFactory flightMappingFactory = new Flight.FlightMappingFactory();
 
                 reader.beginArray();
@@ -98,16 +98,20 @@ public class Traveler {
                 reader.endArray();
 
                 return flights;
-            }), new JsonObjectMapper.Callback<List<Flight>>() {
+            }), new JsonObjectMapper.Callback<ArrayList<Flight>>() {
 
                 @Override
-                public void onSuccess(List<Flight> model) {
+                public void onSuccess(ArrayList<Flight> model) {
                     // TODO: handle success.
+                    Log.d("FlightSearch", "onSuccess");
+                    flightSearchCallback.onFlightSearchSuccess(model);
                 }
 
                 @Override
                 public void onError(Error error) {
                     // TODO: handle failure.
+                    Log.d("FlightSearch", "onError");
+
                 }
             }));
 
