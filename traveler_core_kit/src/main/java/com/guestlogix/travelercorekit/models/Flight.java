@@ -4,10 +4,9 @@ import android.util.JsonReader;
 import android.util.Log;
 import com.guestlogix.travelercorekit.network.MappingException;
 import com.guestlogix.travelercorekit.network.MappingFactory;
-
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Flight {
@@ -52,7 +51,6 @@ public class Flight {
     }
 
     public static class FlightMappingFactory implements MappingFactory<Flight> {
-        private static final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
         private static final String TAG = "FlightMappingFactory";
 
         @Override
@@ -77,7 +75,6 @@ public class Flight {
             Date arrival = null;
 
             reader.beginObject();
-            String s;
 
             while (reader.hasNext()) {
                 String name = reader.nextName();
@@ -96,10 +93,10 @@ public class Flight {
                         destination = readAirport(reader);
                         break;
                     case "departureTime":
-                        departure = new SimpleDateFormat(DATE_PATTERN).parse(reader.nextString());
+                        departure = DateHelper.getDateAsObject(reader.nextString());
                         break;
                     case "arrivalTime":
-                        departure = new SimpleDateFormat(DATE_PATTERN).parse(reader.nextString());
+                        arrival = DateHelper.getDateAsObject(reader.nextString());
                         break;
                     default:
                         reader.skipValue();
