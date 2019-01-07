@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.utilities;
 
+import android.util.JsonReader;
 import com.guestlogix.travelercorekit.network.MappingFactory;
 import com.guestlogix.travelercorekit.task.NetworkTask;
 import org.json.JSONException;
@@ -26,26 +27,11 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
     @Override
     public void onHandleResponse(InputStream stream) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        StringBuilder builder = new StringBuilder();
-
-        // TODO: Rewrite this using JSONReader
-
-        // TODO: handle error correctly
-
-        try {
-            String inputStr;
-            while ((inputStr = reader.readLine()) != null)
-                builder.append(inputStr);
-
-            JSONObject jsonObject = new JSONObject(builder.toString());
-
-            T model = mMappingFactory.instantiate(jsonObject);
+        try (JsonReader reader = new JsonReader(new InputStreamReader(stream))) {
+            T model = mMappingFactory.instantiate(reader);
 
             mCallback.onSuccess(model);
         } catch (IOException e) {
-            mCallback.onError(new Error());
-        } catch (JSONException e) {
             mCallback.onError(new Error());
         } catch (com.guestlogix.travelercorekit.network.MappingException e) {
             e.printStackTrace();

@@ -4,14 +4,20 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
+import com.guestlogix.travelercorekit.network.MappingFactory;
 import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
+import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Traveler {
 
@@ -80,7 +86,30 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
 
-            AuthenticatedNetworkRequestTask searchFlightTask = new FlightFetchTask(mLocalInstance.mSession, request);
+            AuthenticatedNetworkRequestTask searchFlightTask = new AuthenticatedNetworkRequestTask(mLocalInstance.mSession, request, new JsonObjectMapper<>((reader -> {
+                List<Flight> flights = new ArrayList<>();
+                Flight.FlightMappingFactory flightMappingFactory = new Flight.FlightMappingFactory();
+
+                reader.beginArray();
+
+                while (reader.hasNext()) {
+                    flights.add(flightMappingFactory.instantiate(reader));
+                }
+                reader.endArray();
+
+                return flights;
+            }), new JsonObjectMapper.Callback<List<Flight>>() {
+
+                @Override
+                public void onSuccess(List<Flight> model) {
+                    // TODO: handle success.
+                }
+
+                @Override
+                public void onError(Error error) {
+                    // TODO: handle failure.
+                }
+            }));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override

@@ -28,6 +28,12 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         };
     }
 
+    public AuthenticatedNetworkRequestTask(Session mSession, AuthenticatedRequest mRequest, NetworkTask.ResponseHandler mResponseHandler) {
+        this.mSession = mSession;
+        this.mRequest = mRequest;
+        this.mResponseHandler = mResponseHandler;
+    }
+
     @Override
     public void execute() {
 
