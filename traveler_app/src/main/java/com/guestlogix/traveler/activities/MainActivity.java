@@ -6,11 +6,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.fragments.FlightSearchResultsFragment;
 import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.models.Flight;
@@ -19,7 +17,7 @@ import com.guestlogix.travelercorekit.models.FlightQuery;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements FlightSearchResultsFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +72,7 @@ public class MainActivity extends AppCompatActivity implements FlightSearchResul
 //        });
     }
 
-    @Override
-    public void onListFragmentInteraction(Flight item) {
-        //Navigation.(R.id.next_action, null)
-        NavController navController = Navigation.findNavController(findViewById(R.id.my_nav_host_fragment));
-        navController.navigate(R.id.home_action);
-    }
+//    NavController navController = Navigation.findNavController(findViewById(R.id.my_nav_host_fragment));
+//        navController.navigate(R.id.home_action);
+
 }

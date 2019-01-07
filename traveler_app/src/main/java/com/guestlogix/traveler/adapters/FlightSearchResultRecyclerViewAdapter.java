@@ -1,26 +1,27 @@
 package com.guestlogix.traveler.adapters;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.fragments.FlightSearchResultsFragment.OnListFragmentInteractionListener;
 import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Flight} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link Flight}
  */
 public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<FlightSearchResultRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<Flight> mFlightsArrayList = new ArrayList<>();
-    private OnListFragmentInteractionListener mListener;
+    private View.OnClickListener addFlightOnClickListener;
+
+    public void setAddFlightOnClickListener(View.OnClickListener addFlightOnClickListener) {
+        this.addFlightOnClickListener = addFlightOnClickListener;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,23 +34,20 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mFlightsArrayList.get(position);
         holder.departureCityTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCity());
+        holder.departureIataTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCode());
+        holder.departureTimeTextView.setText(DateHelper.getTimeAsString(mFlightsArrayList.get(position).getDepartureDate()));
         holder.arrivalCityTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCity());
+        holder.arrivalIataTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCode());
+        holder.arrivalTimeTextView.setText(DateHelper.getTimeAsString(mFlightsArrayList.get(position).getArrivalDate()));
 
+        holder.addFlightTextView.setTag(position);
+        holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);
 
-        holder.mView.setOnClickListener(v -> {
-            if (null != mListener) {
-                mListener.onListFragmentInteraction(holder.mItem);
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
         return mFlightsArrayList.size();
-    }
-
-    public void setInteractionListener(OnListFragmentInteractionListener mListener) {
-        this.mListener = mListener;
     }
 
     public void update(ArrayList<Flight> flightsArrayList) {
@@ -66,6 +64,7 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         public final TextView arrivalCityTextView;
         public final TextView arrivalIataTextView;
         public final TextView arrivalTimeTextView;
+        public final TextView addFlightTextView;
 
         public Flight mItem;
 
@@ -79,6 +78,8 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
             arrivalCityTextView = mView.findViewById(R.id.arrivalCityTextView);
             arrivalIataTextView = mView.findViewById(R.id.arrivalIataTextView);
             arrivalTimeTextView = mView.findViewById(R.id.arrivalTimeTextView);
+
+            addFlightTextView = mView.findViewById(R.id.addFlightTextView);
         }
     }
 }

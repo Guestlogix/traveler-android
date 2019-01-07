@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -27,15 +28,14 @@ import java.util.Locale;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
  */
 public class FlightSearchResultsFragment extends Fragment {
 
     @BindView(R.id.flightResultRecyclerView)
     RecyclerView flightResultRecyclerView;
 
-    private OnListFragmentInteractionListener mListener;
+    private View mView;
+
     private FlightSearchResultViewModel mFlightSearchResultViewModel;
     private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
 
@@ -59,6 +59,7 @@ public class FlightSearchResultsFragment extends Fragment {
             mFlightSearchResultViewModel.getFlightsObservable().observe(this, flights -> {
                 flightSearchResultRecyclerViewAdapter.update(flights);
             });
+
             mFlightSearchResultViewModel.flightSearch(flightQuery);
 
         } catch (ParseException e) {
@@ -69,28 +70,21 @@ public class FlightSearchResultsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
+        mView = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
 
-        setupView(view);
+        setupView(mView);
 
-        return view;
+        return mView;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     private void setupView(View view) {
@@ -99,22 +93,23 @@ public class FlightSearchResultsFragment extends Fragment {
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
-        flightSearchResultRecyclerViewAdapter.setInteractionListener(mListener);
+        flightSearchResultRecyclerViewAdapter.setAddFlightOnClickListener(onAddFlight);
         flightResultRecyclerView.setAdapter(flightSearchResultRecyclerViewAdapter);
     }
 
+    View.OnClickListener onAddFlight = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int index = (Integer) v.getTag();
+            Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Flight item);
-    }
+            FlightSearchResultsFragmentDirections.HomeAction directions = FlightSearchResultsFragmentDirections.homeAction(flight);
+
+            Navigation.findNavController(mView).navigate(directions);
+
+
+        }
+    };
+
+
 }
