@@ -40,7 +40,7 @@ public class AuthToken {
 
             reader.beginObject();
             while (reader.hasNext()) {
-                String name = reader.nextString();
+                String name = reader.nextName();
 
                 if (name.equals("token")) {
                     value = reader.nextString();
