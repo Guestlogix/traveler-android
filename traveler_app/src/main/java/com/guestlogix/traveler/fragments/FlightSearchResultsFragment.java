@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.FlightSearchResultViewModel;
+import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -37,6 +38,7 @@ public class FlightSearchResultsFragment extends Fragment {
     private View mView;
 
     private FlightSearchResultViewModel mFlightSearchResultViewModel;
+    private HomeViewModel mHomeViewModel;
     private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
 
     public FlightSearchResultsFragment() {
@@ -55,7 +57,9 @@ public class FlightSearchResultsFragment extends Fragment {
             Date date = DateHelper.getDateAsObject(departureDate);
             FlightQuery flightQuery = new FlightQuery(flightNumber, date);
 
-            mFlightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
+            mFlightSearchResultViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchResultViewModel.class);
+            mHomeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
+
             mFlightSearchResultViewModel.getFlightsObservable().observe(this, flights -> {
                 flightSearchResultRecyclerViewAdapter.update(flights);
             });
@@ -100,6 +104,9 @@ public class FlightSearchResultsFragment extends Fragment {
     View.OnClickListener onAddFlight = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            //TODO Add flights directly to HomeFragmentViewHolder then navigate
+
             int index = (Integer) v.getTag();
             Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
 
