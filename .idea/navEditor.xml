@@ -39,6 +39,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_flight_search_result_dest_to_home_dest">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="home_action">
                               <value>
                                 <LayoutPositions />
