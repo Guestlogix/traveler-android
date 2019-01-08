@@ -19,6 +19,9 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void addFlight(Flight flight) {
+
+        //TODO User repository to manage flights in user session
+
         if (null != flightsArrayList.getValue()) {
             ArrayList<Flight> flightsList = flightsArrayList.getValue();
             flightsList.add(flight);
@@ -30,4 +33,11 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
+    public void deleteFlight(int index) {
+        if (null != flightsArrayList.getValue()) {
+            ArrayList<Flight> flightsList = flightsArrayList.getValue();
+            flightsList.remove(index);
+            flightsArrayList.postValue(flightsList);
+        }
+    }
 }

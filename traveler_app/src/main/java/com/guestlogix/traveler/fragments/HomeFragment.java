@@ -1,25 +1,20 @@
 package com.guestlogix.traveler.fragments;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
-import com.guestlogix.travelercorekit.models.Flight;
-
-import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
@@ -43,21 +38,16 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
 
-        mViewModel.getFlightsObservable().observe(this, new Observer<ArrayList<Flight>>() {
-            @Override
-            public void onChanged(ArrayList<Flight> flights) {
-                homeFragmentRecyclerViewAdapter.update(flights);
-            }
-        });
-
-        Bundle bundle = getArguments();
-        if (null != bundle) {
-            HomeFragmentArgs arg = HomeFragmentArgs.fromBundle(bundle);
-            Flight flight = arg.getFlight();
-
-            mViewModel.addFlight(flight);
-        }
+        mViewModel.getFlightsObservable().observe(this, flights -> homeFragmentRecyclerViewAdapter.update(flights));
     }
+
+    View.OnClickListener deleteFlightOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int index = (Integer) v.getTag();
+            mViewModel.deleteFlight(index);
+        }
+    };
 
     private void setupView(View view) {
 
@@ -65,6 +55,7 @@ public class HomeFragment extends Fragment {
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
+        homeFragmentRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
         flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
     }
 
