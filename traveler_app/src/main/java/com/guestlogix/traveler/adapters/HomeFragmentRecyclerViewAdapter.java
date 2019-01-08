@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.Flight;
 
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFragmentRecyclerViewAdapter.ViewHolder> {
 
     private ArrayList<Flight> mFlightsArrayList = new ArrayList<>();
+    private View.OnClickListener deleteFlightOnClickListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -27,6 +30,9 @@ public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFr
         holder.mItem = mFlightsArrayList.get(position);
         holder.departureIataTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCode());
         holder.arrivalIataTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCode());
+        holder.deleteTextView.setOnClickListener(deleteFlightOnClickListener);
+
+        holder.deleteTextView.setTag(position);
 
     }
 
@@ -41,18 +47,25 @@ public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFr
         notifyDataSetChanged();
     }
 
+    public void setDeleteFlightOnClickListener(View.OnClickListener deleteFlightOnClickListener) {
+        this.deleteFlightOnClickListener = deleteFlightOnClickListener;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView departureIataTextView;
-        public final TextView arrivalIataTextView;
+        @BindView(R.id.departureIataTextView)
+        public TextView departureIataTextView;
+        @BindView(R.id.arrivalIataTextView)
+        public TextView arrivalIataTextView;
+        @BindView(R.id.deleteTextView)
+        public TextView deleteTextView;
 
         public Flight mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            departureIataTextView = mView.findViewById(R.id.departureIataTextView);
-            arrivalIataTextView = mView.findViewById(R.id.arrivalIataTextView);
+            ButterKnife.bind(this, view);
         }
     }
 }

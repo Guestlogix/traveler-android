@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
@@ -28,7 +29,6 @@ import java.util.Locale;
 
 /**
  * A fragment representing a list of Items.
- * <p/>
  */
 public class FlightSearchResultsFragment extends Fragment {
 
@@ -60,13 +60,15 @@ public class FlightSearchResultsFragment extends Fragment {
             mFlightSearchResultViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchResultViewModel.class);
             mHomeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
 
-            mFlightSearchResultViewModel.getFlightsObservable().observe(this, flights -> {
-                flightSearchResultRecyclerViewAdapter.update(flights);
-            });
+            mFlightSearchResultViewModel.getFlightsObservable().observe(this, flights -> flightSearchResultRecyclerViewAdapter.update(flights));
 
             mFlightSearchResultViewModel.flightSearch(flightQuery);
 
+            Toast.makeText(getActivity(), "Searching flights...", Toast.LENGTH_SHORT).show();
+
         } catch (ParseException e) {
+            Toast.makeText(getActivity(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
+
             e.printStackTrace();
         }
     }
@@ -109,10 +111,9 @@ public class FlightSearchResultsFragment extends Fragment {
 
             int index = (Integer) v.getTag();
             Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
+            mHomeViewModel.addFlight(flight);
 
-            FlightSearchResultsFragmentDirections.HomeAction directions = FlightSearchResultsFragmentDirections.homeAction(flight);
-
-            Navigation.findNavController(mView).navigate(directions);
+            Navigation.findNavController(mView).navigate(R.id.home_action);
 
 
         }

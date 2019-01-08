@@ -89,7 +89,6 @@ public class FlightSearchFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchViewModel.class);
-        // TODO: Use the ViewModel
     }
 
     View.OnClickListener searchFlightOnClickListener = v -> navigateToFlightSearchResults();
@@ -107,7 +106,6 @@ public class FlightSearchFragment extends Fragment {
         }
     }
 
-
     View.OnClickListener departureDateOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -119,7 +117,6 @@ public class FlightSearchFragment extends Fragment {
     };
 
     DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
-        // TODO Auto-generated method stub
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, monthOfYear);
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
