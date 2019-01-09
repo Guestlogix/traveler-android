@@ -13,6 +13,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.microsoft.appcenter.AppCenter;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFlightSearchError(Error error) {
+            public void onFlightSearchError(TravelerError error) {
                 Log.d("MainActivity", "onFlightSearchError()");
             }
         };

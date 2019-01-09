@@ -4,11 +4,13 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
+import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
-import com.guestlogix.travelercorekit.network.MappingFactory;
 import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
@@ -22,6 +24,7 @@ import java.util.List;
 public class Traveler {
 
     private static Traveler mLocalInstance;
+    private static final String TAG = "Traveler";
     private TaskManager mTaskManager = new TaskManager();
 
     private Session mSession;
@@ -82,7 +85,7 @@ public class Traveler {
     public static void flightSearch(FlightQuery query, FlightSearchCallback flightSearchCallback) {
 
         if (null == mLocalInstance) {
-            flightSearchCallback.onFlightSearchError(new Error("SDK not initialized, Initialize by calling Traveler.initialize();"));
+            flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
 
@@ -98,27 +101,28 @@ public class Traveler {
                 reader.endArray();
 
                 return flights;
-            }), new JsonObjectMapper.Callback<ArrayList<Flight>>() {
+            }), new JsonObjectMapperCallback<ArrayList<Flight>>() {
 
                 @Override
                 public void onSuccess(ArrayList<Flight> model) {
                     // TODO: handle success.
-                    Log.d("FlightSearch", "onSuccess");
+                    Log.d(TAG, "flightSearch - onSuccess");
                     flightSearchCallback.onFlightSearchSuccess(model);
                 }
 
                 @Override
-                public void onError(Error error) {
-                    // TODO: handle failure.
-                    Log.d("FlightSearch", "onError");
-
+                public void onError(TravelerError error) {
+                    Log.d(TAG, "flightSearch - onError");
+                    flightSearchCallback.onFlightSearchError(error);
                 }
             }));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
-
+                    if (null != searchFlightTask.getError()) {
+                        flightSearchCallback.onFlightSearchError(searchFlightTask.getError());
+                    }
                 }
             };
 

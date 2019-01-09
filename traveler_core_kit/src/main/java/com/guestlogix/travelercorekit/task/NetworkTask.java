@@ -1,5 +1,7 @@
 package com.guestlogix.travelercorekit.task;
 
+import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.utilities.InputStreamHelper;
 
 import java.io.IOException;
@@ -14,12 +16,8 @@ import java.util.Map;
 public class NetworkTask extends Task {
 
     private Request mRequest;
-    private Error mError;
+    private TravelerError mError;
     private ResponseHandler mResponseHandler;
-
-    public enum ErrorCode {
-        BAD_URL, CONNECTION_ERROR, NO_REQUEST, FORBIDDEN, UNAUTHORIZED, SERVER_ERROR
-    }
 
     public interface Request {
         enum Method {
@@ -39,20 +37,6 @@ public class NetworkTask extends Task {
         void onHandleResponse(InputStream stream) throws IOException;
     }
 
-    public class NetworkTaskError extends Error {
-        private ErrorCode mCode;
-        private String mMessage;
-
-        NetworkTaskError(ErrorCode code, String message) {
-            mCode = code;
-            mMessage = message;
-        }
-
-        public String toString() {
-            return mCode + mMessage;
-        }
-    }
-
     public void setRequest(Request mRequest) {
         this.mRequest = mRequest;
     }
@@ -62,16 +46,15 @@ public class NetworkTask extends Task {
         mResponseHandler = responseHandler;
     }
 
-    public Error getError() {
+    public TravelerError getError() {
         return mError;
     }
 
     @Override
     public void execute() {
         // Some initial error handling
-
         if (mRequest == null) {
-            mError = new NetworkTaskError(ErrorCode.NO_REQUEST, null);
+            mError = new TravelerError(TravelerErrorCode.NO_REQUEST, null);
             finish();
             return;
         }
@@ -84,7 +67,7 @@ public class NetworkTask extends Task {
         }
 
         if (url == null) {
-            mError = new NetworkTaskError(ErrorCode.BAD_URL, null);
+            mError = new TravelerError(TravelerErrorCode.BAD_URL, null);
             finish();
             return;
         }
@@ -92,7 +75,7 @@ public class NetworkTask extends Task {
         String protocol = url.getProtocol();
 
         if (protocol == null || (!protocol.toLowerCase().equals("http") && !protocol.toLowerCase().equals("https"))) {
-            mError = new NetworkTaskError(ErrorCode.BAD_URL, null);
+            mError = new TravelerError(TravelerErrorCode.BAD_URL, null);
             finish();
             return;
         }
@@ -152,12 +135,12 @@ public class NetworkTask extends Task {
             int statusCode = urlConnection.getResponseCode();
 
             if (statusCode == 401) {
-                mError = new NetworkTaskError(ErrorCode.UNAUTHORIZED,
+                mError = new TravelerError(TravelerErrorCode.UNAUTHORIZED,
                         InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
             } else if (statusCode == 403) {
-                mError = new NetworkTaskError(ErrorCode.FORBIDDEN, null);
+                mError = new TravelerError(TravelerErrorCode.FORBIDDEN, null);
             } else if (statusCode >= 500) {
-                mError = new NetworkTaskError(ErrorCode.SERVER_ERROR,
+                mError = new TravelerError(TravelerErrorCode.SERVER_ERROR,
                         InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
             } else {
                 InputStream is = urlConnection.getInputStream();
@@ -169,7 +152,6 @@ public class NetworkTask extends Task {
                 is.close();
             }
 
-
             finish();
 
         } catch (IOException e) {
@@ -180,7 +162,7 @@ public class NetworkTask extends Task {
                 errorMessage = InputStreamHelper.getStringFromInputStream(urlConnection.getErrorStream());
             }
 
-            mError = new NetworkTaskError(ErrorCode.CONNECTION_ERROR, errorMessage);
+            mError = new TravelerError(TravelerErrorCode.CONNECTION_ERROR, errorMessage);
             finish();
         } finally {
 //            if (null != urlConnection) {

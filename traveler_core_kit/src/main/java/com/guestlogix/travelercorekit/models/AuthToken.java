@@ -2,6 +2,8 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.Log;
+import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.MappingException;
 import com.guestlogix.travelercorekit.network.MappingFactory;
 
@@ -31,7 +33,7 @@ public class AuthToken {
                 return readAuthToken(reader);
             } catch (IOException e) {
                 Log.e("AuthToken", "Error while reading token");
-                throw new MappingException();
+                throw new MappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
             }
         }
 
