@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -19,7 +18,6 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.FlightSearchResultViewModel;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
-import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -38,9 +36,6 @@ public class FlightSearchResultsFragment extends Fragment {
 
     @BindView(R.id.errorLayout)
     LinearLayout emptyListLayout;
-
-    @BindView(R.id.try_again)
-    TextView tryAgainText;
 
     private View mView;
 
