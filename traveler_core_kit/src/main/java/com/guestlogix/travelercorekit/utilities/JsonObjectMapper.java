@@ -1,26 +1,20 @@
 package com.guestlogix.travelercorekit.utilities;
 
 import android.util.JsonReader;
+import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
+import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.MappingFactory;
 import com.guestlogix.travelercorekit.task.NetworkTask;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
     private MappingFactory<T> mMappingFactory;
-    private Callback<T> mCallback;
+    private JsonObjectMapperCallback<T> mCallback;
 
-    public interface Callback<T> {
-        void onSuccess(T model);
-        void onError(Error error);
-    }
-
-    public JsonObjectMapper(MappingFactory<T> mappingFactory, Callback<T> callback) {
+    public JsonObjectMapper(MappingFactory<T> mappingFactory, JsonObjectMapperCallback<T> callback) {
         mMappingFactory = mappingFactory;
         mCallback = callback;
     }
@@ -32,9 +26,9 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
             mCallback.onSuccess(model);
         } catch (IOException e) {
-            mCallback.onError(new Error());
+            mCallback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid JSON stream"));
         } catch (com.guestlogix.travelercorekit.network.MappingException e) {
-            e.printStackTrace();
+            mCallback.onError(e.getError());
         }
     }
 }

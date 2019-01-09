@@ -2,6 +2,8 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.Log;
+import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.MappingException;
 import com.guestlogix.travelercorekit.network.MappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -61,10 +63,10 @@ public class Flight implements Serializable {
                 return readFlight(reader);
             } catch (ParseException e) {
                 Log.e(TAG, "Date parse error occurred");
-                throw new MappingException();
+                throw new MappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Could not convert date"));
             } catch (IOException e) {
                 Log.e(TAG, "Parsing exception occurred");
-                throw new MappingException();
+                throw new MappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
             }
         }
 

@@ -1,10 +1,13 @@
 package com.guestlogix.traveler.viewmodels;
 
+import android.util.Log;
+import android.widget.Toast;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.guestlogix.traveler.repositories.FlightSearchRepository;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 
@@ -35,8 +38,8 @@ public class FlightSearchViewModel extends ViewModel {
         }
 
         @Override
-        public void onFlightSearchError(Error error) {
-
+        public void onFlightSearchError(TravelerError error) {
+            Log.e("FlightSearchViewModel", error.toString());
         }
     };
 }
