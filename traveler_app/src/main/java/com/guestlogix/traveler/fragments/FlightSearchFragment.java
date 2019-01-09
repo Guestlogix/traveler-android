@@ -1,6 +1,8 @@
 package com.guestlogix.traveler.fragments;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.view.inputmethod.InputMethodManager;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -99,6 +101,8 @@ public class FlightSearchFragment extends Fragment {
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);
+            InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
             Navigation.findNavController(mView).navigate(directions);
         } else {
             validateFlightNumber(flightNumber);
