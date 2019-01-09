@@ -4,8 +4,8 @@ import android.util.JsonReader;
 import android.util.Log;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
-import com.guestlogix.travelercorekit.network.MappingException;
-import com.guestlogix.travelercorekit.network.MappingFactory;
+import com.guestlogix.travelercorekit.network.ObjectMappingException;
+import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 
 import java.io.IOException;
 
@@ -32,15 +32,15 @@ public class Airport {
         return city;
     }
 
-    public static class AirportMappingFactory implements MappingFactory<Airport> {
-        private static final String TAG = "AirportMappingFactory";
+    public static class AirportObjectMappingFactory implements ObjectMappingFactory<Airport> {
+        private static final String TAG = "AirportObjectMappingFactory";
         @Override
-        public Airport instantiate(JsonReader reader) throws MappingException {
+        public Airport instantiate(JsonReader reader) throws ObjectMappingException {
             try {
                 return readAirport(reader);
             } catch (IOException e) {
                 Log.e(TAG, "Error reading Airport");
-                throw new MappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
+                throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
             }
         }
 
