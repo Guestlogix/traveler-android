@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: "[SEVERITY]| "
-labels: ":bug: bug", "Android"
+labels: ":bug: bug, Android"
 assignees: ''
 
 ---
