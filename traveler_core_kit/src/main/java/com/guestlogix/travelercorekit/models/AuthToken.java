@@ -4,8 +4,8 @@ import android.util.JsonReader;
 import android.util.Log;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
-import com.guestlogix.travelercorekit.network.MappingException;
-import com.guestlogix.travelercorekit.network.MappingFactory;
+import com.guestlogix.travelercorekit.network.ObjectMappingException;
+import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 
 import java.io.IOException;
 
@@ -25,15 +25,15 @@ public class AuthToken {
         this.mValue = token;
     }
 
-    //static inner class for MappingFactory<T> implementation
-    public static class AuthTokenMappingFactory implements MappingFactory<AuthToken> {
+    //static inner class for ObjectMappingFactory<T> implementation
+    public static class AuthTokenObjectMappingFactory implements ObjectMappingFactory<AuthToken> {
         @Override
-        public AuthToken instantiate(JsonReader reader) throws MappingException {
+        public AuthToken instantiate(JsonReader reader) throws ObjectMappingException {
             try {
                 return readAuthToken(reader);
             } catch (IOException e) {
                 Log.e("AuthToken", "Error while reading token");
-                throw new MappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
+                throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
             }
         }
 

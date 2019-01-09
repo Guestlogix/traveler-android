@@ -9,6 +9,5 @@ public class FlightSearchRepository {
     public void flightSearch(FlightQuery flightSearchQuery, FlightSearchCallback flightSearchCallback) {
 
         Traveler.flightSearch(flightSearchQuery, flightSearchCallback);
-
     }
 }

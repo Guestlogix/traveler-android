@@ -4,22 +4,20 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
-import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
 import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
-import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Traveler {
 
@@ -89,39 +87,16 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
 
-            AuthenticatedNetworkRequestTask searchFlightTask = new AuthenticatedNetworkRequestTask(mLocalInstance.mSession, request, new JsonObjectMapper<>((reader -> {
-                ArrayList<Flight> flights = new ArrayList<>();
-                Flight.FlightMappingFactory flightMappingFactory = new Flight.FlightMappingFactory();
+            AuthenticatedNetworkRequestTask<ArrayList<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory(new Flight.FlightObjectMappingFactory()));
 
-                reader.beginArray();
-
-                while (reader.hasNext()) {
-                    flights.add(flightMappingFactory.instantiate(reader));
-                }
-                reader.endArray();
-
-                return flights;
-            }), new JsonObjectMapperCallback<ArrayList<Flight>>() {
-
-                @Override
-                public void onSuccess(ArrayList<Flight> model) {
-                    // TODO: handle success.
-                    Log.d(TAG, "flightSearch - onSuccess");
-                    flightSearchCallback.onFlightSearchSuccess(model);
-                }
-
-                @Override
-                public void onError(TravelerError error) {
-                    Log.d(TAG, "flightSearch - onError");
-                    flightSearchCallback.onFlightSearchError(error);
-                }
-            }));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
                     if (null != searchFlightTask.getError()) {
                         flightSearchCallback.onFlightSearchError(searchFlightTask.getError());
+                    } else {
+                        flightSearchCallback.onFlightSearchSuccess(searchFlightTask.getResource());
                     }
                 }
             };
@@ -129,7 +104,7 @@ public class Traveler {
             searchFlightBlockTask.addDependency(searchFlightTask);
 
             mLocalInstance.mTaskManager.addTask(searchFlightTask);
-            mLocalInstance.mTaskManager.addTask(searchFlightBlockTask);
+            TaskManager.getMainTaskManager().addTask(searchFlightBlockTask);
 
         }
     }

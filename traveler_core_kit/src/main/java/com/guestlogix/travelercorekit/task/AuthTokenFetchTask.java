@@ -40,7 +40,7 @@ public class AuthTokenFetchTask extends Task {
         //KeystoreEncryptTask keystoreEncryptTask = new KeystoreEncryptTask(mApiKey);
 
         //Fetch token from backend
-        NetworkTask fetchTokenNetworkTask = new NetworkTask(Router.authenticate(mApiKey, mContext), new JsonObjectMapper<>(new AuthToken.AuthTokenMappingFactory(), new JsonObjectMapperCallback<AuthToken>() {
+        NetworkTask fetchTokenNetworkTask = new NetworkTask(Router.authenticate(mApiKey, mContext), new JsonObjectMapper<>(new AuthToken.AuthTokenObjectMappingFactory(), new JsonObjectMapperCallback<AuthToken>() {
             @Override
             public void onSuccess(AuthToken token) {
                 Log.v("Traveler", "Fetched  Token:" + token.getValue());
