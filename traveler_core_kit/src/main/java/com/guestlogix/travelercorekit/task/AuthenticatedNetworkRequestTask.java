@@ -1,23 +1,42 @@
 package com.guestlogix.travelercorekit.task;
 
 import android.util.Log;
+import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
+import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 
 public class AuthenticatedNetworkRequestTask<T> extends Task {
 
     private TaskManager mTaskManager = new TaskManager();
     private Session mSession;
     private AuthenticatedRequest mRequest;
-    protected NetworkTask.ResponseHandler mResponseHandler;
+    private JsonObjectMapper<T> mJsonObjectMapper;
+    private ObjectMappingFactory<T> mObjectMappingFactory;
     private TravelerError mError;
+    private T mResource;
 
-    public AuthenticatedNetworkRequestTask(Session mSession, AuthenticatedRequest mRequest, NetworkTask.ResponseHandler mResponseHandler) {
-        this.mSession = mSession;
-        this.mRequest = mRequest;
-        this.mResponseHandler = mResponseHandler;
+    public AuthenticatedNetworkRequestTask(Session session, AuthenticatedRequest request, ObjectMappingFactory<T> objectMappingFactory) {
+        this.mSession = session;
+        this.mRequest = request;
+        this.mObjectMappingFactory = objectMappingFactory;
+
+        mJsonObjectMapper = new JsonObjectMapper<>(mObjectMappingFactory, new JsonObjectMapperCallback<T>() {
+            @Override
+            public void onSuccess(T resource) {
+                Log.v("Traveler", "AuthenticatedNetworkRequestTask: onSuccess()");
+                mResource = resource;
+            }
+
+            @Override
+            public void onError(TravelerError error) {
+                Log.v("Traveler", error.toString());
+                mError = error;
+            }
+        });
     }
 
     @Override
@@ -25,7 +44,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
 
         AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.mSession.getApiKey(), mSession.getContext());
 
-        NetworkTask retryNetworkTask = new NetworkTask(mRequest, mResponseHandler);
+        NetworkTask retryNetworkTask = new NetworkTask(mRequest, mJsonObjectMapper);
 
         BlockTask retryNetworkBlockTask = new BlockTask() {
             @Override
@@ -54,7 +73,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
             }
         };
 
-        NetworkTask networkTask = new NetworkTask(mRequest, mResponseHandler);
+        NetworkTask networkTask = new NetworkTask(mRequest, mJsonObjectMapper);
 
         BlockTask networkBlockTask = new BlockTask() {
             @Override
@@ -66,6 +85,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
                     retryNetworkTask.cancel();
                     retryNetworkBlockTask.cancel();
 
+                    //mResource = networkTask.
                     mError = error;
                 }
             }
@@ -100,5 +120,9 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
 
     public TravelerError getError() {
         return mError;
+    }
+
+    public T getResource() {
+        return mResource;
     }
 }
