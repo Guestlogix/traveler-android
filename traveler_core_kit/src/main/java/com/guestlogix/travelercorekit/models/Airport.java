@@ -34,7 +34,7 @@ public class Airport {
     }
 
     public static class AirportObjectMappingFactory implements ObjectMappingFactory<Airport> {
-        private static final String TAG = "AirportObjectMappingFactory";
+        private static final String TAG = "AirportMapping";
         @Override
         public Airport instantiate(JsonReader reader) throws ObjectMappingException {
             try {
