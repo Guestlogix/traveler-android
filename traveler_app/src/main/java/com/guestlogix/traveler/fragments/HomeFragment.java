@@ -61,13 +61,6 @@ public class HomeFragment extends Fragment {
         homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
         homeFragmentRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
         flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
-
-        view.findViewById(R.id.testId).setOnClickListener((x) -> {
-            List<String> ids = new ArrayList<>();
-            ids.add("AC1");
-
-            mViewModel.updateCatalog(ids);
-        });
     }
 
     private void catalogUpdateHandler(List<Group> groups) {
