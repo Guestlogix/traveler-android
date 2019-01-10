@@ -4,15 +4,13 @@ import android.util.JsonReader;
 import android.util.Log;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
-import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class Flight implements Serializable {
@@ -74,7 +72,7 @@ public class Flight implements Serializable {
         }
     }
 
-    private static Flight readFlight(JsonReader reader) throws IOException, ParseException {
+    private static Flight readFlight(JsonReader reader) throws IOException, ParseException, ObjectMappingException {
         String id = "";
         String number = "";
         Airport origin = null;
@@ -89,22 +87,22 @@ public class Flight implements Serializable {
 
             switch (name) {
                 case "id":
-                    id = reader.nextString();
+                    id = JsonReaderHelper.readString(reader);
                     break;
                 case "flightNumber":
-                    number = reader.nextString();
+                    number = JsonReaderHelper.readString(reader);
                     break;
                 case "origin":
-                    origin = readAirport(reader);
+                    origin = new Airport.AirportObjectMappingFactory().instantiate(reader);
                     break;
                 case "destination":
-                    destination = readAirport(reader);
+                    destination = new Airport.AirportObjectMappingFactory().instantiate(reader);
                     break;
                 case "departureTime":
-                    departure = DateHelper.getDateAsObject(reader.nextString());
+                    departure = DateHelper.getDateAsObject(JsonReaderHelper.readString(reader));
                     break;
                 case "arrivalTime":
-                    arrival = DateHelper.getDateAsObject(reader.nextString());
+                    arrival = DateHelper.getDateAsObject(JsonReaderHelper.readString(reader));
                     break;
                 default:
                     reader.skipValue();
@@ -115,35 +113,5 @@ public class Flight implements Serializable {
         reader.endObject();
 
         return new Flight(id, number, origin, destination, departure, arrival);
-    }
-
-    private static Airport readAirport(JsonReader reader) throws IOException {
-        String name = "";
-        String code = "";
-        String city = "";
-
-        reader.beginObject();
-
-        while (reader.hasNext()) {
-            String key = reader.nextName();
-
-            switch (key) {
-                case "name":
-                    name = reader.nextString();
-                    break;
-                case "iata":
-                    code = reader.nextString();
-                    break;
-                case "city":
-                    city = reader.nextString();
-                    break;
-                default:
-                    reader.skipValue();
-                    break;
-            }
-        }
-
-        reader.endObject();
-        return new Airport(name, code, city);
     }
 }
