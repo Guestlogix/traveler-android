@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
 
@@ -82,19 +83,19 @@ public class Item {
 
                 switch (name) {
                     case "id":
-                        id = reader.nextString();
+                        id = JsonReaderHelper.readString(reader);
                         break;
                     case "title":
-                        title = reader.nextString();
+                        title = JsonReaderHelper.readString(reader);
                         break;
                     case "subTitle":
-                        subTitle = reader.nextString();
+                        subTitle = JsonReaderHelper.readString(reader);
                         break;
                     case "thumbnail":
-                        thumbnail = reader.nextString();
+                        thumbnail = JsonReaderHelper.readString(reader);
                         break;
                     case "vendor":
-                        vendor = reader.nextInt();
+                        vendor = JsonReaderHelper.readInteger(reader);
                         break;
                     default:
                         reader.skipValue();
