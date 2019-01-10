@@ -12,6 +12,7 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.Group;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -54,6 +55,13 @@ public class HomeFragment extends Fragment {
         homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
         homeFragmentRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
         flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
+
+        view.findViewById(R.id.testId).setOnClickListener((x) -> {
+            List<String> ids = new ArrayList<>();
+            ids.add("AC1");
+
+            mViewModel.updateCatalog(ids);
+        });
     }
 
     private void catalogUpdateHandler(List<Group> groups) {

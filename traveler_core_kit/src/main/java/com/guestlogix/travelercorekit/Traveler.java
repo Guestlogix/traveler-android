@@ -7,10 +7,9 @@ import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
-import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
-import com.guestlogix.travelercorekit.models.Group;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
@@ -123,7 +122,6 @@ public class Traveler {
             AuthenticatedRequest request = Router.getCatalog(mLocalInstance.mSession, flightIds);
 
             AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new Catalog.CatalogObjectMappingFactory());
-
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override

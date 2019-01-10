@@ -29,6 +29,7 @@ public class HomeViewModel extends ViewModel {
     public LiveData<ArrayList<Flight>> getFlightsObservable() {
         return flightsArrayList;
     }
+
     public LiveData<List<Group>> getGroupsObservable() {
         return groupList;
     }
