@@ -12,10 +12,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 
 
@@ -45,9 +43,7 @@ public class Router {
         payload.put("region", "US");
         payload.put("applicationId", "555");
 
-        UnauthenticatedRequest request = new UnauthenticatedRequest(NetworkTask.Request.Method.POST, createURL("/auth/token"), apiKey, new JSONObject(payload));
-
-        return request;
+        return new UnauthenticatedRequest(NetworkTask.Request.Method.POST, createURL("/auth/token"), apiKey, new JSONObject(payload));
     }
 
     public static AuthenticatedRequest searchFlight(Session session, FlightQuery query) {
@@ -56,16 +52,13 @@ public class Router {
         queryParams.put("flight-number", query.getNumber());
         queryParams.put("departure-date", DateHelper.getDateAsString(query.getDate()));
 
-        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams), session.getApiKey(), session.getAuthToken().getValue());
-
-        return request;
+        return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams), session.getApiKey(), session.getAuthToken().getValue());
     }
 
-    public static NetworkTask.Request getCatalogue(Session session, String id) {
+    public static AuthenticatedRequest getCatalog(Session session, List<String> flightIds) {
 
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("flight-ids", id);
-
+        Map<String, List<String>> queryParams = new HashMap<>();
+        queryParams.put("flight-ids", flightIds);
 
         AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
 
@@ -80,10 +73,17 @@ public class Router {
             if (sb.length() > 0) {
                 sb.append("&");
             }
-            sb.append(String.format("%s=%s",
-                    urlEncodeUTF8(entry.getKey().toString()),
-                    urlEncodeUTF8(entry.getValue().toString())
-            ));
+            if (entry.getValue() instanceof List) {
+                sb.append(String.format("%s%s",
+                        urlEncodeUTF8(entry.getKey().toString()),
+                        urlEncodeUTF8(entry.getValue().toString())
+                ));
+            } else {
+                sb.append(String.format("%s=%s",
+                        urlEncodeUTF8(entry.getKey().toString()),
+                        urlEncodeUTF8(entry.getValue().toString())
+                ));
+            }
         }
         return sb.toString();
     }
