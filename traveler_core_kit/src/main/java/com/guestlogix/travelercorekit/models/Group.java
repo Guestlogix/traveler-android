@@ -5,6 +5,7 @@ import android.util.JsonToken;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -86,22 +87,16 @@ public class Group {
 
                 switch (name) {
                     case "title":
-                        title = reader.nextString();
+                        title = JsonReaderHelper.readString(reader);
                         break;
                     case "subTitle":
-                        subTitle = reader.nextString();
+                        subTitle = JsonReaderHelper.readString(reader);
                         break;
                     case "description":
-                        JsonToken peek = reader.peek();
-                        if (peek == JsonToken.NULL) {
-                            description = null;
-                            reader.skipValue();
-                        } else {
-                            description = reader.nextString();
-                        }
+                        description = JsonReaderHelper.readString(reader);
                         break;
                     case "featured":
-                        featured = reader.nextBoolean();
+                        featured = JsonReaderHelper.readBoolean(reader);
                         break;
                     case "items":
                         items = new ArrayMappingFactory<>(new Item.ItemObjectMappingFactory()).instantiate(reader);

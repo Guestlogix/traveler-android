@@ -6,6 +6,7 @@ import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
 
@@ -56,13 +57,13 @@ public class Airport {
 
                 switch (key) {
                     case "name":
-                        name = reader.nextString();
+                        name = JsonReaderHelper.readString(reader);
                         break;
                     case "iata":
-                        code = reader.nextString();
+                        code = JsonReaderHelper.readString(reader);
                         break;
                     case "city":
-                        city = reader.nextString();
+                        city = JsonReaderHelper.readString(reader);
                         break;
                     default:
                         reader.skipValue();
