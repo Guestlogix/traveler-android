@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
@@ -91,13 +92,20 @@ public class Group {
                         subTitle = reader.nextString();
                         break;
                     case "description":
-                        description = reader.nextString();
+                        JsonToken peek = reader.peek();
+                        if (peek == JsonToken.NULL) {
+                            description = null;
+                            reader.skipValue();
+                        } else {
+                            description = reader.nextString();
+                        }
                         break;
                     case "featured":
                         featured = reader.nextBoolean();
                         break;
                     case "items":
                         items = new ArrayMappingFactory<>(new Item.ItemObjectMappingFactory()).instantiate(reader);
+                        break;
                     default:
                         reader.skipValue();
                 }
