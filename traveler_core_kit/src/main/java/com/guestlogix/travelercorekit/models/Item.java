@@ -2,9 +2,8 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-
 import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 public class Item {
 
