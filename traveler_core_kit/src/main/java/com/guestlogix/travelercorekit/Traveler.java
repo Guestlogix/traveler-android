@@ -129,6 +129,8 @@ public class Traveler {
                 while (reader.hasNext()) {
                     if (reader.nextName().equals("groups")) {
                         groups = new ArrayMappingFactory<>(new Group.GroupObjectMappingFactory()).instantiate(reader);
+                    } else {
+                        reader.skipValue();
                     }
                 }
 

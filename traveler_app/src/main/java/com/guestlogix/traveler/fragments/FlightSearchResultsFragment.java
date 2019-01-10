@@ -25,6 +25,7 @@ import com.guestlogix.travelercorekit.utilities.DateHelper;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -109,7 +110,7 @@ public class FlightSearchResultsFragment extends Fragment {
         Navigation.findNavController(view).navigate(R.id.flight_search_action);
     }
 
-    private void flightsUpdateHandler(ArrayList<Flight> flights) {
+    private void flightsUpdateHandler(List<Flight> flights) {
         if (flights.isEmpty()) {
             flightResultRecyclerView.setVisibility(View.GONE);
             emptyListLayout.setVisibility(View.VISIBLE);

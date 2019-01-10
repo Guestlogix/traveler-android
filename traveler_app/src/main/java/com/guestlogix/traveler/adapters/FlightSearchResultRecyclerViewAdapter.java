@@ -10,6 +10,7 @@ import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Flight}
@@ -50,7 +51,7 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         return mFlightsArrayList.size();
     }
 
-    public void update(ArrayList<Flight> flightsArrayList) {
+    public void update(List<Flight> flightsArrayList) {
         mFlightsArrayList.clear();
         mFlightsArrayList.addAll(flightsArrayList);
         notifyDataSetChanged();
