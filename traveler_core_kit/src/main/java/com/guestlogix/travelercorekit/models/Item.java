@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+
 import java.io.IOException;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
