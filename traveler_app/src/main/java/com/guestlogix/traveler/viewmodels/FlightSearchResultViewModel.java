@@ -1,7 +1,6 @@
 package com.guestlogix.traveler.viewmodels;
 
 import android.util.Log;
-import android.widget.Toast;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,6 +13,7 @@ import com.guestlogix.travelercorekit.models.FlightQuery;
 import java.util.ArrayList;
 
 public class FlightSearchResultViewModel extends ViewModel {
+    private static final String TAG = "FlightSearch";
 
     private MutableLiveData<ArrayList<Flight>> flightsArrayList;
     private FlightSearchRepository flightSearchRepository;
@@ -40,9 +40,8 @@ public class FlightSearchResultViewModel extends ViewModel {
 
         @Override
         public void onFlightSearchError(TravelerError error) {
-            Log.v("FlightSearch", "onFlightSearchError()");
-            Log.e("FlightSearch", error.toString());
-            // TODO handle error properly
+            Log.e(TAG, "onFlightSearchError");
+            //TODO: Handle ERROR correctly.
         }
     };
 }

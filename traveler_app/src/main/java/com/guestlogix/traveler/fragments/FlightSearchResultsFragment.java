@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -21,11 +22,9 @@ import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * A fragment representing a list of Items.
@@ -34,6 +33,9 @@ public class FlightSearchResultsFragment extends Fragment {
 
     @BindView(R.id.flightResultRecyclerView)
     RecyclerView flightResultRecyclerView;
+
+    @BindView(R.id.errorLayout)
+    LinearLayout emptyListLayout;
 
     private View mView;
 
@@ -60,8 +62,7 @@ public class FlightSearchResultsFragment extends Fragment {
             mFlightSearchResultViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchResultViewModel.class);
             mHomeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
 
-            mFlightSearchResultViewModel.getFlightsObservable().observe(this, flights -> flightSearchResultRecyclerViewAdapter.update(flights));
-
+            mFlightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
             mFlightSearchResultViewModel.flightSearch(flightQuery);
 
             Toast.makeText(getActivity(), "Searching flights...", Toast.LENGTH_SHORT).show();
@@ -101,6 +102,19 @@ public class FlightSearchResultsFragment extends Fragment {
         flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
         flightSearchResultRecyclerViewAdapter.setAddFlightOnClickListener(onAddFlight);
         flightResultRecyclerView.setAdapter(flightSearchResultRecyclerViewAdapter);
+
+        view.findViewById(R.id.try_again).setOnClickListener(tv -> Navigation.findNavController(view).navigate(R.id.flight_search_action));
+    }
+
+    private void flightsUpdateHandler(ArrayList<Flight> flights) {
+        if (flights.isEmpty()) {
+            flightResultRecyclerView.setVisibility(View.GONE);
+            emptyListLayout.setVisibility(View.VISIBLE);
+        } else {
+            flightSearchResultRecyclerViewAdapter.update(flights);
+            flightResultRecyclerView.setVisibility(View.VISIBLE);
+            emptyListLayout.setVisibility(View.GONE);
+        }
     }
 
     View.OnClickListener onAddFlight = new View.OnClickListener() {
@@ -114,10 +128,6 @@ public class FlightSearchResultsFragment extends Fragment {
             mHomeViewModel.addFlight(flight);
 
             Navigation.findNavController(mView).navigate(R.id.home_action);
-
-
         }
     };
-
-
 }

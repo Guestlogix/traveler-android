@@ -37,7 +37,6 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
-
         mViewModel.getFlightsObservable().observe(this, flights -> homeFragmentRecyclerViewAdapter.update(flights));
     }
 
