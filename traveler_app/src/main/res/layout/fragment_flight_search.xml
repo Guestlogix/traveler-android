@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/searchflight"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+            android:id="@+id/addFlightMessageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_flight_message"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/flightNumberTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:hintEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addFlightMessageTextView">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/flightNumberEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/flight_number"
+                android:inputType="textCapCharacters"
+                android:maxLength="6"
+                app:hintEnabled="false"
+                android:textAllCaps="true"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/departureDateTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:errorEnabled="true"
+            app:hintEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/flightNumberTextInputLayout">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/departureDateEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/departure_date"
+                android:inputType="textCapCharacters"
+                app:errorEnabled="true"
+                app:hintEnabled="false"
+                android:textAllCaps="true"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button android:id="@+id/searchFlightsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Search Flights"
+            android:textAllCaps="false"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toBottomOf="@id/departureDateTextInputLayout"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

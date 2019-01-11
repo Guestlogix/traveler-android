@@ -2,15 +2,20 @@ package com.guestlogix.travelercorekit.network;
 
 import android.content.Context;
 import android.util.Log;
+import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.task.NetworkTask;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -30,7 +35,7 @@ public class Router {
         return createURL(path, null);
     }
 
-    public static NetworkTask.Request authenticate(String apiKey, Context context) {
+    public static UnauthenticatedRequest authenticate(String apiKey, Context context) {
 
         Map<String, String> payload = new HashMap<>();
         payload.put("deviceId", "android_678");
@@ -45,13 +50,24 @@ public class Router {
         return request;
     }
 
+    public static AuthenticatedRequest searchFlight(Session session, FlightQuery query) {
+
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("flight-number", query.getNumber());
+        queryParams.put("departure-date", DateHelper.getDateAsString(query.getDate()));
+
+        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams), session.getApiKey(), session.getAuthToken().getValue());
+
+        return request;
+    }
+
     public static NetworkTask.Request getCatalogue(Session session, String id) {
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("flight-ids", id);
 
 
-        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getAuthToken().getValue());
+        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
 
         return request;
     }

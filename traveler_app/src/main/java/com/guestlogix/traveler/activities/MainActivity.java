@@ -1,7 +1,12 @@
 package com.guestlogix.traveler.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.microsoft.appcenter.AppCenter;
@@ -16,23 +21,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupAppCenter();
 
-//        Traveler.getCatalog("1", new Traveler.CatalogResponseHandler() {
-//            @Override
-//            public void onSuccess(Catalog catalog) {
-//                Log.d("MainActivity", "onSuccess()");
-//            }
-//
-//            @Override
-//            public void onError(Error e) {
-//                Log.d("MainActivity", "onError()");
-//            }
-//        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        return NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(findViewById(R.id.my_nav_host_fragment))) || super.onOptionsItemSelected(item);
     }
 
     private void setupAppCenter() {
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey,
                 Analytics.class, Crashes.class);
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
-
     }
 }
+
