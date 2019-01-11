@@ -15,7 +15,6 @@ public class JsonReaderHelper {
      */
     public static String readString(JsonReader reader) throws IOException {
         JsonToken token = reader.peek();
-        String value = null;
 
         if (JsonToken.NULL == token) {
             reader.skipValue();
