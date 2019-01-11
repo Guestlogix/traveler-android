@@ -1,15 +1,14 @@
 package com.guestlogix.traveler.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import com.guestlogix.traveler.BuildConfig;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
@@ -31,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupAppCenter();
 
-        //demoFlightSearch();
     }
 
     @Override
@@ -47,50 +45,9 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(findViewById(R.id.my_nav_host_fragment))) || super.onOptionsItemSelected(item);
     }
 
-    private void demoFlightSearch() {
-        FlightQuery flightQuery = new FlightQuery("AC1", new Date());
-
-        FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
-            @Override
-            public void onFlightSearchSuccess(ArrayList<Flight> flights) {
-                Log.d("MainActivity", "onFlightSearchSuccess()");
-            }
-
-            @Override
-            public void onFlightSearchError(TravelerError error) {
-                Log.d("MainActivity", "onFlightSearchError()");
-            }
-        };
-
-        Traveler.flightSearch(flightQuery, flightSearchCallback);
-    }
-
-    private void demoCatalog() {
-//        Traveler.getCatalog("1", new Traveler.CatalogResponseHandler() {
-//            @Override
-//            public void onSuccess(Catalog catalog) {
-//                Log.d("MainActivity", "onSuccess()");
-//            }
-//
-//            @Override
-//            public void onError(Error e) {
-//                Log.d("MainActivity", "onError()");
-//            }
-//        });
-    }
-
     private void setupAppCenter() {
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey,
                 Analytics.class, Crashes.class);
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
-
-    @Override
-    public void onListFragmentInteraction(Flight item) {
-        //Navigation.(R.id.next_action, null)
-        NavController navController = Navigation.findNavController(findViewById(R.id.my_nav_host_fragment));
-        navController.navigate(R.id.home_action);
     }
-//    NavController navController = Navigation.findNavController(findViewById(R.id.my_nav_host_fragment));
-//        navController.navigate(R.id.home_action);
-
 }
