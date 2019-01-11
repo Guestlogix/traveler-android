@@ -42,3 +42,4 @@ public class MainActivity extends AppCompatActivity {
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
     }
 }
+
