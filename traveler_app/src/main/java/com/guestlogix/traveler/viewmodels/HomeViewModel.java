@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.guestlogix.traveler.repositories.CatalogSearchRepository;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.Group;
 
@@ -61,8 +62,8 @@ public class HomeViewModel extends ViewModel {
 
     private CatalogSearchCallback catalogSearchCallback = new CatalogSearchCallback() {
         @Override
-        public void onCatalogSearchSuccess(List<Group> groups) {
-            groupList.postValue(groups);
+        public void onCatalogSearchSuccess(Catalog catalog) {
+            groupList.postValue(catalog.getGroups());
         }
 
         @Override
