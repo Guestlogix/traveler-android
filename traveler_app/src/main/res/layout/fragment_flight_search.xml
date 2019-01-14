@@ -57,7 +57,8 @@
                 android:inputType="textCapCharacters"
                 app:errorEnabled="true"
                 app:hintEnabled="false"
-                android:textAllCaps="true"/>
+                android:textAllCaps="true"
+                android:imeOptions="actionDone"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button android:id="@+id/searchFlightsButton"
