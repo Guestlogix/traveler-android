@@ -1,12 +1,10 @@
 package com.guestlogix.travelercorekit.callbacks;
 
 import com.guestlogix.travelercorekit.error.TravelerError;
-import com.guestlogix.travelercorekit.models.Group;
-
-import java.util.List;
+import com.guestlogix.travelercorekit.models.Catalog;
 
 public interface CatalogSearchCallback {
 
-    void onCatalogSearchSuccess(List<Group> groups);
+    void onCatalogSearchSuccess(Catalog catalog);
     void onCatalogSearchError(TravelerError error);
 }
