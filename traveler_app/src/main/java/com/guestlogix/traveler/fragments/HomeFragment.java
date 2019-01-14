@@ -12,7 +12,7 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.Group;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -23,8 +23,8 @@ public class HomeFragment extends Fragment {
     private HomeFragmentRecyclerViewAdapter homeFragmentRecyclerViewAdapter;
 
     @Override
-    public View onCreateView( LayoutInflater inflater,  ViewGroup container,
-                              Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         setupView(view);
@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated( Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
         mViewModel.getFlightsObservable().observe(this, flights -> homeFragmentRecyclerViewAdapter.update(flights));
@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment {
 
     private void setupView(View view) {
 
-        flightResultRecyclerView  =view.findViewById(R.id.flightResultRecyclerView);
+        flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
