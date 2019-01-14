@@ -2,6 +2,8 @@ package com.guestlogix.traveler.fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -65,25 +67,11 @@ public class FlightSearchFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_flight_search, container, false);
         ButterKnife.bind(this, mView);
 
-        departureDateEditText.setShowSoftInputOnFocus(false);
-        departureDateEditText.setOnClickListener(departureDateOnClickListener);
+        flightNumberEditText.setOnFocusChangeListener(this::flightNumberFocusHandler);
+        departureDateEditText.setOnFocusChangeListener(this::departureDateFocusHandler);
+        departureDateEditText.setOnEditorActionListener(this::softInputSubmit);
+        searchFlightsButton.setOnClickListener(this::navigateToFlightSearchResults);
 
-        flightNumberEditText.setOnFocusChangeListener((view, focus) -> {
-            if (!focus) {
-                String flightNumber = ((TextView) view).getText().toString();
-
-                validateFlightNumber(flightNumber);
-            }
-        });
-
-        departureDateEditText.setOnFocusChangeListener((view, focus) -> {
-            if (!focus) {
-                String date = ((TextView) view).getText().toString();
-
-                validateFlightDate(date);
-            }
-        });
-        searchFlightsButton.setOnClickListener(searchFlightOnClickListener);
         return mView;
     }
 
@@ -93,9 +81,7 @@ public class FlightSearchFragment extends Fragment {
         mViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchViewModel.class);
     }
 
-    View.OnClickListener searchFlightOnClickListener = v -> navigateToFlightSearchResults();
-
-    private void navigateToFlightSearchResults() {
+    private void navigateToFlightSearchResults(View view) {
         String flightNumber = flightNumberEditText.getText().toString();
         String departureDate = DateHelper.getDateAsString(myCalendar.getTime());
 
@@ -109,16 +95,6 @@ public class FlightSearchFragment extends Fragment {
             validateFlightDate(departureDate);
         }
     }
-
-    View.OnClickListener departureDateOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            new DatePickerDialog(getActivity(), date, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        }
-    };
 
     DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
         myCalendar.set(Calendar.YEAR, year);
@@ -149,6 +125,34 @@ public class FlightSearchFragment extends Fragment {
         if (null == date || date.isEmpty()) {
             departureDateEditText.setError(getString(R.string.empty_date_error));
         }
+    }
+
+    private void flightNumberFocusHandler(View view, boolean focus) {
+        if (!focus) {
+            String flightNumber = ((TextView) view).getText().toString();
+
+            validateFlightNumber(flightNumber);
+        }
+    }
+
+    private void departureDateFocusHandler(View view, boolean focus) {
+        if (!focus) {
+            String date = ((TextView) view).getText().toString();
+
+            validateFlightDate(date);
+        } else {
+            new DatePickerDialog(getActivity(), date, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        }
+    }
+
+    private boolean softInputSubmit(View v, int actionId, KeyEvent event) {
+        if (EditorInfo.IME_ACTION_DONE == actionId) {
+            searchFlightsButton.performClick();
+            return true;
+        }
+        return false;
     }
 
 }
