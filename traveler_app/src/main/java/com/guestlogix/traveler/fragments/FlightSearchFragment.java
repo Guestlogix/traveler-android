@@ -144,5 +144,4 @@ public class FlightSearchFragment extends Fragment {
         }
         return false;
     }
-
 }
