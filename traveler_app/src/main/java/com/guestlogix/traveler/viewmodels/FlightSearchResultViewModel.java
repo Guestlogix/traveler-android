@@ -31,7 +31,11 @@ public class FlightSearchResultViewModel extends ViewModel {
         flightSearchRepository.flightSearch(query, flightSearchCallback);
     }
 
-    FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
+    public void clear() {
+        flightsArrayList.postValue(null);
+    }
+
+    private FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
         @Override
         public void onFlightSearchSuccess(ArrayList<Flight> flights) {
             Log.v("FlightSearch", "onFlightSearchSuccess()");

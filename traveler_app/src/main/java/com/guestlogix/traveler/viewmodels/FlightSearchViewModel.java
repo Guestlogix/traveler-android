@@ -31,7 +31,7 @@ public class FlightSearchViewModel extends ViewModel {
         flightSearchRepository.flightSearch(query, flightSearchCallback);
     }
 
-    FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
+    private FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
         @Override
         public void onFlightSearchSuccess(ArrayList<Flight> flights) {
             flightsArrayList.setValue(flights);

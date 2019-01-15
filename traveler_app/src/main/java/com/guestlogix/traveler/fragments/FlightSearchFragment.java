@@ -1,10 +1,8 @@
 package com.guestlogix.traveler.fragments;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,24 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static androidx.navigation.Navigation.findNavController;
 
 public class FlightSearchFragment extends Fragment {
 
@@ -87,8 +79,6 @@ public class FlightSearchFragment extends Fragment {
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);
-            InputMethodManager im = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-            im.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),0);
             Navigation.findNavController(mView).navigate(directions);
         } else {
             validateFlightNumber(flightNumber);
@@ -154,5 +144,4 @@ public class FlightSearchFragment extends Fragment {
         }
         return false;
     }
-
 }
