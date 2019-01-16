@@ -14,8 +14,6 @@ import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
 import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -27,7 +25,7 @@ public class Traveler {
 
     private Session mSession;
 
-    public static void initialize(@NotNull String apiKey, @Nullable Context applicationContext) {
+    public static void initialize(String apiKey, Context applicationContext) {
 
         if (mLocalInstance != null) {
             TravelerLog.e("SDK already initialized");

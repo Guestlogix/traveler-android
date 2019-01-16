@@ -56,19 +56,19 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView departureCityTextView;
-        public final TextView departureIataTextView;
-        public final TextView departureTimeTextView;
-        public final TextView arrivalCityTextView;
-        public final TextView arrivalIataTextView;
-        public final TextView arrivalTimeTextView;
-        public final TextView addFlightTextView;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        View mView;
+        TextView departureCityTextView;
+        TextView departureIataTextView;
+        TextView departureTimeTextView;
+        TextView arrivalCityTextView;
+        TextView arrivalIataTextView;
+        TextView arrivalTimeTextView;
+        TextView addFlightTextView;
 
-        public Flight mItem;
+        Flight mItem;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             departureCityTextView = mView.findViewById(R.id.departureCityTextView);
