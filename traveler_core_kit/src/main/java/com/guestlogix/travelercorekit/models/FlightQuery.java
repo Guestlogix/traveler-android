@@ -3,8 +3,8 @@ package com.guestlogix.travelercorekit.models;
 import java.util.Date;
 
 public class FlightQuery {
-    String number;
-    Date date;
+    private String number;
+    private Date date;
 
     public FlightQuery(String number, Date date) {
         this.number = number;

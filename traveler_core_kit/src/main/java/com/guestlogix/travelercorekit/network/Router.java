@@ -2,6 +2,8 @@ package com.guestlogix.travelercorekit.network;
 
 import android.content.Context;
 import android.util.Log;
+import com.guestlogix.travelercorekit.models.CatalogQuery;
+import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.task.NetworkTask;
@@ -12,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,14 +58,20 @@ public class Router {
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams), session.getApiKey(), session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedRequest getCatalog(Session session, List<String> flightIds) {
+    public static AuthenticatedRequest getCatalog(Session session, CatalogQuery catalogQuery) {
+
+        List<String> flightIds = new ArrayList<>();
+
+        if (null != catalogQuery) {
+            for (Flight flight : catalogQuery.getFlights()) {
+                flightIds.add(flight.getId());
+            }
+        }
 
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("flight-ids", flightIds);
 
-        AuthenticatedRequest request = new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
-
-        return request;
+        return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
     }
 
     private static String urlEncodeUTF8(Map<?, ?> map) {

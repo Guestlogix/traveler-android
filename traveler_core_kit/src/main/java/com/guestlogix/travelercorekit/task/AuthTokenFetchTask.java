@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
-import com.guestlogix.travelercorekit.models.AuthToken;
+import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 
@@ -13,7 +13,7 @@ public class AuthTokenFetchTask extends Task {
     private TaskManager mTaskManager = new TaskManager();
     private Context mContext;
     private String mApiKey;
-    private AuthToken mAuthToken;
+    private Token mToken;
     private TravelerError mError;
 
     public AuthTokenFetchTask(String apiKey, Context context) {
@@ -21,8 +21,8 @@ public class AuthTokenFetchTask extends Task {
         this.mApiKey = apiKey;
     }
 
-    public AuthToken getAuthToken() {
-        return mAuthToken;
+    public Token getAuthToken() {
+        return mToken;
     }
 
     public TravelerError getError() {
@@ -40,13 +40,13 @@ public class AuthTokenFetchTask extends Task {
         //KeystoreEncryptTask keystoreEncryptTask = new KeystoreEncryptTask(mApiKey);
 
         //Fetch token from backend
-        NetworkTask fetchTokenNetworkTask = new NetworkTask(Router.authenticate(mApiKey, mContext), new JsonObjectMapper<>(new AuthToken.AuthTokenObjectMappingFactory(), new JsonObjectMapperCallback<AuthToken>() {
+        NetworkTask fetchTokenNetworkTask = new NetworkTask(Router.authenticate(mApiKey, mContext), new JsonObjectMapper<>(new Token.AuthTokenObjectMappingFactory(), new JsonObjectMapperCallback<Token>() {
             @Override
-            public void onSuccess(AuthToken token) {
+            public void onSuccess(Token token) {
                 Log.v("Traveler", "Fetched  Token:" + token.getValue());
                 //keystoreEncryptTask.setData(token.getValue().getBytes());
                 sharedPrefsWriteTask.setData(token.getValue());
-                mAuthToken = token;
+                mToken = token;
             }
 
             @Override

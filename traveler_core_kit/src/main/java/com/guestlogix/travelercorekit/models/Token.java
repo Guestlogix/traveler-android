@@ -10,35 +10,35 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
 
-public class AuthToken {
+public class Token {
 
-    String mValue;
+    private String value;
 
-    public AuthToken(String mValue) {
-        this.mValue = mValue;
+    public Token(String value) {
+        this.value = value;
     }
 
     public String getValue() {
-        return mValue;
+        return value;
     }
 
     public void setValue(String token) {
-        this.mValue = token;
+        this.value = token;
     }
 
     //static inner class for ObjectMappingFactory<T> implementation
-    public static class AuthTokenObjectMappingFactory implements ObjectMappingFactory<AuthToken> {
+    public static class AuthTokenObjectMappingFactory implements ObjectMappingFactory<Token> {
         @Override
-        public AuthToken instantiate(JsonReader reader) throws ObjectMappingException {
+        public Token instantiate(JsonReader reader) throws ObjectMappingException {
             try {
                 return readAuthToken(reader);
             } catch (IOException e) {
-                Log.e("AuthToken", "Error while reading token");
+                Log.e("Token", "Error while reading token");
                 throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
             }
         }
 
-        private AuthToken readAuthToken(JsonReader reader) throws IOException {
+        private Token readAuthToken(JsonReader reader) throws IOException {
             String value = "";
 
             reader.beginObject();
@@ -52,7 +52,7 @@ public class AuthToken {
                 }
             }
             reader.endObject();
-            return new AuthToken(value);
+            return new Token(value);
         }
     }
 }

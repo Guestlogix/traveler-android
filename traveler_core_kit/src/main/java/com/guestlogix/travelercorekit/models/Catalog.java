@@ -9,17 +9,17 @@ import java.io.IOException;
 import java.util.List;
 
 public class Catalog {
-    private List<Group> groups;
+    private List<CatalogGroup> groups;
 
-    public Catalog(List<Group> groups) {
+    public Catalog(List<CatalogGroup> groups) {
         this.groups = groups;
     }
 
-    public List<Group> getGroups() {
+    public List<CatalogGroup> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<Group> groups) {
+    public void setGroups(List<CatalogGroup> groups) {
         this.groups = groups;
     }
 
@@ -31,7 +31,7 @@ public class Catalog {
         }
 
         private static Catalog readGroup(JsonReader reader) throws IOException, ObjectMappingException {
-            List<Group> groups = null;
+            List<CatalogGroup> catalogGroups = null;
 
             reader.beginObject();
 
@@ -39,13 +39,13 @@ public class Catalog {
                 String name = reader.nextName();
 
                 if (name.equals("groups")) {
-                    groups = new ArrayMappingFactory<>(new Group.GroupObjectMappingFactory()).instantiate(reader);
+                    catalogGroups = new ArrayMappingFactory<>(new CatalogGroup.GroupObjectMappingFactory()).instantiate(reader);
                 }
             }
 
             reader.endObject();
 
-            return new Catalog(groups);
+            return new Catalog(catalogGroups);
         }
     }
 }
