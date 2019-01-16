@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-ext{
+ext {
     androidx_version = '1.0.2'
 }
 
