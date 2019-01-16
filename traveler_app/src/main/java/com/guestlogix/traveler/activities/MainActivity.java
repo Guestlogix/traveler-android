@@ -1,6 +1,7 @@
 package com.guestlogix.traveler.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupAppCenter();
 
+        //demoFlightSearch();
     }
 
     @Override
