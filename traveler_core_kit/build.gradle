@@ -39,6 +39,7 @@ dependencies {
     //Testing frameworks
     testImplementation "junit:junit:${junit_version}"
     androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
+
 }
 repositories {
     mavenCentral()

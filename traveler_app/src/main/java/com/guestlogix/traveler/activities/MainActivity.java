@@ -1,6 +1,7 @@
 package com.guestlogix.traveler.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,14 +13,6 @@ import com.guestlogix.traveler.R;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
-import com.guestlogix.travelercorekit.Traveler;
-import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
-import com.guestlogix.travelercorekit.models.Flight;
-import com.guestlogix.travelercorekit.models.FlightQuery;
-import java.util.Date;
-import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupAppCenter();
 
+        //demoFlightSearch();
     }
 
     @Override

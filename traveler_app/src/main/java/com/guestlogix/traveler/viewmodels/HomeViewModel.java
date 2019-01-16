@@ -30,12 +30,12 @@ public class HomeViewModel extends ViewModel {
         return flightsArrayList;
     }
 
-    public LiveData<List<Group>> getGroupsObservable() {
-        return groupList;
-    }
-
     public void updateCatalog(List<String> flightIds) {
         catalogRepository.catalogSearch(flightIds, catalogSearchCallback);
+    }
+
+    public LiveData<List<Group>> getGroupsObservable() {
+        return groupList;
     }
 
     public void addFlight(Flight flight) {

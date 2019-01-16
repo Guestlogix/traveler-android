@@ -100,7 +100,6 @@ public class Group {
                     case "items":
                         items = new ArrayMappingFactory<>(new Item.ItemObjectMappingFactory()).instantiate(reader);
                         break;
-
                     default:
                         reader.skipValue();
                 }
