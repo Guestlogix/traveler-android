@@ -11,9 +11,9 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import java.io.IOException;
 
 public class Airport {
-    String name;
-    String code;
-    String city;
+    private String code;
+    private String name;
+    private String city;
 
     public Airport(String name, String code, String city) {
         this.name = name;

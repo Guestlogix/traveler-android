@@ -3,34 +3,34 @@ package com.guestlogix.travelercorekit.models;
 import android.content.Context;
 
 public class Session {
-    private String mApiKey;
-    private Context mContext;
-    private AuthToken mAuthToken;
+    private String apiKey;
+    private Context context;
+    private Token token;
 
-    public Session(String mApiKey, Context mContext) {
-        this(mApiKey, mContext, new AuthToken(""));
+    public Session(String apiKey, Context context) {
+        this(apiKey, context, new Token(""));
     }
 
-    public Session(String mApiKey, Context mContext, AuthToken mAuthToken) {
-        this.mAuthToken = mAuthToken;
-        this.mContext = mContext;
-        this.mApiKey = mApiKey;
+    public Session(String apiKey, Context context, Token token) {
+        this.token = token;
+        this.context = context;
+        this.apiKey = apiKey;
     }
 
-    public AuthToken getAuthToken() {
-        return mAuthToken;
+    public Token getAuthToken() {
+        return token;
     }
 
-    public void setAuthToken(AuthToken mAuthToken) {
-        this.mAuthToken = mAuthToken;
+    public void setAuthToken(Token mToken) {
+        this.token = mToken;
     }
 
     public String getApiKey() {
-        return mApiKey;
+        return apiKey;
     }
 
     public Context getContext() {
-        return mContext;
+        return context;
     }
 
 }

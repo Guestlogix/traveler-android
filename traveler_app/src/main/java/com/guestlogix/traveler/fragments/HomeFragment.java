@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
-import com.guestlogix.travelercorekit.models.Group;
+import com.guestlogix.travelercorekit.models.CatalogGroup;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment {
         flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
     }
 
-    private void catalogUpdateHandler(List<Group> groups) {
+    private void catalogUpdateHandler(List<CatalogGroup> catalogGroups) {
         // TODO: Implement this
     }
 }

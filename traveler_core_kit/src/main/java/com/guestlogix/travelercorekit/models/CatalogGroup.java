@@ -9,19 +9,19 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import java.io.IOException;
 import java.util.List;
 
-public class Group {
+public class CatalogGroup {
 
     private String title;
     private String subTitle;
     private String description;
-    private Boolean featured;
-    private List<Item> items;
+    private Boolean isFeatured;
+    private List<CatalogItem> items;
 
-    public Group(String title, String subTitle, String description, Boolean featured, List<Item> items) {
+    public CatalogGroup(String title, String subTitle, String description, Boolean isFeatured, List<CatalogItem> items) {
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
-        this.featured = featured;
+        this.isFeatured = isFeatured;
         this.items = items;
     }
 
@@ -49,35 +49,35 @@ public class Group {
         this.description = description;
     }
 
-    public Boolean getFeatured() {
-        return featured;
+    public Boolean isFeatured() {
+        return isFeatured;
     }
 
-    public void setFeatured(Boolean featured) {
-        this.featured = featured;
+    public void setIsFeatured(Boolean isFeatured) {
+        this.isFeatured = isFeatured;
     }
 
-    public List<Item> getItems() {
+    public List<CatalogItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<CatalogItem> items) {
         this.items = items;
     }
 
-    public static class GroupObjectMappingFactory implements ObjectMappingFactory<Group> {
+    public static class GroupObjectMappingFactory implements ObjectMappingFactory<CatalogGroup> {
 
         @Override
-        public Group instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+        public CatalogGroup instantiate(JsonReader reader) throws ObjectMappingException, IOException {
             return readGroup(reader);
         }
 
-        private static Group readGroup(JsonReader reader) throws IOException, ObjectMappingException {
+        private static CatalogGroup readGroup(JsonReader reader) throws IOException, ObjectMappingException {
             String title = "";
             String subTitle = "";
             String description = "";
             Boolean featured = false;
-            List<Item> items = null;
+            List<CatalogItem> items = null;
 
             reader.beginObject();
 
@@ -98,7 +98,7 @@ public class Group {
                         featured = JsonReaderHelper.readBoolean(reader);
                         break;
                     case "items":
-                        items = new ArrayMappingFactory<>(new Item.ItemObjectMappingFactory()).instantiate(reader);
+                        items = new ArrayMappingFactory<>(new CatalogItem.ItemObjectMappingFactory()).instantiate(reader);
                         break;
                     default:
                         reader.skipValue();
@@ -107,7 +107,7 @@ public class Group {
 
             reader.endObject();
 
-            return new Group(title, subTitle, description, featured, items);
+            return new CatalogGroup(title, subTitle, description, featured, items);
         }
     }
 }

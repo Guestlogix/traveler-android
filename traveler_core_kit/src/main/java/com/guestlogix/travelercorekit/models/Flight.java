@@ -14,12 +14,12 @@ import java.text.ParseException;
 import java.util.Date;
 
 public class Flight implements Serializable {
-    String id;
-    String number;
-    Airport departureAirport;
-    Airport arrivalAirport;
-    Date departureDate;
-    Date arrivalDate;
+    private String id;
+    private String number;
+    private Airport departureAirport;
+    private Airport arrivalAirport;
+    private Date departureDate;
+    private Date arrivalDate;
 
     public Flight(String id, String number, Airport departureAirport, Airport arrivalAirport, Date departureDate, Date arrivalDate) {
         this.id = id;

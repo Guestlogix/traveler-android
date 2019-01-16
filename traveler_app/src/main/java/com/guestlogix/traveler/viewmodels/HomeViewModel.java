@@ -7,15 +7,16 @@ import com.guestlogix.traveler.repositories.CatalogSearchRepository;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Catalog;
+import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
-import com.guestlogix.travelercorekit.models.Group;
+import com.guestlogix.travelercorekit.models.CatalogGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeViewModel extends ViewModel {
     private MutableLiveData<ArrayList<Flight>> flightsArrayList;
-    private MutableLiveData<List<Group>> groupList;
+    private MutableLiveData<List<CatalogGroup>> groupList;
 
     private CatalogSearchRepository catalogRepository;
 
@@ -30,11 +31,11 @@ public class HomeViewModel extends ViewModel {
         return flightsArrayList;
     }
 
-    public void updateCatalog(List<String> flightIds) {
-        catalogRepository.catalogSearch(flightIds, catalogSearchCallback);
+    public void updateCatalog(CatalogQuery catalogQuery) {
+        catalogRepository.catalogSearch(catalogQuery, catalogSearchCallback);
     }
 
-    public LiveData<List<Group>> getGroupsObservable() {
+    public LiveData<List<CatalogGroup>> getGroupsObservable() {
         return groupList;
     }
 
