@@ -2,24 +2,23 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
-
-import java.io.IOException;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
-public class Item {
+import java.io.IOException;
+import java.net.URL;
+
+public class CatalogItem {
 
     private String id;
     private String title;
     private String subTitle;
-    private String thumbnail;
-    private Integer vendor;
+    private URL imageURL;
 
-    public Item(String id, String title, String subTitle, String thumbnail, Integer vendor) {
+    public CatalogItem(String id, String title, String subTitle, URL imageURL) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
-        this.thumbnail = thumbnail;
-        this.vendor = vendor;
+        this.imageURL = imageURL;
     }
 
     public String getId() {
@@ -46,35 +45,26 @@ public class Item {
         this.subTitle = subTitle;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
+    public URL getImageURL() {
+        return imageURL;
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setImageURL(URL imageURL) {
+        this.imageURL = imageURL;
     }
 
-    public Integer getVendor() {
-        return vendor;
-    }
-
-    public void setVendor(Integer vendor) {
-        this.vendor = vendor;
-    }
-
-    public static class ItemObjectMappingFactory implements ObjectMappingFactory<Item> {
+    public static class ItemObjectMappingFactory implements ObjectMappingFactory<CatalogItem> {
 
         @Override
-        public Item instantiate(JsonReader reader) throws IOException {
+        public CatalogItem instantiate(JsonReader reader) throws IOException {
             return readItem(reader);
         }
 
-        private Item readItem(JsonReader reader) throws IOException {
+        private CatalogItem readItem(JsonReader reader) throws IOException {
             String id = "";
             String title = "";
             String subTitle = "";
-            String thumbnail = "";
-            Integer vendor = null;
+            URL thumbnail = null;
 
             reader.beginObject();
 
@@ -92,10 +82,7 @@ public class Item {
                         subTitle = JsonReaderHelper.readString(reader);
                         break;
                     case "thumbnail":
-                        thumbnail = JsonReaderHelper.readString(reader);
-                        break;
-                    case "vendor":
-                        vendor = JsonReaderHelper.readInteger(reader);
+                        thumbnail = new URL(JsonReaderHelper.readString(reader));
                         break;
                     default:
                         reader.skipValue();
@@ -104,7 +91,7 @@ public class Item {
 
             reader.endObject();
 
-            return new Item(id, title, subTitle, thumbnail, vendor);
+            return new CatalogItem(id, title, subTitle, thumbnail);
         }
     }
 }

@@ -7,10 +7,7 @@ import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
-import com.guestlogix.travelercorekit.models.Catalog;
-import com.guestlogix.travelercorekit.models.Flight;
-import com.guestlogix.travelercorekit.models.FlightQuery;
-import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
 import com.guestlogix.travelercorekit.network.Router;
@@ -79,15 +76,20 @@ public class Traveler {
 
     }
 
-
-    public static void flightSearch(FlightQuery query, FlightSearchCallback flightSearchCallback) {
+    /**
+     * Fetches groups of catalog items.
+     *
+     * @param flightQuery          Flight query to search flights.
+     * @param flightSearchCallback Callback methods which will be executed after the data is fetched.
+     */
+    public static void flightSearch(FlightQuery flightQuery, FlightSearchCallback flightSearchCallback) {
 
         if (null == mLocalInstance) {
             flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
+            AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, flightQuery);
 
-            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
 
             BlockTask searchFlightBlockTask = new BlockTask() {
@@ -112,14 +114,14 @@ public class Traveler {
     /**
      * Fetches groups of catalog items.
      *
-     * @param flightIds             Ids of the flights for which to fetch the groups.
+     * @param catalogQuery          Ids of the flights for which to fetch the groups.
      * @param catalogSearchCallback Callback methods which will be executed after the data is fetched.
      */
-    public static void catalogSearch(List<String> flightIds, CatalogSearchCallback catalogSearchCallback) {
+    public static void fetchCatalog(CatalogQuery catalogQuery, CatalogSearchCallback catalogSearchCallback) {
         if (null == mLocalInstance) {
             catalogSearchCallback.onCatalogSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.getCatalog(mLocalInstance.mSession, flightIds);
+            AuthenticatedRequest request = Router.getCatalog(mLocalInstance.mSession, catalogQuery);
 
             AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new Catalog.CatalogObjectMappingFactory());
 
