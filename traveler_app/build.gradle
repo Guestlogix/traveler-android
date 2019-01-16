@@ -1,9 +1,5 @@
 apply plugin: 'com.android.application'
 
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
@@ -20,6 +16,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "TRAVELER_API_KEY", traveler_key_release
+        }
+
+        debug {
+            buildConfigField "String", "TRAVELER_API_KEY", traveler_key_debug
         }
     }
 
@@ -34,23 +35,24 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha01'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha01'
-    implementation 'android.arch.navigation:navigation-fragment:1.0.0-alpha09'
-    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha09"
-    implementation 'com.jakewharton:butterknife:10.0.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
+    //Traveler SDK
     implementation project(path: ':traveler_core_kit')
+
+    //Android support dependencies
+    implementation "com.android.support:appcompat-v7:${android_support_version}"
+    implementation "com.android.support:recyclerview-v7:${android_support_version}"
+    implementation "com.android.support.constraint:constraint-layout:${android_support_component_version}"
+    implementation "android.arch.lifecycle:extensions:${android_support_component_version}"
+    implementation "android.arch.navigation:navigation-fragment:${android_navigation_controller_version}"
+    implementation "android.arch.navigation:navigation-ui:${android_navigation_controller_version}"
+
+    //AppCenter integration
     implementation "com.microsoft.appcenter:appcenter-analytics:$app_center_sdk_version"
     implementation "com.microsoft.appcenter:appcenter-crashes:$app_center_sdk_version"
+
+    //Testing frameworks
+    testImplementation "junit:junit:${junit_version}"
+    androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
 
 }

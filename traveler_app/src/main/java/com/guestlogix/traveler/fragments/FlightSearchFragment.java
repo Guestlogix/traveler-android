@@ -1,42 +1,30 @@
 package com.guestlogix.traveler.fragments;
 
 import android.app.DatePickerDialog;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import java.text.SimpleDateFormat;
+
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FlightSearchFragment extends Fragment {
 
-    @BindView(R.id.flightNumberEditText)
     TextView flightNumberEditText;
-
-    @BindView(R.id.departureDateEditText)
     TextView departureDateEditText;
-
-    @BindView(R.id.departureDateTextInputLayout)
-    TextInputLayout departureDateTextInputLayout;
-
-    @BindView(R.id.searchFlightsButton)
     TextView searchFlightsButton;
 
     private FlightSearchViewModel mViewModel;
@@ -57,14 +45,24 @@ public class FlightSearchFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         mView = inflater.inflate(R.layout.fragment_flight_search, container, false);
-        ButterKnife.bind(this, mView);
 
+        setupView(mView);
+        setupListeners();
+
+        return mView;
+    }
+
+    private void setupListeners() {
         flightNumberEditText.setOnFocusChangeListener(this::flightNumberFocusHandler);
         departureDateEditText.setOnFocusChangeListener(this::departureDateFocusHandler);
         departureDateEditText.setOnEditorActionListener(this::softInputSubmit);
         searchFlightsButton.setOnClickListener(this::navigateToFlightSearchResults);
+    }
 
-        return mView;
+    private void setupView(View view) {
+        flightNumberEditText = view.findViewById(R.id.flightNumberEditText);
+        departureDateEditText = view.findViewById(R.id.departureDateEditText);
+        searchFlightsButton = view.findViewById(R.id.searchFlightsButton);
     }
 
     @Override
@@ -94,10 +92,7 @@ public class FlightSearchFragment extends Fragment {
     };
 
     private void updateLabel() {
-        String myFormat = "dd MMM yyyy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
-        departureDateEditText.setText(sdf.format(myCalendar.getTime()));
+        departureDateEditText.setText(DateHelper.getPrettyDateAsString(myCalendar.getTime()));
     }
 
     private Boolean isFlightNumberValid(String flightNumber) {

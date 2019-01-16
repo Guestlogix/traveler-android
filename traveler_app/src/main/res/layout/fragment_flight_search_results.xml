@@ -18,7 +18,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     />
     <LinearLayout
-            android:id="@+id/errorLayout"
+            android:id="@+id/emptyListLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"

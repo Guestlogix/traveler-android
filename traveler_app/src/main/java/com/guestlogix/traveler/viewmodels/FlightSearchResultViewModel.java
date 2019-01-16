@@ -11,11 +11,12 @@ import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FlightSearchResultViewModel extends ViewModel {
     private static final String TAG = "FlightSearch";
 
-    private MutableLiveData<ArrayList<Flight>> flightsArrayList;
+    private MutableLiveData<List<Flight>> flightsArrayList;
     private FlightSearchRepository flightSearchRepository;
 
     public FlightSearchResultViewModel() {
@@ -23,7 +24,7 @@ public class FlightSearchResultViewModel extends ViewModel {
         this.flightSearchRepository = new FlightSearchRepository();
     }
 
-    public LiveData<ArrayList<Flight>> getFlightsObservable() {
+    public LiveData<List<Flight>> getFlightsObservable() {
         return flightsArrayList;
     }
 
@@ -37,7 +38,7 @@ public class FlightSearchResultViewModel extends ViewModel {
 
     private FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
         @Override
-        public void onFlightSearchSuccess(ArrayList<Flight> flights) {
+        public void onFlightSearchSuccess(List<Flight> flights) {
             Log.v("FlightSearch", "onFlightSearchSuccess()");
             flightsArrayList.postValue(flights);
         }

@@ -13,8 +13,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.FlightSearchResultViewModel;
@@ -27,16 +25,14 @@ import com.guestlogix.travelercorekit.utilities.DateHelper;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  */
 public class FlightSearchResultsFragment extends Fragment {
 
-    @BindView(R.id.flightResultRecyclerView)
     RecyclerView flightResultRecyclerView;
-
-    @BindView(R.id.errorLayout)
     LinearLayout emptyListLayout;
 
     private View mView;
@@ -67,7 +63,7 @@ public class FlightSearchResultsFragment extends Fragment {
             mFlightSearchResultViewModel.flightSearch(flightQuery);
             mFlightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
 
-            // TODO Do we even need this Toast? or at least change to not a hardcoded String.
+            // TODO Add a progressbar
             Toast.makeText(getActivity(), "Searching flights...", Toast.LENGTH_SHORT).show();
 
         } catch (ParseException e) {
@@ -99,7 +95,8 @@ public class FlightSearchResultsFragment extends Fragment {
 
     private void setupView(View view) {
 
-        ButterKnife.bind(this, view);
+        flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
+        emptyListLayout = view.findViewById(R.id.emptyListLayout);
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
@@ -110,10 +107,10 @@ public class FlightSearchResultsFragment extends Fragment {
     }
 
     private void tryAgainHandler(View view) {
-        Navigation.findNavController(mView).navigate(R.id.flight_search_action);
+        Navigation.findNavController(view).navigate(R.id.flight_search_action);
     }
 
-    private void flightsUpdateHandler(ArrayList<Flight> flights) {
+    private void flightsUpdateHandler(List<Flight> flights) {
         if (flights.isEmpty()) {
             flightResultRecyclerView.setVisibility(View.GONE);
             emptyListLayout.setVisibility(View.VISIBLE);
@@ -125,7 +122,6 @@ public class FlightSearchResultsFragment extends Fragment {
     }
 
     private void onAddFlight(View v) {
-        //TODO Add flights directly to HomeFragmentViewHolder then navigate
         int index = (Integer) v.getTag();
         Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
         mHomeViewModel.addFlight(flight);

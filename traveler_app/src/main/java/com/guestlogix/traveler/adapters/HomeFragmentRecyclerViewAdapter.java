@@ -5,8 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.Flight;
 
@@ -28,12 +26,11 @@ public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFr
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mFlightsArrayList.get(position);
+
         holder.departureIataTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCode());
         holder.arrivalIataTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCode());
         holder.deleteTextView.setOnClickListener(deleteFlightOnClickListener);
-
         holder.deleteTextView.setTag(position);
-
     }
 
     @Override
@@ -51,21 +48,21 @@ public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFr
         this.deleteFlightOnClickListener = deleteFlightOnClickListener;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        @BindView(R.id.departureIataTextView)
-        public TextView departureIataTextView;
-        @BindView(R.id.arrivalIataTextView)
-        public TextView arrivalIataTextView;
-        @BindView(R.id.deleteTextView)
-        public TextView deleteTextView;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final View mView;
+        TextView departureIataTextView;
+        TextView arrivalIataTextView;
+        TextView deleteTextView;
 
-        public Flight mItem;
+        Flight mItem;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
-            ButterKnife.bind(this, view);
+
+            departureIataTextView = view.findViewById(R.id.departureIataTextView);
+            arrivalIataTextView = view.findViewById(R.id.arrivalIataTextView);
+            deleteTextView = view.findViewById(R.id.deleteTextView);
         }
     }
 }

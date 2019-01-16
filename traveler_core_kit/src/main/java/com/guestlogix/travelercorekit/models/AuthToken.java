@@ -6,6 +6,7 @@ import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
 
@@ -45,7 +46,7 @@ public class AuthToken {
                 String name = reader.nextName();
 
                 if (name.equals("token")) {
-                    value = reader.nextString();
+                    value = JsonReaderHelper.readString(reader);
                 } else {
                     reader.skipValue();
                 }

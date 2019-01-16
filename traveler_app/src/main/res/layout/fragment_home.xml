@@ -17,4 +17,9 @@
             android:background="#EFEFEF"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     />
+
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+            tools:layout_editor_absoluteY="231dp"
+            tools:layout_editor_absoluteX="148dp"
+            android:text="@string/oh_no" tools:ignore="MissingConstraints" android:id="@+id/testId"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

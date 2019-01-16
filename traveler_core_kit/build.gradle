@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+
+ext {
+    androidx_version = '1.0.2'
+}
 
 android {
     compileSdkVersion 28
@@ -27,14 +30,16 @@ android {
 
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+dependencies {
+
+    //AndroidX dependencies
+    implementation "androidx.appcompat:appcompat:${androidx_version}"
+
+    //Testing frameworks
+    testImplementation "junit:junit:${junit_version}"
+    androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
+
 }
 repositories {
     mavenCentral()
