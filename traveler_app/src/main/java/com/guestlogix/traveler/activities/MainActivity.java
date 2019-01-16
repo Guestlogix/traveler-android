@@ -14,9 +14,8 @@ import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
-
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
             @Override
-            public void onFlightSearchSuccess(ArrayList<Flight> flights) {
+            public void onFlightSearchSuccess(List<Flight> flights) {
                 Log.d("MainActivity", "onFlightSearchSuccess()");
             }
 
