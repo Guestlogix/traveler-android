@@ -73,86 +73,25 @@ public class NetworkTask extends Task {
         }
 
         String protocol = url.getProtocol();
-
-        if (protocol == null || (!protocol.toLowerCase().equals("http") && !protocol.toLowerCase().equals("https"))) {
+        if (protocol == null || !(protocol.equalsIgnoreCase("http") || protocol.equalsIgnoreCase("https"))) {
             mError = new TravelerError(TravelerErrorCode.BAD_URL, null);
             finish();
             return;
         }
 
-        // Open Connection
-
         HttpURLConnection urlConnection = null;
 
         try {
             // Configure the connection
-
             urlConnection = (HttpURLConnection) url.openConnection();
-
-            Map<String, String> headers = mRequest.getHeaders();
-
-            if (headers != null) {
-                for (Map.Entry<String, String> header :
-                        headers.entrySet()) {
-
-                    urlConnection.setRequestProperty(header.getKey(), header.getValue());
-                }
-            }
-
-            urlConnection.setUseCaches(true);
-
-            switch (mRequest.getMethod()) {
-                case GET:
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.setDoOutput(false);
-                    break;
-                case PUT:
-                    urlConnection.setRequestMethod("PUT");
-                    urlConnection.setDoOutput(true);
-                    mRequest.onProvidePayload(urlConnection.getOutputStream());
-                    break;
-                case POST:
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setDoOutput(true);
-                    mRequest.onProvidePayload(urlConnection.getOutputStream());
-                    break;
-                case PATCH:
-                    urlConnection.setRequestMethod("PATCH");
-                    urlConnection.setDoOutput(true);
-                    mRequest.onProvidePayload(urlConnection.getOutputStream());
-                    break;
-                case DELETE:
-                    urlConnection.setRequestMethod("DELETE");
-                    urlConnection.setDoOutput(false);
-                    break;
-            }
-
+            setupConnection(urlConnection);
 
             // Open connection
-
             urlConnection.connect();
 
-            int statusCode = urlConnection.getResponseCode();
+            // Process connection
+            processConnection(urlConnection);
 
-            if (statusCode == 401) {
-                mError = new TravelerError(TravelerErrorCode.UNAUTHORIZED,
-                        InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
-            } else if (statusCode == 403) {
-                mError = new TravelerError(TravelerErrorCode.FORBIDDEN, null);
-            } else if (statusCode >= 500) {
-                mError = new TravelerError(TravelerErrorCode.SERVER_ERROR,
-                        InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
-            } else {
-                InputStream is = urlConnection.getInputStream();
-
-                if (mResponseHandler != null) {
-                    mResponseHandler.onHandleResponse(is);
-                }
-
-                is.close();
-            }
-
-            finish();
 
         } catch (IOException e) {
 
@@ -163,11 +102,76 @@ public class NetworkTask extends Task {
             }
 
             mError = new TravelerError(TravelerErrorCode.CONNECTION_ERROR, errorMessage);
-            finish();
-        } finally {
-//            if (null != urlConnection) {
-            //urlConnection.disconnect();
-//            }
+        }
+
+        finish();
+    }
+
+    private void setupConnection(HttpURLConnection conn) throws IOException {
+        setHeaders(conn);
+        setMethod(conn);
+        conn.setUseCaches(true);
+    }
+
+    private void setHeaders(HttpURLConnection urlConnection) {
+        Map<String, String> headers = mRequest.getHeaders();
+
+        if (headers != null) {
+            for (Map.Entry<String, String> header :
+                    headers.entrySet()) {
+
+                urlConnection.setRequestProperty(header.getKey(), header.getValue());
+            }
+        }
+    }
+
+    private void setMethod(HttpURLConnection urlConnection) throws IOException {
+        switch (mRequest.getMethod()) {
+            case GET:
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setDoOutput(false);
+                break;
+            case PUT:
+                urlConnection.setRequestMethod("PUT");
+                urlConnection.setDoOutput(true);
+                mRequest.onProvidePayload(urlConnection.getOutputStream());
+                break;
+            case POST:
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setDoOutput(true);
+                mRequest.onProvidePayload(urlConnection.getOutputStream());
+                break;
+            case PATCH:
+                urlConnection.setRequestMethod("PATCH");
+                urlConnection.setDoOutput(true);
+                mRequest.onProvidePayload(urlConnection.getOutputStream());
+                break;
+            case DELETE:
+                urlConnection.setRequestMethod("DELETE");
+                urlConnection.setDoOutput(false);
+                break;
+        }
+    }
+
+    private void processConnection(HttpURLConnection urlConnection) throws IOException {
+        int statusCode = urlConnection.getResponseCode();
+
+        if (statusCode == 401) {
+            mError = new TravelerError(TravelerErrorCode.UNAUTHORIZED,
+                    InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
+        } else if (statusCode == 403) {
+            mError = new TravelerError(TravelerErrorCode.FORBIDDEN, null);
+        } else if (statusCode >= 500) {
+            mError = new TravelerError(TravelerErrorCode.SERVER_ERROR,
+                    InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
+        } else {
+            InputStream is = urlConnection.getInputStream();
+
+            if (mResponseHandler != null) {
+                mResponseHandler.onHandleResponse(is);
+            }
+
+            is.close();
         }
     }
 }
