@@ -33,12 +33,17 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="191" />
-                            <option name="y" value="-124" />
+                            <option name="x" value="503" />
+                            <option name="y" value="103" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="flight_search_action">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="home_action">
                               <value>
                                 <LayoutPositions />

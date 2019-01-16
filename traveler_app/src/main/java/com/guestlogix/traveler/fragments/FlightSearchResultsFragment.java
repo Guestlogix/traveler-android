@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
@@ -21,6 +22,7 @@ import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
+
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -59,12 +61,13 @@ public class FlightSearchResultsFragment extends Fragment {
             Date date = DateHelper.getDateAsObject(departureDate);
             FlightQuery flightQuery = new FlightQuery(flightNumber, date);
 
-            mFlightSearchResultViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchResultViewModel.class);
+            mFlightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
             mHomeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
 
-            mFlightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
             mFlightSearchResultViewModel.flightSearch(flightQuery);
+            mFlightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
 
+            // TODO Do we even need this Toast? or at least change to not a hardcoded String.
             Toast.makeText(getActivity(), "Searching flights...", Toast.LENGTH_SHORT).show();
 
         } catch (ParseException e) {
@@ -75,7 +78,7 @@ public class FlightSearchResultsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
 
@@ -85,7 +88,7 @@ public class FlightSearchResultsFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
     }
 
@@ -100,10 +103,14 @@ public class FlightSearchResultsFragment extends Fragment {
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
-        flightSearchResultRecyclerViewAdapter.setAddFlightOnClickListener(onAddFlight);
+        flightSearchResultRecyclerViewAdapter.setAddFlightOnClickListener(this::onAddFlight);
         flightResultRecyclerView.setAdapter(flightSearchResultRecyclerViewAdapter);
 
-        view.findViewById(R.id.try_again).setOnClickListener(tv -> Navigation.findNavController(view).navigate(R.id.flight_search_action));
+        view.findViewById(R.id.try_again).setOnClickListener(this::tryAgainHandler);
+    }
+
+    private void tryAgainHandler(View view) {
+        Navigation.findNavController(mView).navigate(R.id.flight_search_action);
     }
 
     private void flightsUpdateHandler(ArrayList<Flight> flights) {
@@ -117,17 +124,12 @@ public class FlightSearchResultsFragment extends Fragment {
         }
     }
 
-    View.OnClickListener onAddFlight = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+    private void onAddFlight(View v) {
+        //TODO Add flights directly to HomeFragmentViewHolder then navigate
+        int index = (Integer) v.getTag();
+        Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
+        mHomeViewModel.addFlight(flight);
 
-            //TODO Add flights directly to HomeFragmentViewHolder then navigate
-
-            int index = (Integer) v.getTag();
-            Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
-            mHomeViewModel.addFlight(flight);
-
-            Navigation.findNavController(mView).navigate(R.id.home_action);
-        }
-    };
+        Navigation.findNavController(mView).navigate(R.id.home_action);
+    }
 }
