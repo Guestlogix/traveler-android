@@ -3,12 +3,11 @@ package com.guestlogix.travelercorekit;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
-import com.guestlogix.travelercorekit.models.Flight;
-import com.guestlogix.travelercorekit.models.FlightQuery;
-import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
 import com.guestlogix.travelercorekit.network.Router;
@@ -16,8 +15,7 @@ import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class Traveler {
 
@@ -87,7 +85,7 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, query);
 
-            AuthenticatedNetworkRequestTask<ArrayList<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory(new Flight.FlightObjectMappingFactory()));
 
 
             BlockTask searchFlightBlockTask = new BlockTask() {
@@ -109,5 +107,35 @@ public class Traveler {
         }
     }
 
+    /**
+     * Fetches groups of catalog items.
+     *
+     * @param flightIds Ids of the flights for which to fetch the groups.
+     * @param catalogSearchCallback Callback methods which will be executed after the data is fetched.
+     */
+    public static void catalogSearch(List<String> flightIds, CatalogSearchCallback catalogSearchCallback) {
+        if (null == mLocalInstance) {
+            catalogSearchCallback.onCatalogSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+            AuthenticatedRequest request = Router.getCatalog(mLocalInstance.mSession, flightIds);
+
+            AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new Catalog.CatalogObjectMappingFactory());
+
+            BlockTask searchGroupBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != searchGroupTask.getError()) {
+                        catalogSearchCallback.onCatalogSearchError(searchGroupTask.getError());
+                    } else {
+                        catalogSearchCallback.onCatalogSearchSuccess(searchGroupTask.getResource());
+                    }
+                }
+            };
+
+            searchGroupBlockTask.addDependency(searchGroupTask);
+            mLocalInstance.mTaskManager.addTask(searchGroupTask);
+            TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+        }
+    }
 
 }
