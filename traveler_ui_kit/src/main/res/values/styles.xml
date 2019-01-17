@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="DefaultTextView" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TitleLargeTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_xxlarge</item>
+    </style>
+
+    <style name="TitleOneTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_xlarge</item>
+    </style>
+
+    <style name="TitleTwoTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_large</item>
+    </style>
+
+    <style name="TitleThree" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_large</item>
+    </style>
+
+    <style name="BodyHeaderTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_default</item>
+    </style>
+
+    <style name="BodyLabelTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_default</item>
+        <item name="android:textColor">@color/green</item>
+    </style>
+
+    <style name="BodyMainTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_default</item>
+    </style>
+
+    <style name="CallOutTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_small</item>
+    </style>
+
+    <style name="SubHeadTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_xsmall</item>
+    </style>
+
+    <style name="CaptionOneTextView" parent="DefaultTextView">
+        <item name="android:textSize">@dimen/text_view_xxsmall</item>
+    </style>
+</resources>
