@@ -2,10 +2,7 @@ package com.guestlogix.travelercorekit.network;
 
 import android.content.Context;
 import android.util.Log;
-import com.guestlogix.travelercorekit.models.CatalogQuery;
-import com.guestlogix.travelercorekit.models.Flight;
-import com.guestlogix.travelercorekit.models.FlightQuery;
-import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.task.NetworkTask;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import org.json.JSONObject;
@@ -72,6 +69,11 @@ public class Router {
         queryParams.put("flight-ids", flightIds);
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
+    }
+
+    public static AuthenticatedRequest getCatalogItem(Session session, CatalogItem catalogItem) {
+
+        return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/product/" + catalogItem.getId()), session.getApiKey(), session.getAuthToken().getValue());
     }
 
     private static String urlEncodeUTF8(Map<?, ?> map) {
