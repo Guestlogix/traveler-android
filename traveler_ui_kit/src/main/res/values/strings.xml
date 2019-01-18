@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Traveler Ui Kit</string>
+    <string name="contact">Contact Details</string>
+    <string name="open_maps">View in Maps</string>
+    <string name="info">Info</string>
+    <string name="provider">Provider</string>
 </resources>

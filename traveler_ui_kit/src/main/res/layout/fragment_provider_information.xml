@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".fragments.ProviderInformationFragment"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/margin_default">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TitleTwoTextView"
+            tools:text="Contact Details"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/providerName"
+            style="@style/BodyHeaderTextView"
+            tools:text="Gray Line Argentina"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/providerEmail"
+            tools:text="argentina@greyline.com"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/providerWebsite"
+            tools:text="https://www.grayline.com/"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/providerPhonesRecyclerView">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/providerLocationLbl"
+            style="@style/TitleTwoTextView"
+            tools:text="Location"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/providerLocationAddressesRecyclerView">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
