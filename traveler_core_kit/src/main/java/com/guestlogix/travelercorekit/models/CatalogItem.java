@@ -53,7 +53,7 @@ public class CatalogItem {
         this.imageURL = imageURL;
     }
 
-    public static class ItemObjectMappingFactory implements ObjectMappingFactory<CatalogItem> {
+    public static class CatalogItemObjectMappingFactory implements ObjectMappingFactory<CatalogItem> {
 
         @Override
         public CatalogItem instantiate(JsonReader reader) throws IOException {
