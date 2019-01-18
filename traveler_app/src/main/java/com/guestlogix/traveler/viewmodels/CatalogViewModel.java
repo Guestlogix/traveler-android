@@ -14,14 +14,14 @@ import com.guestlogix.travelercorekit.models.CatalogGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
+public class CatalogViewModel extends ViewModel {
     private MutableLiveData<ArrayList<Flight>> flightsArrayList;
     private MutableLiveData<List<CatalogGroup>> groupList;
 
     private CatalogSearchRepository catalogRepository;
 
 
-    public HomeViewModel() {
+    public CatalogViewModel() {
         this.flightsArrayList = new MutableLiveData<>();
         this.groupList = new MutableLiveData<>();
         this.catalogRepository = new CatalogSearchRepository();

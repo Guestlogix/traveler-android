@@ -13,27 +13,27 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
-import com.guestlogix.traveler.viewmodels.HomeViewModel;
+import com.guestlogix.traveler.viewmodels.CatalogViewModel;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
+import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class CatalogFragment extends Fragment {
 
     RecyclerView flightResultRecyclerView;
     CatalogView catalogView;
     List<CatalogGroup> mCatalogGroups;
 
-    private HomeViewModel mViewModel;
+    private CatalogViewModel mViewModel;
     private HomeFragmentRecyclerViewAdapter homeFragmentRecyclerViewAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_catalog, container, false);
 
         setupView(view);
         return view;
@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
         mViewModel.getFlightsObservable().observe(this, flights -> {
             homeFragmentRecyclerViewAdapter.update(flights);
             CatalogQuery catalogQuery = new CatalogQuery(flights);
@@ -75,32 +75,38 @@ public class HomeFragment extends Fragment {
     CatalogView.CatalogViewAdapter catalogViewAdapter = new CatalogView.CatalogViewAdapter() {
         @Override
         public void onBindSection(int sectionPosition, TextView titleTextView) {
-            titleTextView.setText("Header :" + mCatalogGroups.get(sectionPosition).getTitle());
+            titleTextView.setText(mCatalogGroups.get(sectionPosition).getTitle());
         }
 
         @Override
         public void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
-
+            CatalogItem item = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
+            titleTextView.setText(item.getTitle());
+            subTitleTextView.setText(item.getSubTitle());
         }
 
         @Override
         public void onSeeAllClick(int sectionPosition) {
-            Log.v("HomeFragment", "Clicked SeeAll for:" + sectionPosition);
+            Log.v("CatalogFragment", "Clicked SeeAll for:" + sectionPosition);
         }
 
         @Override
         public void onItemClick(int sectionPosition, int itemIndex) {
-            Log.v("HomeFragment", "Clicked Item " + itemIndex + " for:" + sectionPosition);
+            Log.v("CatalogFragment", "Clicked Item " + itemIndex + " for:" + sectionPosition);
         }
 
         @Override
         public int getSectionsCount() {
-            return 2;
+            return mCatalogGroups.size();
+        }
+
+        @Override
+        public int getSectionItemsCount(int sectionIndex) {
+            return mCatalogGroups.get(sectionIndex).getItems().size();
         }
     };
 
     private void catalogUpdateHandler(List<CatalogGroup> catalogGroups) {
-        // TODO: Implement this
         catalogView.setCatalogViewAdapter(catalogViewAdapter);
         mCatalogGroups = catalogGroups;
     }
