@@ -15,10 +15,10 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
+import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -75,12 +75,14 @@ public class HomeFragment extends Fragment {
     CatalogView.CatalogViewAdapter catalogViewAdapter = new CatalogView.CatalogViewAdapter() {
         @Override
         public void onBindSection(int sectionPosition, TextView titleTextView) {
-            titleTextView.setText("Header :" + mCatalogGroups.get(sectionPosition).getTitle());
+            titleTextView.setText(mCatalogGroups.get(sectionPosition).getTitle());
         }
 
         @Override
         public void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
-
+            CatalogItem item = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
+            titleTextView.setText(item.getTitle());
+            subTitleTextView.setText(item.getSubTitle());
         }
 
         @Override
@@ -95,12 +97,16 @@ public class HomeFragment extends Fragment {
 
         @Override
         public int getSectionsCount() {
-            return 2;
+            return mCatalogGroups.size();
+        }
+
+        @Override
+        public int getSectionItemsCount(int sectionIndex) {
+            return mCatalogGroups.get(sectionIndex).getItems().size();
         }
     };
 
     private void catalogUpdateHandler(List<CatalogGroup> catalogGroups) {
-        // TODO: Implement this
         catalogView.setCatalogViewAdapter(catalogViewAdapter);
         mCatalogGroups = catalogGroups;
     }
