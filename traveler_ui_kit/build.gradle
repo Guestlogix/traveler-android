@@ -30,8 +30,12 @@ android {
 
 dependencies {
 
+    //Traveler SDK
+    implementation project(path: ':traveler_core_kit')
+
     //AndroidX dependencies
     implementation "androidx.appcompat:appcompat:${androidx_version}"
+    implementation "com.android.support:recyclerview-v7:${android_support_version}"
 
     //Testing frameworks
     testImplementation "junit:junit:${junit_version}"
