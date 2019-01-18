@@ -2,23 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
-              android:layout_width="match_parent"
+              android:layout_width="170dp"
               android:padding="@dimen/padding_normal"
-              android:layout_height="match_parent">
+              android:layout_height="wrap_content">
 
     <ImageView
             android:id="@+id/thumbnailImageView"
             android:layout_width="162dp"
-            tools:src="@color/green"
+            android:src="@color/green"
             android:layout_height="96dp"/>
     <TextView
-            style="@style/DefaultTextView"
+            style="@style/SubHeadTextView"
             android:id="@+id/titleTextView"
+            android:maxLines="1"
             android:layout_marginTop="8dp"
             tools:text="Chocolate Tour Of Toronto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     <TextView
+            style="@style/CaptionOneTextView"
             android:id="@+id/subTitleTextView"
             tools:text="Starting at $46.5 per person"
             android:layout_width="wrap_content"

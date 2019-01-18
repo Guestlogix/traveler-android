@@ -60,12 +60,18 @@ public class CatalogView extends FrameLayout {
         catalogRecyclerView.setAdapter(catalogSectionAdapter);
     }
 
-    public interface CatalogViewAdapter{
+    public interface CatalogViewAdapter {
         void onBindSection(int sectionPosition, TextView titleTextView);
+
         void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView);
+
         void onSeeAllClick(int sectionPosition);
+
         void onItemClick(int sectionPosition, int itemIndex);
+
         int getSectionsCount();
+
+        int getSectionItemsCount(int sectionIndex);
 
     }
 }

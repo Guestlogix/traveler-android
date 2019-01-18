@@ -16,14 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.FlightSearchResultViewModel;
-import com.guestlogix.traveler.viewmodels.HomeViewModel;
+import com.guestlogix.traveler.viewmodels.CatalogViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class FlightSearchResultsFragment extends Fragment {
     private View mView;
 
     private FlightSearchResultViewModel mFlightSearchResultViewModel;
-    private HomeViewModel mHomeViewModel;
+    private CatalogViewModel mCatalogViewModel;
     private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
 
     public FlightSearchResultsFragment() {
@@ -58,7 +57,7 @@ public class FlightSearchResultsFragment extends Fragment {
             FlightQuery flightQuery = new FlightQuery(flightNumber, date);
 
             mFlightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
-            mHomeViewModel = ViewModelProviders.of(getActivity()).get(HomeViewModel.class);
+            mCatalogViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
 
             mFlightSearchResultViewModel.flightSearch(flightQuery);
             mFlightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
@@ -124,7 +123,7 @@ public class FlightSearchResultsFragment extends Fragment {
     private void onAddFlight(View v) {
         int index = (Integer) v.getTag();
         Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
-        mHomeViewModel.addFlight(flight);
+        mCatalogViewModel.addFlight(flight);
 
         Navigation.findNavController(mView).navigate(R.id.home_action);
     }
