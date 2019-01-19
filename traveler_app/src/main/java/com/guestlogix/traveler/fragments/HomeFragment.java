@@ -97,7 +97,7 @@ public class HomeFragment extends Fragment {
         public void onItemClick(int sectionPosition, int itemIndex) {
             Log.v("HomeFragment", "Clicked Item " + itemIndex + " for:" + sectionPosition);
 
-            CatalogItem catalogItem = mCatalogGroups.get(sectionPosition).getItems().get(sectionPosition);
+            CatalogItem catalogItem = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
 
             HomeFragmentDirections.CatalogItemDetailsAction directions = HomeFragmentDirections.catalogItemDetailsAction(catalogItem);
             Navigation.findNavController(mView).navigate(directions);
