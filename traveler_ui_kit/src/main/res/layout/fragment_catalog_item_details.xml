@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/descriptionTextView"
                 style="@style/BodyMainTextView"
-                tools:text="Bacon ipsum dolor amet shoulder ham hock frankfurter, rump pork belly capicola jowl swine. Short loin kevin cupim, beef ribs pork short ribs shankle ground round alcatra capicola. Short loin tail shankle, tri-tip beef ribs alcatra pork belly short ribs burgdoggen boudin."/>
+                tools:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."/>
 
         <TextView
                 android:layout_width="match_parent"
