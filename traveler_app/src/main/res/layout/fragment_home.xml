@@ -13,15 +13,14 @@
             android:name="com.guestlogix.traveler.activities.FlightSearchResultsFragment"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="53dp"
-            android:padding="10dp"
+            android:layout_height="62dp"
             android:background="@color/white"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <com.guestlogix.traveleruikit.widgets.CatalogView
             android:background="@color/white"
             android:id="@+id/catalogView"
-            android:layout_marginTop="55dp"
+            android:layout_marginTop="64dp"
             android:padding="16dp"
             app:layout_constraintTop_toBottomOf="@+id/flightResultRecyclerView"
             android:layout_width="match_parent"

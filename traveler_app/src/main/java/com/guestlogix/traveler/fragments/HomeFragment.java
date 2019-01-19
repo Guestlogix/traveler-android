@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
+import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
@@ -83,6 +84,7 @@ public class HomeFragment extends Fragment {
             CatalogItem item = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
             titleTextView.setText(item.getTitle());
             subTitleTextView.setText(item.getSubTitle());
+            Traveler.loadImage(mCatalogGroups.get(sectionPosition).getItems().get(itemIndex).getImageURL(), thumbNailImageView);
         }
 
         @Override
