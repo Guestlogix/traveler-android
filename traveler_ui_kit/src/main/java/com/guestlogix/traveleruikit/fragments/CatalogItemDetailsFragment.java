@@ -4,6 +4,7 @@ package com.guestlogix.traveleruikit.fragments;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,9 @@ import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +37,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     private TextView titleTextView;
     private TextView descriptionTextView;
     private TextView languagesTextView;
+    private ImageView imageView;
 
     public CatalogItemDetailsFragment() {
     }
@@ -55,7 +60,6 @@ public class CatalogItemDetailsFragment extends Fragment {
 
         if (null != bundle) {
             catalogItem = (CatalogItem) bundle.getSerializable("catalog_item");
-
             Traveler.fetchCatalogItemDetails(catalogItem, catalogItemDetailsCallback);
         }
     }
@@ -77,6 +81,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         titleTextView = view.findViewById(R.id.titleTextView);
         descriptionTextView = view.findViewById(R.id.descriptionTextView);
         languagesTextView = view.findViewById(R.id.languagesTextView);
+        imageView = view.findViewById(R.id.imageView);
 
         catalogItemPager = view.findViewById(R.id.catalogItemPager);
         catalogItemTabs = view.findViewById(R.id.catalogItemTabs);
@@ -84,6 +89,14 @@ public class CatalogItemDetailsFragment extends Fragment {
 
     private void updateView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
+
+        try {
+            if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
+                Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             descriptionTextView.setText(Html.fromHtml(catalogItemDetails.getDescription(), Html.FROM_HTML_MODE_COMPACT));
