@@ -3,6 +3,7 @@ package com.guestlogix.travelercorekit;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
@@ -14,6 +15,7 @@ import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
+import java.net.URL;
 import java.util.List;
 
 public class Traveler {
@@ -74,6 +76,39 @@ public class Traveler {
         mTaskManager.addTask(authTokenFetchTask);
         mTaskManager.addTask(authTokenFetchBlockTask);
 
+    }
+
+    /**
+     * Fetches groups of catalog items.
+     *
+     * @param imageUrl URL of image to download.
+     * @param imageView ImageView to load the image in.
+     */
+    public static void loadImage(URL imageUrl, ImageView imageView) {
+
+        if (null == mLocalInstance) {
+            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
+        } else {
+
+            DownloadImageTask downloadImageTask = new DownloadImageTask(imageUrl);
+
+            BlockTask searchFlightBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != downloadImageTask.getResource()) {
+                        imageView.setImageBitmap(downloadImageTask.getResource());
+                    } else {
+                        //TODO set placeholder
+                    }
+                }
+            };
+
+            searchFlightBlockTask.addDependency(downloadImageTask);
+
+            mLocalInstance.mTaskManager.addTask(downloadImageTask);
+            TaskManager.getMainTaskManager().addTask(searchFlightBlockTask);
+
+        }
     }
 
     /**

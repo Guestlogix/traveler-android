@@ -49,6 +49,11 @@ public class Router {
         return new UnauthenticatedRequest(NetworkTask.Request.Method.POST, createURL("/auth/token"), apiKey, new JSONObject(payload));
     }
 
+    public static UnauthenticatedRequest downloadImage(URL imageUrl) {
+
+        return new UnauthenticatedRequest(NetworkTask.Request.Method.GET, imageUrl, "", null);
+    }
+
     public static AuthenticatedRequest searchFlight(Session session, FlightQuery query) {
 
         Map<String, String> queryParams = new HashMap<>();
