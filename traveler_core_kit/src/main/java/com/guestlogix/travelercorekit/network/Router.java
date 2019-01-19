@@ -3,6 +3,7 @@ package com.guestlogix.travelercorekit.network;
 import android.content.Context;
 import android.util.Log;
 import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.task.NetworkTask;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import org.json.JSONObject;
@@ -11,10 +12,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
@@ -69,7 +67,13 @@ public class Router {
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
     }
+
     public static AuthenticatedRequest getCatalogItem(Session session, CatalogItem catalogItem) {
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/product/" + catalogItem.getId()), session.getApiKey(), session.getAuthToken().getValue());
+    }
+
+    public static AuthenticatedRequest productSchedule(Session session, BookingContext bookingContext) {
+
+        return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL(String.format(Locale.CANADA,"/product/%s/schedule",bookingContext.getProduct().getId())), session.getApiKey(), session.getAuthToken().getValue());
     }
 }

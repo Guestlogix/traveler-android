@@ -8,15 +8,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 
-public class CatalogItem implements Serializable {
+public class CatalogItem extends Product implements Serializable {
 
-    private String id;
     private String title;
     private String subTitle;
     private URL imageURL;
 
     public CatalogItem(String id, String title, String subTitle, URL imageURL) {
-        this.id = id;
+        super(id,0);
         this.title = title;
         this.subTitle = subTitle;
         this.imageURL = imageURL;
