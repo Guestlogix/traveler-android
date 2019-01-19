@@ -14,9 +14,8 @@ import java.util.ArrayList;
 
 import static android.util.JsonToken.BEGIN_ARRAY;
 
-public class CatalogItemDetails {
+public class CatalogItemDetails extends Product {
 
-    private String id;
     private String title;
     private String description;
     private ArrayList<String> imageURL;
@@ -27,7 +26,7 @@ public class CatalogItemDetails {
     private ArrayList<Attribute> information;
 
     public CatalogItemDetails(String id, String title, String description, ArrayList<String> imageURL, ContactInfo contact, ArrayList<Location> locations, double priceStartingAt, String purchaseStrategy, ArrayList<Attribute> information) {
-        this.id = id;
+        super(id, 0);
         this.title = title;
         this.description = description;
         this.imageURL = imageURL;

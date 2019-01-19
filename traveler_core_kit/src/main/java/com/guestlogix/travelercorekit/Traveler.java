@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
@@ -205,6 +206,37 @@ public class Traveler {
 
             searchGroupBlockTask.addDependency(catalogItemDetailsTask);
             mLocalInstance.mTaskManager.addTask(catalogItemDetailsTask);
+            TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+        }
+    }
+
+    /**
+     * Fetches groups of catalog items.
+     *
+     * @param bookingContext          Ids of the flights for which to fetch the groups.
+     * @param checkAvailabilityCallback Callback methods which will be executed after the data is fetched.
+     */
+    public static void checkAvailability(BookingContext bookingContext, CheckAvailabilityCallback checkAvailabilityCallback) {
+        if (null == mLocalInstance) {
+            checkAvailabilityCallback.onCheckAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+            AuthenticatedRequest request = Router.productSchedule(mLocalInstance.mSession, bookingContext);
+
+            AuthenticatedNetworkRequestTask<Availability> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new Availability.AvailabilityObjectMappingFactory());
+
+            BlockTask searchGroupBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != checkAvailabilityTask.getError()) {
+                        checkAvailabilityCallback.onCheckAvailabilityError(checkAvailabilityTask.getError());
+                    } else {
+                        checkAvailabilityCallback.onCheckAvailabilitySuccess(checkAvailabilityTask.getResource());
+                    }
+                }
+            };
+
+            searchGroupBlockTask.addDependency(checkAvailabilityTask);
+            mLocalInstance.mTaskManager.addTask(checkAvailabilityTask);
             TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
         }
     }
