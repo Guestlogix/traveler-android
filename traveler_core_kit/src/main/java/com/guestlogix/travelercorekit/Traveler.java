@@ -15,6 +15,7 @@ import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Traveler {
@@ -90,7 +91,7 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, flightQuery);
 
-            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<ArrayList<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
 
             BlockTask searchFlightBlockTask = new BlockTask() {

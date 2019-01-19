@@ -33,6 +33,10 @@ public class LabelValueRecyclerViewAdapter extends RecyclerView.Adapter<LabelVal
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (null != mappingAdapter) {
+
+            holder.label.setTag(position);
+            holder.value.setTag(position);
+
             mappingAdapter.bindLabel(holder.label, position);
             mappingAdapter.bindValue(holder.value, position);
         }

@@ -4,18 +4,18 @@ package com.guestlogix.traveleruikit.fragments;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
-import android.widget.TextView;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.travelercorekit.models.Attribute;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.LabelValueRecyclerViewAdapter;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -25,14 +25,21 @@ public class ItemDetailInformationFragment extends Fragment {
     private View mView;
     private RecyclerView infoRecyclerView;
     private LabelValueRecyclerViewAdapter itemViewAdapter;
-    private List<Object> objects;
+    ArrayList<Attribute> itemInfoList;
+
+    private static final String ARG_ITEM_INFO = "item_info";
 
 
-    public ItemDetailInformationFragment() {}
+    public ItemDetailInformationFragment() {
+    }
 
-    public static ItemDetailInformationFragment getInstance() { // TODO pass params;
+    public static ItemDetailInformationFragment getInstance(ArrayList<Attribute> itemInfoList) {
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ARG_ITEM_INFO, itemInfoList);
+
         ItemDetailInformationFragment fragment = new ItemDetailInformationFragment();
-
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -41,10 +48,18 @@ public class ItemDetailInformationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_item_detail_information, container, false);
-
+        extractExtras();
         setUp(mView);
 
         return mView;
+    }
+
+    private void extractExtras() {
+
+        Bundle bundle = this.getArguments();
+        if (null != bundle) {
+            itemInfoList = (ArrayList<Attribute>) bundle.getSerializable(ARG_ITEM_INFO);
+        }
     }
 
     private void setUp(View view) {
@@ -52,28 +67,30 @@ public class ItemDetailInformationFragment extends Fragment {
 
         infoRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         itemViewAdapter = new LabelValueRecyclerViewAdapter();
-        itemViewAdapter.setMappingAdapter(new InformationAdapter());
+        itemViewAdapter.setMappingAdapter(informationAdapter);
+        infoRecyclerView.setAdapter(itemViewAdapter);
     }
 
-    private class InformationAdapter implements LabelValueRecyclerViewAdapter.LabelValueMappingAdapter {
-        // TODO: Update with model.
+    LabelValueRecyclerViewAdapter.LabelValueMappingAdapter informationAdapter = new LabelValueRecyclerViewAdapter.LabelValueMappingAdapter() {
         @Override
         public void bindLabel(TextView label, int position) {
-            label.setText("Before Lmao");
+            label.setText(itemInfoList.get(position).getLabel());
         }
 
         @Override
         public void bindValue(TextView value, int position) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                value.setText(Html.fromHtml("Jan 13, 1970", Html.FROM_HTML_MODE_COMPACT));
+                value.setText(Html.fromHtml(itemInfoList.get(position).getValue(), Html.FROM_HTML_MODE_COMPACT));
             } else {
-                value.setText(Html.fromHtml("Jan 13, 1970"));
+                value.setText(Html.fromHtml(itemInfoList.get(position).getValue()));
             }
         }
 
         @Override
         public int getItemCount() {
-            return 3;
+            return itemInfoList.size();
         }
-    }
+    };
+
+
 }

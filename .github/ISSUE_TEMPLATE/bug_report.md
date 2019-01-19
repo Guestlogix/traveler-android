@@ -26,7 +26,7 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Devices (please complete the following information):**
+**Devices (please complete the following informationList):**
  - Android
  - Version [e.g. 9.0 Pie]
 

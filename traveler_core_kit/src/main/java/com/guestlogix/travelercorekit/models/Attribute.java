@@ -5,8 +5,9 @@ import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Attribute {
+public class Attribute implements Serializable {
 
     private String label;
     private String value;

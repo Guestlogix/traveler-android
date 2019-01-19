@@ -38,6 +38,7 @@ dependencies {
 
     //Traveler SDK
     implementation project(path: ':traveler_core_kit')
+    implementation project(path: ':traveler_ui_kit')
 
     //Android support dependencies
     implementation "com.android.support:appcompat-v7:${android_support_version}"

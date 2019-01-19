@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".fragments.ProviderInformationFragment"
-            android:orientation="vertical"
-            android:paddingHorizontal="@dimen/margin_default">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".fragments.ProviderInformationFragment"
+              android:orientation="vertical"
+              android:paddingHorizontal="@dimen/margin_default">
 
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TitleTwoTextView"
-            tools:text="Contact Details"/>
+            android:layout_marginTop="@dimen/margin_large"
+            style="@style/TitleThree"
+            android:textStyle="bold"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:text="@string/label_contact_details"/>
 
     <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="@dimen/margin_xsmall"
             android:layout_height="wrap_content"
-            android:id="@+id/providerName"
+            android:id="@+id/providerNameTextView"
             style="@style/BodyHeaderTextView"
             tools:text="Gray Line Argentina"/>
 
     <TextView
             android:layout_width="match_parent"
+            android:layout_marginBottom="@dimen/margin_xxsmall"
             android:layout_height="wrap_content"
-            android:id="@+id/providerEmail"
+            android:id="@+id/providerEmailTextView"
             tools:text="argentina@greyline.com"/>
 
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/providerWebsite"
+            android:layout_marginBottom="@dimen/margin_xxsmall"
+            android:id="@+id/providerWebsiteTextView"
             tools:text="https://www.grayline.com/"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -41,10 +47,11 @@
 
     <TextView
             android:layout_width="match_parent"
+            android:layout_marginBottom="@dimen/margin_xsmall"
             android:layout_height="wrap_content"
             android:id="@+id/providerLocationLbl"
             style="@style/TitleTwoTextView"
-            tools:text="Location"/>
+            android:text="@string/label_location"/>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"

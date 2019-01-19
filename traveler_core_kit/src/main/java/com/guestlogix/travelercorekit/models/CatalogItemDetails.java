@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import android.util.Log;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
@@ -10,7 +11,6 @@ import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.util.JsonToken.BEGIN_ARRAY;
 
@@ -19,14 +19,14 @@ public class CatalogItemDetails {
     private String id;
     private String title;
     private String description;
-    private List<String> imageURL;
+    private ArrayList<String> imageURL;
     private ContactInfo contact;
-    private List<Location> locations;
+    private ArrayList<Location> locations;
     private double priceStartingAt;
     private String purchaseStrategy;
-    private List<Attribute> information;
+    private ArrayList<Attribute> information;
 
-    public CatalogItemDetails(String id, String title, String description, List<String> imageURL, ContactInfo contact, List<Location> locations, double priceStartingAt, String purchaseStrategy, List<Attribute> information) {
+    public CatalogItemDetails(String id, String title, String description, ArrayList<String> imageURL, ContactInfo contact, ArrayList<Location> locations, double priceStartingAt, String purchaseStrategy, ArrayList<Attribute> information) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -62,7 +62,7 @@ public class CatalogItemDetails {
         this.description = description;
     }
 
-    public List<String> getImageURL() {
+    public ArrayList<String> getImageURL() {
         return imageURL;
     }
 
@@ -78,11 +78,11 @@ public class CatalogItemDetails {
         this.contact = contact;
     }
 
-    public List<Location> getLocations() {
+    public ArrayList<Location> getLocations() {
         return locations;
     }
 
-    public void setLocations(List<Location> locations) {
+    public void setLocations(ArrayList<Location> locations) {
         this.locations = locations;
     }
 
@@ -102,11 +102,11 @@ public class CatalogItemDetails {
         this.purchaseStrategy = purchaseStrategy;
     }
 
-    public List<Attribute> getInformation() {
+    public ArrayList<Attribute> getInformation() {
         return information;
     }
 
-    public void setInformation(List<Attribute> information) {
+    public void setInformation(ArrayList<Attribute> information) {
         this.information = information;
     }
 
@@ -122,12 +122,12 @@ public class CatalogItemDetails {
             String id = "";
             String title = "";
             String description = "";
-            List<String> imageURL = new ArrayList<>();
+            ArrayList<String> imageURL = new ArrayList<>();
             ContactInfo contact = new ContactInfo();
-            List<Location> locations = new ArrayList<>();
+            ArrayList<Location> locations = new ArrayList<>();
             double priceStartingAt = 0.0;
             String purchaseStrategy = "";
-            List<Attribute> information = new ArrayList<>();
+            ArrayList<Attribute> information = new ArrayList<>();
 
             if (BEGIN_ARRAY == reader.peek()) {
                 reader.beginArray();
@@ -149,9 +149,9 @@ public class CatalogItemDetails {
                         description = JsonReaderHelper.readString(reader);
                         break;
                     case "imageUrls":
-                        reader.skipValue();
-                        //reader.nextString();
-                        //imageURL = new ArrayMappingFactory<String>(JsonReaderHelper.readString(reader)).instantiate(reader);
+                        if (reader.peek() != JsonToken.NULL) {
+                            imageURL = JsonReaderHelper.readStringsArray(reader);
+                        }
                         break;
                     case "contact":
                         contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);

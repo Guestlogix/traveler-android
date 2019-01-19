@@ -3,21 +3,22 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:paddingLeft="@dimen/margin_default"
-              android:paddingRight="@dimen/margin_default">
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_xsmall"
+>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_xxsmall"
             android:id="@+id/itemLabel"
             style="@style/BodyHeaderTextView"
             tools:text="Duration"/>
     <TextView
+            style="@style/CallOutTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/itemValue"
             tools:text="4-5 hours"/>
-
     <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

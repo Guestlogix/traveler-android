@@ -25,7 +25,11 @@
         <action
                 android:id="@+id/flight_add_action"
                 app:destination="@+id/flight_search_dest"/>
+        <action android:id="@+id/catalog_item_details_action"
+                app:destination="@id/catalog_item_details_destination"/>
+
         <argument android:name="flight" app:argType="com.guestlogix.travelercorekit.models.Flight"/>
+
 
     </fragment>
 
@@ -47,14 +51,20 @@
             android:label="Flights"
             tools:layout="@layout/fragment_flight_search_results_item">
 
-
         <argument android:name="departure_date" app:argType="string"/>
         <argument android:name="flight_number" app:argType="string"/>
+
         <action android:id="@+id/home_action"
                 app:destination="@id/home_dest" app:popUpTo="@id/home_dest" app:popUpToInclusive="true"/>
 
         <action android:id="@+id/flight_search_action"
                 app:destination="@id/flight_search_dest" app:popUpTo="@id/flight_search_dest" app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment android:id="@+id/catalog_item_details_destination"
+              android:name="com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment"
+              android:label="CatalogItemDetailsFragment">
+        <argument android:name="catalog_item" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>
     </fragment>
 
 
