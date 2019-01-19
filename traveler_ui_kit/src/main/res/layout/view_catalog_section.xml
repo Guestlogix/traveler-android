@@ -8,7 +8,7 @@
         android:layout_height="wrap_content">
 
     <TextView
-            style="@style/BodyHeaderTextView"
+            style="@style/TitleThree"
             android:layout_width="wrap_content"
             tools:text="Dummy Title"
             android:layout_alignParentLeft="true"
@@ -30,6 +30,7 @@
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/sectionItemRecyclerView"
             android:layout_below="@+id/sectionTitleTextView"
+            android:layout_marginTop="@dimen/margin_xsmall"
             android:layout_width="wrap_content"
             android:layout_height="180dp">
     </androidx.recyclerview.widget.RecyclerView>

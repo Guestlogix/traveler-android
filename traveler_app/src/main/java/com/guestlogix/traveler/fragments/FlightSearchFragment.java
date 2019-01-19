@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
+import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -49,7 +50,16 @@ public class FlightSearchFragment extends Fragment {
         setupView(mView);
         setupListeners();
 
+        if (BuildConfig.DEBUG) {
+            setDemoFields();
+        }
+
         return mView;
+    }
+
+    private void setDemoFields() {
+        flightNumberEditText.setText("AC1");
+        updateLabel();
     }
 
     private void setupListeners() {

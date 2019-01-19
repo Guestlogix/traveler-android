@@ -28,6 +28,7 @@
 
     <style name="TitleThree" parent="DefaultTextView">
         <item name="android:textSize">@dimen/text_view_large</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="BodyHeaderTextView" parent="DefaultTextView">
@@ -42,12 +43,12 @@
     <style name="BodyMainTextView" parent="DefaultTextView">
         <item name="android:textSize">@dimen/text_view_default</item>
         <item name="android:layout_marginTop">@dimen/margin_default</item>
-        <item name="android:textColor">@color/lightGray</item>
+        <item name="android:textColor">@color/gray</item>
     </style>
 
     <style name="CallOutTextView" parent="DefaultTextView">
         <item name="android:textSize">@dimen/text_view_small</item>
-        <item name="android:textColor">@color/lightGray</item>
+        <item name="android:textColor">@color/gray</item>
     </style>
 
     <style name="SubHeadTextView" parent="DefaultTextView">
@@ -56,6 +57,7 @@
 
     <style name="CaptionOneTextView" parent="DefaultTextView">
         <item name="android:textSize">@dimen/text_view_xxsmall</item>
+        <item name="android:textColor">@color/gray</item>
     </style>
 
     <style name="separator">

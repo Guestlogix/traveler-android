@@ -12,9 +12,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
+import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
@@ -37,7 +39,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_home, container, false);
-
         setupView(mView);
         return mView;
     }
@@ -86,6 +87,7 @@ public class HomeFragment extends Fragment {
             CatalogItem item = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
             titleTextView.setText(item.getTitle());
             subTitleTextView.setText(item.getSubTitle());
+            Traveler.loadImage(mCatalogGroups.get(sectionPosition).getItems().get(itemIndex).getImageURL(), thumbNailImageView);
         }
 
         @Override
