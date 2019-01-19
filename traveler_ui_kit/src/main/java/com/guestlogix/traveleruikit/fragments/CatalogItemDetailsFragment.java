@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +38,9 @@ public class CatalogItemDetailsFragment extends Fragment {
     private TextView descriptionTextView;
     private TextView languagesTextView;
     private ImageView imageView;
+    private TextView startingAtValueTextView;
+    private Button checkAvailabilityButton;
+
 
     CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
@@ -68,6 +73,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
+
         catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, new Observer<CatalogItemDetails>() {
             @Override
             public void onChanged(CatalogItemDetails catalogItemDetails) {
@@ -98,19 +104,31 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsViewModel.updateCatalog(catalogItem);
     }
 
+    View.OnClickListener checkAvailabilityOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+
     private void setUp(View view) {
 
         titleTextView = view.findViewById(R.id.titleTextView);
         descriptionTextView = view.findViewById(R.id.descriptionTextView);
         languagesTextView = view.findViewById(R.id.languagesTextView);
         imageView = view.findViewById(R.id.imageView);
+        startingAtValueTextView = view.findViewById(R.id.startingAtValueTextView);
+        checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
 
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
+
+        checkAvailabilityButton.setOnClickListener(checkAvailabilityOnClickListener);
     }
 
     private void updateView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
+        startingAtValueTextView.setText(String.format(Locale.CANADA, "$%f/per person", catalogItemDetails.getPriceStartingAt()));
 
         if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
             //Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);

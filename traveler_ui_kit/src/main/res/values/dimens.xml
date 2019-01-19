@@ -17,5 +17,7 @@
     <dimen name="margin_xxsmall">2dp</dimen>
     <dimen name="text_view_xxxsmall">11sp</dimen>
 
+    <dimen name="padding_small">4sp</dimen>
     <dimen name="padding_normal">8sp</dimen>
+    <dimen name="padding_large">12sp</dimen>
 </resources>
