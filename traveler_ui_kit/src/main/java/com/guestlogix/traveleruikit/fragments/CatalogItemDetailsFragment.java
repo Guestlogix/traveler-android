@@ -23,6 +23,8 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,8 +62,7 @@ public class CatalogItemDetailsFragment extends Fragment {
 
         if (null != bundle) {
             catalogItem = (CatalogItem) bundle.getSerializable("catalog_item");
-        } else {
-            //TODO throw exception, fragment needs catalog item to show details
+            //Traveler.fetchCatalogItemDetails(catalogItem, catalogItemDetailsCallback);
         }
     }
 
