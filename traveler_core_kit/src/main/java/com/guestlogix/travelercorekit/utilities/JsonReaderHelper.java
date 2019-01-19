@@ -114,4 +114,40 @@ public class JsonReaderHelper {
         reader.endArray();
         return strings;
     }
+
+    /**
+     * Performs a String Array read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return Integer Array or null
+     * @throws IOException If reading cannot be performed.
+     */
+    public static ArrayList<Integer> readIntegerArray(JsonReader reader) throws IOException {
+        ArrayList<Integer> ints = new ArrayList<>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            ints.add(reader.nextInt());
+        }
+        reader.endArray();
+        return ints;
+    }
+
+    /**
+     * Performs a String Array read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return Long Array or null
+     * @throws IOException If reading cannot be performed.
+     */
+    public static ArrayList<Long> readLongArray(JsonReader reader) throws IOException {
+        ArrayList<Long> ints = new ArrayList<>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            ints.add(reader.nextLong());
+        }
+        reader.endArray();
+        return ints;
+    }
 }
