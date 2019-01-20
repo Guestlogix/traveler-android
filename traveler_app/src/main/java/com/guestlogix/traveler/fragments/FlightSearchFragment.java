@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
+import com.google.android.material.textfield.TextInputEditText;
 import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
@@ -24,8 +25,8 @@ import java.util.regex.Pattern;
 
 public class FlightSearchFragment extends Fragment {
 
-    TextView flightNumberEditText;
-    TextView departureDateEditText;
+    TextInputEditText flightNumberEditText;
+    TextInputEditText departureDateEditText;
     TextView searchFlightsButton;
 
     private FlightSearchViewModel mViewModel;
@@ -94,7 +95,7 @@ public class FlightSearchFragment extends Fragment {
         }
     }
 
-    DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+    DatePickerDialog.OnDateSetListener datePickerListener = (view, year, monthOfYear, dayOfMonth) -> {
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, monthOfYear);
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -136,7 +137,7 @@ public class FlightSearchFragment extends Fragment {
 
             validateFlightDate(date);
         } else {
-            new DatePickerDialog(getActivity(), date, myCalendar
+            new DatePickerDialog(getActivity(), datePickerListener, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
         }
