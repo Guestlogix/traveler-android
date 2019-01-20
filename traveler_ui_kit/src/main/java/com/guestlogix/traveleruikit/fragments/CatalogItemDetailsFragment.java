@@ -23,9 +23,6 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
  * A simple {@link Fragment} subclass.
  */

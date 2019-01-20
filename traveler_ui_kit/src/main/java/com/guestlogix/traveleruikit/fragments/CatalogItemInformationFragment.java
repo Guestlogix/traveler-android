@@ -35,7 +35,6 @@ public class CatalogItemInformationFragment extends Fragment {
     }
 
     public static CatalogItemInformationFragment getInstance(ArrayList<Attribute> itemInfoList) {
-
         Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_ITEM_INFO, itemInfoList);
 
