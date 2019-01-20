@@ -18,7 +18,7 @@ import com.guestlogix.traveleruikit.adapters.LabelValueRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class ItemProviderInformationFragment extends Fragment {
+public class CatalogItemProviderInformationFragment extends Fragment {
 
     private ContactInfo contactInfo;
     private ArrayList<Location> locationsList = new ArrayList<>();
@@ -29,13 +29,13 @@ public class ItemProviderInformationFragment extends Fragment {
     private TextView providerEmailTextView;
     private TextView providerWebsiteTextView;
 
-    public static ItemProviderInformationFragment getInstance(ContactInfo contactInfo, ArrayList<Location> locationsList) {
+    public static CatalogItemProviderInformationFragment getInstance(ContactInfo contactInfo, ArrayList<Location> locationsList) {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_CONTACT_INFO, contactInfo);
         bundle.putSerializable(ARG_LOCATIONS_LIST, locationsList);
 
-        ItemProviderInformationFragment fragment = new ItemProviderInformationFragment();
+        CatalogItemProviderInformationFragment fragment = new CatalogItemProviderInformationFragment();
         fragment.setArguments(bundle);
 
         return fragment;
@@ -45,7 +45,7 @@ public class ItemProviderInformationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View mView = inflater.inflate(R.layout.fragment_provider_information, container, false);
+        View mView = inflater.inflate(R.layout.fragment_catalog_item_provider_information, container, false);
         extractExtras();
         setUp(mView);
         return mView;

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 /**
  * Displays a list of items which represent information for a particular object.
  */
-public class ItemInformationFragment extends Fragment {
+public class CatalogItemInformationFragment extends Fragment {
     private View mView;
     private RecyclerView infoRecyclerView;
     private LabelValueRecyclerViewAdapter itemViewAdapter;
@@ -31,15 +31,15 @@ public class ItemInformationFragment extends Fragment {
     private static final String ARG_ITEM_INFO = "item_info";
 
 
-    public ItemInformationFragment() {
+    public CatalogItemInformationFragment() {
     }
 
-    public static ItemInformationFragment getInstance(ArrayList<Attribute> itemInfoList) {
+    public static CatalogItemInformationFragment getInstance(ArrayList<Attribute> itemInfoList) {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_ITEM_INFO, itemInfoList);
 
-        ItemInformationFragment fragment = new ItemInformationFragment();
+        CatalogItemInformationFragment fragment = new CatalogItemInformationFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -48,7 +48,7 @@ public class ItemInformationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_item_detail_information, container, false);
+        mView = inflater.inflate(R.layout.fragment_catalog_item_information, container, false);
         extractExtras();
         setUp(mView);
 

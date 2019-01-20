@@ -23,7 +23,7 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
     @Override
     public CatalogSectionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_catalog_section, parent, false);
+                .inflate(R.layout.item_catalog_section, parent, false);
         return new CatalogSectionViewHolder(view);
 
     }
@@ -80,7 +80,7 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
         @Override
         public CatalogSectionAdapter.CatalogItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.view_catalog_section_item, parent, false);
+                    .inflate(R.layout.item_view_catalog_section_item, parent, false);
             return new CatalogItemViewHolder(view);
 
         }
