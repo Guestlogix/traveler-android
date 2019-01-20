@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.Attribute;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 /**
  * Displays a list of items which represent information for a particular object.
  */
-public class ItemDetailInformationFragment extends Fragment {
+public class ItemInformationFragment extends Fragment {
     private View mView;
     private RecyclerView infoRecyclerView;
     private LabelValueRecyclerViewAdapter itemViewAdapter;
@@ -30,15 +31,15 @@ public class ItemDetailInformationFragment extends Fragment {
     private static final String ARG_ITEM_INFO = "item_info";
 
 
-    public ItemDetailInformationFragment() {
+    public ItemInformationFragment() {
     }
 
-    public static ItemDetailInformationFragment getInstance(ArrayList<Attribute> itemInfoList) {
+    public static ItemInformationFragment getInstance(ArrayList<Attribute> itemInfoList) {
 
         Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_ITEM_INFO, itemInfoList);
 
-        ItemDetailInformationFragment fragment = new ItemDetailInformationFragment();
+        ItemInformationFragment fragment = new ItemInformationFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -65,7 +66,13 @@ public class ItemDetailInformationFragment extends Fragment {
     private void setUp(View view) {
         infoRecyclerView = view.findViewById(R.id.informationRecyclerView);
 
-        infoRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        infoRecyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(infoRecyclerView.getContext(),
+                (linearLayoutManager).getOrientation());
+        infoRecyclerView.addItemDecoration(dividerItemDecoration);
+
         itemViewAdapter = new LabelValueRecyclerViewAdapter();
         itemViewAdapter.setMappingAdapter(informationAdapter);
         infoRecyclerView.setAdapter(itemViewAdapter);

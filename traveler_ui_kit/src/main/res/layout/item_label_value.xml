@@ -4,8 +4,9 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/margin_xsmall"
->
+              android:paddingBottom="@dimen/margin_small"
+              android:layout_marginTop="@dimen/margin_xsmall"
+              android:layout_marginBottom="@dimen/margin_xsmall">
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,9 +20,5 @@
             android:layout_height="wrap_content"
             android:id="@+id/itemValue"
             tools:text="4-5 hours"/>
-    <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            style="@style/separator"/>
 
 </LinearLayout>
