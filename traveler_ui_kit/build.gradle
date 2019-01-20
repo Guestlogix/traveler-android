@@ -37,6 +37,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${androidx_version}"
     implementation "com.android.support:design:${android_support_version}"
     implementation "com.android.support:recyclerview-v7:${android_support_version}"
+    implementation "android.arch.lifecycle:extensions:${android_support_component_version}"
 
     //Testing frameworks
     testImplementation "junit:junit:${junit_version}"

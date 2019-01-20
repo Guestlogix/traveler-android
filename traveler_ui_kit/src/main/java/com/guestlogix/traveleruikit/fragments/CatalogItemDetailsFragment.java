@@ -6,20 +6,23 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.Traveler;
-import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
+import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,17 +34,18 @@ import java.net.URL;
 public class CatalogItemDetailsFragment extends Fragment {
     private View mView;
 
-    private ViewPager catalogItemPager;
-    private TabLayout catalogItemTabs;
+    private ViewPager catalogItemDetailsPager;
+    private TabLayout catalogItemDetailsTabs;
     private CatalogItem catalogItem;
     private TextView titleTextView;
     private TextView descriptionTextView;
     private TextView languagesTextView;
     private ImageView imageView;
 
+    CatalogItemDetailsViewModel catalogItemDetailsViewModel;
+
     public CatalogItemDetailsFragment() {
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,21 +64,45 @@ public class CatalogItemDetailsFragment extends Fragment {
 
         if (null != bundle) {
             catalogItem = (CatalogItem) bundle.getSerializable("catalog_item");
-            Traveler.fetchCatalogItemDetails(catalogItem, catalogItemDetailsCallback);
+        } else {
+            //TODO throw exception, fragment needs catalog item to show details
         }
     }
 
-    CatalogItemDetailsCallback catalogItemDetailsCallback = new CatalogItemDetailsCallback() {
-        @Override
-        public void onCatalogItemDetailsSuccess(CatalogItemDetails catalogItemDetails) {
-            updateView(catalogItemDetails);
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        @Override
-        public void onCatalogItemDetailsError(TravelerError error) {
+        catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
+        catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, new Observer<CatalogItemDetails>() {
+            @Override
+            public void onChanged(CatalogItemDetails catalogItemDetails) {
+                updateView(catalogItemDetails);
+            }
+        });
 
-        }
-    };
+        catalogItemDetailsViewModel.getStatus().observe(this, new Observer<CatalogItemDetailsViewModel.State>() {
+            @Override
+            public void onChanged(CatalogItemDetailsViewModel.State status) {
+                switch (status) {
+                    case LOADING:
+                        //TODO Handle Loading state
+                        Toast.makeText(getActivity(), "Loading", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SUCCESS:
+                        //TODO Handle Success state
+                        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                        break;
+                    case ERROR:
+                        //TODO Handle Error state
+                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+
+        catalogItemDetailsViewModel.updateCatalog(catalogItem);
+    }
 
     private void setUp(View view) {
 
@@ -83,8 +111,8 @@ public class CatalogItemDetailsFragment extends Fragment {
         languagesTextView = view.findViewById(R.id.languagesTextView);
         imageView = view.findViewById(R.id.imageView);
 
-        catalogItemPager = view.findViewById(R.id.catalogItemPager);
-        catalogItemTabs = view.findViewById(R.id.catalogItemTabs);
+        catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
+        catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
     }
 
     private void updateView(CatalogItemDetails catalogItemDetails) {
@@ -108,8 +136,9 @@ public class CatalogItemDetailsFragment extends Fragment {
         adapter.setContactInfo(catalogItemDetails.getContact());
         adapter.setInformationList(catalogItemDetails.getInformation());
         adapter.setLocationsList(catalogItemDetails.getLocations());
-        catalogItemPager.setAdapter(adapter);
-        catalogItemTabs.setupWithViewPager(catalogItemPager);
+        catalogItemDetailsPager.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        catalogItemDetailsTabs.setupWithViewPager(catalogItemDetailsPager);
 
     }
 
