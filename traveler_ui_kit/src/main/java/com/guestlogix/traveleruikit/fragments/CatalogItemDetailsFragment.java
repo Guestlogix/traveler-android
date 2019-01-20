@@ -1,12 +1,12 @@
 package com.guestlogix.traveleruikit.fragments;
 
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,15 +17,19 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
 import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Locale;
 
 
 /**
@@ -39,10 +43,17 @@ public class CatalogItemDetailsFragment extends Fragment {
     private CatalogItem catalogItem;
     private TextView titleTextView;
     private TextView descriptionTextView;
-    private TextView languagesTextView;
     private ImageView imageView;
+    private TextView startingAtValueTextView;
+    private Button checkAvailabilityButton;
+    private TextInputEditText dateEditText;
+    private TextInputEditText timeEditText;
+
 
     CatalogItemDetailsViewModel catalogItemDetailsViewModel;
+
+    //TODO Move calendar to view model
+    final Calendar myCalendar = Calendar.getInstance();
 
     public CatalogItemDetailsFragment() {
     }
@@ -52,7 +63,7 @@ public class CatalogItemDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_catalog_item_details, container, false);
         setUp(mView);
-
+        setupListeners();
         return mView;
     }
 
@@ -65,7 +76,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         if (null != bundle) {
             catalogItem = (CatalogItem) bundle.getSerializable("catalog_item");
         } else {
-            //TODO throw exception, fragment needs catalog item to show details
+            //TODO throw runtime exception, fragment needs catalog item to show details
         }
     }
 
@@ -74,6 +85,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
+
         catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, new Observer<CatalogItemDetails>() {
             @Override
             public void onChanged(CatalogItemDetails catalogItemDetails) {
@@ -104,19 +116,35 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsViewModel.updateCatalog(catalogItem);
     }
 
+    View.OnClickListener checkAvailabilityOnClickListener = v -> {
+        //TODO Integrate Check Availability state
+        Toast.makeText(getActivity(), "Check Availability", Toast.LENGTH_SHORT).show();
+
+    };
+
     private void setUp(View view) {
 
         titleTextView = view.findViewById(R.id.titleTextView);
         descriptionTextView = view.findViewById(R.id.descriptionTextView);
-        languagesTextView = view.findViewById(R.id.languagesTextView);
         imageView = view.findViewById(R.id.imageView);
-
+        startingAtValueTextView = view.findViewById(R.id.startingAtValueTextView);
+        checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
+        dateEditText = view.findViewById(R.id.dateEditText);
+        timeEditText = view.findViewById(R.id.timeEditText);
+    }
+
+    private void setupListeners() {
+        checkAvailabilityButton.setOnClickListener(checkAvailabilityOnClickListener);
+        dateEditText.setOnFocusChangeListener(this::datePickerFocusHandler);
+        timeEditText.setOnFocusChangeListener(this::timePickerFocusHandler);
+
     }
 
     private void updateView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
+        startingAtValueTextView.setText(String.format(Locale.CANADA, "$%f/per person", catalogItemDetails.getPriceStartingAt()));
 
         try {
             if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
@@ -141,5 +169,47 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsTabs.setupWithViewPager(catalogItemDetailsPager);
 
     }
+
+    DatePickerDialog.OnDateSetListener datePickerListener = (view, year, monthOfYear, dayOfMonth) -> {
+        myCalendar.set(Calendar.YEAR, year);
+        myCalendar.set(Calendar.MONTH, monthOfYear);
+        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        updateDateLabel();
+    };
+
+    TimePickerDialog.OnTimeSetListener timePickerListener = (view, hourOfDay, minute) -> {
+        myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        myCalendar.set(Calendar.MINUTE, minute);
+        updateTimeLabel();
+    };
+
+    private void updateDateLabel() {
+        dateEditText.setText(DateHelper.getPrettyDateAsString(myCalendar.getTime()));
+    }
+
+    private void updateTimeLabel() {
+        timeEditText.setText(DateHelper.getTimeAsString(myCalendar.getTime()));
+    }
+
+    private void datePickerFocusHandler(View view, boolean focus) {
+        if (!focus) {
+            String date = ((TextView) view).getText().toString();
+        } else {
+            new DatePickerDialog(getActivity(), datePickerListener, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        }
+    }
+
+    private void timePickerFocusHandler(View view, boolean focus) {
+        if (!focus) {
+            String date = ((TextView) view).getText().toString();
+
+        } else {
+            new TimePickerDialog(getActivity(), timePickerListener, myCalendar
+                    .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true).show();
+        }
+    }
+
 
 }

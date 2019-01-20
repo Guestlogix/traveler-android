@@ -1,111 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_height="match_parent">
 
-    <LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:layout_height="match_parent">
+    <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        <ImageView android:layout_width="match_parent"
-                   android:layout_height="400dp"
-                   android:scaleType="centerCrop"
-                   android:background="@color/lightGray"
-                   android:id="@+id/imageView"/>
+            android:layout_height="match_parent">
 
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/padding_normal"
                 android:orientation="vertical">
 
-            <TextView
+            <ImageView android:layout_width="match_parent"
+                       android:layout_height="400dp"
+                       android:scaleType="centerCrop"
+                       android:background="@color/lightGray"
+                       android:id="@+id/imageView"/>
+
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/titleTextView"
-                    tools:text="Experience Title"
-                    style="@style/TitleOneTextView"
-                    android:layout_gravity="center"/>
+                    android:paddingHorizontal="@dimen/padding_normal"
+                    android:orientation="vertical">
 
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/subtitleTextView"
-                    tools:text="About the tour"
-                    android:text="@string/label_about_the_tour"
-                    style="@style/TitleTwoTextView"/>
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/descriptionTextView"
-                    style="@style/BodyMainTextView"
-                    tools:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."/>
-
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/languagesTextView"
-                    tools:text="Offered in English and Afrikaans"
-                    style="@style/CaptionOneTextView_MarginTop"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:errorEnabled="true"
-                    app:hintEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/dateX"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:hint="Select Date"
-                        android:inputType="textCapCharacters"
-                        app:errorEnabled="true"
-                        app:hintEnabled="false"
-                        android:textAllCaps="true"
-                        android:imeOptions="actionDone"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/departureDateTextInputLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:errorEnabled="true"
-                    app:hintEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/departureDateEditText"
+                <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Select Time"
-                        android:inputType="textCapCharacters"
+                        android:id="@+id/titleTextView"
+                        tools:text="Experience Title"
+                        style="@style/TitleOneTextView"
+                        android:layout_gravity="center"/>
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/subtitleTextView"
+                        tools:text="About the tour"
+                        android:text="@string/label_about_the_tour"
+                        style="@style/TitleTwoTextView"/>
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/descriptionTextView"
+                        style="@style/BodyMainTextView"
+                        tools:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         app:errorEnabled="true"
-                        app:hintEnabled="false"
-                        android:textAllCaps="true"
-                        android:imeOptions="actionDone"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                        app:hintEnabled="false">
 
-            <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/catalogItemTabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/dateEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Select Date"
+                            android:inputType="textCapCharacters"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false"
+                            android:textAllCaps="true"
+                            android:imeOptions="actionDone"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
-            </com.google.android.material.tabs.TabLayout>
-            <androidx.viewpager.widget.ViewPager
-                    android:layout_width="match_parent"
-                    android:layout_height="290dp"
-                    android:id="@+id/catalogItemPager">
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/departureDateTextInputLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        app:errorEnabled="true"
+                        app:hintEnabled="false">
 
-            </androidx.viewpager.widget.ViewPager>
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/timeEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Select Time"
+                            android:inputType="textCapCharacters"
+                            app:errorEnabled="true"
+                            app:hintEnabled="false"
+                            android:textAllCaps="true"
+                            android:imeOptions="actionDone"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/catalogItemTabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                </com.google.android.material.tabs.TabLayout>
+                <androidx.viewpager.widget.ViewPager
+                        android:layout_width="match_parent"
+                        android:layout_height="290dp"
+                        android:id="@+id/catalogItemPager">
+
+                </androidx.viewpager.widget.ViewPager>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+    <RelativeLayout
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:padding="@dimen/padding_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView android:layout_width="wrap_content"
+                  android:id="@+id/startingAtLabelTextView"
+                  android:layout_height="wrap_content"
+                  android:text="@string/label_starting_at"/>
+
+        <TextView android:layout_width="wrap_content"
+                  style="@style/TitleThree"
+                  android:layout_below="@+id/startingAtLabelTextView"
+                  android:id="@+id/startingAtValueTextView"
+                  android:layout_height="wrap_content"
+                  android:text="@string/label_starting_at"/>
+
+        <Button android:layout_width="wrap_content"
+                style="@style/CaptionOneTextView"
+                android:text="@string/button_check_availability"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkAvailabilityButton"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
