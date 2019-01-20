@@ -222,7 +222,7 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.productSchedule(mLocalInstance.mSession, bookingContext);
 
-            AuthenticatedNetworkRequestTask<Availability> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new Availability.AvailabilityObjectMappingFactory());
+            AuthenticatedNetworkRequestTask<ArrayList<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request,  new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override

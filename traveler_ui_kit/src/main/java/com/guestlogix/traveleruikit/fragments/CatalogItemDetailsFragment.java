@@ -19,6 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.guestlogix.travelercorekit.Traveler;
+import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -49,11 +50,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     private TextInputEditText dateEditText;
     private TextInputEditText timeEditText;
 
-
     CatalogItemDetailsViewModel catalogItemDetailsViewModel;
-
-    //TODO Move calendar to view model
-    final Calendar myCalendar = Calendar.getInstance();
 
     public CatalogItemDetailsFragment() {
     }
@@ -85,6 +82,15 @@ public class CatalogItemDetailsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
+        catalogItemDetailsViewModel.setCatalogItem(catalogItem);
+
+        catalogItemDetailsViewModel.getMyCalendarObservable().observe(this, new Observer<Calendar>() {
+            @Override
+            public void onChanged(Calendar calendar) {
+                updateDateLabel();
+                updateTimeLabel();
+            }
+        });
 
         catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, new Observer<CatalogItemDetails>() {
             @Override
@@ -119,6 +125,8 @@ public class CatalogItemDetailsFragment extends Fragment {
     View.OnClickListener checkAvailabilityOnClickListener = v -> {
         //TODO Integrate Check Availability state
         Toast.makeText(getActivity(), "Check Availability", Toast.LENGTH_SHORT).show();
+
+        catalogItemDetailsViewModel.checkAvailability();
 
     };
 
@@ -171,30 +179,37 @@ public class CatalogItemDetailsFragment extends Fragment {
     }
 
     DatePickerDialog.OnDateSetListener datePickerListener = (view, year, monthOfYear, dayOfMonth) -> {
+
+        Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, monthOfYear);
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        updateDateLabel();
+
+        catalogItemDetailsViewModel.setMyCalendar(myCalendar);
     };
 
     TimePickerDialog.OnTimeSetListener timePickerListener = (view, hourOfDay, minute) -> {
+
+        Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
         myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         myCalendar.set(Calendar.MINUTE, minute);
-        updateTimeLabel();
+
+        catalogItemDetailsViewModel.setMyCalendar(myCalendar);
     };
 
     private void updateDateLabel() {
-        dateEditText.setText(DateHelper.getPrettyDateAsString(myCalendar.getTime()));
+        dateEditText.setText(DateHelper.getPrettyDateAsString(catalogItemDetailsViewModel.getMyCalendar().getTime()));
     }
 
     private void updateTimeLabel() {
-        timeEditText.setText(DateHelper.getTimeAsString(myCalendar.getTime()));
+        timeEditText.setText(DateHelper.getTimeAsString(catalogItemDetailsViewModel.getMyCalendar().getTime()));
     }
 
     private void datePickerFocusHandler(View view, boolean focus) {
         if (!focus) {
             String date = ((TextView) view).getText().toString();
         } else {
+            Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
             new DatePickerDialog(getActivity(), datePickerListener, myCalendar
                     .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                     myCalendar.get(Calendar.DAY_OF_MONTH)).show();
@@ -206,6 +221,7 @@ public class CatalogItemDetailsFragment extends Fragment {
             String date = ((TextView) view).getText().toString();
 
         } else {
+            Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
             new TimePickerDialog(getActivity(), timePickerListener, myCalendar
                     .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true).show();
         }

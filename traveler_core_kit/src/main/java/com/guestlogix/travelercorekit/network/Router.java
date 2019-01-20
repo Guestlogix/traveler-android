@@ -78,9 +78,14 @@ public class Router {
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/product/" + catalogItem.getId()), session.getApiKey(), session.getAuthToken().getValue());
     }
+
     public static AuthenticatedRequest productSchedule(Session session, BookingContext bookingContext) {
 
-        return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL(String.format(Locale.CANADA,"/product/%s/schedule",bookingContext.getProduct().getId())), session.getApiKey(), session.getAuthToken().getValue());
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("from", DateHelper.getDateAsString(bookingContext.getStartDateTime()));
+        queryParams.put("to", DateHelper.getDateAsString(bookingContext.getEndDateTime()));
+
+        return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL(String.format(Locale.CANADA, "/product/%s/schedule", bookingContext.getProduct().getId()), queryParams), session.getApiKey(), session.getAuthToken().getValue());
     }
 
     private static String urlEncodeUTF8(Map<?, ?> map) {
