@@ -25,7 +25,7 @@ public class LabelValueRecyclerViewAdapter extends RecyclerView.Adapter<LabelVal
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.label_value_item, parent, false);
+                .inflate(R.layout.item_label_value, parent, false);
 
         return new ViewHolder(view);
     }

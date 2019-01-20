@@ -3,17 +3,17 @@ package com.guestlogix.traveleruikit.adapters;
 import android.content.Context;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import com.guestlogix.travelercorekit.models.Attribute;
 import com.guestlogix.travelercorekit.models.ContactInfo;
 import com.guestlogix.travelercorekit.models.Location;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.fragments.ItemDetailInformationFragment;
-import com.guestlogix.traveleruikit.fragments.ProviderInformationFragment;
+import com.guestlogix.traveleruikit.fragments.CatalogItemInformationFragment;
+import com.guestlogix.traveleruikit.fragments.CatalogItemProviderInformationFragment;
 
 import java.util.ArrayList;
 
-public class ItemInformationTabsPagerAdapter extends FragmentPagerAdapter {
+public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
 
     private ContactInfo contactInfo;
     private ArrayList<Attribute> informationList;
@@ -41,9 +41,9 @@ public class ItemInformationTabsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return ProviderInformationFragment.getInstance(contactInfo, locationsList);
+                return CatalogItemProviderInformationFragment.getInstance(contactInfo, locationsList);
             case 1:
-                return ItemDetailInformationFragment.getInstance(informationList);
+                return CatalogItemInformationFragment.getInstance(informationList);
         }
         return null;
     }

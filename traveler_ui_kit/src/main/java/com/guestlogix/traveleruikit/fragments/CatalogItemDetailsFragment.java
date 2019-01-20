@@ -118,12 +118,8 @@ public class CatalogItemDetailsFragment extends Fragment {
     private void updateView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
 
-        try {
-            if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
-                Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
+            //Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
