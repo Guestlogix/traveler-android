@@ -1,11 +1,13 @@
 package com.guestlogix.traveler.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -40,6 +42,7 @@ public class FlightSearchResultsFragment extends Fragment {
     private FlightSearchResultViewModel mFlightSearchResultViewModel;
     private HomeViewModel mHomeViewModel;
     private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
+    private ProgressBar flightResultProgressbar;
 
     public FlightSearchResultsFragment() {
     }
@@ -62,9 +65,7 @@ public class FlightSearchResultsFragment extends Fragment {
 
             mFlightSearchResultViewModel.flightSearch(flightQuery);
             mFlightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
-
-            // TODO Add a progressbar
-            Toast.makeText(getActivity(), "Searching flights...", Toast.LENGTH_SHORT).show();
+            mFlightSearchResultViewModel.getFlightSearchState().observe(this, this::flightStateChangeHandler);
 
         } catch (ParseException e) {
             Toast.makeText(getActivity(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
@@ -97,6 +98,7 @@ public class FlightSearchResultsFragment extends Fragment {
 
         flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
         emptyListLayout = view.findViewById(R.id.emptyListLayout);
+        flightResultProgressbar = view.findViewById(R.id.flightResultProgressBar);
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
@@ -127,5 +129,32 @@ public class FlightSearchResultsFragment extends Fragment {
         mHomeViewModel.addFlight(flight);
 
         Navigation.findNavController(mView).navigate(R.id.home_action);
+    }
+
+    private void flightStateChangeHandler(FlightSearchResultViewModel.FlightSearchState state) {
+        switch (state) {
+            case LOADING:
+                emptyListLayout.setVisibility(View.GONE);
+                flightResultRecyclerView.setVisibility(View.GONE);
+                flightResultProgressbar.setVisibility(View.VISIBLE);
+                break;
+            case SUCCESS:
+                flightResultProgressbar.setVisibility(View.GONE);
+                break;
+            case ERROR:
+                flightResultErrorHandler();
+                break;
+        }
+    }
+
+    private void flightResultErrorHandler() {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle(getString(R.string.oh_no))
+                .setMessage(getString(R.string.something_went_wrong))
+                .setNeutralButton("OK", ((dialog1, which) -> Navigation.findNavController(mView).navigate(R.id.home_action)))
+                .setCancelable(false)
+                .create();
+
+        dialog.show();
     }
 }
