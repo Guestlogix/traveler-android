@@ -10,4 +10,7 @@
     <string name="label_location">Location</string>
     <string name="label_starting_at">Starting at</string>
     <string name="button_check_availability">Check Availability</string>
+    <string name="unexpected_error">Unexpected Error</string>
+    <string name="unknown_error_message">Unfortunately something went wrong, please try again</string>
+    <string name="ok">OK</string>
 </resources>

@@ -5,8 +5,8 @@ import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 
 public abstract class StatefulViewModel extends ViewModel {
 
-    SingleLiveEvent<State> status = new SingleLiveEvent();
-    public SingleLiveEvent getStatus() {
+    SingleLiveEvent<State> status = new SingleLiveEvent<>();
+    public SingleLiveEvent<State> getStatus() {
         return status;
     }
 
