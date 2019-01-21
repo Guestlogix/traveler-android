@@ -7,6 +7,9 @@
         tools:listitem="@layout/fragment_flight_search_results_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/flightResultRecyclerView"
             android:name="com.guestlogix.traveler.activities.FlightSearchResultsFragment"

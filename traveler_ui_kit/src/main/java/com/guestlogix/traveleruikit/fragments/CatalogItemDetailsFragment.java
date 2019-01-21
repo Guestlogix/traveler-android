@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.fragments;
 
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Build;
@@ -9,13 +10,11 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -27,6 +26,7 @@ import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
+import com.guestlogix.viewmodels.StatefulViewModel;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -47,6 +47,9 @@ public class CatalogItemDetailsFragment extends Fragment {
     private Button checkAvailabilityButton;
     private TextInputEditText dateEditText;
     private TextInputEditText timeEditText;
+    private ProgressBar detailsProgressbar;
+    private ProgressBar checkAvailabilityProgressBar;
+    private RelativeLayout itemDetailsLayout;
 
     CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
@@ -82,6 +85,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
         catalogItemDetailsViewModel.setCatalogItem(catalogItem);
 
+
         catalogItemDetailsViewModel.getMyCalendarObservable().observe(this, new Observer<Calendar>() {
             @Override
             public void onChanged(Calendar calendar) {
@@ -97,35 +101,14 @@ public class CatalogItemDetailsFragment extends Fragment {
             }
         });
 
-        catalogItemDetailsViewModel.getStatus().observe(this, new Observer<CatalogItemDetailsViewModel.State>() {
-            @Override
-            public void onChanged(CatalogItemDetailsViewModel.State status) {
-                switch (status) {
-                    case LOADING:
-                        //TODO Handle Loading state
-                        Toast.makeText(getActivity(), "Loading", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SUCCESS:
-                        //TODO Handle Success state
-                        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
-                        break;
-                    case ERROR:
-                        //TODO Handle Error state
-                        Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        });
+        catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
+        catalogItemDetailsViewModel.getAvailabilityStatus().observe(this, this::onAvailabilityStateChange);
 
         catalogItemDetailsViewModel.updateCatalog(catalogItem);
     }
 
     View.OnClickListener checkAvailabilityOnClickListener = v -> {
-        //TODO Integrate Check Availability state
-        Toast.makeText(getActivity(), "Check Availability", Toast.LENGTH_SHORT).show();
-
         catalogItemDetailsViewModel.checkAvailability();
-
     };
 
     private void setUp(View view) {
@@ -139,6 +122,9 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
         dateEditText = view.findViewById(R.id.dateEditText);
         timeEditText = view.findViewById(R.id.timeEditText);
+        detailsProgressbar = view.findViewById(R.id.itemDetailsProgressBar);
+        itemDetailsLayout = view.findViewById(R.id.itemDetailsLayout);
+        checkAvailabilityProgressBar = view.findViewById(R.id.checkAvailabilityProgressBar);
     }
 
     private void setupListeners() {
@@ -218,5 +204,69 @@ public class CatalogItemDetailsFragment extends Fragment {
             new TimePickerDialog(getActivity(), timePickerListener, myCalendar
                     .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true).show();
         }
+    }
+
+    private void onStateChange(StatefulViewModel.State state) {
+        switch (state) {
+            case LOADING:
+                detailsProgressbar.setVisibility(View.VISIBLE);
+                itemDetailsLayout.setVisibility(View.GONE);
+                break;
+            case SUCCESS:
+                detailsProgressbar.setVisibility(View.GONE);
+                itemDetailsLayout.setVisibility(View.VISIBLE);
+                break;
+            case ERROR:
+                onErrorState();
+                break;
+        }
+    }
+
+    private void onErrorState() {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle(getString(R.string.unexpected_error))
+                .setMessage(getString(R.string.unknown_error_message))
+                .setNeutralButton(getString(R.string.ok), ((dial, which) -> {
+                    FragmentManager fm = getFragmentManager();
+                    assert fm != null;
+                    fm.popBackStack();
+
+                    dial.dismiss();
+                }))
+                .setCancelable(false)
+                .create();
+
+        dialog.show();
+    }
+
+    private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {
+        if (state == CatalogItemDetailsViewModel.CheckAvailabilityState.LOADING) {
+            checkAvailabilityProgressBar.setVisibility(View.VISIBLE);
+            checkAvailabilityButton.setVisibility(View.GONE);
+        } else {
+            checkAvailabilityProgressBar.setVisibility(View.GONE);
+            checkAvailabilityButton.setVisibility(View.VISIBLE);
+
+            switch (state) {
+                case AVAILABLE:
+                    // TODO
+                    break;
+                case NOT_AVAILABLE:
+                    // TODO
+                    break;
+                case ERROR:
+                    onCheckAvailabilityError();
+                    break;
+            }
+        }
+    }
+
+    private void onCheckAvailabilityError() {
+        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle(getString(R.string.unexpected_error))
+                .setMessage(getString(R.string.unknown_error_message))
+                .create();
+
+        dialog.show();
     }
 }

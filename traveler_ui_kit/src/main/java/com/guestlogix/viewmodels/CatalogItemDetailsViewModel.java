@@ -2,7 +2,6 @@ package com.guestlogix.viewmodels;
 
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
-import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
@@ -11,6 +10,7 @@ import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.repositories.CatalogItemDetailsRepository;
+import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,9 +18,10 @@ import java.util.Calendar;
 public class CatalogItemDetailsViewModel extends StatefulViewModel {
     private MutableLiveData<CatalogItemDetails> catalogItemDetails = new MutableLiveData<>();
     private MutableLiveData<CatalogItem> catalogItem = new MutableLiveData<>();
-    private CatalogItemDetailsRepository catalogItemDetailsRepository;
     private MutableLiveData<Calendar> myCalendar = new MutableLiveData<>();
     private MutableLiveData<BookingContext> bookingContext = new MutableLiveData<>();
+    private SingleLiveEvent<CheckAvailabilityState> availabilityStatus = new SingleLiveEvent<>();
+    private CatalogItemDetailsRepository catalogItemDetailsRepository;
 
 
     public CatalogItemDetailsViewModel() {
@@ -37,6 +38,10 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     public MutableLiveData<CatalogItem> getCatalogItem() {
         return catalogItem;
+    }
+
+    public SingleLiveEvent<CheckAvailabilityState> getAvailabilityStatus() {
+        return availabilityStatus;
     }
 
     public void setBookingContext(BookingContext bookingContext) {
@@ -87,22 +92,31 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         @Override
         public void onCheckAvailabilitySuccess(ArrayList<Availability> availability) {
             if(availability.size()>0){
-            Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Available:" + availability.get(0).getAvailable());
-            }else{
+                Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Available:" + availability.get(0).getAvailable());
+                availabilityStatus.postValue(CheckAvailabilityState.AVAILABLE);
+            } else {
                 Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not Available" );
-
+                availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
             }
         }
 
         @Override
         public void onCheckAvailabilityError(TravelerError error) {
             Log.d("CatalogItemDetailsVM", "onCheckAvailabilityError: ");
+            availabilityStatus.postValue(CheckAvailabilityState.ERROR);
         }
     };
 
 
     public void checkAvailability() {
-        Traveler.checkAvailability(bookingContext.getValue(), checkAvailabilityCallback);
+        availabilityStatus.postValue(CheckAvailabilityState.LOADING);
+        this.catalogItemDetailsRepository.fetchAvailability(bookingContext.getValue(), checkAvailabilityCallback);
+    }
 
+    public enum CheckAvailabilityState {
+        LOADING,
+        AVAILABLE,
+        NOT_AVAILABLE,
+        ERROR,
     }
 }
