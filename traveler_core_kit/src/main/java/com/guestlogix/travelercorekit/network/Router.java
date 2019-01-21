@@ -49,6 +49,11 @@ public class Router {
         return new UnauthenticatedRequest(NetworkTask.Request.Method.POST, createURL("/auth/token"), apiKey, new JSONObject(payload));
     }
 
+    public static UnauthenticatedRequest downloadImage(URL imageUrl) {
+
+        return new UnauthenticatedRequest(NetworkTask.Request.Method.GET, imageUrl, "", null);
+    }
+
     public static AuthenticatedRequest searchFlight(Session session, FlightQuery query) {
 
         Map<String, String> queryParams = new HashMap<>();
@@ -83,10 +88,9 @@ public class Router {
                 sb.append("&");
             }
             if (entry.getValue() instanceof List) {
-                sb.append(String.format("%s%s",
-                        urlEncodeUTF8(entry.getKey().toString()),
-                        urlEncodeUTF8(entry.getValue().toString())
-                ));
+                String key = entry.getKey().toString();
+                List values = (List) entry.getValue();
+                sb.append(urlEncodeUTF8(values, key));
             } else {
                 sb.append(String.format("%s=%s",
                         urlEncodeUTF8(entry.getKey().toString()),
@@ -94,6 +98,23 @@ public class Router {
                 ));
             }
         }
+        return sb.toString();
+    }
+
+    private static String urlEncodeUTF8(List values, String key) {
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0 ; i < values.size(); i++) {
+            sb.append(String.format("%s=%s",
+                    urlEncodeUTF8(key),
+                    urlEncodeUTF8(values.get(i).toString())
+            ));
+
+            if (i < values.size() - 1) {
+                sb.append('&');
+            }
+        }
+
         return sb.toString();
     }
 
