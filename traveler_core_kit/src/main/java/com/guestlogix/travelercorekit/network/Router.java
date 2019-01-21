@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
+
 
 public class Router {
     static final String BASE_URL = "https://guest-traveler-api-develop.guestlogix.io";
@@ -72,36 +74,5 @@ public class Router {
         queryParams.put("flight-ids", flightIds);
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/catalog", queryParams), session.getApiKey(), session.getAuthToken().getValue());
-    }
-
-    private static String urlEncodeUTF8(Map<?, ?> map) {
-        if (null == map)
-            return "";
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<?, ?> entry : map.entrySet()) {
-            if (sb.length() > 0) {
-                sb.append("&");
-            }
-            if (entry.getValue() instanceof List) {
-                sb.append(String.format("%s%s",
-                        urlEncodeUTF8(entry.getKey().toString()),
-                        urlEncodeUTF8(entry.getValue().toString())
-                ));
-            } else {
-                sb.append(String.format("%s=%s",
-                        urlEncodeUTF8(entry.getKey().toString()),
-                        urlEncodeUTF8(entry.getValue().toString())
-                ));
-            }
-        }
-        return sb.toString();
-    }
-
-    private static String urlEncodeUTF8(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new UnsupportedOperationException(e);
-        }
     }
 }
