@@ -47,7 +47,6 @@ public class CatalogFragment extends Fragment {
             homeFragmentRecyclerViewAdapter.update(flights);
             CatalogQuery catalogQuery = new CatalogQuery(flights);
             mViewModel.updateCatalog(catalogQuery);
-
         });
 
         mViewModel.getGroupsObservable().observe(this, this::catalogUpdateHandler);

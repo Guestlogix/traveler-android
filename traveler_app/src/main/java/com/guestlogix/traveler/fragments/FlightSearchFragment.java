@@ -26,24 +26,21 @@ public class FlightSearchFragment extends Fragment {
     TextView flightNumberEditText;
     TextView departureDateEditText;
     TextView searchFlightsButton;
+    View mView;
 
     private FlightSearchViewModel mViewModel;
 
     final Calendar myCalendar = Calendar.getInstance();
-
     final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9](\\d{1,3})?)$");
 
     public static FlightSearchFragment newInstance() {
         return new FlightSearchFragment();
     }
 
-    View mView;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
         mView = inflater.inflate(R.layout.fragment_flight_search, container, false);
 
         setupView(mView);
@@ -115,7 +112,6 @@ public class FlightSearchFragment extends Fragment {
     private void flightNumberFocusHandler(View view, boolean focus) {
         if (!focus) {
             String flightNumber = ((TextView) view).getText().toString();
-
             validateFlightNumber(flightNumber);
         }
     }
@@ -123,7 +119,6 @@ public class FlightSearchFragment extends Fragment {
     private void departureDateFocusHandler(View view, boolean focus) {
         if (!focus) {
             String date = ((TextView) view).getText().toString();
-
             validateFlightDate(date);
         } else {
             new DatePickerDialog(getActivity(), date, myCalendar

@@ -17,15 +17,12 @@ import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import java.util.List;
 
 public class Traveler {
-
     private static Traveler mLocalInstance;
     private static final String TAG = "Traveler";
     private TaskManager mTaskManager = new TaskManager();
-
     private Session mSession;
 
     public static void initialize(String apiKey, Context applicationContext) {
-
         if (mLocalInstance != null) {
             TravelerLog.e("SDK already initialized");
         } else {
@@ -73,7 +70,6 @@ public class Traveler {
         mTaskManager.addTask(sessionBeginBlockTask);
         mTaskManager.addTask(authTokenFetchTask);
         mTaskManager.addTask(authTokenFetchBlockTask);
-
     }
 
     /**
@@ -91,7 +87,6 @@ public class Traveler {
 
             AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
-
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
@@ -107,7 +102,6 @@ public class Traveler {
 
             mLocalInstance.mTaskManager.addTask(searchFlightTask);
             TaskManager.getMainTaskManager().addTask(searchFlightBlockTask);
-
         }
     }
 
@@ -141,5 +135,4 @@ public class Traveler {
             TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
         }
     }
-
 }

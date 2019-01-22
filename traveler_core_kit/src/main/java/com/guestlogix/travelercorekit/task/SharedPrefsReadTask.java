@@ -10,7 +10,6 @@ public class SharedPrefsReadTask extends SharedPrefsTask {
     private String mResult = null;
 
     public class SharedPrefsReadError extends Error {
-
     }
 
     public SharedPrefsReadTask(Context context, String key) {

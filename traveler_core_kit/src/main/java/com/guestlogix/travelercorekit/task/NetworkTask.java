@@ -91,8 +91,6 @@ public class NetworkTask extends Task {
 
             // Process connection
             processConnection(urlConnection);
-
-
         } catch (IOException e) {
 
             String errorMessage = null;
@@ -103,7 +101,6 @@ public class NetworkTask extends Task {
 
             mError = new TravelerError(TravelerErrorCode.CONNECTION_ERROR, errorMessage);
         }
-
         finish();
     }
 
@@ -170,7 +167,6 @@ public class NetworkTask extends Task {
             if (mResponseHandler != null) {
                 mResponseHandler.onHandleResponse(is);
             }
-
             is.close();
         }
     }

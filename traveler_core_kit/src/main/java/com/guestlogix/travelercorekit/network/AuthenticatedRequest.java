@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.HashMap;
 
 public class AuthenticatedRequest implements NetworkTask.Request {
-
     private Method mMethod;
     private URL mURL;
     private JSONObject mPayload;

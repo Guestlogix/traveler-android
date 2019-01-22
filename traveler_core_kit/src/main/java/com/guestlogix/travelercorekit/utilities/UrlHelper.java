@@ -36,12 +36,10 @@ public class UrlHelper {
                     urlEncodeUTF8(key),
                     urlEncodeUTF8(values.get(i).toString())
             ));
-
             if (i < values.size() - 1) {
                 sb.append('&');
             }
         }
-
         return sb.toString();
     }
 

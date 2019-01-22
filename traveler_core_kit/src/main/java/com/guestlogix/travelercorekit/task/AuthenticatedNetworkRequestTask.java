@@ -41,9 +41,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
 
     @Override
     public void execute() {
-
         AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.mSession.getApiKey(), mSession.getContext());
-
         NetworkTask retryNetworkTask = new NetworkTask(mRequest, mJsonObjectMapper);
 
         BlockTask retryNetworkBlockTask = new BlockTask() {
@@ -97,15 +95,12 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
                 AuthenticatedNetworkRequestTask.this.finish();
             }
         };
-
-
         networkBlockTask.addDependency(networkTask);
         authTokenFetchTask.addDependency(networkBlockTask);
         authTokenFetchBlockTask.addDependency(authTokenFetchTask);
         retryNetworkTask.addDependency(authTokenFetchBlockTask);
         retryNetworkBlockTask.addDependency(retryNetworkTask);
         finishTask.addDependency(retryNetworkBlockTask);
-
 
         mTaskManager.addTask(networkTask);
         mTaskManager.addTask(networkBlockTask);

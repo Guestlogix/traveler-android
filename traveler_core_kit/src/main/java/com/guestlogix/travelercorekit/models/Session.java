@@ -32,5 +32,4 @@ public class Session {
     public Context getContext() {
         return context;
     }
-
 }

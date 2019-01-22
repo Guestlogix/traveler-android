@@ -17,9 +17,7 @@ import java.util.List;
 public class CatalogViewModel extends ViewModel {
     private MutableLiveData<ArrayList<Flight>> flightsArrayList;
     private MutableLiveData<List<CatalogGroup>> groupList;
-
     private CatalogSearchRepository catalogRepository;
-
 
     public CatalogViewModel() {
         this.flightsArrayList = new MutableLiveData<>();
@@ -40,9 +38,7 @@ public class CatalogViewModel extends ViewModel {
     }
 
     public void addFlight(Flight flight) {
-
         //TODO User repository to manage flights in user session
-
         if (null != flightsArrayList.getValue()) {
             ArrayList<Flight> flightsList = flightsArrayList.getValue();
             flightsList.add(flight);
