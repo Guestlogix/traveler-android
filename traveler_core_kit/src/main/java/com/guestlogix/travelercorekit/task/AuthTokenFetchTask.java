@@ -64,12 +64,10 @@ public class AuthTokenFetchTask extends Task {
         };
 
         sharedPrefsWriteTask.addDependency(fetchTokenNetworkTask);
-
         finishTask.addDependency(sharedPrefsWriteTask);
 
         mTaskManager.addTask(fetchTokenNetworkTask);
         mTaskManager.addTask(sharedPrefsWriteTask);
         mTaskManager.addTask(finishTask);
-
     }
 }

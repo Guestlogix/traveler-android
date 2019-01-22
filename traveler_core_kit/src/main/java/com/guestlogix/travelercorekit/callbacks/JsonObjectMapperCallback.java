@@ -4,6 +4,5 @@ import com.guestlogix.travelercorekit.error.TravelerError;
 
 public interface JsonObjectMapperCallback<T> {
     void onSuccess(T responseObject);
-
     void onError(TravelerError error);
 }

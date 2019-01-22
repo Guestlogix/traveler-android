@@ -35,7 +35,6 @@ public class FlightSearchResultsFragment extends Fragment {
     LinearLayout emptyListLayout;
 
     private View mView;
-
     private FlightSearchResultViewModel mFlightSearchResultViewModel;
     private CatalogViewModel mCatalogViewModel;
     private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
@@ -67,7 +66,6 @@ public class FlightSearchResultsFragment extends Fragment {
 
         } catch (ParseException e) {
             Toast.makeText(getActivity(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
-
             e.printStackTrace();
         }
     }
@@ -93,7 +91,6 @@ public class FlightSearchResultsFragment extends Fragment {
     }
 
     private void setupView(View view) {
-
         flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
         emptyListLayout = view.findViewById(R.id.emptyListLayout);
 

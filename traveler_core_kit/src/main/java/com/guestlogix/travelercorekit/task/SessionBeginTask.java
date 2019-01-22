@@ -48,6 +48,5 @@ public class SessionBeginTask extends Task {
         mTaskManager.addTask(sharedPrefsReadTask);
         mTaskManager.addTask(sharedPrefsReadBlockTask);
         mTaskManager.addTask(finishTask);
-
     }
 }

@@ -95,5 +95,4 @@ public class JsonReaderHelper {
             return reader.nextDouble();
         }
     }
-
 }

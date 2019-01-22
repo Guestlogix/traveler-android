@@ -39,7 +39,6 @@ public class Router {
     }
 
     public static UnauthenticatedRequest authenticate(String apiKey, Context context) {
-
         Map<String, String> payload = new HashMap<>();
         payload.put("deviceId", "android_678");
         payload.put("osVersion", "oreo");
@@ -52,7 +51,6 @@ public class Router {
     }
 
     public static AuthenticatedRequest searchFlight(Session session, FlightQuery query) {
-
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("flight-number", query.getNumber());
         queryParams.put("departure-date", DateHelper.getDateAsString(query.getDate()));
@@ -61,7 +59,6 @@ public class Router {
     }
 
     public static AuthenticatedRequest getCatalog(Session session, CatalogQuery catalogQuery) {
-
         List<String> flightIds = new ArrayList<>();
 
         if (null != catalogQuery) {

@@ -23,7 +23,6 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
     @Override
     public void onHandleResponse(InputStream stream) {
-
         try (JsonReader reader = new JsonReader(new InputStreamReader(stream))) {
             T model = mObjectMappingFactory.instantiate(reader);
 

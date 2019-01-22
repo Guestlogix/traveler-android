@@ -15,7 +15,6 @@ import java.util.List;
 
 public class FlightSearchResultViewModel extends ViewModel {
     private static final String TAG = "FlightSearch";
-
     private MutableLiveData<List<Flight>> flightsArrayList;
     private FlightSearchRepository flightSearchRepository;
 
