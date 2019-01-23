@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
@@ -26,6 +27,7 @@ public class CatalogFragment extends Fragment {
     RecyclerView flightResultRecyclerView;
     CatalogView catalogView;
     List<CatalogGroup> mCatalogGroups;
+    View mView;
 
     private CatalogViewModel mViewModel;
     private HomeFragmentRecyclerViewAdapter homeFragmentRecyclerViewAdapter;
@@ -33,10 +35,10 @@ public class CatalogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_catalog, container, false);
+        mView = inflater.inflate(R.layout.fragment_catalog, container, false);
 
-        setupView(view);
-        return view;
+        setupView(mView);
+        return mView;
     }
 
     @Override
@@ -92,6 +94,11 @@ public class CatalogFragment extends Fragment {
         @Override
         public void onItemClick(int sectionPosition, int itemIndex) {
             Log.v("CatalogFragment", "Clicked Item " + itemIndex + " for:" + sectionPosition);
+
+            CatalogItem catalogItem = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
+
+            CatalogFragmentDirections.CatalogItemDetailsAction directions = CatalogFragmentDirections.catalogItemDetailsAction(catalogItem);
+            Navigation.findNavController(mView).navigate(directions);
         }
 
         @Override
