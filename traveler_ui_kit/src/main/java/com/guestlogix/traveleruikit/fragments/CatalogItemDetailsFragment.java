@@ -242,7 +242,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {
         if (state == CatalogItemDetailsViewModel.CheckAvailabilityState.LOADING) {
             checkAvailabilityProgressBar.setVisibility(View.VISIBLE);
-            checkAvailabilityButton.setVisibility(View.GONE);
+            checkAvailabilityButton.setVisibility(View.INVISIBLE);
         } else {
             checkAvailabilityProgressBar.setVisibility(View.GONE);
             checkAvailabilityButton.setVisibility(View.VISIBLE);

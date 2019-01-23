@@ -149,14 +149,14 @@
                         android:textColor="@color/black"
                         android:layout_height="wrap_content"
                         android:id="@+id/checkAvailabilityButton"/>
-
                 <ProgressBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:layout_centerInParent="true"
                         android:id="@+id/checkAvailabilityProgressBar"
+                        tools:visibility="visible"
                         android:visibility="gone"/>
-
             </RelativeLayout>
 
         </RelativeLayout>
