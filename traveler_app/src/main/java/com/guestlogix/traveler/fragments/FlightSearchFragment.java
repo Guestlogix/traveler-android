@@ -31,7 +31,7 @@ public class FlightSearchFragment extends Fragment {
     private FlightSearchViewModel mViewModel;
 
     final Calendar myCalendar = Calendar.getInstance();
-    final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9](\\d{1,3})?)$");
+    final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9][0-9]{0,3}|[0-9]{0,3}[1-9])$");
 
     public static FlightSearchFragment newInstance() {
         return new FlightSearchFragment();
