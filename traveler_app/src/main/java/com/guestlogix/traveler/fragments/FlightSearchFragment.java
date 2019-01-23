@@ -1,12 +1,15 @@
 package com.guestlogix.traveler.fragments;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +21,7 @@ import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,6 +77,8 @@ public class FlightSearchFragment extends Fragment {
         String departureDate = DateHelper.getDateAsString(myCalendar.getTime());
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
+            hideKeyboard(getActivity());
+
             FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);
             Navigation.findNavController(mView).navigate(directions);
         } else {
@@ -133,5 +139,10 @@ public class FlightSearchFragment extends Fragment {
             return true;
         }
         return false;
+    }
+
+    private static void hideKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(activity.getCurrentFocus()).getWindowToken(), 0);
     }
 }
