@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Traveler Ui Kit</string>
+    <string name="contact">Contact Details</string>
+    <string name="open_maps">View in Maps</string>
+    <string name="info">Info</string>
+    <string name="provider">Provider</string>
     <string name="button_see_all">See All</string>
+    <string name="label_about_the_tour">About the tour</string>
+    <string name="label_contact_details">Contact Details</string>
+    <string name="label_location">Location</string>
 </resources>

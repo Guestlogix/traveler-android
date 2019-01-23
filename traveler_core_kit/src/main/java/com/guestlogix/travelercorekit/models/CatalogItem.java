@@ -5,9 +5,10 @@ import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 
-public class CatalogItem {
+public class CatalogItem implements Serializable {
 
     private String id;
     private String title;
@@ -53,7 +54,7 @@ public class CatalogItem {
         this.imageURL = imageURL;
     }
 
-    public static class ItemObjectMappingFactory implements ObjectMappingFactory<CatalogItem> {
+    public static class CatalogItemObjectMappingFactory implements ObjectMappingFactory<CatalogItem> {
 
         @Override
         public CatalogItem instantiate(JsonReader reader) throws IOException {

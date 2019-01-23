@@ -4,6 +4,8 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JsonReaderHelper {
     /**
@@ -94,5 +96,22 @@ public class JsonReaderHelper {
         } else {
             return reader.nextDouble();
         }
+    }
+    /**
+     * Performs a String Array read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return String Array or null
+     * @throws IOException If reading cannot be performed.
+     */
+    public static ArrayList<String> readStringsArray(JsonReader reader) throws IOException {
+        ArrayList<String> strings = new ArrayList<>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            strings.add(reader.nextString());
+        }
+        reader.endArray();
+        return strings;
     }
 }

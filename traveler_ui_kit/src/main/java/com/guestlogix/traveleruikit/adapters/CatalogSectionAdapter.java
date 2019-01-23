@@ -23,9 +23,8 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
     @Override
     public CatalogSectionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_catalog_section, parent, false);
+                .inflate(R.layout.item_catalog_section, parent, false);
         return new CatalogSectionViewHolder(view);
-
     }
 
     @Override
@@ -60,7 +59,6 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
 
             catalogItemAdapter = new CatalogItemAdapter();
             sectionItemRecyclerView.setAdapter(catalogItemAdapter);
-
         }
     }
 
@@ -80,9 +78,8 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
         @Override
         public CatalogSectionAdapter.CatalogItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.view_catalog_section_item, parent, false);
+                    .inflate(R.layout.item_view_catalog_section_item, parent, false);
             return new CatalogItemViewHolder(view);
-
         }
 
         @Override
@@ -106,7 +103,7 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
             @Override
             public void onClick(View v) {
                 int index = (Integer) v.getTag();
-                catalogViewAdapter.onItemClick(sectionPosition,index);
+                catalogViewAdapter.onItemClick(sectionPosition, index);
             }
         };
     }
@@ -124,9 +121,7 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
             thumbnailImageView = mView.findViewById(R.id.thumbnailImageView);
             titleTextView = mView.findViewById(R.id.titleTextView);
             subTitleTextView = mView.findViewById(R.id.subTitleTextView);
-
         }
     }
-
 
 }

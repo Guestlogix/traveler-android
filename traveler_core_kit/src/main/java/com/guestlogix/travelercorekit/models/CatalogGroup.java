@@ -98,7 +98,7 @@ public class CatalogGroup {
                         featured = JsonReaderHelper.readBoolean(reader);
                         break;
                     case "items":
-                        items = new ArrayMappingFactory<>(new CatalogItem.ItemObjectMappingFactory()).instantiate(reader);
+                        items = new ArrayMappingFactory<>(new CatalogItem.CatalogItemObjectMappingFactory()).instantiate(reader);
                         break;
                     default:
                         reader.skipValue();

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
+public class ArrayMappingFactory<T> implements ObjectMappingFactory<ArrayList<T>> {
     ObjectMappingFactory<T> mObjectMappingFactory;
 
     public ArrayMappingFactory(ObjectMappingFactory<T> objectMappingFactory) {
@@ -14,8 +14,8 @@ public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
     }
 
     @Override
-    public List<T> instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-        List<T> objects = new ArrayList<>();
+    public ArrayList<T> instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+        ArrayList<T> objects = new ArrayList<>();
         reader.beginArray();
         while (reader.hasNext()) {
             T model = mObjectMappingFactory.instantiate(reader);

@@ -3,6 +3,7 @@ package com.guestlogix.travelercorekit;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
@@ -14,7 +15,7 @@ import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Traveler {
     private static Traveler mLocalInstance;
@@ -85,7 +86,7 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, flightQuery);
 
-            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<ArrayList<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
@@ -132,6 +133,37 @@ public class Traveler {
 
             searchGroupBlockTask.addDependency(searchGroupTask);
             mLocalInstance.mTaskManager.addTask(searchGroupTask);
+            TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+        }
+    }
+
+    /**
+     * Fetches groups of catalog items.
+     *
+     * @param catalogItem          Ids of the flights for which to fetch the groups.
+     * @param catalogItemDetailsCallback Callback methods which will be executed after the data is fetched.
+     */
+    public static void fetchCatalogItemDetails(CatalogItem catalogItem, CatalogItemDetailsCallback catalogItemDetailsCallback) {
+        if (null == mLocalInstance) {
+            catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+            AuthenticatedRequest request = Router.getCatalogItem(mLocalInstance.mSession, catalogItem);
+
+            AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+
+            BlockTask searchGroupBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != catalogItemDetailsTask.getError()) {
+                        catalogItemDetailsCallback.onCatalogItemDetailsError(catalogItemDetailsTask.getError());
+                    } else {
+                        catalogItemDetailsCallback.onCatalogItemDetailsSuccess(catalogItemDetailsTask.getResource());
+                    }
+                }
+            };
+
+            searchGroupBlockTask.addDependency(catalogItemDetailsTask);
+            mLocalInstance.mTaskManager.addTask(catalogItemDetailsTask);
             TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
         }
     }

@@ -43,7 +43,6 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
 
         holder.addFlightTextView.setTag(position);
         holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);
-
     }
 
     @Override
@@ -75,11 +74,9 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
             departureCityTextView = mView.findViewById(R.id.departureCityTextView);
             departureIataTextView = mView.findViewById(R.id.departureIataTextView);
             departureTimeTextView = mView.findViewById(R.id.departureTimeTextView);
-
             arrivalCityTextView = mView.findViewById(R.id.arrivalCityTextView);
             arrivalIataTextView = mView.findViewById(R.id.arrivalIataTextView);
             arrivalTimeTextView = mView.findViewById(R.id.arrivalTimeTextView);
-
             addFlightTextView = mView.findViewById(R.id.addFlightTextView);
         }
     }

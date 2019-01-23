@@ -72,6 +72,5 @@ public class CatalogView extends FrameLayout {
         int getSectionsCount();
 
         int getSectionItemsCount(int sectionIndex);
-
     }
 }

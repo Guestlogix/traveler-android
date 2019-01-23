@@ -14,5 +14,4 @@ public class TravelerApplication extends Application {
         super.onCreate();
         Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext());
     }
-
 }

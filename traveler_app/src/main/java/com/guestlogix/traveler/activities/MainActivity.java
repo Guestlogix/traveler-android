@@ -21,8 +21,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupAppCenter();
-
-        //demoFlightSearch();
     }
 
     @Override
@@ -42,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey,
                 Analytics.class, Crashes.class);
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
-
     }
 }
 

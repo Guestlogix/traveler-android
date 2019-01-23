@@ -53,7 +53,6 @@ public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFr
         TextView departureIataTextView;
         TextView arrivalIataTextView;
         TextView deleteTextView;
-
         Flight mItem;
 
         ViewHolder(View view) {
