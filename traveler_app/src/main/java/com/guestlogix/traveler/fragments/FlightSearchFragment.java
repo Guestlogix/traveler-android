@@ -27,10 +27,10 @@ import java.util.regex.Pattern;
 
 public class FlightSearchFragment extends Fragment {
 
-    TextView flightNumberEditText;
-    TextView departureDateEditText;
-    TextView searchFlightsButton;
-    View mView;
+    private TextView flightNumberEditText;
+    private TextView departureDateEditText;
+    private TextView searchFlightsButton;
+    private View mView;
 
     private FlightSearchViewModel mViewModel;
 
@@ -56,6 +56,7 @@ public class FlightSearchFragment extends Fragment {
     private void setupListeners() {
         flightNumberEditText.setOnFocusChangeListener(this::flightNumberFocusHandler);
         departureDateEditText.setOnFocusChangeListener(this::departureDateFocusHandler);
+        departureDateEditText.setOnClickListener(this::departureDateClickHandler);
         departureDateEditText.setOnEditorActionListener(this::softInputSubmit);
         searchFlightsButton.setOnClickListener(this::navigateToFlightSearchResults);
     }
@@ -69,7 +70,7 @@ public class FlightSearchFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchViewModel.class);
+        mViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(FlightSearchViewModel.class);
     }
 
     private void navigateToFlightSearchResults(View view) {
@@ -78,8 +79,9 @@ public class FlightSearchFragment extends Fragment {
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             hideKeyboard(getActivity());
+            FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections
+                    .flightSearchResultAction(departureDate, flightNumber);
 
-            FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections.flightSearchResultAction(departureDate, flightNumber);
             Navigation.findNavController(mView).navigate(directions);
         } else {
             validateFlightNumber(flightNumber);
@@ -87,7 +89,7 @@ public class FlightSearchFragment extends Fragment {
         }
     }
 
-    DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+    private DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
         myCalendar.set(Calendar.YEAR, year);
         myCalendar.set(Calendar.MONTH, monthOfYear);
         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -127,10 +129,18 @@ public class FlightSearchFragment extends Fragment {
             String date = ((TextView) view).getText().toString();
             validateFlightDate(date);
         } else {
-            new DatePickerDialog(getActivity(), date, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            showDatePickerDialog();
         }
+    }
+
+    private void departureDateClickHandler(View view) {
+        showDatePickerDialog();
+    }
+
+    private void showDatePickerDialog() {
+        new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private boolean softInputSubmit(View v, int actionId, KeyEvent event) {
