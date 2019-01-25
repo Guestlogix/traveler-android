@@ -18,8 +18,10 @@ import com.guestlogix.traveler.viewmodels.CatalogViewModel;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
+import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogFragment extends Fragment {
@@ -29,7 +31,7 @@ public class CatalogFragment extends Fragment {
     List<CatalogGroup> mCatalogGroups;
     View mView;
 
-    private CatalogViewModel mViewModel;
+    private CatalogViewModel catalogViewModel;
     private HomeFragmentRecyclerViewAdapter homeFragmentRecyclerViewAdapter;
 
     @Override
@@ -44,21 +46,23 @@ public class CatalogFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
-        mViewModel.getFlightsObservable().observe(this, flights -> {
-            homeFragmentRecyclerViewAdapter.update(flights);
-            CatalogQuery catalogQuery = new CatalogQuery(flights);
-            mViewModel.updateCatalog(catalogQuery);
-        });
+        catalogViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
+        catalogViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
+        catalogViewModel.getGroupsObservable().observe(this, this::catalogUpdateHandler);
 
-        mViewModel.getGroupsObservable().observe(this, this::catalogUpdateHandler);
+        flightsUpdateHandler(catalogViewModel.getFlights());
+    }
+
+    private void updateCatalog(ArrayList<Flight> flights) {
+        CatalogQuery catalogQuery = new CatalogQuery(flights);
+        catalogViewModel.updateCatalog(catalogQuery);
     }
 
     View.OnClickListener deleteFlightOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int index = (Integer) v.getTag();
-            mViewModel.deleteFlight(index);
+            catalogViewModel.deleteFlight(index);
         }
     };
 
@@ -115,5 +119,9 @@ public class CatalogFragment extends Fragment {
     private void catalogUpdateHandler(List<CatalogGroup> catalogGroups) {
         catalogView.setCatalogViewAdapter(catalogViewAdapter);
         mCatalogGroups = catalogGroups;
+    }
+
+    private void flightsUpdateHandler(ArrayList<Flight> flights) {
+        updateCatalog(flights);
     }
 }
