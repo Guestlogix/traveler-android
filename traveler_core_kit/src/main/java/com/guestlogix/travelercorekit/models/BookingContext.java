@@ -5,8 +5,9 @@ import java.util.Date;
 public class BookingContext {
 
     Product product;
-    Date startDateTime;
-    Date endDateTime;
+    Date selectedDate;
+    Long selectedTime;
+    Date endDateTime;//TODO
 
     public BookingContext(Product product) {
         this.product = product;
@@ -20,12 +21,12 @@ public class BookingContext {
         this.product = product;
     }
 
-    public Date getStartDateTime() {
-        return startDateTime;
+    public Date getSelectedDate() {
+        return selectedDate;
     }
 
-    public void setStartDateTime(Date startDateTime) {
-        this.startDateTime = startDateTime;
+    public void setSelectedDate(Date selectedDate) {
+        this.selectedDate = selectedDate;
     }
 
     public Date getEndDateTime() {
@@ -34,5 +35,13 @@ public class BookingContext {
 
     public void setEndDateTime(Date endDateTime) {
         this.endDateTime = endDateTime;
+    }
+
+    public Long getSelectedTime() {
+        return selectedTime;
+    }
+
+    public void setSelectedTime(Long selectedTime) {
+        this.selectedTime = selectedTime;
     }
 }

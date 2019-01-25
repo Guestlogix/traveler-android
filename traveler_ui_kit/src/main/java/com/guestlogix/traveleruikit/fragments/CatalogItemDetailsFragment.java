@@ -3,31 +3,34 @@ package com.guestlogix.traveleruikit.fragments;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
+import com.guestlogix.traveleruikit.adapters.TimeSlotSpinnerAdapter;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.viewmodels.StatefulViewModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -36,7 +39,7 @@ import java.util.Locale;
  */
 public class CatalogItemDetailsFragment extends Fragment {
     private View mView;
-
+    private NestedScrollView mainNestedScrollView;
     private ViewPager catalogItemDetailsPager;
     private TabLayout catalogItemDetailsTabs;
     private CatalogItem catalogItem;
@@ -46,12 +49,15 @@ public class CatalogItemDetailsFragment extends Fragment {
     private TextView startingAtValueTextView;
     private Button checkAvailabilityButton;
     private TextInputEditText dateEditText;
+    private TextInputLayout dateTextInputLayout;
     private TextInputEditText timeEditText;
+    private TextInputLayout timeTextInputLayout;
+    private Spinner timeSlotsSpinner;
     private ProgressBar detailsProgressbar;
     private ProgressBar checkAvailabilityProgressBar;
     private RelativeLayout itemDetailsLayout;
 
-    CatalogItemDetailsViewModel catalogItemDetailsViewModel;
+    private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
     public CatalogItemDetailsFragment() {
     }
@@ -60,7 +66,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_catalog_item_details, container, false);
-        setUp(mView);
+        setUpView(mView);
         setupListeners();
         return mView;
     }
@@ -84,35 +90,18 @@ public class CatalogItemDetailsFragment extends Fragment {
 
         catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
         catalogItemDetailsViewModel.setCatalogItem(catalogItem);
-
-
-        catalogItemDetailsViewModel.getMyCalendarObservable().observe(this, new Observer<Calendar>() {
-            @Override
-            public void onChanged(Calendar calendar) {
-                updateDateLabel();
-                updateTimeLabel();
-            }
-        });
-
-        catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, new Observer<CatalogItemDetails>() {
-            @Override
-            public void onChanged(CatalogItemDetails catalogItemDetails) {
-                updateView(catalogItemDetails);
-            }
-        });
-
+        catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, catalogItemDetails -> setView(catalogItemDetails));
         catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
         catalogItemDetailsViewModel.getAvailabilityStatus().observe(this, this::onAvailabilityStateChange);
+        catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
+        catalogItemDetailsViewModel.getSelectedDateObservable().observe(this, this::onSelectedDateChanged);
+        catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
 
         catalogItemDetailsViewModel.updateCatalog(catalogItem);
     }
 
-    View.OnClickListener checkAvailabilityOnClickListener = v -> {
-        catalogItemDetailsViewModel.checkAvailability();
-    };
-
-    private void setUp(View view) {
-
+    private void setUpView(View view) {
+        mainNestedScrollView = view.findViewById(R.id.mainNestedScrollView);
         titleTextView = view.findViewById(R.id.titleTextView);
         descriptionTextView = view.findViewById(R.id.descriptionTextView);
         imageView = view.findViewById(R.id.imageView);
@@ -121,20 +110,24 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
         dateEditText = view.findViewById(R.id.dateEditText);
+        dateTextInputLayout = view.findViewById(R.id.dateTextInputLayout);
         timeEditText = view.findViewById(R.id.timeEditText);
+        timeTextInputLayout = view.findViewById(R.id.timeTextInputLayout);
+        timeSlotsSpinner = view.findViewById(R.id.timeSlotsSpinner);
         detailsProgressbar = view.findViewById(R.id.itemDetailsProgressBar);
         itemDetailsLayout = view.findViewById(R.id.itemDetailsLayout);
         checkAvailabilityProgressBar = view.findViewById(R.id.checkAvailabilityProgressBar);
     }
 
     private void setupListeners() {
-        checkAvailabilityButton.setOnClickListener(checkAvailabilityOnClickListener);
-        dateEditText.setOnFocusChangeListener(this::datePickerFocusHandler);
-        timeEditText.setOnFocusChangeListener(this::timePickerFocusHandler);
+        timeEditText.setOnClickListener(this::timePickerOnclick);
+        dateEditText.setOnClickListener(this::datePickerOnclick);
+        checkAvailabilityButton.setOnClickListener(this::checkAvailabilityOnClick);
+        timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
 
     }
 
-    private void updateView(CatalogItemDetails catalogItemDetails) {
+    private void setView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
         startingAtValueTextView.setText(String.format(Locale.CANADA, "$%f/per person", catalogItemDetails.getPriceStartingAt()));
 
@@ -158,53 +151,79 @@ public class CatalogItemDetailsFragment extends Fragment {
     }
 
     DatePickerDialog.OnDateSetListener datePickerListener = (view, year, monthOfYear, dayOfMonth) -> {
+        Calendar date = catalogItemDetailsViewModel.getSelectedDate();
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, monthOfYear);
+        date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
-        myCalendar.set(Calendar.YEAR, year);
-        myCalendar.set(Calendar.MONTH, monthOfYear);
-        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-        catalogItemDetailsViewModel.setMyCalendar(myCalendar);
+        catalogItemDetailsViewModel.setSelectedDate(date);
     };
 
-    TimePickerDialog.OnTimeSetListener timePickerListener = (view, hourOfDay, minute) -> {
-
-        Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
-        myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        myCalendar.set(Calendar.MINUTE, minute);
-
-        catalogItemDetailsViewModel.setMyCalendar(myCalendar);
-    };
-
-    private void updateDateLabel() {
-        dateEditText.setText(DateHelper.getPrettyDateAsString(catalogItemDetailsViewModel.getMyCalendar().getTime()));
-    }
-
-    private void updateTimeLabel() {
-        timeEditText.setText(DateHelper.getTimeAsString(catalogItemDetailsViewModel.getMyCalendar().getTime()));
-    }
-
-    private void datePickerFocusHandler(View view, boolean focus) {
-        if (!focus) {
-            String date = ((TextView) view).getText().toString();
+    private void setDateLabel() {
+        String selectedDate = DateHelper.getPrettyDateAsString(catalogItemDetailsViewModel.getSelectedDate().getTime());
+        if (null != selectedDate && !selectedDate.isEmpty()) {
+            dateEditText.setText(selectedDate);
         } else {
-            Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
-            new DatePickerDialog(getActivity(), datePickerListener, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            timeEditText.setText("");
+            timeEditText.setHint(getString(R.string.hint_select_date));
         }
     }
 
-    private void timePickerFocusHandler(View view, boolean focus) {
-        if (!focus) {
-            String date = ((TextView) view).getText().toString();
-
+    private void setTimeLabel() {
+        String selectedTime = DateHelper.getDayMinutesAsTimeString(catalogItemDetailsViewModel.getSelectedTime());
+        if (null != selectedTime && !selectedTime.isEmpty()) {
+            timeEditText.setText(selectedTime);
         } else {
-            Calendar myCalendar = catalogItemDetailsViewModel.getMyCalendar();
-            new TimePickerDialog(getActivity(), timePickerListener, myCalendar
-                    .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true).show();
+            timeEditText.setText("");
+            timeEditText.setHint(R.string.hint_select_time);
         }
     }
+
+    private void timePickerOnclick(View view) {
+        timeEditText.setError(null);
+        timeSlotsSpinner.performClick();
+    }
+
+    private void datePickerOnclick(View view) {
+        dateEditText.setError(null);
+        Calendar myCalendar = catalogItemDetailsViewModel.getSelectedDate();
+        new DatePickerDialog(getActivity(), datePickerListener, myCalendar
+                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void checkAvailabilityOnClick(View view) {
+        boolean isFormComplete = true;
+
+        if (catalogItemDetailsViewModel.getSelectedTime() == null) {
+            timeEditText.setError(getString(R.string.hint_select_time));
+            focusOnView(timeTextInputLayout);
+            isFormComplete = false;
+        }
+
+        if (catalogItemDetailsViewModel.getSelectedDate() == null) {
+            dateEditText.setError(getString(R.string.hint_select_time));
+            focusOnView(dateTextInputLayout);
+            isFormComplete = false;
+        }
+
+        if(isFormComplete){
+            //TODO Fetch Pass for selected product
+        }
+    }
+
+    AdapterView.OnItemSelectedListener timeSlotOnItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            catalogItemDetailsViewModel.setSelectedTime(position);
+            Log.v("CatalogItemDetails", String.format("Selected %d", position));
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            Log.v("CatalogItemDetails", String.format("Selected none"));
+        }
+    };
 
     private void onStateChange(StatefulViewModel.State state) {
         switch (state) {
@@ -239,6 +258,15 @@ public class CatalogItemDetailsFragment extends Fragment {
         dialog.show();
     }
 
+    private void onSelectedTimeChanged(Long selectedTime) {
+        setTimeLabel();
+    }
+
+    private void onSelectedDateChanged(Calendar selectedDate) {
+        setDateLabel();
+        catalogItemDetailsViewModel.checkAvailability();
+    }
+
     private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {
         if (state == CatalogItemDetailsViewModel.CheckAvailabilityState.LOADING) {
             checkAvailabilityProgressBar.setVisibility(View.VISIBLE);
@@ -261,6 +289,12 @@ public class CatalogItemDetailsFragment extends Fragment {
         }
     }
 
+    private void onTimeSlotsChanged(ArrayList<Long> availableTimeSlots) {
+        TimeSlotSpinnerAdapter timeSlotSpinnerAdapter = new TimeSlotSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, availableTimeSlots);
+        timeSlotsSpinner.setAdapter(timeSlotSpinnerAdapter);
+        timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
+    }
+
     private void onCheckAvailabilityError() {
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.unexpected_error))
@@ -268,5 +302,9 @@ public class CatalogItemDetailsFragment extends Fragment {
                 .create();
 
         dialog.show();
+    }
+
+    private void focusOnView(View view) {
+        mainNestedScrollView.post(() -> mainNestedScrollView.smoothScrollTo(0, view.getBottom() + 50));
     }
 }

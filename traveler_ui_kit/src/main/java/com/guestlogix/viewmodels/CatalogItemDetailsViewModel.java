@@ -18,26 +18,21 @@ import java.util.Calendar;
 public class CatalogItemDetailsViewModel extends StatefulViewModel {
     private MutableLiveData<CatalogItemDetails> catalogItemDetails = new MutableLiveData<>();
     private MutableLiveData<CatalogItem> catalogItem = new MutableLiveData<>();
-    private MutableLiveData<Calendar> myCalendar = new MutableLiveData<>();
+    private MutableLiveData<Calendar> selectedDate = new MutableLiveData<>();
+    private MutableLiveData<Long> selectedTime = new MutableLiveData<>();
     private MutableLiveData<BookingContext> bookingContext = new MutableLiveData<>();
     private SingleLiveEvent<CheckAvailabilityState> availabilityStatus = new SingleLiveEvent<>();
     private CatalogItemDetailsRepository catalogItemDetailsRepository;
+    private MutableLiveData<ArrayList<Long>> availableTimeSlots = new MutableLiveData<>();
 
 
     public CatalogItemDetailsViewModel() {
         this.catalogItemDetailsRepository = new CatalogItemDetailsRepository();
+        this.selectedTime.postValue(null);
     }
 
     public MutableLiveData<CatalogItemDetails> getCatalogItemDetailsObservable() {
         return catalogItemDetails;
-    }
-
-    public void setCatalogItemDetails(CatalogItemDetails catalogItemDetails) {
-        this.catalogItemDetails.setValue(catalogItemDetails);
-    }
-
-    public MutableLiveData<CatalogItem> getCatalogItem() {
-        return catalogItem;
     }
 
     public SingleLiveEvent<CheckAvailabilityState> getAvailabilityStatus() {
@@ -51,28 +46,54 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     public void setCatalogItem(CatalogItem catalogItem) {
         this.catalogItem.setValue(catalogItem);
         setBookingContext(new BookingContext(catalogItem));
-        setMyCalendar(Calendar.getInstance());
+        setSelectedDate(Calendar.getInstance());
 
     }
 
-    public void setMyCalendar(Calendar myCalendar) {
-        this.myCalendar.setValue(myCalendar);
+    public void setSelectedDate(Calendar selectedDate) {
+        this.selectedDate.postValue(selectedDate);
+        this.selectedTime.postValue(null);
 
-        bookingContext.getValue().setStartDateTime(myCalendar.getTime());
-        bookingContext.getValue().setEndDateTime(myCalendar.getTime());
+        bookingContext.getValue().setSelectedDate(selectedDate.getTime());
+        bookingContext.getValue().setEndDateTime(selectedDate.getTime());
+        bookingContext.postValue(bookingContext.getValue());
     }
 
-    public MutableLiveData<Calendar> getMyCalendarObservable() {
-        return myCalendar;
+    public void setSelectedTime(int index) {
+        selectedTime.setValue(getAvailableTimeSlots().get(index));
+        bookingContext.getValue().setSelectedTime(selectedTime.getValue());
     }
 
-    public Calendar getMyCalendar() {
-        return myCalendar.getValue();
+    public MutableLiveData<Long> getSelectedTimeObservable() {
+        return selectedTime;
+    }
+    public MutableLiveData<Calendar> getSelectedDateObservable() {
+        return selectedDate;
+    }
+
+    public Long getSelectedTime() {
+        return selectedTime.getValue();
+    }
+    public Calendar getSelectedDate() {
+        return selectedDate.getValue();
+    }
+
+    public MutableLiveData<ArrayList<Long>> getAvailableTimeSlotsObservable() {
+        return availableTimeSlots;
+    }
+
+    public ArrayList<Long> getAvailableTimeSlots() {
+        return availableTimeSlots.getValue();
     }
 
     public void updateCatalog(CatalogItem catalogItem) {
         status.setValue(State.LOADING);
         catalogItemDetailsRepository.fetchDetails(catalogItem, catalogSearchCallback);
+    }
+
+    public void checkAvailability() {
+        availabilityStatus.postValue(CheckAvailabilityState.LOADING);
+        this.catalogItemDetailsRepository.fetchAvailability(bookingContext.getValue(), checkAvailabilityCallback);
     }
 
     private CatalogItemDetailsCallback catalogSearchCallback = new CatalogItemDetailsCallback() {
@@ -91,13 +112,14 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     CheckAvailabilityCallback checkAvailabilityCallback = new CheckAvailabilityCallback() {
         @Override
         public void onCheckAvailabilitySuccess(ArrayList<Availability> availability) {
-            if(availability.size()>0){
+            if (availability.size() > 0) {
                 Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Available:" + availability.get(0).getAvailable());
                 availabilityStatus.postValue(CheckAvailabilityState.AVAILABLE);
             } else {
-                Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not Available" );
+                Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not Available");
                 availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
             }
+            extractPrettyTimeSlots(availability);
         }
 
         @Override
@@ -107,10 +129,12 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         }
     };
 
-
-    public void checkAvailability() {
-        availabilityStatus.postValue(CheckAvailabilityState.LOADING);
-        this.catalogItemDetailsRepository.fetchAvailability(bookingContext.getValue(), checkAvailabilityCallback);
+    private void extractPrettyTimeSlots(ArrayList<Availability> availabilityList) {
+        if (availabilityList.size() > 0) {
+            availableTimeSlots.postValue(availabilityList.get(0).getTimes());
+        }else{
+            availableTimeSlots.postValue(new ArrayList<>());
+        }
     }
 
     public enum CheckAvailabilityState {
