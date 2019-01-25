@@ -39,7 +39,7 @@ public class Availability {
         this.times = times;
     }
 
-    public Boolean getAvailable() {
+    public Boolean isAvailable() {
         return isAvailable;
     }
 

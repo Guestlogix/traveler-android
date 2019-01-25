@@ -56,6 +56,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     private ProgressBar detailsProgressbar;
     private ProgressBar checkAvailabilityProgressBar;
     private RelativeLayout itemDetailsLayout;
+    private RelativeLayout timeRelativeLayout;
 
     private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
@@ -96,6 +97,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
         catalogItemDetailsViewModel.getSelectedDateObservable().observe(this, this::onSelectedDateChanged);
         catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
+        catalogItemDetailsViewModel.getTimeRequiredObservable().observe(this, this::onTimeRequiredChanged);
 
         catalogItemDetailsViewModel.updateCatalog(catalogItem);
     }
@@ -117,6 +119,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         detailsProgressbar = view.findViewById(R.id.itemDetailsProgressBar);
         itemDetailsLayout = view.findViewById(R.id.itemDetailsLayout);
         checkAvailabilityProgressBar = view.findViewById(R.id.checkAvailabilityProgressBar);
+        timeRelativeLayout = view.findViewById(R.id.timeRelativeLayout);
     }
 
     private void setupListeners() {
@@ -164,8 +167,8 @@ public class CatalogItemDetailsFragment extends Fragment {
         if (null != selectedDate && !selectedDate.isEmpty()) {
             dateEditText.setText(selectedDate);
         } else {
-            timeEditText.setText("");
-            timeEditText.setHint(getString(R.string.hint_select_date));
+            dateEditText.setText("");
+            dateEditText.setHint(getString(R.string.hint_select_date));
         }
     }
 
@@ -175,7 +178,7 @@ public class CatalogItemDetailsFragment extends Fragment {
             timeEditText.setText(selectedTime);
         } else {
             timeEditText.setText("");
-            timeEditText.setHint(R.string.hint_select_time);
+            timeEditText.setHint(getString(R.string.hint_select_time));
         }
     }
 
@@ -195,19 +198,21 @@ public class CatalogItemDetailsFragment extends Fragment {
     private void checkAvailabilityOnClick(View view) {
         boolean isFormComplete = true;
 
-        if (catalogItemDetailsViewModel.getSelectedTime() == null) {
-            timeEditText.setError(getString(R.string.hint_select_time));
-            focusOnView(timeTextInputLayout);
-            isFormComplete = false;
-        }
-
         if (catalogItemDetailsViewModel.getSelectedDate() == null) {
             dateEditText.setError(getString(R.string.hint_select_time));
             focusOnView(dateTextInputLayout);
             isFormComplete = false;
         }
 
-        if(isFormComplete){
+        if (catalogItemDetailsViewModel.getTimeRequired()) {
+            if (catalogItemDetailsViewModel.getSelectedTime() == null) {
+                timeEditText.setError(getString(R.string.hint_select_time));
+                focusOnView(timeRelativeLayout);
+                isFormComplete = false;
+            }
+        }
+
+        if (isFormComplete) {
             //TODO Fetch Pass for selected product
         }
     }
@@ -264,7 +269,18 @@ public class CatalogItemDetailsFragment extends Fragment {
 
     private void onSelectedDateChanged(Calendar selectedDate) {
         setDateLabel();
+        timeRelativeLayout.setVisibility(View.GONE);
         catalogItemDetailsViewModel.checkAvailability();
+    }
+
+    private void onTimeRequiredChanged(Boolean timeRequired) {
+//        if (timeRequired) {
+//            timeTextInputLayout.setVisibility(View.GONE);
+//            timeSlotsSpinner.setVisibility(View.INVISIBLE);
+//        } else {
+//            timeTextInputLayout.setVisibility(View.VISIBLE);
+//            timeSlotsSpinner.setVisibility(View.VISIBLE);
+//        }
     }
 
     private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {
@@ -277,10 +293,12 @@ public class CatalogItemDetailsFragment extends Fragment {
 
             switch (state) {
                 case AVAILABLE:
-                    // TODO
+                    checkAvailabilityButton.setEnabled(true);
+                    dateEditText.setError(null);
                     break;
                 case NOT_AVAILABLE:
-                    // TODO
+                    checkAvailabilityButton.setEnabled(false);
+                    dateEditText.setError(getString(R.string.not_available));
                     break;
                 case ERROR:
                     onCheckAvailabilityError();
@@ -290,9 +308,13 @@ public class CatalogItemDetailsFragment extends Fragment {
     }
 
     private void onTimeSlotsChanged(ArrayList<Long> availableTimeSlots) {
+        if (availableTimeSlots.size() > 0) {
+            timeRelativeLayout.setVisibility(View.VISIBLE);
+        }
         TimeSlotSpinnerAdapter timeSlotSpinnerAdapter = new TimeSlotSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, availableTimeSlots);
         timeSlotsSpinner.setAdapter(timeSlotSpinnerAdapter);
         timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
+
     }
 
     private void onCheckAvailabilityError() {

@@ -24,11 +24,13 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     private SingleLiveEvent<CheckAvailabilityState> availabilityStatus = new SingleLiveEvent<>();
     private CatalogItemDetailsRepository catalogItemDetailsRepository;
     private MutableLiveData<ArrayList<Long>> availableTimeSlots = new MutableLiveData<>();
+    private MutableLiveData<Boolean> timeRequired = new MutableLiveData<>();
 
 
     public CatalogItemDetailsViewModel() {
         this.catalogItemDetailsRepository = new CatalogItemDetailsRepository();
         this.selectedTime.postValue(null);
+        this.timeRequired.setValue(true);
     }
 
     public MutableLiveData<CatalogItemDetails> getCatalogItemDetailsObservable() {
@@ -67,6 +69,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     public MutableLiveData<Long> getSelectedTimeObservable() {
         return selectedTime;
     }
+
     public MutableLiveData<Calendar> getSelectedDateObservable() {
         return selectedDate;
     }
@@ -74,6 +77,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     public Long getSelectedTime() {
         return selectedTime.getValue();
     }
+
     public Calendar getSelectedDate() {
         return selectedDate.getValue();
     }
@@ -84,6 +88,19 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     public ArrayList<Long> getAvailableTimeSlots() {
         return availableTimeSlots.getValue();
+    }
+
+    public MutableLiveData<Boolean> getTimeRequiredObservable() {
+        return timeRequired;
+    }
+
+    public Boolean getTimeRequired() {
+        return timeRequired.getValue();
+    }
+
+    public void setTimeRequired(Boolean timeRequired) {
+        this.timeRequired.setValue(timeRequired);
+        this.bookingContext.getValue().setTimeRequired(timeRequired);
     }
 
     public void updateCatalog(CatalogItem catalogItem) {
@@ -111,15 +128,28 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     CheckAvailabilityCallback checkAvailabilityCallback = new CheckAvailabilityCallback() {
         @Override
-        public void onCheckAvailabilitySuccess(ArrayList<Availability> availability) {
-            if (availability.size() > 0) {
-                Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Available:" + availability.get(0).getAvailable());
-                availabilityStatus.postValue(CheckAvailabilityState.AVAILABLE);
+        public void onCheckAvailabilitySuccess(ArrayList<Availability> availabilityList) {
+            if (availabilityList.size() > 0) {
+                Availability availability = availabilityList.get(0);
+                if (availability.isAvailable()) {
+                    Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Available:" + availabilityList.get(0).isAvailable());
+                    availabilityStatus.postValue(CheckAvailabilityState.AVAILABLE);
+                    if (availability.getTimes().size() > 0) {
+                        Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Slots: " + availability.getTimes().size());
+                        setTimeRequired(true);
+                    } else {
+                        Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: No Slots");
+                        setTimeRequired(false);
+                    }
+                    extractPrettyTimeSlots(availabilityList);
+                } else {
+                    Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not Available because availability false");
+                    availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
+                }
             } else {
-                Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not Available");
+                Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not available because empty response");
                 availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
             }
-            extractPrettyTimeSlots(availability);
         }
 
         @Override
@@ -132,7 +162,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     private void extractPrettyTimeSlots(ArrayList<Availability> availabilityList) {
         if (availabilityList.size() > 0) {
             availableTimeSlots.postValue(availabilityList.get(0).getTimes());
-        }else{
+        } else {
             availableTimeSlots.postValue(new ArrayList<>());
         }
     }
