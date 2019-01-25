@@ -33,12 +33,11 @@ import java.util.List;
  */
 public class FlightSearchResultsFragment extends Fragment {
 
-    RecyclerView flightResultRecyclerView;
-    LinearLayout emptyListLayout;
-
-    private View mView;
-    private FlightSearchResultViewModel mFlightSearchResultViewModel;
-    private CatalogViewModel mCatalogViewModel;
+    private View view;
+    private RecyclerView flightResultRecyclerView;
+    private LinearLayout emptyListLayout;
+    private FlightSearchResultViewModel flightSearchResultViewModel;
+    private CatalogViewModel catalogViewModel;
     private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
     private ProgressBar flightResultProgressbar;
 
@@ -58,12 +57,12 @@ public class FlightSearchResultsFragment extends Fragment {
             Date date = DateHelper.getDateAsObject(departureDate);
             FlightQuery flightQuery = new FlightQuery(flightNumber, date);
 
-            mFlightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
-            mCatalogViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
+            flightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
+            catalogViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
 
-            mFlightSearchResultViewModel.flightSearch(flightQuery);
-            mFlightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
-            mFlightSearchResultViewModel.getFlightSearchState().observe(this, this::flightStateChangeHandler);
+            flightSearchResultViewModel.flightSearch(flightQuery);
+            flightSearchResultViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
+            flightSearchResultViewModel.getFlightSearchState().observe(this, this::flightStateChangeHandler);
 
         } catch (ParseException e) {
             Toast.makeText(getActivity(), "Something went wrong, please try again...", Toast.LENGTH_SHORT).show();
@@ -74,24 +73,8 @@ public class FlightSearchResultsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
+        view = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
 
-        setupView(mView);
-
-        return mView;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    private void setupView(View view) {
         flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
         emptyListLayout = view.findViewById(R.id.emptyListLayout);
         flightResultProgressbar = view.findViewById(R.id.flightResultProgressBar);
@@ -102,6 +85,17 @@ public class FlightSearchResultsFragment extends Fragment {
         flightResultRecyclerView.setAdapter(flightSearchResultRecyclerViewAdapter);
 
         view.findViewById(R.id.try_again).setOnClickListener(this::tryAgainHandler);
+        return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     private void tryAgainHandler(View view) {
@@ -121,10 +115,10 @@ public class FlightSearchResultsFragment extends Fragment {
 
     private void onAddFlight(View v) {
         int index = (Integer) v.getTag();
-        Flight flight = mFlightSearchResultViewModel.getFlightsObservable().getValue().get(index);
-        mCatalogViewModel.addFlight(flight);
+        Flight flight = flightSearchResultViewModel.getFlightsObservable().getValue().get(index);
+        catalogViewModel.addFlight(flight);
 
-        Navigation.findNavController(mView).navigate(R.id.home_action);
+        Navigation.findNavController(view).navigate(R.id.home_action);
     }
 
     private void flightStateChangeHandler(FlightSearchResultViewModel.FlightSearchState state) {
@@ -138,16 +132,16 @@ public class FlightSearchResultsFragment extends Fragment {
                 flightResultProgressbar.setVisibility(View.GONE);
                 break;
             case ERROR:
-                flightResultErrorHandler();
+                onFlightResultError();
                 break;
         }
     }
 
-    private void flightResultErrorHandler() {
+    private void onFlightResultError() {
         final AlertDialog dialog = new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.oh_no))
                 .setMessage(getString(R.string.something_went_wrong))
-                .setNeutralButton("OK", ((dialog1, which) -> Navigation.findNavController(mView).navigate(R.id.home_action)))
+                .setNeutralButton(getString(R.string.ok), ((dialog1, which) -> Navigation.findNavController(view).navigate(R.id.home_action)))
                 .setCancelable(false)
                 .create();
 

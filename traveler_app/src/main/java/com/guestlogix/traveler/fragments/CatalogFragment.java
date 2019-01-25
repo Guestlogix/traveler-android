@@ -26,10 +26,9 @@ import java.util.List;
 
 public class CatalogFragment extends Fragment {
 
-    RecyclerView flightResultRecyclerView;
-    CatalogView catalogView;
-    List<CatalogGroup> mCatalogGroups;
-    View mView;
+    private CatalogView catalogView;
+    private List<CatalogGroup> catalogGroups;
+    private View view;
 
     private CatalogViewModel catalogViewModel;
     private HomeFragmentRecyclerViewAdapter homeFragmentRecyclerViewAdapter;
@@ -37,10 +36,16 @@ public class CatalogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_catalog, container, false);
+        view = inflater.inflate(R.layout.fragment_catalog, container, false);
 
-        setupView(mView);
-        return mView;
+        RecyclerView flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
+        catalogView = view.findViewById(R.id.catalogView);
+
+        flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
+        homeFragmentRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
+        flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
+        return view;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class CatalogFragment extends Fragment {
         flightsUpdateHandler(catalogViewModel.getFlights());
     }
 
-    private void updateCatalog(ArrayList<Flight> flights) {
+    private void updateCatalog(List<Flight> flights) {
         CatalogQuery catalogQuery = new CatalogQuery(flights);
         catalogViewModel.updateCatalog(catalogQuery);
     }
@@ -66,26 +71,15 @@ public class CatalogFragment extends Fragment {
         }
     };
 
-    private void setupView(View view) {
-
-        flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
-        catalogView = view.findViewById(R.id.catalogView);
-
-        flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
-        homeFragmentRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
-        flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
-    }
-
     CatalogView.CatalogViewAdapter catalogViewAdapter = new CatalogView.CatalogViewAdapter() {
         @Override
         public void onBindSection(int sectionPosition, TextView titleTextView) {
-            titleTextView.setText(mCatalogGroups.get(sectionPosition).getTitle());
+            titleTextView.setText(catalogGroups.get(sectionPosition).getTitle());
         }
 
         @Override
         public void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
-            CatalogItem item = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
+            CatalogItem item = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
             titleTextView.setText(item.getTitle());
             subTitleTextView.setText(item.getSubTitle());
         }
@@ -99,29 +93,30 @@ public class CatalogFragment extends Fragment {
         public void onItemClick(int sectionPosition, int itemIndex) {
             Log.v("CatalogFragment", "Clicked Item " + itemIndex + " for:" + sectionPosition);
 
-            CatalogItem catalogItem = mCatalogGroups.get(sectionPosition).getItems().get(itemIndex);
+            CatalogItem catalogItem = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
 
             CatalogFragmentDirections.CatalogItemDetailsAction directions = CatalogFragmentDirections.catalogItemDetailsAction(catalogItem);
-            Navigation.findNavController(mView).navigate(directions);
+            Navigation.findNavController(view).navigate(directions);
         }
 
         @Override
         public int getSectionsCount() {
-            return mCatalogGroups.size();
+            return catalogGroups.size();
         }
 
         @Override
         public int getSectionItemsCount(int sectionIndex) {
-            return mCatalogGroups.get(sectionIndex).getItems().size();
+            return catalogGroups.get(sectionIndex).getItems().size();
         }
     };
 
     private void catalogUpdateHandler(List<CatalogGroup> catalogGroups) {
         catalogView.setCatalogViewAdapter(catalogViewAdapter);
-        mCatalogGroups = catalogGroups;
+        this.catalogGroups = catalogGroups;
     }
 
-    private void flightsUpdateHandler(ArrayList<Flight> flights) {
+    private void flightsUpdateHandler(List<Flight> flights) {
         updateCatalog(flights);
+        homeFragmentRecyclerViewAdapter.update(flights);
     }
 }

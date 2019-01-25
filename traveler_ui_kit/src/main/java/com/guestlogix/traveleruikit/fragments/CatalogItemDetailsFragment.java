@@ -32,6 +32,7 @@ import com.guestlogix.viewmodels.StatefulViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -67,8 +68,29 @@ public class CatalogItemDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_catalog_item_details, container, false);
-        setUpView(mView);
-        setupListeners();
+        mainNestedScrollView = mView.findViewById(R.id.mainNestedScrollView);
+        titleTextView = mView.findViewById(R.id.titleTextView);
+        descriptionTextView = mView.findViewById(R.id.descriptionTextView);
+        imageView = mView.findViewById(R.id.imageView);
+        startingAtValueTextView = mView.findViewById(R.id.startingAtValueTextView);
+        checkAvailabilityButton = mView.findViewById(R.id.checkAvailabilityButton);
+        catalogItemDetailsPager = mView.findViewById(R.id.catalogItemPager);
+        catalogItemDetailsTabs = mView.findViewById(R.id.catalogItemTabs);
+        dateEditText = mView.findViewById(R.id.dateEditText);
+        dateTextInputLayout = mView.findViewById(R.id.dateTextInputLayout);
+        timeEditText = mView.findViewById(R.id.timeEditText);
+        timeTextInputLayout = mView.findViewById(R.id.timeTextInputLayout);
+        timeSlotsSpinner = mView.findViewById(R.id.timeSlotsSpinner);
+        detailsProgressbar = mView.findViewById(R.id.itemDetailsProgressBar);
+        itemDetailsLayout = mView.findViewById(R.id.itemDetailsLayout);
+        checkAvailabilityProgressBar = mView.findViewById(R.id.checkAvailabilityProgressBar);
+        timeRelativeLayout = mView.findViewById(R.id.timeRelativeLayout);
+
+        timeEditText.setOnClickListener(this::timePickerOnclick);
+        dateEditText.setOnClickListener(this::datePickerOnclick);
+        checkAvailabilityButton.setOnClickListener(this::checkAvailabilityOnClick);
+        timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
+
         return mView;
     }
 
@@ -100,34 +122,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsViewModel.getTimeRequiredObservable().observe(this, this::onTimeRequiredChanged);
 
         catalogItemDetailsViewModel.updateCatalog(catalogItem);
-    }
-
-    private void setUpView(View view) {
-        mainNestedScrollView = view.findViewById(R.id.mainNestedScrollView);
-        titleTextView = view.findViewById(R.id.titleTextView);
-        descriptionTextView = view.findViewById(R.id.descriptionTextView);
-        imageView = view.findViewById(R.id.imageView);
-        startingAtValueTextView = view.findViewById(R.id.startingAtValueTextView);
-        checkAvailabilityButton = view.findViewById(R.id.checkAvailabilityButton);
-        catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
-        catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
-        dateEditText = view.findViewById(R.id.dateEditText);
-        dateTextInputLayout = view.findViewById(R.id.dateTextInputLayout);
-        timeEditText = view.findViewById(R.id.timeEditText);
-        timeTextInputLayout = view.findViewById(R.id.timeTextInputLayout);
-        timeSlotsSpinner = view.findViewById(R.id.timeSlotsSpinner);
-        detailsProgressbar = view.findViewById(R.id.itemDetailsProgressBar);
-        itemDetailsLayout = view.findViewById(R.id.itemDetailsLayout);
-        checkAvailabilityProgressBar = view.findViewById(R.id.checkAvailabilityProgressBar);
-        timeRelativeLayout = view.findViewById(R.id.timeRelativeLayout);
-    }
-
-    private void setupListeners() {
-        timeEditText.setOnClickListener(this::timePickerOnclick);
-        dateEditText.setOnClickListener(this::datePickerOnclick);
-        checkAvailabilityButton.setOnClickListener(this::checkAvailabilityOnClick);
-        timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
-
     }
 
     private void setView(CatalogItemDetails catalogItemDetails) {
@@ -307,7 +301,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         }
     }
 
-    private void onTimeSlotsChanged(ArrayList<Long> availableTimeSlots) {
+    private void onTimeSlotsChanged(List<Long> availableTimeSlots) {
         if (availableTimeSlots.size() > 0) {
             timeRelativeLayout.setVisibility(View.VISIBLE);
         }

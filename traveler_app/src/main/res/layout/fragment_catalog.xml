@@ -14,10 +14,8 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="53dp"
-            android:padding="10dp"
             android:background="@color/white"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
     <com.guestlogix.traveleruikit.widgets.CatalogView
             android:background="@color/white"
             android:id="@+id/catalogView"
@@ -26,7 +24,5 @@
             app:layout_constraintTop_toBottomOf="@+id/flightResultRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
     </com.guestlogix.traveleruikit.widgets.CatalogView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,13 +7,11 @@
         tools:listitem="@layout/fragment_flight_search_results_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
     <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:id="@+id/flightResultProgressBar"/>
-
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/flightResultRecyclerView"
             android:name="com.guestlogix.traveler.activities.FlightSearchResultsFragment"
@@ -22,8 +20,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:background="#EFEFEF"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-    />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     <LinearLayout
             android:id="@+id/emptyListLayout"
             android:layout_width="match_parent"
@@ -44,7 +41,6 @@
                 android:textAlignment="center"
                 android:textSize="17sp"
                 android:text="@string/no_flights_found_secondary"/>
-
         <TextView
                 android:layout_width="wrap_content"
                 android:id="@+id/try_again"
@@ -52,6 +48,5 @@
                 android:text="@string/try_again"
                 android:textColor="@color/colorLink"
                 android:padding="10dp"/>
-
     </LinearLayout>
 </RelativeLayout>

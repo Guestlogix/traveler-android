@@ -16,4 +16,5 @@
     <string name="retry">Retry</string>
     <string name="oh_no">Oh No!</string>
     <string name="something_went_wrong">Unfortunately something went wrong :(</string>
+    <string name="ok">OK</string>
 </resources>

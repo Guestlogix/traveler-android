@@ -16,23 +16,20 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.LabelValueRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class CatalogItemProviderInformationFragment extends Fragment {
 
     private ContactInfo contactInfo;
-    private ArrayList<Location> locationsList = new ArrayList<>();
+    private List<Location> locationsList = new ArrayList<>();
     private static final String ARG_CONTACT_INFO = "contact_info";
     private static final String ARG_LOCATIONS_LIST = "locations_list";
 
-    private TextView providerNameTextView;
-    private TextView providerEmailTextView;
-    private TextView providerWebsiteTextView;
-
-    public static CatalogItemProviderInformationFragment getInstance(ContactInfo contactInfo, ArrayList<Location> locationsList) {
+    public static CatalogItemProviderInformationFragment getInstance(ContactInfo contactInfo, List<Location> locationsList) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_CONTACT_INFO, contactInfo);
-        bundle.putSerializable(ARG_LOCATIONS_LIST, locationsList);
+        bundle.putSerializable(ARG_LOCATIONS_LIST, new ArrayList<>(locationsList));
 
         CatalogItemProviderInformationFragment fragment = new CatalogItemProviderInformationFragment();
         fragment.setArguments(bundle);
@@ -45,7 +42,28 @@ public class CatalogItemProviderInformationFragment extends Fragment {
                              Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.fragment_catalog_item_provider_information, container, false);
         extractExtras();
-        setUp(mView);
+
+        TextView providerNameTextView = mView.findViewById(R.id.providerNameTextView);
+        TextView providerEmailTextView = mView.findViewById(R.id.providerEmailTextView);
+        TextView providerWebsiteTextView = mView.findViewById(R.id.providerWebsiteTextView);
+
+        providerNameTextView.setText(contactInfo.getName());
+        providerEmailTextView.setText(contactInfo.getEmail());
+        providerWebsiteTextView.setText(contactInfo.getWebsite());
+
+        RecyclerView providerPhonesRV = mView.findViewById(R.id.providerPhonesRecyclerView);
+        RecyclerView providerLocationsRV = mView.findViewById(R.id.providerLocationAddressesRecyclerView);
+
+        providerPhonesRV.setLayoutManager(new LinearLayoutManager(mView.getContext()));
+        LabelValueRecyclerViewAdapter providerPhonesAdapter = new LabelValueRecyclerViewAdapter();
+        providerPhonesAdapter.setMappingAdapter(new PhonesAdapter());
+        providerPhonesRV.setAdapter(providerPhonesAdapter);
+
+        providerLocationsRV.setLayoutManager(new LinearLayoutManager(mView.getContext()));
+        LabelValueRecyclerViewAdapter providerLocationsAdapter = new LabelValueRecyclerViewAdapter();
+        providerLocationsAdapter.setMappingAdapter(new LocationsAdapter());
+        providerLocationsRV.setAdapter(providerLocationsAdapter);
+
         return mView;
     }
 
@@ -53,31 +71,8 @@ public class CatalogItemProviderInformationFragment extends Fragment {
         Bundle bundle = this.getArguments();
         if (null != bundle) {
             contactInfo = (ContactInfo) bundle.getSerializable(ARG_CONTACT_INFO);
-            locationsList = (ArrayList<Location>) bundle.getSerializable(ARG_LOCATIONS_LIST);
+            locationsList = (List<Location>) bundle.getSerializable(ARG_LOCATIONS_LIST);
         }
-    }
-
-    private void setUp(View view) {
-        providerNameTextView = view.findViewById(R.id.providerNameTextView);
-        providerEmailTextView = view.findViewById(R.id.providerEmailTextView);
-        providerWebsiteTextView = view.findViewById(R.id.providerWebsiteTextView);
-
-        providerNameTextView.setText(contactInfo.getName());
-        providerEmailTextView.setText(contactInfo.getEmail());
-        providerWebsiteTextView.setText(contactInfo.getWebsite());
-
-        RecyclerView providerPhonesRV = view.findViewById(R.id.providerPhonesRecyclerView);
-        RecyclerView providerLocationsRV = view.findViewById(R.id.providerLocationAddressesRecyclerView);
-
-        providerPhonesRV.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        LabelValueRecyclerViewAdapter providerPhonesAdapter = new LabelValueRecyclerViewAdapter();
-        providerPhonesAdapter.setMappingAdapter(new PhonesAdapter());
-        providerPhonesRV.setAdapter(providerPhonesAdapter);
-
-        providerLocationsRV.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        LabelValueRecyclerViewAdapter providerLocationsAdapter = new LabelValueRecyclerViewAdapter();
-        providerLocationsAdapter.setMappingAdapter(new LocationsAdapter());
-        providerLocationsRV.setAdapter(providerLocationsAdapter);
     }
 
     private class PhonesAdapter implements LabelValueRecyclerViewAdapter.LabelValueMappingAdapter {
@@ -96,6 +91,7 @@ public class CatalogItemProviderInformationFragment extends Fragment {
         public int getItemCount() {
             return contactInfo.getPhones().size();
         }
+
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {

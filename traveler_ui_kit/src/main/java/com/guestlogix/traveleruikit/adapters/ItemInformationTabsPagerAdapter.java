@@ -12,12 +12,13 @@ import com.guestlogix.traveleruikit.fragments.CatalogItemInformationFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogItemProviderInformationFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
 
     private ContactInfo contactInfo;
-    private ArrayList<Attribute> informationList;
-    private ArrayList<Location> locationsList;
+    private List<Attribute> informationList;
+    private List<Location> locationsList;
     private Context context;
 
     public ItemInformationTabsPagerAdapter(FragmentManager fm, Context context) {
@@ -29,11 +30,11 @@ public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
         this.contactInfo = contactInfo;
     }
 
-    public void setInformationList(ArrayList<Attribute> informationList) {
+    public void setInformationList(List<Attribute> informationList) {
         this.informationList = informationList;
     }
 
-    public void setLocationsList(ArrayList<Location> locationsList) {
+    public void setLocationsList(List<Location> locationsList) {
         this.locationsList = locationsList;
     }
 

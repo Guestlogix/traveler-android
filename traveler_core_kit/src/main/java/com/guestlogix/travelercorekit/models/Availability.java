@@ -2,6 +2,8 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -11,13 +13,14 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Availability {
     Date date;
-    ArrayList<Long> times;
+    List<Long> times;
     Boolean isAvailable;
 
-    public Availability(Date date, ArrayList<Long> times, Boolean isAvailable) {
+    public Availability(Date date, List<Long> times, Boolean isAvailable) {
         this.date = date;
         this.times = times;
         this.isAvailable = isAvailable;
@@ -31,20 +34,20 @@ public class Availability {
         this.date = date;
     }
 
-    public ArrayList<Long> getTimes() {
+    public List<Long> getTimes() {
         return times;
     }
 
-    public void setTimes(ArrayList<Long> times) {
+    public void setTimes(List<Long> times) {
         this.times = times;
-    }
-
-    public Boolean isAvailable() {
-        return isAvailable;
     }
 
     public void setAvailable(Boolean available) {
         isAvailable = available;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
     public static class AvailabilityObjectMappingFactory implements ObjectMappingFactory<Availability> {
@@ -55,9 +58,9 @@ public class Availability {
 
         }
 
-        private Availability readItem(JsonReader reader) throws IOException {
+        private Availability readItem(JsonReader reader) throws ObjectMappingException, IOException {
             Date date = new Date();
-            ArrayList<Long> timeList = new ArrayList<>();
+            List<Long> timeList = new ArrayList<>();
             Boolean available = false;
 
             reader.beginObject();
@@ -70,12 +73,12 @@ public class Availability {
                         try {
                             date = DateHelper.getDateAsObject(JsonReaderHelper.readString(reader));
                         } catch (ParseException e) {
-                            e.printStackTrace();
+                            throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, e.getMessage()));
                         }
                         break;
                     case "timesInMinutes":
                         if (reader.peek() != JsonToken.NULL) {
-                            timeList = JsonReaderHelper.readLongArray(reader);
+                            timeList.addAll(JsonReaderHelper.readLongArray(reader));
                         }
                         break;
                     case "available":

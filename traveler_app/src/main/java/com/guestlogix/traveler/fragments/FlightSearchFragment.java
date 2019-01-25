@@ -3,7 +3,6 @@ package com.guestlogix.traveler.fragments;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,34 +15,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
-import com.google.android.material.textfield.TextInputEditText;
-import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.Calendar;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FlightSearchFragment extends Fragment {
 
-<<<<<<< HEAD
     private TextView flightNumberEditText;
     private TextView departureDateEditText;
     private TextView searchFlightsButton;
-    private View mView;
-=======
-    TextInputEditText flightNumberEditText;
-    TextInputEditText departureDateEditText;
-    TextView searchFlightsButton;
->>>>>>> implements date picker and time picker item details
+    private View view;
 
-    private FlightSearchViewModel mViewModel;
-
-    final Calendar myCalendar = Calendar.getInstance();
-    final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9][0-9]{0,3}|[0-9]{0,3}[1-9])$");
+    private final Calendar departureDateCalendar = Calendar.getInstance();
+    private final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9][0-9]{0,3}|[0-9]{0,3}[1-9])$");
 
     public static FlightSearchFragment newInstance() {
         return new FlightSearchFragment();
@@ -53,66 +41,53 @@ public class FlightSearchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_flight_search, container, false);
+        view = inflater.inflate(R.layout.fragment_flight_search, container, false);
 
-        setupView(mView);
-        setupListeners();
 
-        return mView;
-    }
+        flightNumberEditText = view.findViewById(R.id.flightNumberEditText);
+        departureDateEditText = view.findViewById(R.id.departureDateEditText);
+        searchFlightsButton = view.findViewById(R.id.searchFlightsButton);
 
-    private void setupListeners() {
         flightNumberEditText.setOnFocusChangeListener(this::flightNumberFocusHandler);
         departureDateEditText.setOnFocusChangeListener(this::departureDateFocusHandler);
         departureDateEditText.setOnClickListener(this::departureDateClickHandler);
         departureDateEditText.setOnEditorActionListener(this::softInputSubmit);
         searchFlightsButton.setOnClickListener(this::navigateToFlightSearchResults);
-    }
 
-    private void setupView(View view) {
-        flightNumberEditText = view.findViewById(R.id.flightNumberEditText);
-        departureDateEditText = view.findViewById(R.id.departureDateEditText);
-        searchFlightsButton = view.findViewById(R.id.searchFlightsButton);
+        return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (null != getActivity()) {
-            mViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchViewModel.class);
-        }
     }
 
     private void navigateToFlightSearchResults(View view) {
         String flightNumber = flightNumberEditText.getText().toString();
-        String departureDate = DateHelper.getDateAsString(myCalendar.getTime());
+        String departureDate = DateHelper.getDateAsString(departureDateCalendar.getTime());
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             hideKeyboard(getActivity());
             FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections
                     .flightSearchResultAction(departureDate, flightNumber);
 
-            Navigation.findNavController(mView).navigate(directions);
+            Navigation.findNavController(this.view).navigate(directions);
         } else {
             validateFlightNumber(flightNumber);
             validateFlightDate(departureDate);
         }
     }
 
-<<<<<<< HEAD
-    private DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
-=======
     DatePickerDialog.OnDateSetListener datePickerListener = (view, year, monthOfYear, dayOfMonth) -> {
->>>>>>> implements date picker and time picker item details
-        myCalendar.set(Calendar.YEAR, year);
-        myCalendar.set(Calendar.MONTH, monthOfYear);
-        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        departureDateCalendar.set(Calendar.YEAR, year);
+        departureDateCalendar.set(Calendar.MONTH, monthOfYear);
+        departureDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         updateLabel();
     };
 
     private void updateLabel() {
-        departureDateEditText.setText(DateHelper.getPrettyDateAsString(myCalendar.getTime()));
+        departureDateEditText.setText(DateHelper.getPrettyDateAsString(departureDateCalendar.getTime()));
     }
 
     private Boolean isFlightNumberValid(String flightNumber) {
@@ -144,7 +119,6 @@ public class FlightSearchFragment extends Fragment {
             String date = ((TextView) view).getText().toString();
             validateFlightDate(date);
         } else {
-<<<<<<< HEAD
             showDatePickerDialog();
         }
     }
@@ -155,12 +129,9 @@ public class FlightSearchFragment extends Fragment {
 
     private void showDatePickerDialog() {
         if (null != getActivity()) {
-            new DatePickerDialog(getActivity(), date, myCalendar
-=======
-            new DatePickerDialog(getActivity(), datePickerListener, myCalendar
->>>>>>> implements date picker and time picker item details
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            new DatePickerDialog(getActivity(), datePickerListener, departureDateCalendar
+                    .get(Calendar.YEAR), departureDateCalendar.get(Calendar.MONTH),
+                    departureDateCalendar.get(Calendar.DAY_OF_MONTH)).show();
         }
     }
 

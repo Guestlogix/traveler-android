@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<FlightSearchResultRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<Flight> mFlightsArrayList = new ArrayList<>();
+    private List<Flight> flightsList = new ArrayList<>();
     private View.OnClickListener addFlightOnClickListener;
 
     public void setAddFlightOnClickListener(View.OnClickListener addFlightOnClickListener) {
@@ -33,13 +33,13 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mFlightsArrayList.get(position);
-        holder.departureCityTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCity());
-        holder.departureIataTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCode());
-        holder.departureTimeTextView.setText(DateHelper.getTimeAsString(mFlightsArrayList.get(position).getDepartureDate()));
-        holder.arrivalCityTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCity());
-        holder.arrivalIataTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCode());
-        holder.arrivalTimeTextView.setText(DateHelper.getTimeAsString(mFlightsArrayList.get(position).getArrivalDate()));
+        holder.mItem = flightsList.get(position);
+        holder.departureCityTextView.setText(flightsList.get(position).getDepartureAirport().getCity());
+        holder.departureIataTextView.setText(flightsList.get(position).getDepartureAirport().getCode());
+        holder.departureTimeTextView.setText(DateHelper.getTimeAsString(flightsList.get(position).getDepartureDate()));
+        holder.arrivalCityTextView.setText(flightsList.get(position).getArrivalAirport().getCity());
+        holder.arrivalIataTextView.setText(flightsList.get(position).getArrivalAirport().getCode());
+        holder.arrivalTimeTextView.setText(DateHelper.getTimeAsString(flightsList.get(position).getArrivalDate()));
 
         holder.addFlightTextView.setTag(position);
         holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);
@@ -47,17 +47,17 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public int getItemCount() {
-        return mFlightsArrayList.size();
+        return flightsList.size();
     }
 
     public void update(List<Flight> flightsArrayList) {
-        mFlightsArrayList.clear();
-        mFlightsArrayList.addAll(flightsArrayList);
+        this.flightsList.clear();
+        this.flightsList.addAll(flightsArrayList);
         notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        View mView;
+        View view;
         TextView departureCityTextView;
         TextView departureIataTextView;
         TextView departureTimeTextView;
@@ -70,14 +70,14 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
 
         ViewHolder(View view) {
             super(view);
-            mView = view;
-            departureCityTextView = mView.findViewById(R.id.departureCityTextView);
-            departureIataTextView = mView.findViewById(R.id.departureIataTextView);
-            departureTimeTextView = mView.findViewById(R.id.departureTimeTextView);
-            arrivalCityTextView = mView.findViewById(R.id.arrivalCityTextView);
-            arrivalIataTextView = mView.findViewById(R.id.arrivalIataTextView);
-            arrivalTimeTextView = mView.findViewById(R.id.arrivalTimeTextView);
-            addFlightTextView = mView.findViewById(R.id.addFlightTextView);
+            this.view = view;
+            departureCityTextView = this.view.findViewById(R.id.departureCityTextView);
+            departureIataTextView = this.view.findViewById(R.id.departureIataTextView);
+            departureTimeTextView = this.view.findViewById(R.id.departureTimeTextView);
+            arrivalCityTextView = this.view.findViewById(R.id.arrivalCityTextView);
+            arrivalIataTextView = this.view.findViewById(R.id.arrivalIataTextView);
+            arrivalTimeTextView = this.view.findViewById(R.id.arrivalTimeTextView);
+            addFlightTextView = this.view.findViewById(R.id.addFlightTextView);
         }
     }
 }

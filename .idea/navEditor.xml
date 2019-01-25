@@ -78,7 +78,7 @@
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_home_dest_to_catalogItemDetailsFragment">
+                            <entry key="catalog_item_details_action">
                               <value>
                                 <LayoutPositions />
                               </value>

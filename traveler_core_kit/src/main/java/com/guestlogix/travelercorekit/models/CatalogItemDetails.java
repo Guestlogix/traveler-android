@@ -7,10 +7,10 @@ import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.util.JsonToken.BEGIN_ARRAY;
 
@@ -18,14 +18,14 @@ public class CatalogItemDetails extends Product {
 
     private String title;
     private String description;
-    private ArrayList<String> imageURL;
+    private List<String> imageURL;
     private ContactInfo contact;
-    private ArrayList<Location> locations;
+    private List<Location> locations;
     private double priceStartingAt;
     private String purchaseStrategy;
-    private ArrayList<Attribute> information;
+    private List<Attribute> information;
 
-    public CatalogItemDetails(String id, String title, String description, ArrayList<String> imageURL, ContactInfo contact, ArrayList<Location> locations, double priceStartingAt, String purchaseStrategy, ArrayList<Attribute> information) {
+    public CatalogItemDetails(String id, String title, String description, List<String> imageURL, ContactInfo contact, List<Location> locations, double priceStartingAt, String purchaseStrategy, List<Attribute> information) {
         super(id, 0);
         this.title = title;
         this.description = description;
@@ -61,11 +61,11 @@ public class CatalogItemDetails extends Product {
         this.description = description;
     }
 
-    public ArrayList<String> getImageURL() {
+    public List<String> getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(ArrayList<String> imageURL) {
+    public void setImageURL(List<String> imageURL) {
         this.imageURL = imageURL;
     }
 
@@ -77,11 +77,11 @@ public class CatalogItemDetails extends Product {
         this.contact = contact;
     }
 
-    public ArrayList<Location> getLocations() {
+    public List<Location> getLocations() {
         return locations;
     }
 
-    public void setLocations(ArrayList<Location> locations) {
+    public void setLocations(List<Location> locations) {
         this.locations = locations;
     }
 
@@ -101,11 +101,11 @@ public class CatalogItemDetails extends Product {
         this.purchaseStrategy = purchaseStrategy;
     }
 
-    public ArrayList<Attribute> getInformation() {
+    public List<Attribute> getInformation() {
         return information;
     }
 
-    public void setInformation(ArrayList<Attribute> information) {
+    public void setInformation(List<Attribute> information) {
         this.information = information;
     }
 
@@ -121,12 +121,12 @@ public class CatalogItemDetails extends Product {
             String id = "";
             String title = "";
             String description = "";
-            ArrayList<String> imageURL = new ArrayList<>();
+            List<String> imageURL = new ArrayList<>();
             ContactInfo contact = new ContactInfo();
-            ArrayList<Location> locations = new ArrayList<>();
+            List<Location> locations = new ArrayList<>();
             double priceStartingAt = 0.0;
             String purchaseStrategy = "";
-            ArrayList<Attribute> information = new ArrayList<>();
+            List<Attribute> information = new ArrayList<>();
 
             if (BEGIN_ARRAY == reader.peek()) {
                 reader.beginArray();
@@ -149,14 +149,14 @@ public class CatalogItemDetails extends Product {
                         break;
                     case "imageUrls":
                         if (reader.peek() != JsonToken.NULL) {
-                            imageURL = JsonReaderHelper.readStringsArray(reader);
+                            imageURL.addAll(JsonReaderHelper.readStringsArray(reader));
                         }
                         break;
                     case "contact":
                         contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
                         break;
                     case "locations":
-                        locations = new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader);
+                        locations.addAll(new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader));
                         break;
                     case "priceStartingAt":
                         priceStartingAt = JsonReaderHelper.readDouble(reader);
@@ -165,7 +165,7 @@ public class CatalogItemDetails extends Product {
                         purchaseStrategy = JsonReaderHelper.readString(reader);
                         break;
                     case "information":
-                        information = new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader);
+                        information.addAll(new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader));
                         break;
                     default:
                         reader.skipValue();

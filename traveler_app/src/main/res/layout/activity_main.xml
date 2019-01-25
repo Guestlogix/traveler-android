@@ -7,7 +7,6 @@
               android:orientation="vertical"
               android:background="#EFEFEF"
               tools:context=".activities.MainActivity">
-
     <fragment
             android:id="@+id/my_nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"

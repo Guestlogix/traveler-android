@@ -9,6 +9,7 @@ public class BookingContext {
     Long selectedTime;
     Date endDateTime;//TODO
     Boolean isTimeRequired;
+    Boolean isReady;
 
     public BookingContext(Product product) {
         this.product = product;
@@ -48,6 +49,14 @@ public class BookingContext {
 
     public Boolean getTimeRequired() {
         return isTimeRequired;
+    }
+
+    public Boolean isReady() {
+        return isReady;
+    }
+
+    public void setReady(Boolean ready) {
+        isReady = ready;
     }
 
     public void setTimeRequired(Boolean timeRequired) {

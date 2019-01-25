@@ -13,16 +13,16 @@ import java.util.List;
 
 public class FlightSearchViewModel extends ViewModel {
 
-    private MutableLiveData<List<Flight>> flightsArrayList;
+    private MutableLiveData<List<Flight>> flightsList;
     private FlightSearchRepository flightSearchRepository;
 
     public FlightSearchViewModel() {
-        this.flightsArrayList = new MutableLiveData<>();
+        this.flightsList = new MutableLiveData<>();
         this.flightSearchRepository = new FlightSearchRepository();
     }
 
     public LiveData<List<Flight>> getFlightsObservAble() {
-        return flightsArrayList;
+        return flightsList;
     }
 
     public void flightSearch(FlightQuery query) {
@@ -32,7 +32,7 @@ public class FlightSearchViewModel extends ViewModel {
     private FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
         @Override
         public void onFlightSearchSuccess(List<Flight> flights) {
-            flightsArrayList.setValue(flights);
+            flightsList.setValue(flights);
         }
 
         @Override

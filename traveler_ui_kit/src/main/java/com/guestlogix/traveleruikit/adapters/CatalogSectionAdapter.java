@@ -123,5 +123,4 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
             subTitleTextView = mView.findViewById(R.id.subTitleTextView);
         }
     }
-
 }
