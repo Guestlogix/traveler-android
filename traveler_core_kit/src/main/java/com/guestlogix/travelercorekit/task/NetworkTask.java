@@ -28,7 +28,7 @@ public class NetworkTask extends Task {
 
         URL getURL() throws MalformedURLException;
 
-        HashMap<String, String> getHeaders();
+        Map<String, String> getHeaders();
 
         void onProvidePayload(OutputStream stream);
     }
@@ -119,6 +119,8 @@ public class NetworkTask extends Task {
                 urlConnection.setRequestProperty(header.getKey(), header.getValue());
             }
         }
+        urlConnection.setDoInput(true);
+        urlConnection.setDoOutput(true);
     }
 
     private void setMethod(HttpURLConnection urlConnection) throws IOException {

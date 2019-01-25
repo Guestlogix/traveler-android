@@ -59,6 +59,7 @@ public class AuthTokenFetchTask extends Task {
         BlockTask finishTask = new BlockTask() {
             @Override
             protected void main() {
+                mError = fetchTokenNetworkTask.getError();
                 AuthTokenFetchTask.this.finish();
             }
         };
