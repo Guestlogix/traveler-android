@@ -8,6 +8,7 @@ public class BookingContext {
     Date selectedDate;
     Long selectedTime;
     Date endDateTime;//TODO
+    Boolean isTimeRequired;
 
     public BookingContext(Product product) {
         this.product = product;
@@ -43,5 +44,13 @@ public class BookingContext {
 
     public void setSelectedTime(Long selectedTime) {
         this.selectedTime = selectedTime;
+    }
+
+    public Boolean getTimeRequired() {
+        return isTimeRequired;
+    }
+
+    public void setTimeRequired(Boolean timeRequired) {
+        isTimeRequired = timeRequired;
     }
 }
