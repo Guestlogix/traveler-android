@@ -8,10 +8,8 @@ import com.guestlogix.travelercorekit.task.NetworkTask;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
@@ -75,7 +73,7 @@ public class Router {
     public static AuthenticatedRequest productSchedule(Session session, BookingContext bookingContext) {
 
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("from", DateHelper.getDateAsString(bookingContext.getStartDateTime()));
+        queryParams.put("from", DateHelper.getDateAsString(bookingContext.getSelectedDate()));
         queryParams.put("to", DateHelper.getDateAsString(bookingContext.getEndDateTime()));
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL(String.format(Locale.CANADA, "/product/%s/schedule", bookingContext.getProduct().getId()), queryParams), session.getApiKey(), session.getAuthToken().getValue());

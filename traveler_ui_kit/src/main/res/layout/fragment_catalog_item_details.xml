@@ -19,6 +19,7 @@
             android:id="@+id/itemDetailsLayout">
 
         <androidx.core.widget.NestedScrollView
+                android:id="@+id/mainNestedScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -63,27 +64,27 @@
                             tools:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."/>
 
                     <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/date"
+                            android:id="@+id/dateTextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
-                            app:errorEnabled="true"
-                            app:hintEnabled="false">
+                            app:errorEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/dateEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="Select Date"
+                                android:hint="@string/hint_select_date"
                                 android:inputType="textCapCharacters"
                                 app:errorEnabled="true"
+                                android:focusable="false"
                                 app:hintEnabled="false"
                                 android:textAllCaps="true"
                                 android:imeOptions="actionDone"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/departureDateTextInputLayout"
+                            android:id="@+id/timeTextInputLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="20dp"
@@ -94,14 +95,20 @@
                                 android:id="@+id/timeEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:hint="Select Time"
+                                android:hint="@string/hint_select_time"
                                 android:inputType="textCapCharacters"
                                 app:errorEnabled="true"
+                                android:focusable="false"
                                 app:hintEnabled="false"
                                 android:textAllCaps="true"
                                 android:imeOptions="actionDone"/>
                     </com.google.android.material.textfield.TextInputLayout>
-
+                    <Spinner
+                            android:id="@+id/timeSlotsSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="invisible"
+                            android:spinnerMode="dropdown"/>
                     <com.google.android.material.tabs.TabLayout
                             android:id="@+id/catalogItemTabs"
                             android:layout_width="match_parent"
