@@ -15,24 +15,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogViewModel extends ViewModel {
-    private MutableLiveData<ArrayList<Flight>> flightsArrayList;
+    private MutableLiveData<List<Flight>> flightsList;
     private MutableLiveData<List<CatalogGroup>> catalogGroupList;
     private CatalogSearchRepository catalogRepository;
 
     public CatalogViewModel() {
-        this.flightsArrayList = new MutableLiveData<>();
-        this.flightsArrayList.setValue(new ArrayList<>());
+        this.flightsList = new MutableLiveData<>();
+        this.flightsList.setValue(new ArrayList<>());
         this.catalogGroupList = new MutableLiveData<>();
         this.catalogGroupList.setValue(new ArrayList<>());
         this.catalogRepository = new CatalogSearchRepository();
     }
 
-    public LiveData<ArrayList<Flight>> getFlightsObservable() {
-        return flightsArrayList;
+    public LiveData<List<Flight>> getFlightsObservable() {
+        return flightsList;
     }
 
-    public ArrayList<Flight> getFlights() {
-        return flightsArrayList.getValue();
+    public List<Flight> getFlights() {
+        return flightsList.getValue();
     }
 
     public void updateCatalog(CatalogQuery catalogQuery) {
@@ -49,22 +49,22 @@ public class CatalogViewModel extends ViewModel {
 
     public void addFlight(Flight flight) {
         //TODO User repository to manage flights in user session
-        if (null != flightsArrayList.getValue()) {
-            ArrayList<Flight> flightsList = flightsArrayList.getValue();
+        if (null != flightsList.getValue()) {
+            List<Flight> flightsList = this.flightsList.getValue();
             flightsList.add(flight);
-            flightsArrayList.postValue(flightsList);
+            this.flightsList.postValue(flightsList);
         } else {
             ArrayList<Flight> flightsList = new ArrayList<>();
             flightsList.add(flight);
-            flightsArrayList.postValue(flightsList);
+            this.flightsList.postValue(flightsList);
         }
     }
 
     public void deleteFlight(int index) {
-        if (null != flightsArrayList.getValue()) {
-            ArrayList<Flight> flightsList = flightsArrayList.getValue();
+        if (null != flightsList.getValue()) {
+            List<Flight> flightsList = this.flightsList.getValue();
             flightsList.remove(index);
-            flightsArrayList.postValue(flightsList);
+            this.flightsList.postValue(flightsList);
         }
     }
 

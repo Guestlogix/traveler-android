@@ -95,7 +95,7 @@ public class ContactInfo implements Serializable {
                         break;
                     case "phones":
                         if(reader.peek() != JsonToken.NULL) {
-                            phones = JsonReaderHelper.readStringsArray(reader);
+                            phones.addAll(JsonReaderHelper.readStringsArray(reader));
                         }
                         break;
                     default:

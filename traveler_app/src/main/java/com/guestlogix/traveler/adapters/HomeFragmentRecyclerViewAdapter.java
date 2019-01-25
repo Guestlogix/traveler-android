@@ -9,11 +9,12 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.Flight;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFragmentRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<Flight> mFlightsArrayList = new ArrayList<>();
+    private List<Flight> flightList = new ArrayList<>();
     private View.OnClickListener deleteFlightOnClickListener;
 
     @Override
@@ -25,22 +26,22 @@ public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFr
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mFlightsArrayList.get(position);
+        holder.item = flightList.get(position);
 
-        holder.departureIataTextView.setText(mFlightsArrayList.get(position).getDepartureAirport().getCode());
-        holder.arrivalIataTextView.setText(mFlightsArrayList.get(position).getArrivalAirport().getCode());
+        holder.departureIataTextView.setText(flightList.get(position).getDepartureAirport().getCode());
+        holder.arrivalIataTextView.setText(flightList.get(position).getArrivalAirport().getCode());
         holder.deleteTextView.setOnClickListener(deleteFlightOnClickListener);
         holder.deleteTextView.setTag(position);
     }
 
     @Override
     public int getItemCount() {
-        return mFlightsArrayList.size();
+        return flightList.size();
     }
 
-    public void update(ArrayList<Flight> flightsArrayList) {
-        mFlightsArrayList.clear();
-        mFlightsArrayList.addAll(flightsArrayList);
+    public void update(List<Flight> flightsArrayList) {
+        flightList.clear();
+        flightList.addAll(flightsArrayList);
         notifyDataSetChanged();
     }
 
@@ -49,15 +50,15 @@ public class HomeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<HomeFr
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final View mView;
+        final View view;
         TextView departureIataTextView;
         TextView arrivalIataTextView;
         TextView deleteTextView;
-        Flight mItem;
+        Flight item;
 
         ViewHolder(View view) {
             super(view);
-            mView = view;
+            this.view = view;
 
             departureIataTextView = view.findViewById(R.id.departureIataTextView);
             arrivalIataTextView = view.findViewById(R.id.arrivalIataTextView);

@@ -14,6 +14,7 @@ import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class CatalogItemDetailsViewModel extends StatefulViewModel {
     private MutableLiveData<CatalogItemDetails> catalogItemDetails = new MutableLiveData<>();
@@ -23,9 +24,8 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     private MutableLiveData<BookingContext> bookingContext = new MutableLiveData<>();
     private SingleLiveEvent<CheckAvailabilityState> availabilityStatus = new SingleLiveEvent<>();
     private CatalogItemDetailsRepository catalogItemDetailsRepository;
-    private MutableLiveData<ArrayList<Long>> availableTimeSlots = new MutableLiveData<>();
+    private MutableLiveData<List<Long>> availableTimeSlots = new MutableLiveData<>();
     private MutableLiveData<Boolean> timeRequired = new MutableLiveData<>();
-
 
     public CatalogItemDetailsViewModel() {
         this.catalogItemDetailsRepository = new CatalogItemDetailsRepository();
@@ -82,11 +82,11 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         return selectedDate.getValue();
     }
 
-    public MutableLiveData<ArrayList<Long>> getAvailableTimeSlotsObservable() {
+    public MutableLiveData<List<Long>> getAvailableTimeSlotsObservable() {
         return availableTimeSlots;
     }
 
-    public ArrayList<Long> getAvailableTimeSlots() {
+    public List<Long> getAvailableTimeSlots() {
         return availableTimeSlots.getValue();
     }
 
@@ -128,7 +128,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     CheckAvailabilityCallback checkAvailabilityCallback = new CheckAvailabilityCallback() {
         @Override
-        public void onCheckAvailabilitySuccess(ArrayList<Availability> availabilityList) {
+        public void onCheckAvailabilitySuccess(List<Availability> availabilityList) {
             if (availabilityList.size() > 0) {
                 Availability availability = availabilityList.get(0);
                 if (availability.isAvailable()) {
@@ -159,7 +159,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         }
     };
 
-    private void extractPrettyTimeSlots(ArrayList<Availability> availabilityList) {
+    private void extractPrettyTimeSlots(List<Availability> availabilityList) {
         if (availabilityList.size() > 0) {
             availableTimeSlots.postValue(availabilityList.get(0).getTimes());
         } else {

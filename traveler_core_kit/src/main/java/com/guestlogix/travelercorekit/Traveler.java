@@ -16,7 +16,7 @@ import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.task.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Traveler {
     private static Traveler mLocalInstance;
@@ -87,7 +87,7 @@ public class Traveler {
         } else {
             AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, flightQuery);
 
-            AuthenticatedNetworkRequestTask<ArrayList<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
@@ -141,7 +141,7 @@ public class Traveler {
     /**
      * Fetches groups of catalog items.
      *
-     * @param catalogItem          Ids of the flights for which to fetch the groups.
+     * @param catalogItem                Ids of the flights for which to fetch the groups.
      * @param catalogItemDetailsCallback Callback methods which will be executed after the data is fetched.
      */
     public static void fetchCatalogItemDetails(CatalogItem catalogItem, CatalogItemDetailsCallback catalogItemDetailsCallback) {
@@ -172,16 +172,23 @@ public class Traveler {
     /**
      * Fetches groups of catalog items.
      *
-     * @param bookingContext          Ids of the flights for which to fetch the groups.
+     * @param bookingContext            Ids of the flights for which to fetch the groups.
      * @param checkAvailabilityCallback Callback methods which will be executed after the data is fetched.
      */
     public static void checkAvailability(BookingContext bookingContext, CheckAvailabilityCallback checkAvailabilityCallback) {
         if (null == mLocalInstance) {
             checkAvailabilityCallback.onCheckAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.productSchedule(mLocalInstance.mSession, bookingContext);
 
-            AuthenticatedNetworkRequestTask<ArrayList<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request,  new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
+            if (bookingContext.getSelectedDate() == null) {
+                checkAvailabilityCallback.onCheckAvailabilityError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
+                return;
+            }
+
+            bookingContext.setReady(false);
+
+            AuthenticatedRequest request = Router.productSchedule(mLocalInstance.mSession, bookingContext);
+            AuthenticatedNetworkRequestTask<List<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override
@@ -191,6 +198,7 @@ public class Traveler {
                     } else {
                         checkAvailabilityCallback.onCheckAvailabilitySuccess(checkAvailabilityTask.getResource());
                     }
+                    bookingContext.setReady(true);
                 }
             };
 

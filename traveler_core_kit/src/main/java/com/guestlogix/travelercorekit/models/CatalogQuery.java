@@ -1,20 +1,20 @@
 package com.guestlogix.travelercorekit.models;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CatalogQuery {
 
-    private ArrayList<Flight> flights;
+    private List<Flight> flights;
 
-    public CatalogQuery(ArrayList<Flight> flights) {
+    public CatalogQuery(List<Flight> flights) {
         this.flights = flights;
     }
 
-    public ArrayList<Flight> getFlights() {
+    public List<Flight> getFlights() {
         return flights;
     }
 
-    public void setFlights(ArrayList<Flight> flights) {
+    public void setFlights(List<Flight> flights) {
         this.flights = flights;
     }
 }

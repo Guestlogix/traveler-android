@@ -17,26 +17,22 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.LabelValueRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Displays a list of items which represent information for a particular object.
  */
 public class CatalogItemInformationFragment extends Fragment {
-    private View mView;
-    private RecyclerView infoRecyclerView;
-    private LabelValueRecyclerViewAdapter itemViewAdapter;
-    ArrayList<Attribute> itemInfoList;
-
     private static final String ARG_ITEM_INFO = "item_info";
-
+    private List<Attribute> itemInfoList;
 
     public CatalogItemInformationFragment() {
     }
 
-    public static CatalogItemInformationFragment getInstance(ArrayList<Attribute> itemInfoList) {
+    public static CatalogItemInformationFragment getInstance(List<Attribute> itemInfoList) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ARG_ITEM_INFO, itemInfoList);
+        bundle.putSerializable(ARG_ITEM_INFO, new ArrayList<>(itemInfoList));
 
         CatalogItemInformationFragment fragment = new CatalogItemInformationFragment();
         fragment.setArguments(bundle);
@@ -47,24 +43,14 @@ public class CatalogItemInformationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_catalog_item_information, container, false);
-        extractExtras();
-        setUp(mView);
-
-        return mView;
-    }
-
-    private void extractExtras() {
 
         Bundle bundle = this.getArguments();
         if (null != bundle) {
             itemInfoList = (ArrayList<Attribute>) bundle.getSerializable(ARG_ITEM_INFO);
         }
-    }
 
-    private void setUp(View view) {
-        infoRecyclerView = view.findViewById(R.id.informationRecyclerView);
-
+        View mView = inflater.inflate(R.layout.fragment_catalog_item_information, container, false);
+        RecyclerView infoRecyclerView = mView.findViewById(R.id.informationRecyclerView);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         infoRecyclerView.setLayoutManager(linearLayoutManager);
@@ -72,9 +58,11 @@ public class CatalogItemInformationFragment extends Fragment {
                 (linearLayoutManager).getOrientation());
         infoRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        itemViewAdapter = new LabelValueRecyclerViewAdapter();
+        LabelValueRecyclerViewAdapter itemViewAdapter = new LabelValueRecyclerViewAdapter();
         itemViewAdapter.setMappingAdapter(informationAdapter);
         infoRecyclerView.setAdapter(itemViewAdapter);
+
+        return mView;
     }
 
     LabelValueRecyclerViewAdapter.LabelValueMappingAdapter informationAdapter = new LabelValueRecyclerViewAdapter.LabelValueMappingAdapter() {

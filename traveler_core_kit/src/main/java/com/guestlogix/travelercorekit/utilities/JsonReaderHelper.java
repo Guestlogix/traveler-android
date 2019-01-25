@@ -98,13 +98,13 @@ public class JsonReaderHelper {
         }
     }
     /**
-     * Performs a String Array read with null check from the reader object.
+     * Performs a String Array read from the reader object.
      *
      * @param reader Reader object to read from
-     * @return String Array or null
+     * @return String Array or empty array
      * @throws IOException If reading cannot be performed.
      */
-    public static ArrayList<String> readStringsArray(JsonReader reader) throws IOException {
+    public static List<String> readStringsArray(JsonReader reader) throws IOException {
         ArrayList<String> strings = new ArrayList<>();
 
         reader.beginArray();
@@ -116,13 +116,13 @@ public class JsonReaderHelper {
     }
 
     /**
-     * Performs a String Array read with null check from the reader object.
+     * Performs a Integer Array read from the reader object.
      *
      * @param reader Reader object to read from
-     * @return Integer Array or null
+     * @return Integer Array or empty array
      * @throws IOException If reading cannot be performed.
      */
-    public static ArrayList<Integer> readIntegerArray(JsonReader reader) throws IOException {
+    public static List<Integer> readIntegerArray(JsonReader reader) throws IOException {
         ArrayList<Integer> ints = new ArrayList<>();
 
         reader.beginArray();
@@ -134,20 +134,20 @@ public class JsonReaderHelper {
     }
 
     /**
-     * Performs a String Array read with null check from the reader object.
+     * Performs a Long Array read from the reader object.
      *
      * @param reader Reader object to read from
-     * @return Long Array or null
+     * @return Long Array or empty array
      * @throws IOException If reading cannot be performed.
      */
-    public static ArrayList<Long> readLongArray(JsonReader reader) throws IOException {
-        ArrayList<Long> ints = new ArrayList<>();
+    public static List<Long> readLongArray(JsonReader reader) throws IOException {
+        ArrayList<Long> longs = new ArrayList<>();
 
         reader.beginArray();
         while (reader.hasNext()) {
-            ints.add(reader.nextLong());
+            longs.add(reader.nextLong());
         }
         reader.endArray();
-        return ints;
+        return longs;
     }
 }

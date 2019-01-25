@@ -5,10 +5,11 @@ import com.guestlogix.travelercorekit.models.Availability;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface CheckAvailabilityCallback {
 
-    void onCheckAvailabilitySuccess(ArrayList<Availability> availability);
+    void onCheckAvailabilitySuccess(List<Availability> availability);
 
     void onCheckAvailabilityError(TravelerError error);
 }

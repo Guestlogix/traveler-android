@@ -67,5 +67,4 @@
         <argument android:name="catalog_item" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>
     </fragment>
 
-
 </navigation>
