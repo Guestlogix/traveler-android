@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticatedRequest implements NetworkTask.Request {
     private Method mMethod;
@@ -14,17 +15,20 @@ public class AuthenticatedRequest implements NetworkTask.Request {
     private JSONObject mPayload;
     private String mToken;
     private String mApiKey;
+    private Map<String, String> headers;
 
-    public AuthenticatedRequest(Method method, URL URL, String apiKey, String token, JSONObject payload) {
+
+    public AuthenticatedRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers, JSONObject payload) {
         this.mMethod = method;
         this.mURL = URL;
         this.mApiKey = apiKey;
         this.mToken = token;
+        this.headers = headers;
         this.mPayload = payload;
     }
 
-    public AuthenticatedRequest(Method method, URL url, String apiKey, String token) {
-        this(method, url, apiKey, token, null);
+    public AuthenticatedRequest(Method method, URL url, String apiKey, Map<String, String> headers, String token) {
+        this(method, url, apiKey, token, headers, null);
     }
 
     @Override
@@ -38,12 +42,8 @@ public class AuthenticatedRequest implements NetworkTask.Request {
     }
 
     @Override
-    public HashMap<String, String> getHeaders() {
+    public Map<String, String> getHeaders() {
 
-        HashMap<String, String> headers = new HashMap<>();
-
-        headers.put("Content-Type", "application/json");
-        headers.put("Accept", "application/json");
         headers.put("x-api-key", this.mApiKey);
         headers.put("Authorization", String.format("Bearer %s", this.mToken));
 

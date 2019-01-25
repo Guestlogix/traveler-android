@@ -7,53 +7,53 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 
 class UnauthenticatedRequest implements NetworkTask.Request {
-    private Method mMethod;
-    private URL mURL;
-    private JSONObject mPayload;
-    private String mApiKey;
+    private Method method;
+    private URL url;
+    private JSONObject payload;
+    private String apiKey;
+    private Map<String, String> headers;
 
-    UnauthenticatedRequest(Method method, URL url, String apiKey) {
-        this(method, url, apiKey, null);
+    UnauthenticatedRequest(Method method, URL url, String apiKey, Map<String, String> headers) {
+        this(method, url, apiKey, headers, null);
     }
 
-    UnauthenticatedRequest(Method method, URL url, String apiKey, JSONObject payload) {
-        this.mMethod = method;
-        this.mURL = url;
-        this.mApiKey = apiKey;
-        this.mPayload = payload;
+    UnauthenticatedRequest(Method method, URL url, String apiKey, Map<String, String> headers, JSONObject payload) {
+        this.method = method;
+        this.url = url;
+        this.apiKey = apiKey;
+        this.payload = payload;
+        this.headers = headers;
     }
 
     @Override
-    public HashMap<String, String> getHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
+    public Map<String, String> getHeaders() {
 
-        headers.put("Content-Type", "application/json");
-        headers.put("Accept", "application/json");
-        headers.put("x-api-key", this.mApiKey);
+        headers.put("x-api-key", this.apiKey);
 
         return headers;
     }
 
     @Override
     public Method getMethod() {
-        return mMethod;
+        return method;
     }
 
     @Override
     public URL getURL() {
-        return mURL;
+        return url;
     }
 
     @Override
     public void onProvidePayload(OutputStream stream) {
-        if (mPayload == null) {
+        if (payload == null) {
             return;
         }
 
         try {
-            stream.write(mPayload.toString().getBytes());
+            stream.write(payload.toString().getBytes());
         } catch (IOException e) {
             // TODO: Handle error
         }
