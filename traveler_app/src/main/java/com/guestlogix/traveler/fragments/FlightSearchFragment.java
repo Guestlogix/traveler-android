@@ -70,7 +70,10 @@ public class FlightSearchFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(FlightSearchViewModel.class);
+
+        if (null != getActivity()) {
+            mViewModel = ViewModelProviders.of(getActivity()).get(FlightSearchViewModel.class);
+        }
     }
 
     private void navigateToFlightSearchResults(View view) {
@@ -138,9 +141,11 @@ public class FlightSearchFragment extends Fragment {
     }
 
     private void showDatePickerDialog() {
-        new DatePickerDialog(Objects.requireNonNull(getActivity()), date, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        if (null != getActivity()) {
+            new DatePickerDialog(getActivity(), date, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        }
     }
 
     private boolean softInputSubmit(View v, int actionId, KeyEvent event) {
@@ -153,6 +158,8 @@ public class FlightSearchFragment extends Fragment {
 
     private static void hideKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(Objects.requireNonNull(activity.getCurrentFocus()).getWindowToken(), 0);
+        if (null != activity.getCurrentFocus()) {
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+        }
     }
 }
