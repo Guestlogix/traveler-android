@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -21,12 +23,14 @@ import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogFragment extends Fragment {
 
     private CatalogView catalogView;
+    private ProgressBar catalogProgressBar;
+    private LinearLayout emptyCatalogLayout;
+    private TextView tryAgainTextView;
     private List<CatalogGroup> catalogGroups;
     private View view;
 
@@ -40,11 +44,15 @@ public class CatalogFragment extends Fragment {
 
         RecyclerView flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
         catalogView = view.findViewById(R.id.catalogView);
+        catalogProgressBar = view.findViewById(R.id.catalogProgressBar);
+        emptyCatalogLayout = view.findViewById(R.id.emptyCatalogLayout);
+        tryAgainTextView = view.findViewById(R.id.tryAgainTextView);
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
         homeFragmentRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
         flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
+        tryAgainTextView.setOnClickListener(tryAgainOnClickListener);
         return view;
     }
 
@@ -54,6 +62,7 @@ public class CatalogFragment extends Fragment {
         catalogViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
         catalogViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
         catalogViewModel.getGroupsObservable().observe(this, this::catalogUpdateHandler);
+        catalogViewModel.getViewStateObservable().observe(this, this::onViewStateChange);
 
         flightsUpdateHandler(catalogViewModel.getFlights());
     }
@@ -68,6 +77,13 @@ public class CatalogFragment extends Fragment {
         public void onClick(View v) {
             int index = (Integer) v.getTag();
             catalogViewModel.deleteFlight(index);
+        }
+    };
+
+    View.OnClickListener tryAgainOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            updateCatalog(catalogViewModel.getFlights());
         }
     };
 
@@ -118,5 +134,25 @@ public class CatalogFragment extends Fragment {
     private void flightsUpdateHandler(List<Flight> flights) {
         updateCatalog(flights);
         homeFragmentRecyclerViewAdapter.update(flights);
+    }
+
+    private void onViewStateChange(CatalogViewModel.CatalogViewState state) {
+        switch (state) {
+            case LOADING:
+                catalogProgressBar.setVisibility(View.VISIBLE);
+                catalogView.setVisibility(View.GONE);
+                emptyCatalogLayout.setVisibility(View.GONE);
+                break;
+            case SUCCESS:
+                catalogProgressBar.setVisibility(View.GONE);
+                catalogView.setVisibility(View.VISIBLE);
+                emptyCatalogLayout.setVisibility(View.GONE);
+                break;
+            case ERROR:
+                catalogProgressBar.setVisibility(View.GONE);
+                catalogView.setVisibility(View.GONE);
+                emptyCatalogLayout.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }

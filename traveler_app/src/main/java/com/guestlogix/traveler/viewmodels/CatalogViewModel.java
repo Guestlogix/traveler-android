@@ -18,6 +18,7 @@ public class CatalogViewModel extends ViewModel {
     private MutableLiveData<List<Flight>> flightsList;
     private MutableLiveData<List<CatalogGroup>> catalogGroupList;
     private CatalogSearchRepository catalogRepository;
+    private MutableLiveData<CatalogViewState> viewState = new MutableLiveData<>();
 
     public CatalogViewModel() {
         this.flightsList = new MutableLiveData<>();
@@ -35,7 +36,12 @@ public class CatalogViewModel extends ViewModel {
         return flightsList.getValue();
     }
 
+    public MutableLiveData<CatalogViewState> getViewStateObservable() {
+        return viewState;
+    }
+
     public void updateCatalog(CatalogQuery catalogQuery) {
+        viewState.postValue(CatalogViewState.LOADING);
         catalogRepository.catalogSearch(catalogQuery, catalogSearchCallback);
     }
 
@@ -72,11 +78,18 @@ public class CatalogViewModel extends ViewModel {
         @Override
         public void onCatalogSearchSuccess(Catalog catalog) {
             catalogGroupList.postValue(catalog.getGroups());
+            viewState.postValue(CatalogViewState.SUCCESS);
         }
 
         @Override
         public void onCatalogSearchError(TravelerError error) {
-            // TODO: Handle Error appropriately
+            viewState.postValue(CatalogViewState.ERROR);
         }
     };
+
+    public enum CatalogViewState {
+        LOADING,
+        SUCCESS,
+        ERROR,
+    }
 }
