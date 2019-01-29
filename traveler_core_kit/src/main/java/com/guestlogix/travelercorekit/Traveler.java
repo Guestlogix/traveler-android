@@ -7,6 +7,7 @@ import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.PassFetchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.*;
@@ -205,6 +206,35 @@ public class Traveler {
             searchGroupBlockTask.addDependency(checkAvailabilityTask);
             mLocalInstance.mTaskManager.addTask(checkAvailabilityTask);
             TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+        }
+    }
+
+    public static void fetchPass(BookingContext bookingContext, PassFetchCallback passFetchCallback) {
+        if (null == mLocalInstance) {
+            passFetchCallback.onPassFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+            if (bookingContext.getSelectedDate() == null) {
+                passFetchCallback.onPassFetchError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
+                return;
+            }
+
+            AuthenticatedRequest request = Router.productPass(mLocalInstance.mSession, bookingContext);
+            AuthenticatedNetworkRequestTask<List<Pass>> passFetchTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
+
+            BlockTask fetchPassBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != passFetchTask.getError()) {
+                        passFetchCallback.onPassFetchError(passFetchTask.getError());
+                    } else {
+                        passFetchCallback.onPassFetchSuccess(passFetchTask.getResource());
+                    }
+                }
+            };
+
+            fetchPassBlockTask.addDependency(passFetchTask);
+            mLocalInstance.mTaskManager.addTask(passFetchTask);
+            TaskManager.getMainTaskManager().addTask(fetchPassBlockTask);
         }
     }
 }
