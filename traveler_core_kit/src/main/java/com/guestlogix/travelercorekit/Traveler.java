@@ -195,6 +195,7 @@ public class Traveler {
                 protected void main() {
                     if (null != checkAvailabilityTask.getError()) {
                         checkAvailabilityCallback.onCheckAvailabilityError(checkAvailabilityTask.getError());
+                        Log.e("Traveler", checkAvailabilityTask.getError().toString());
                     } else {
                         checkAvailabilityCallback.onCheckAvailabilitySuccess(checkAvailabilityTask.getResource());
                     }

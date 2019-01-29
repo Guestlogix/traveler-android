@@ -1,5 +1,7 @@
 package com.guestlogix.travelercorekit.error;
 
+import java.util.Locale;
+
 public class TravelerError {
     private TravelerErrorCode mCode;
     private String mMessage;
@@ -14,7 +16,7 @@ public class TravelerError {
     }
 
     public String toString() {
-        return mCode + mMessage;
+        return String.format(Locale.CANADA, "%s %s", mCode , mMessage);
     }
 
     @Override

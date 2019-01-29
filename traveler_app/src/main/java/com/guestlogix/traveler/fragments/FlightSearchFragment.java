@@ -13,10 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.viewmodels.FlightSearchViewModel;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.Calendar;
@@ -65,7 +63,7 @@ public class FlightSearchFragment extends Fragment {
 
     private void navigateToFlightSearchResults(View view) {
         String flightNumber = flightNumberEditText.getText().toString();
-        String departureDate = DateHelper.getDateAsString(departureDateCalendar.getTime());
+        String departureDate = DateHelper.getDateTimeAsString(departureDateCalendar.getTime());
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             hideKeyboard(getActivity());
