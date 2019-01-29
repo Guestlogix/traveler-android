@@ -46,7 +46,7 @@ public class Router {
     public static AuthenticatedRequest searchFlight(Session session, FlightQuery query) {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("flight-number", query.getNumber());
-        queryParams.put("departure-date", DateHelper.getDateAsString(query.getDate()));
+        queryParams.put("departure-date", DateHelper.getDateTimeAsString(query.getDate()));
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL("/flight", queryParams), session.getApiKey(), session.getAuthToken().getValue());
     }
@@ -73,8 +73,8 @@ public class Router {
     public static AuthenticatedRequest productSchedule(Session session, BookingContext bookingContext) {
 
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("from", DateHelper.getDateAsString(bookingContext.getSelectedDate()));
-        queryParams.put("to", DateHelper.getDateAsString(bookingContext.getEndDateTime()));
+        queryParams.put("from", DateHelper.getDateTimeAsString(bookingContext.getSelectedDate()));
+        queryParams.put("to", DateHelper.getDateTimeAsString(bookingContext.getEndDateTime()));
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL(String.format(Locale.CANADA, "/product/%s/schedule", bookingContext.getProduct().getId()), queryParams), session.getApiKey(), session.getAuthToken().getValue());
     }

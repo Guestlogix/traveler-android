@@ -77,13 +77,15 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
             @Override
             protected void main() {
                 TravelerError error = networkTask.getError();
+
                 if (error == null || TravelerErrorCode.UNAUTHORIZED != error.getCode()) {
                     authTokenFetchTask.cancel();
                     authTokenFetchBlockTask.cancel();
                     retryNetworkTask.cancel();
                     retryNetworkBlockTask.cancel();
+                }
 
-                    //mResource = networkTask.
+                if (error != null) {
                     mError = error;
                 }
             }
@@ -109,8 +111,6 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         mTaskManager.addTask(retryNetworkTask);
         mTaskManager.addTask(retryNetworkBlockTask);
         mTaskManager.addTask(finishTask);
-
-        //finish();
     }
 
     public TravelerError getError() {

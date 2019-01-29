@@ -54,7 +54,7 @@ public class FlightSearchResultsFragment extends Fragment {
         String flightNumber = arg.getFlightNumber();
 
         try {
-            Date date = DateHelper.getDateAsObject(departureDate);
+            Date date = DateHelper.getDateTimeAsObject(departureDate);
             FlightQuery flightQuery = new FlightQuery(flightNumber, date);
 
             flightSearchResultViewModel = ViewModelProviders.of(this).get(FlightSearchResultViewModel.class);
