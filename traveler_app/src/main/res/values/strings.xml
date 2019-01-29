@@ -17,4 +17,6 @@
     <string name="oh_no">Oh No!</string>
     <string name="something_went_wrong">Unfortunately something went wrong :(</string>
     <string name="ok">OK</string>
+    <string name="label_sorry">Sorry</string>
+    <string name="label_nothing_to_show">There is nothing to show :(</string>
 </resources>
