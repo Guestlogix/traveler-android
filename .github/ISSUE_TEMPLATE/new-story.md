@@ -7,20 +7,40 @@ assignees: ''
 
 ---
 
-**Description**
-A clear and concise description of what will happen.
+### Description
+_A clear and concise description of what will happen_
 
-**Acceptance Criteria**
-What must be completed for this story to be considered done.
+### Core SDK
+**Supporting Tools** 
+_e.g. Network layer, form components_
 
-**Error Messages**
-Any error messages that should be expected for invalid usage.
+**Business Logic**
+_All rules and workflows within the business domain_
 
-**UX Requirements**
-Mockups, wireframes or any notes pertaining to the UX.
+**Entity Model**
+_Models required_
 
-**Tech Requirements**
-Design patterns, naming conventions, or any other considerations for the developer.
+**Developer API**
+_Implementation interface specifications._
+
+### UI SDK
+**Supporting Tools** 
+_e.g. Network layer, form components_
+
+**Flow Outline**
+Happy Path: _[Zeplin Links]_
+
+Edge Cases: _[Zeplin Links]_
+
+### White Label
+**Supporting Tools** 
+_e.g. Network layer, form components_
+
+Happy Path: _[Zeplin Links]_
+
+Edge Cases: _[Zeplin Links]_
+
+
 
 **QA Requirements**
 What the QA should be testing for when evaluating this feature.
