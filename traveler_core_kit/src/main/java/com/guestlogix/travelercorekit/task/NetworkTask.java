@@ -107,7 +107,6 @@ public class NetworkTask extends Task {
     private void setupConnection(HttpURLConnection conn) throws IOException {
         setHeaders(conn);
         setMethod(conn);
-        conn.setUseCaches(true);
     }
 
     private void setHeaders(HttpURLConnection urlConnection) {
