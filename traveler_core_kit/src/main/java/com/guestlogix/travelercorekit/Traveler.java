@@ -7,7 +7,7 @@ import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
-import com.guestlogix.travelercorekit.callbacks.PassFetchCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.*;
@@ -209,12 +209,12 @@ public class Traveler {
         }
     }
 
-    public static void fetchPass(BookingContext bookingContext, PassFetchCallback passFetchCallback) {
+    public static void fetchPass(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
         if (null == mLocalInstance) {
-            passFetchCallback.onPassFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+            fetchPassesCallback.onPassFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             if (bookingContext.getSelectedDate() == null) {
-                passFetchCallback.onPassFetchError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
+                fetchPassesCallback.onPassFetchError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
                 return;
             }
 
@@ -225,9 +225,9 @@ public class Traveler {
                 @Override
                 protected void main() {
                     if (null != passFetchTask.getError()) {
-                        passFetchCallback.onPassFetchError(passFetchTask.getError());
+                        fetchPassesCallback.onPassFetchError(passFetchTask.getError());
                     } else {
-                        passFetchCallback.onPassFetchSuccess(passFetchTask.getResource());
+                        fetchPassesCallback.onPassFetchSuccess(passFetchTask.getResource());
                     }
                 }
             };

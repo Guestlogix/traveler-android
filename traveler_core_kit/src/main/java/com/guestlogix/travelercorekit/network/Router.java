@@ -81,7 +81,7 @@ public class Router {
 
     public static AuthenticatedRequest productPass(Session session, BookingContext bookingContext) {
         Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("date", DateHelper.getDateAsString(bookingContext.getSelectedDate()));
+        queryParams.put("date", DateHelper.getDateTimeAsString(bookingContext.getSelectedDate()));
 
         if (bookingContext.getTimeRequired()) {
             queryParams.put("time-in-minutes", DateHelper.getDayMinutesAsTimeString(bookingContext.getSelectedTime()));
