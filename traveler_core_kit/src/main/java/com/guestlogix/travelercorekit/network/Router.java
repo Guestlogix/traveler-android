@@ -84,7 +84,7 @@ public class Router {
         queryParams.put("date", DateHelper.getDateTimeAsString(bookingContext.getSelectedDate()));
 
         if (bookingContext.getTimeRequired()) {
-            queryParams.put("time-in-minutes", DateHelper.getDayMinutesAsTimeString(bookingContext.getSelectedTime()));
+            queryParams.put("time-in-minutes", bookingContext.getSelectedTime().toString());
         }
 
         return new AuthenticatedRequest(NetworkTask.Request.Method.GET, createURL(String.format(Locale.CANADA, "/product/%s/pass", bookingContext.getProduct().getId()), queryParams), session.getApiKey(), session.getAuthToken().getValue());

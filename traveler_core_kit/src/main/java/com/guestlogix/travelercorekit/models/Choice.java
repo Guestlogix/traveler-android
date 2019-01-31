@@ -18,12 +18,11 @@ public class Choice {
     public static class ChoiceObjectMappingFactory implements ObjectMappingFactory<Choice> {
 
         /**
-         * Parse the reader object into a Choice without verifying the validity of the contents. If given a reader not
-         * of Choice type, resulting Choice object is not guaranteed to have correct values.
+         * Parses a reader object into Choice model. Does not guarantee the correctness of the resulting object.
          *
          * @param reader Object to parse from.
          * @return Choice model object from the reader.
-         * @throws IOException if parsing cannot be completed.
+         * @throws IOException if mapping fails.
          */
         @Override
         public Choice instantiate(JsonReader reader) throws IOException {

@@ -216,11 +216,18 @@ public class Traveler {
      * @param fetchPassesCallback Callback methods which will be executed after the data is fetched.
      */
     public static void fetchPass(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
+        Log.d(TAG, "fetching passes");
         if (null == mLocalInstance) {
+            Log.i(TAG, "Cannot use Traveler before initializing");
             fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             if (bookingContext.getSelectedDate() == null) {
                 fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
+                return;
+            }
+
+            if (null != bookingContext.getTimeRequired() && bookingContext.getTimeRequired() && bookingContext.getSelectedTime() == null) {
+                fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.NO_TIME, "Booking time is required"));
                 return;
             }
 
