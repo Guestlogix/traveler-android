@@ -209,12 +209,18 @@ public class Traveler {
         }
     }
 
+    /**
+     * Fetches all the passes for a given booking context.
+     *
+     * @param bookingContext context for which to fetch.
+     * @param fetchPassesCallback Callback methods which will be executed after the data is fetched.
+     */
     public static void fetchPass(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
         if (null == mLocalInstance) {
-            fetchPassesCallback.onPassFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+            fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             if (bookingContext.getSelectedDate() == null) {
-                fetchPassesCallback.onPassFetchError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
+                fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
                 return;
             }
 
@@ -225,9 +231,9 @@ public class Traveler {
                 @Override
                 protected void main() {
                     if (null != passFetchTask.getError()) {
-                        fetchPassesCallback.onPassFetchError(passFetchTask.getError());
+                        fetchPassesCallback.onError(passFetchTask.getError());
                     } else {
-                        fetchPassesCallback.onPassFetchSuccess(passFetchTask.getResource());
+                        fetchPassesCallback.onSuccess(passFetchTask.getResource());
                     }
                 }
             };
