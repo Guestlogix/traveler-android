@@ -76,6 +76,14 @@ public class Pass {
 
     public static class PassObjectMappingFactory implements ObjectMappingFactory<Pass> {
 
+        /**
+         * Passes a json reader object into a Pass model. Does not guarantee the correctness of the resulting object.
+         *
+         * @param reader to read from.
+         * @return Pass model.
+         * @throws ObjectMappingException if mapping fails.
+         * @throws IOException            if mapping fails.
+         */
         @Override
         public Pass instantiate(JsonReader reader) throws ObjectMappingException, IOException {
             return readPass(reader);
@@ -113,8 +121,10 @@ public class Pass {
                     case "questions":
                         ArrayMappingFactory<Question> factory = new ArrayMappingFactory<>(new Question.QuestionObjectMappingFactory());
                         questions = factory.instantiate(reader);
+                        break;
                     default:
                         reader.skipValue();
+                        break;
                 }
             }
 

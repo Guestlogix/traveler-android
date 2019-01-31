@@ -1,10 +1,13 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.validators.MaxQuantityValidationRule;
 import com.guestlogix.travelercorekit.validators.PatternValidationRule;
 import com.guestlogix.travelercorekit.validators.RequiredValidationRule;
 import com.guestlogix.travelercorekit.validators.ValidationRule;
@@ -17,15 +20,13 @@ public class Question {
     private String id;
     private String title;
     private String description;
-    private Integer maxQuantity;
     private QuestionType type;
     private List<ValidationRule> validationRules;
 
-    public Question(String id, String title, String description, Integer maxQuantity, QuestionType type, List<ValidationRule> rules) {
+    public Question(String id, String title, String description, QuestionType type, List<ValidationRule> rules) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.maxQuantity = maxQuantity;
         this.type = type;
         this.validationRules = rules;
     }
@@ -52,14 +53,6 @@ public class Question {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getMaxQuantity() {
-        return maxQuantity;
-    }
-
-    public void setMaxQuantity(Integer maxQuantity) {
-        this.maxQuantity = maxQuantity;
     }
 
     public QuestionType getType() {
@@ -90,17 +83,16 @@ public class Question {
          */
         @Override
         public Question instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-            return null;
+            return readQuestion(reader);
         }
 
         /**
          * Parses a reader into a Question object.
          * <p>
          * Future considerations:
-         * This method assumes that all extra fields are validation rules where the type is the
-         * name and the value is whatever validation rule you need. For now it assumes that the
-         * value is a regex pattern. If later changed to a more complicated object, this method
-         * will have to be changed.
+         * This method assumes that all extra fields are validation rules where the type is the name and the value is
+         * whatever validation rule you need. For now it assumes that the value is a regex pattern. If later changed to
+         * a more complicated object, this method will have to be changed.
          *
          * @param reader Object to read from
          * @return Question object
@@ -111,7 +103,6 @@ public class Question {
             String id = "";
             String title = "";
             String description = "";
-            Integer maxQuantity = null;
             QuestionType type = null;
             List<ValidationRule> rules = new ArrayList<>();
 
@@ -126,14 +117,11 @@ public class Question {
                     case "id":
                         id = JsonReaderHelper.readString(reader);
                         break;
-                    case "title":
+                    case "name":
                         title = JsonReaderHelper.readString(reader);
                         break;
                     case "description":
                         description = JsonReaderHelper.readString(reader);
-                        break;
-                    case "maximumQuantity":
-                        maxQuantity = JsonReaderHelper.readInteger(reader);
                         break;
                     case "type":
                         type = determineQuestionType(JsonReaderHelper.readString(reader));
@@ -143,24 +131,24 @@ public class Question {
                         choices = factory.instantiate(reader);
                         break;
                     default:
-                        ValidationRule rule = readValdiationRule(name, reader);
+                        ValidationRule rule = readValidationRule(name, reader);
                         if (null != rule) {
                             rules.add(rule);
                         }
-
+                        break;
                 }
             }
             reader.endObject();
 
-            // Add choices if its a multiple choice question type.
+            // Add choices if it's a multiple choice question type.
             if (type instanceof MultipleChoiceType) {
                 ((MultipleChoiceType) type).setChoices(choices);
             }
 
-            return new Question(id, title, description, maxQuantity, type, rules);
+            return new Question(id, title, description, type, rules);
         }
 
-        private QuestionType determineQuestionType(String type) {
+        private QuestionType determineQuestionType(String type) throws ObjectMappingException {
             QuestionType questionType = null;
 
             if (null != type) {
@@ -168,19 +156,39 @@ public class Question {
                     questionType = new MultipleChoiceType();
                 } else if (type.equals("Text")) {
                     questionType = new StringType();
+                } else if (type.equals("Quantity")) {
+                    questionType = new QuantityType();
                 }
                 // Add more question types here.
             }
 
-            return questionType;
+            throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid json. Unsupported question type."));
         }
 
-        private ValidationRule readValdiationRule(String name, JsonReader reader) throws IOException {
+        /**
+         * Determines which validation rules to create.
+         * <p>
+         * Thoughts:
+         * For now, the validation rule mapping is trivial so this method can be placed here. However, if the validation
+         * becomes more complicated, it would be better to extract this logic into a standalone class.
+         *
+         * @param name   JSON field.
+         * @param reader reader object.
+         * @return A validation rule.
+         * @throws IOException if there was a problem reading the validation rule.
+         */
+        private ValidationRule readValidationRule(String name, JsonReader reader) throws IOException {
             if (name.equals("required")) {
                 Boolean required = JsonReaderHelper.readBoolean(reader);
 
                 if (null != required && required) {
                     return new RequiredValidationRule();
+                }
+            } else if (name.equals("maximumQuantity")) {
+                Integer max = JsonReaderHelper.readInteger(reader);
+
+                if (null != max && max >= 0) {
+                    return new MaxQuantityValidationRule(max);
                 }
             } else {
                 String pattern = JsonReaderHelper.readString(reader);

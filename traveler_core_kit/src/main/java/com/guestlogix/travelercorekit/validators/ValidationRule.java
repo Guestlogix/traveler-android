@@ -6,7 +6,7 @@ public abstract class ValidationRule {
      * Validates the given string.
      *
      * @param toValidate string to validate.
-     * @return whether the string is valid according to the rules.
+     * @return true if the validation passes.
      */
     abstract boolean validate(String toValidate);
 }
