@@ -1,11 +1,13 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Pass {
     private String id;
@@ -13,13 +15,15 @@ public class Pass {
     private String description;
     private Integer maxQuantity;
     private Double price;
+    private List<Question> questions;
 
-    public Pass(String id, String name, String description, Integer maxQuantity, Double price) {
+    public Pass(String id, String name, String description, Integer maxQuantity, Double price, List<Question> questions) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.maxQuantity = maxQuantity;
         this.price = price;
+        this.questions = questions;
     }
 
     public int getMaxQuantity() {
@@ -62,6 +66,14 @@ public class Pass {
         this.price = price;
     }
 
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
     public static class PassObjectMappingFactory implements ObjectMappingFactory<Pass> {
 
         @Override
@@ -69,12 +81,13 @@ public class Pass {
             return readPass(reader);
         }
 
-        private static Pass readPass(JsonReader reader) throws IOException {
+        private static Pass readPass(JsonReader reader) throws IOException, ObjectMappingException {
             String id = "";
             String name = "";
             String description = "";
             Integer maxQuantity = 0;
             Double price = 0.0;
+            List<Question> questions = null;
 
             reader.beginObject();
 
@@ -97,14 +110,17 @@ public class Pass {
                     case "maximumQuantity":
                         maxQuantity = JsonReaderHelper.readInteger(reader);
                         break;
+                    case "questions":
+                        ArrayMappingFactory<Question> factory = new ArrayMappingFactory<>(new Question.QuestionObjectMappingFactory());
+                        questions = factory.instantiate(reader);
                     default:
-                            reader.skipValue();
+                        reader.skipValue();
                 }
             }
 
             reader.endObject();
 
-            return new Pass(id, name, description, maxQuantity, price);
+            return new Pass(id, name, description, maxQuantity, price, questions);
         }
     }
 }

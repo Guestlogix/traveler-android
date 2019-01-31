@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface FetchPassesCallback {
 
-    void onPassFetchSuccess(List<Pass> pass);
-    void onPassFetchError(TravelerError error);
+    void onSuccess(List<Pass> pass);
+    void onError(TravelerError error);
 }
