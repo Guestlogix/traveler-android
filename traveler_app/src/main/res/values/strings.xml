@@ -12,11 +12,8 @@
     <string name="no_flight_found_primary">No flights found</string>
     <string name="no_flights_found_secondary">Please try again with a different flight number or departure date</string>
 
-    <string name="try_again">Try Again</string>
     <string name="retry">Retry</string>
     <string name="oh_no">Oh No!</string>
     <string name="something_went_wrong">Unfortunately something went wrong :(</string>
     <string name="ok">OK</string>
-    <string name="label_sorry">Sorry</string>
-    <string name="label_nothing_to_show">There is nothing to show :(</string>
 </resources>
