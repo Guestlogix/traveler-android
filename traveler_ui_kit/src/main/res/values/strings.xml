@@ -16,4 +16,8 @@
     <string name="hint_select_date">Select Date</string>
     <string name="hint_select_time">Select Time</string>
     <string name="not_available">Not Available</string>
+    <string name="no_argument_exception">Argument %1$s is required to launch %2$s.</string>
+    <string name="label_sorry">Sorry</string>
+    <string name="label_nothing_to_show">There is nothing to show :(</string>
+    <string name="try_again">Try Again</string>
 </resources>
