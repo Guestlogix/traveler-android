@@ -4,6 +4,14 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Generic cell which is going to be displayed in the form.
+ * Provides general click listeners for the forms.
+ * <p>
+ * Notice:
+ * Right now the cells can have at most one listener for a given listener type. This can create errors, if someone
+ * decides to subscribe to the listeners on their own.
+ */
 public abstract class FormCell extends RecyclerView.ViewHolder {
     /**
      * Callback interface invoked whenever a user performs a click.
@@ -20,6 +28,11 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
      */
     protected OnTextChangedListener mTextChangesListener;
 
+    /**
+     * Index of the Holder Cell within the Form
+     */
+    protected int index;
+
     public FormCell(@NonNull View itemView) {
         super(itemView);
     }
@@ -32,9 +45,9 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
         /**
          * Is invoked whenever the user clicked on the input field.
          *
-         * @param v The {@link Input} object which was clicked.
+         * @param cell The {@link FormCell} object which was clicked.
          */
-        void onClick(View v);
+        void onClick(FormCell cell);
     }
 
     /**
@@ -45,10 +58,10 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
         /**
          * Is invoked whenever the user has performed a long click.
          *
-         * @param v The {@link Input} object associated with the long click.
+         * @param cell The {@link FormCell} object associated with the long click.
          * @return true if the event was consumed.
          */
-        boolean onLongClick(View v);
+        boolean onLongClick(FormCell cell);
     }
 
     /**
@@ -59,12 +72,10 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
         /**
          * Is invoked whenever the user changes the value of the input field.
          *
-         * @param s      Current value.
-         * @param start  Start position of characters that have been changed.
-         * @param before Length of value before the change.
-         * @param count  Amount of characters which were changed.
+         * @param cell The {@link FormCell} object associated with the long click.
+         * @param s    Current value.
          */
-        void onTextChanged(CharSequence s, int start, int before, int count);
+        void onTextChanged(FormCell cell, CharSequence s);
     }
 
     /**
@@ -92,5 +103,13 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
      */
     public void setOnTextChangedListener(OnTextChangedListener listener) {
         this.mTextChangesListener = listener;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

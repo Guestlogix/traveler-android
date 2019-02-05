@@ -8,7 +8,6 @@ import com.guestlogix.traveleruikit.forms.cells.FormCell;
 public final class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
     private FormMapper formMapper;
 
-    @NonNull
     @Override
     public FormCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (null != formMapper) {
@@ -22,6 +21,10 @@ public final class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
     public void onBindViewHolder(@NonNull FormCell holder, int position) {
         if (null != formMapper) {
             formMapper.bindView(holder, position);
+            holder.setIndex(position);
+            holder.setOnClickListener(onClickListener);
+            holder.setOnLongClickListener(onLongClickListener);
+            holder.setOnTextChangedListener(onTextChangedListener);
         }
     }
 
@@ -44,8 +47,42 @@ public final class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
 
     public interface FormMapper {
         int getTotalCount();
+
         int getViewType(int position);
+
         FormCell createViewHolder(ViewGroup parent, int type);
+
         void bindView(FormCell cell, int position);
+
+        void onClick(int position);
+
+        boolean onLongClick(int position);
+
+        void onTextChanged(int position, CharSequence s);
     }
+
+    FormCell.OnClickListener onClickListener = new FormCell.OnClickListener() {
+        @Override
+        public void onClick(FormCell cell) {
+            if (null != formMapper) {
+                formMapper.onClick(cell.getIndex());
+            }
+        }
+    };
+
+    FormCell.OnLongClickListener onLongClickListener = new FormCell.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(FormCell cell) {
+            return null != formMapper && formMapper.onLongClick(cell.getIndex());
+        }
+    };
+
+    FormCell.OnTextChangedListener onTextChangedListener = new FormCell.OnTextChangedListener() {
+        @Override
+        public void onTextChanged(FormCell cell, CharSequence s) {
+            if (null != formMapper) {
+                formMapper.onTextChanged(cell.getIndex(), s);
+            }
+        }
+    };
 }

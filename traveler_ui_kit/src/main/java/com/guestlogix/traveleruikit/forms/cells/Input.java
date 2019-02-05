@@ -62,16 +62,18 @@ public class Input extends FormCell {
 
         text.setOnLongClickListener(v -> {
             if (this.mLongClickListener != null) {
-                return this.mLongClickListener.onLongClick(itemView);
+                return this.mLongClickListener.onLongClick(this);
             }
             return false;
         });
 
         text.setOnClickListener(v -> {
-            if(null != this.mClickListener) {
-                this.mClickListener.onClick(itemView);
+            if (null != this.mClickListener) {
+                this.mClickListener.onClick(this);
             }
         });
+
+        FormCell selfRef = this;
 
         text.addTextChangedListener(new TextWatcher() {
             @Override
@@ -81,7 +83,7 @@ public class Input extends FormCell {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (null != mTextChangesListener) {
-                    mTextChangesListener.onTextChanged(s, start, before, count);
+                    mTextChangesListener.onTextChanged(selfRef, s);
                 }
             }
 
@@ -91,4 +93,7 @@ public class Input extends FormCell {
         });
     }
 
+    public static int getResourceId() {
+        return R.layout.view_input;
+    }
 }

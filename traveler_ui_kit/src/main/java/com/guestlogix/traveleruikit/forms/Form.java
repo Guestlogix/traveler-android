@@ -21,14 +21,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A flexible view to display forms.
+ * A form layout used to display a list of sections each containing a set of questions.
  */
 public class Form extends FrameLayout {
 
     private RecyclerView formCells;
-    private FormManager formManager;
+    private RecyclerView.LayoutManager layoutManager;
+    private FormMappingAdapter adapter;
+    private FormStrategy formStrategy;
 
     private List<Pair<Integer, Integer>> indexMap;
+
+    /**
+     * Callback interface used to notify any subscriber whenever a click was performed on an Input in the form.
+     */
+    protected OnFormClickListener onFormClickListener;
+
+    /**
+     * Callback interface used to notify any subscriber whenever a long click was performed on an Input in the form.
+     */
+    protected OnFormLongClickListener onFormLongClickListener;
+
+    /**
+     * Callback Interface used to notify any subscriber whenever a value was changed in the form.
+     */
+    protected OnFormValueChangedListener onFormValueChangedListener;
 
     public Form(@NonNull Context context) {
         super(context);
@@ -51,13 +68,21 @@ public class Form extends FrameLayout {
         initView(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setAdapter(FormManager manager) {
-        this.formManager = manager;
+    /**
+     * Sets the strategy used to display the form.
+     * The {@link FormStrategy} provides an interface used to determine how to display the form.
+     *
+     * @param strategy used to instantiate the form.
+     */
+    public void setFormStrategy(FormStrategy strategy) {
+        this.formStrategy = strategy;
         setUpIndexMap();
 
-        FormMappingAdapter adapter = new FormMappingAdapter();
+        layoutManager = new LinearLayoutManager(getContext());
+        adapter = new FormMappingAdapter();
+
         adapter.setFormMapper(formMapper);
-        formCells.setLayoutManager(new LinearLayoutManager(getContext()));
+        formCells.setLayoutManager(layoutManager);
         formCells.setAdapter(adapter);
     }
 
@@ -74,11 +99,11 @@ public class Form extends FrameLayout {
 
     private void setUpIndexMap() {
         indexMap = new ArrayList<>();
-        int sections = formManager.getSectionCount();
+        int sections = formStrategy.getSectionCount();
 
         for (int i = 0; i < sections; i++) {
             indexMap.add(new Pair<>(i, -1));
-            int inputs = formManager.getSectionInputCount(i);
+            int inputs = formStrategy.getSectionInputCount(i);
 
             for (int j = 0; j < inputs; j++) {
                 indexMap.add(new Pair<>(i, j));
@@ -87,25 +112,69 @@ public class Form extends FrameLayout {
     }
 
     /**
-     * Callback interface responsible for providing the instantiation logic.
+     * Callback interface responsible for defining the instantiation of the form.
      */
-    public interface FormManager {
+    public interface FormStrategy {
         /**
-         * @param sectionId
+         * Binds a cell which contains the header type.
+         *
+         * @param sectionId section index.
          */
         void bindSection(int sectionId, FormCell sectionCell);
 
+        /**
+         * Binds a cell which contains an input.
+         *
+         * @param sectionId Section Index.
+         * @param inputId   Input index within the Section.
+         * @param inputCell
+         */
         void bindInput(int sectionId, int inputId, FormCell inputCell);
 
+        /**
+         * Creates a FormCell based on the given type.
+         *
+         * @param parent   Root where the view should be created at.
+         * @param viewType Integer representing the type
+         * @return Cell holding the view.
+         */
         FormCell createView(ViewGroup parent, int viewType);
 
+        /**
+         * Determines the type of the input cell based on the section and input indices combination.
+         *
+         * @param sectionId Section index.
+         * @param inputId   Input index within the section.
+         * @return Type of the given input cell
+         */
         int getInputType(int sectionId, int inputId);
 
+        /**
+         * Determines the type of the current section cell based on the section index.
+         *
+         * @param sectionId Section index.
+         * @return Type of current section cell.
+         */
         int getSectionType(int sectionId);
 
-        int getSectionCount();
+        /**
+         * How many sections are there in this form.
+         *
+         * @return Amount of sections in the form.
+         */
+        default int getSectionCount() {
+            return 0;
+        }
 
-        int getSectionInputCount(int sectionId);
+        /**
+         * How many inputs there is in total in this section.
+         *
+         * @param sectionId Section index where to look.
+         * @return Amount of inputs in the given section.
+         */
+        default int getSectionInputCount(int sectionId) {
+            return 0;
+        }
 
     }
 
@@ -117,13 +186,13 @@ public class Form extends FrameLayout {
 
         @Override
         public int getViewType(int position) {
-            if (null != formManager) {
+            if (null != formStrategy) {
                 Pair<Integer, Integer> pair = indexMap.get(position);
 
                 if (pair.second >= 0) {
-                    return formManager.getInputType(pair.first, pair.second);
+                    return formStrategy.getInputType(pair.first, pair.second);
                 } else {
-                    return formManager.getSectionType(pair.first);
+                    return formStrategy.getSectionType(pair.first);
                 }
             }
             return 0;
@@ -131,23 +200,114 @@ public class Form extends FrameLayout {
 
         @Override
         public FormCell createViewHolder(ViewGroup parent, int type) {
-            if (null != formManager) {
-                return formManager.createView(parent, type);
+            if (null != formStrategy) {
+                return formStrategy.createView(parent, type);
             }
             return null;
         }
 
         @Override
         public void bindView(FormCell cell, int position) {
-            if (null != formManager) {
+            if (null != formStrategy) {
                 Pair<Integer, Integer> pair = indexMap.get(position);
 
                 if (pair.second >= 0) {
-                    formManager.bindInput(pair.first, pair.second, cell);
+                    formStrategy.bindInput(pair.first, pair.second, cell);
                 } else {
-                    formManager.bindSection(pair.first, cell);
+                    formStrategy.bindSection(pair.first, cell);
                 }
             }
         }
+
+        @Override
+        public void onClick(int position) {
+            if (null != onFormClickListener) {
+                Pair<Integer, Integer> pair = indexMap.get(position);
+                onFormClickListener.onFormClick(pair.first, pair.second);
+            }
+        }
+
+        @Override
+        public boolean onLongClick(int position) {
+            Pair<Integer, Integer> pair = indexMap.get(position);
+            return null != onFormLongClickListener && onFormLongClickListener.onFormLongClick(pair.first, pair.second);
+        }
+
+        @Override
+        public void onTextChanged(int position, CharSequence s) {
+            if (null != onFormValueChangedListener) {
+                Pair<Integer, Integer> pair = indexMap.get(position);
+
+                onFormValueChangedListener.onFormValueChanged(pair.first, pair.second, s);
+            }
+        }
     };
+
+    /**
+     * Subscribes to click events.
+     *
+     * @param onFormClickListener callback method for click events.
+     */
+    public void setOnFormClickListener(OnFormClickListener onFormClickListener) {
+        this.onFormClickListener = onFormClickListener;
+    }
+
+    /**
+     * Subscribes to long click events.
+     *
+     * @param onFormLongClickListener callback method for long click events.
+     */
+    public void setOnFormLongClickListener(OnFormLongClickListener onFormLongClickListener) {
+        this.onFormLongClickListener = onFormLongClickListener;
+    }
+
+    /**
+     * Subscribes to value changed events.
+     *
+     * @param onFormValueChangedListener callback method for text change events.
+     */
+    public void setOnFormValueChangedListener(OnFormValueChangedListener onFormValueChangedListener) {
+        this.onFormValueChangedListener = onFormValueChangedListener;
+    }
+
+    /**
+     * This listener is used to indicate that an input value was clicked in the {@link Form}.
+     */
+    public interface OnFormClickListener {
+        /**
+         * Is invoked whenever the user clicked on an Input in the form.
+         *
+         * @param sectionId Section index where the click was done.
+         * @param inputId   Input index within the section where the click was done.
+         */
+        void onFormClick(int sectionId, int inputId);
+    }
+
+    /**
+     * This listener is used to indicate that an input value was long clicked.
+     */
+    public interface OnFormLongClickListener {
+        /**
+         * Is invoked whenever the Input section was long clicked.
+         *
+         * @param sectionId Section index where the long click was performed.
+         * @param inputId   Input index within the section where the long click was performed.
+         * @return Whether the event was consumed.
+         */
+        boolean onFormLongClick(int sectionId, int inputId);
+    }
+
+    /**
+     * This listener is used to indicate that an input value has been changed.
+     */
+    public interface OnFormValueChangedListener {
+        /**
+         * Is invoked whenever an Input had his value changed.
+         *
+         * @param sectionId Section index where the value was changed.
+         * @param inputId   Input index within the section where the value was changed.
+         * @param newValue  Current value of the input.
+         */
+        void onFormValueChanged(int sectionId, int inputId, CharSequence newValue);
+    }
 }
