@@ -17,6 +17,8 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
@@ -39,6 +41,9 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  */
 public class CatalogItemDetailsFragment extends Fragment {
+    private static final String ARG_CATALOG_ITEM = "catalog_item";
+    private static final String TAG = "Item Details";
+
     private View mView;
     private NestedScrollView mainNestedScrollView;
     private ViewPager catalogItemDetailsPager;
@@ -54,10 +59,8 @@ public class CatalogItemDetailsFragment extends Fragment {
     private TextInputEditText timeEditText;
     private TextInputLayout timeTextInputLayout;
     private Spinner timeSlotsSpinner;
-    private ProgressBar detailsProgressbar;
-    private ProgressBar checkAvailabilityProgressBar;
-    private RelativeLayout itemDetailsLayout;
     private RelativeLayout timeRelativeLayout;
+    private ProgressBar checkAvailabilityProgressBar;
 
     private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
@@ -81,8 +84,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         timeEditText = mView.findViewById(R.id.timeEditText);
         timeTextInputLayout = mView.findViewById(R.id.timeTextInputLayout);
         timeSlotsSpinner = mView.findViewById(R.id.timeSlotsSpinner);
-        detailsProgressbar = mView.findViewById(R.id.itemDetailsProgressBar);
-        itemDetailsLayout = mView.findViewById(R.id.itemDetailsLayout);
         checkAvailabilityProgressBar = mView.findViewById(R.id.checkAvailabilityProgressBar);
         timeRelativeLayout = mView.findViewById(R.id.timeRelativeLayout);
 
@@ -101,9 +102,10 @@ public class CatalogItemDetailsFragment extends Fragment {
         Bundle bundle = getArguments();
 
         if (null != bundle) {
-            catalogItem = (CatalogItem) bundle.getSerializable("catalog_item");
+            catalogItem = (CatalogItem) bundle.getSerializable(ARG_CATALOG_ITEM);
         } else {
             //TODO throw runtime exception, fragment needs catalog item to show details
+            Log.e(TAG, String.format(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, CatalogItemDetailsFragment.class.getName()));
         }
     }
 
@@ -111,17 +113,13 @@ public class CatalogItemDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
-        catalogItemDetailsViewModel.setCatalogItem(catalogItem);
-        catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, catalogItemDetails -> setView(catalogItemDetails));
-        catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
+        catalogItemDetailsViewModel = ViewModelProviders.of(getActivity()).get(CatalogItemDetailsViewModel.class);
+        catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, this::setView);
         catalogItemDetailsViewModel.getAvailabilityStatus().observe(this, this::onAvailabilityStateChange);
         catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
         catalogItemDetailsViewModel.getSelectedDateObservable().observe(this, this::onSelectedDateChanged);
         catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
         catalogItemDetailsViewModel.getTimeRequiredObservable().observe(this, this::onTimeRequiredChanged);
-
-        catalogItemDetailsViewModel.updateCatalog(catalogItem);
     }
 
     private void setView(CatalogItemDetails catalogItemDetails) {
@@ -129,7 +127,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         startingAtValueTextView.setText(String.format(Locale.CANADA, "%f %s/per person", catalogItemDetails.getPriceStartingAt().getValue(), catalogItemDetails.getPriceStartingAt().getCurrency()));
 
         if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
-            //Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);
+            //TODO Load Image: Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -224,39 +222,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         }
     };
 
-    private void onStateChange(StatefulViewModel.State state) {
-        switch (state) {
-            case LOADING:
-                detailsProgressbar.setVisibility(View.VISIBLE);
-                itemDetailsLayout.setVisibility(View.GONE);
-                break;
-            case SUCCESS:
-                detailsProgressbar.setVisibility(View.GONE);
-                itemDetailsLayout.setVisibility(View.VISIBLE);
-                break;
-            case ERROR:
-                onErrorState();
-                break;
-        }
-    }
-
-    private void onErrorState() {
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setTitle(getString(R.string.unexpected_error))
-                .setMessage(getString(R.string.unknown_error_message))
-                .setNeutralButton(getString(R.string.ok), ((dial, which) -> {
-                    FragmentManager fm = getFragmentManager();
-                    assert fm != null;
-                    fm.popBackStack();
-
-                    dial.dismiss();
-                }))
-                .setCancelable(false)
-                .create();
-
-        dialog.show();
-    }
-
     private void onSelectedTimeChanged(Long selectedTime) {
         setTimeLabel();
     }
@@ -308,7 +273,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         TimeSlotSpinnerAdapter timeSlotSpinnerAdapter = new TimeSlotSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, availableTimeSlots);
         timeSlotsSpinner.setAdapter(timeSlotSpinnerAdapter);
         timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
-
     }
 
     private void onCheckAvailabilityError() {
