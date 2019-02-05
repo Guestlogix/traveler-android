@@ -33,12 +33,12 @@ public class Form extends FrameLayout {
     private List<Pair<Integer, Integer>> indexMap;
 
     /**
-     * Callback interface used to notify any subscriber whenever a click was performed on an Input in the form.
+     * Callback interface used to notify any subscriber whenever a click was performed on an InputCell in the form.
      */
     protected OnFormClickListener onFormClickListener;
 
     /**
-     * Callback interface used to notify any subscriber whenever a long click was performed on an Input in the form.
+     * Callback interface used to notify any subscriber whenever a long click was performed on an InputCell in the form.
      */
     protected OnFormLongClickListener onFormLongClickListener;
 
@@ -79,9 +79,8 @@ public class Form extends FrameLayout {
         setUpIndexMap();
 
         layoutManager = new LinearLayoutManager(getContext());
-        adapter = new FormMappingAdapter();
+        adapter = new FormMappingAdapter(formMapper);
 
-        adapter.setFormMapper(formMapper);
         formCells.setLayoutManager(layoutManager);
         formCells.setAdapter(adapter);
     }
@@ -125,8 +124,8 @@ public class Form extends FrameLayout {
         /**
          * Binds a cell which contains an input.
          *
-         * @param sectionId Section Index.
-         * @param inputId   Input index within the Section.
+         * @param sectionId SectionCell Index.
+         * @param inputId   InputCell index within the SectionCell.
          * @param inputCell
          */
         void bindInput(int sectionId, int inputId, FormCell inputCell);
@@ -143,8 +142,8 @@ public class Form extends FrameLayout {
         /**
          * Determines the type of the input cell based on the section and input indices combination.
          *
-         * @param sectionId Section index.
-         * @param inputId   Input index within the section.
+         * @param sectionId SectionCell index.
+         * @param inputId   InputCell index within the section.
          * @return Type of the given input cell
          */
         int getInputType(int sectionId, int inputId);
@@ -152,7 +151,7 @@ public class Form extends FrameLayout {
         /**
          * Determines the type of the current section cell based on the section index.
          *
-         * @param sectionId Section index.
+         * @param sectionId SectionCell index.
          * @return Type of current section cell.
          */
         int getSectionType(int sectionId);
@@ -169,7 +168,7 @@ public class Form extends FrameLayout {
         /**
          * How many inputs there is in total in this section.
          *
-         * @param sectionId Section index where to look.
+         * @param sectionId SectionCell index where to look.
          * @return Amount of inputs in the given section.
          */
         default int getSectionInputCount(int sectionId) {
@@ -275,10 +274,10 @@ public class Form extends FrameLayout {
      */
     public interface OnFormClickListener {
         /**
-         * Is invoked whenever the user clicked on an Input in the form.
+         * Is invoked whenever the user clicked on an InputCell in the form.
          *
-         * @param sectionId Section index where the click was done.
-         * @param inputId   Input index within the section where the click was done.
+         * @param sectionId SectionCell index where the click was done.
+         * @param inputId   InputCell index within the section where the click was done.
          */
         void onFormClick(int sectionId, int inputId);
     }
@@ -288,10 +287,10 @@ public class Form extends FrameLayout {
      */
     public interface OnFormLongClickListener {
         /**
-         * Is invoked whenever the Input section was long clicked.
+         * Is invoked whenever the InputCell section was long clicked.
          *
-         * @param sectionId Section index where the long click was performed.
-         * @param inputId   Input index within the section where the long click was performed.
+         * @param sectionId SectionCell index where the long click was performed.
+         * @param inputId   InputCell index within the section where the long click was performed.
          * @return Whether the event was consumed.
          */
         boolean onFormLongClick(int sectionId, int inputId);
@@ -302,10 +301,10 @@ public class Form extends FrameLayout {
      */
     public interface OnFormValueChangedListener {
         /**
-         * Is invoked whenever an Input had his value changed.
+         * Is invoked whenever an InputCell had his value changed.
          *
-         * @param sectionId Section index where the value was changed.
-         * @param inputId   Input index within the section where the value was changed.
+         * @param sectionId SectionCell index where the value was changed.
+         * @param inputId   InputCell index within the section where the value was changed.
          * @param newValue  Current value of the input.
          */
         void onFormValueChanged(int sectionId, int inputId, CharSequence newValue);
