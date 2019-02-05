@@ -11,9 +11,9 @@ import com.guestlogix.traveleruikit.R;
 import static android.view.View.VISIBLE;
 
 
-public class Input extends FormCell {
+public class InputCell extends FormCell {
 
-    public Input(@NonNull View itemView) {
+    public InputCell(@NonNull View itemView) {
         super(itemView);
         init();
     }
@@ -57,6 +57,7 @@ public class Input extends FormCell {
         tv.setVisibility(itemView.GONE);
     }
 
+    // Sets all
     private void init() {
         EditText text = itemView.findViewById(R.id.input);
 

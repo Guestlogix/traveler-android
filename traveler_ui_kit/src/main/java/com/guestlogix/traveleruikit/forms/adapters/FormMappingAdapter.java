@@ -5,44 +5,37 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.forms.cells.FormCell;
 
-public final class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
+public class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
     private FormMapper formMapper;
 
+    public FormMappingAdapter(@NonNull FormMapper formMapper) {
+        this.formMapper = formMapper;
+    }
+
+    @NonNull
     @Override
     public FormCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (null != formMapper) {
-            FormCell cell = formMapper.createViewHolder(parent, viewType);
-            return cell;
-        }
-        return null;
+        FormCell cell = formMapper.createViewHolder(parent, viewType);
+        return cell;
     }
 
     @Override
     public void onBindViewHolder(@NonNull FormCell holder, int position) {
-        if (null != formMapper) {
-            formMapper.bindView(holder, position);
-            holder.setIndex(position);
-            holder.setOnClickListener(onClickListener);
-            holder.setOnLongClickListener(onLongClickListener);
-            holder.setOnTextChangedListener(onTextChangedListener);
-        }
+        formMapper.bindView(holder, position);
+        holder.setIndex(position);
+        holder.setOnClickListener(onClickListener);
+        holder.setOnLongClickListener(onLongClickListener);
+        holder.setOnTextChangedListener(onTextChangedListener);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (null != formMapper) {
-            return formMapper.getViewType(position);
-        }
-        return 0;
+        return formMapper.getViewType(position);
     }
 
     @Override
     public int getItemCount() {
-        return null != formMapper ? formMapper.getTotalCount() : 0;
-    }
-
-    public void setFormMapper(FormMapper formMapper) {
-        this.formMapper = formMapper;
+        return formMapper.getTotalCount();
     }
 
     public interface FormMapper {
