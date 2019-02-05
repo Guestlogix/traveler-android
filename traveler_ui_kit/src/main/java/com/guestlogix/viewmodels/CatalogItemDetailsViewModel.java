@@ -49,7 +49,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         this.catalogItem.setValue(catalogItem);
         setBookingContext(new BookingContext(catalogItem));
         setSelectedDate(Calendar.getInstance());
-
+        updateCatalog(catalogItem);
     }
 
     public void setSelectedDate(Calendar selectedDate) {

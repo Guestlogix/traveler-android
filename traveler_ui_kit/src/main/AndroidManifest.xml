@@ -1,7 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.guestlogix.traveleruikit">
-    <application
-        android:theme="@style/AppTheme">
 
+    <application android:theme="@style/AppTheme">
+        <activity android:name=".activities.CatalogItemDetailsActivity">
+        </activity>
     </application>
+
 </manifest>

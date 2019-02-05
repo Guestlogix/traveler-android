@@ -32,13 +32,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         return NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(findViewById(R.id.my_nav_host_fragment))) || super.onOptionsItemSelected(item);
     }
 
     private void setupAppCenter() {
-        AppCenter.start(getApplication(), BuildConfig.AppCenterKey,
-                Analytics.class, Crashes.class);
         AppCenter.start(getApplication(), BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
     }
 }
