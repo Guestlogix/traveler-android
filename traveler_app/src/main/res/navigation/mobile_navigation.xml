@@ -30,7 +30,6 @@
 
         <argument android:name="flight" app:argType="com.guestlogix.travelercorekit.models.Flight"/>
 
-
     </fragment>
 
     <fragment
@@ -61,10 +60,10 @@
                 app:destination="@id/flight_search_dest" app:popUpTo="@id/flight_search_dest" app:popUpToInclusive="true"/>
     </fragment>
 
-    <fragment android:id="@+id/catalog_item_details_destination"
-              android:name="com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment"
+    <activity android:id="@+id/catalog_item_details_destination"
+              android:name="com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity"
               android:label="CatalogItemDetailsFragment">
         <argument android:name="catalog_item" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>
-    </fragment>
+    </activity>
 
 </navigation>
