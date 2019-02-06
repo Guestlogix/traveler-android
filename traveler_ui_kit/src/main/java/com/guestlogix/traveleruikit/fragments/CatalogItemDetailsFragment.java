@@ -126,7 +126,7 @@ public class CatalogItemDetailsFragment extends Fragment {
 
     private void setView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
-        startingAtValueTextView.setText(String.format(Locale.CANADA, "$%f/per person", catalogItemDetails.getPriceStartingAt()));
+        startingAtValueTextView.setText(String.format(Locale.CANADA, "%f %s/per person", catalogItemDetails.getPriceStartingAt().getValue(), catalogItemDetails.getPriceStartingAt().getCurrency()));
 
         if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
             //Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);

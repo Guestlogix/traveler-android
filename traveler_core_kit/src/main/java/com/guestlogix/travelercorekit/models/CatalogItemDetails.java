@@ -21,12 +21,12 @@ public class CatalogItemDetails extends Product {
     private List<String> imageURL;
     private ContactInfo contact;
     private List<Location> locations;
-    private double priceStartingAt;
+    private Price priceStartingAt;
     private String purchaseStrategy;
     private List<Attribute> information;
 
-    public CatalogItemDetails(String id, String title, String description, List<String> imageURL, ContactInfo contact, List<Location> locations, double priceStartingAt, String purchaseStrategy, List<Attribute> information) {
-        super(id, 0);
+    public CatalogItemDetails(String id, String title, String description, List<String> imageURL, ContactInfo contact, List<Location> locations, Price priceStartingAt, String purchaseStrategy, List<Attribute> information) {
+        super(id,priceStartingAt);
         this.title = title;
         this.description = description;
         this.imageURL = imageURL;
@@ -85,11 +85,11 @@ public class CatalogItemDetails extends Product {
         this.locations = locations;
     }
 
-    public double getPriceStartingAt() {
+    public Price getPriceStartingAt() {
         return priceStartingAt;
     }
 
-    public void setPriceStartingAt(double priceStartingAt) {
+    public void setPriceStartingAt(Price priceStartingAt) {
         this.priceStartingAt = priceStartingAt;
     }
 
@@ -124,7 +124,7 @@ public class CatalogItemDetails extends Product {
             List<String> imageURL = new ArrayList<>();
             ContactInfo contact = new ContactInfo();
             List<Location> locations = new ArrayList<>();
-            double priceStartingAt = 0.0;
+            Price priceStartingAt = new Price();
             String purchaseStrategy = "";
             List<Attribute> information = new ArrayList<>();
 
@@ -159,7 +159,7 @@ public class CatalogItemDetails extends Product {
                         locations.addAll(new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader));
                         break;
                     case "priceStartingAt":
-                        priceStartingAt = JsonReaderHelper.readDouble(reader);
+                        priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(reader);
                         break;
                     case "purchaseStrategy":
                         purchaseStrategy = JsonReaderHelper.readString(reader);

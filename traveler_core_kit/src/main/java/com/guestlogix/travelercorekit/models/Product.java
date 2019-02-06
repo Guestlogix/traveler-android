@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Product implements Serializable {
     String id;
-    double price;
+    Price price;
 
-    public Product(String id, double price) {
+    public Product(String id, Price price) {
         this.id = id;
         this.price = price;
     }
@@ -19,11 +19,11 @@ public class Product implements Serializable {
         this.id = id;
     }
 
-    public double getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Price price) {
         this.price = price;
     }
 }
