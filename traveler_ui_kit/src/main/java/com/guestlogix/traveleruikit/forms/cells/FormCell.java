@@ -32,6 +32,8 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
      */
     protected OnTextChangedListener mTextChangesListener;
 
+    protected OnValueChangedListener mOnValueChangedLister;
+
     /**
      * Index of the Holder Cell within the Form
      */
@@ -82,6 +84,10 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
         void onTextChanged(FormCell cell, CharSequence s);
     }
 
+    public interface OnValueChangedListener {
+        void onValueChanged(String newValue);
+    }
+
     /**
      * Sets the callback click listener for the view.
      *
@@ -107,6 +113,10 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
      */
     public void setOnTextChangedListener(OnTextChangedListener listener) {
         this.mTextChangesListener = listener;
+    }
+
+    public void setmOnValueChangedLister(OnValueChangedListener lister) {
+        this.mOnValueChangedLister = lister;
     }
 
     /**
