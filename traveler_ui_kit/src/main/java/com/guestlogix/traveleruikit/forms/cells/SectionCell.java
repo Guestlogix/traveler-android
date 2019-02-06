@@ -7,4 +7,8 @@ public class SectionCell extends FormCell {
     public SectionCell(@NonNull View itemView) {
         super(itemView);
     }
+
+    @Override
+    public void reload() {
+    }
 }

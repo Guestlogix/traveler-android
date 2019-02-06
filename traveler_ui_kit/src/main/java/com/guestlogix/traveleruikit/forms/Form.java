@@ -30,6 +30,9 @@ public class Form extends FrameLayout {
     private FormMappingAdapter adapter;
     private FormStrategy formStrategy;
 
+    /**
+     * Unidirectional map which maps the Absolute index into sectionId/inputId pair.
+     */
     private List<Pair<Integer, Integer>> indexMap;
 
     /**

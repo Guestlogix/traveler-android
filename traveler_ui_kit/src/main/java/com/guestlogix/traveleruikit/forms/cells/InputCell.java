@@ -10,7 +10,9 @@ import com.guestlogix.traveleruikit.R;
 
 import static android.view.View.VISIBLE;
 
-
+/**
+ * View holder which can hide
+ */
 public class InputCell extends FormCell {
 
     public InputCell(@NonNull View itemView) {
@@ -18,6 +20,7 @@ public class InputCell extends FormCell {
         init();
     }
 
+    @Override
     public void reload() {
         setText("");
         hideError();
