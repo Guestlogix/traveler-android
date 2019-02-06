@@ -29,6 +29,7 @@ import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.adapters.TimeSlotSpinnerAdapter;
+import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.viewmodels.StatefulViewModel;
 
@@ -46,7 +47,7 @@ public class CatalogItemDetailsFragment extends Fragment {
 
     private View mView;
     private NestedScrollView mainNestedScrollView;
-    private ViewPager catalogItemDetailsPager;
+    private WrapContentViewPager catalogItemDetailsPager;
     private TabLayout catalogItemDetailsTabs;
     private CatalogItem catalogItem;
     private TextView titleTextView;
