@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:layout_height="match_parent">
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sectionHeader"/>
+            android:id="@+id/sectionTitle"
+            tools:text="Section Name"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/sectionInputs"
+    <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
+            android:layout_height="wrap_content"
+            android:id="@+id/sectionDisclaimer"
+            android:layout_below="@id/sectionTitle"
+            tools:text="Disclaimer: This is just a test section which will be replaced soon enough. Do not worry about a thing."/>
 </RelativeLayout>
