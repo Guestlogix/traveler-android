@@ -15,7 +15,7 @@ public class CatalogItem extends Product implements Serializable {
     private URL imageURL;
 
     public CatalogItem(String id, String title, String subTitle, URL imageURL) {
-        super(id, 0);
+        super(id, new Price());
         this.title = title;
         this.subTitle = subTitle;
         this.imageURL = imageURL;
