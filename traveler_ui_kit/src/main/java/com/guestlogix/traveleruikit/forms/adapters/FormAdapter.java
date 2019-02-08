@@ -1,15 +1,17 @@
 package com.guestlogix.traveleruikit.forms.adapters;
 
+import android.content.Context;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.forms.cells.FormCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
 
-public class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
+public class FormAdapter extends RecyclerView.Adapter<FormCell> {
     private FormMapper formMapper;
+    private OnFormContextRequestListener contextRequestListener;
 
-    public FormMappingAdapter(@NonNull FormMapper formMapper) {
+    public FormAdapter(@NonNull FormMapper formMapper) {
         this.formMapper = formMapper;
     }
 
@@ -17,6 +19,7 @@ public class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
     @Override
     public FormCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         FormCell cell = formMapper.createViewHolder(parent, viewType);
+        cell.setContextRequestListener(contextRequestHandler);
         return cell;
     }
 
@@ -36,6 +39,10 @@ public class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
         return formMapper.getTotalCount();
     }
 
+    public void setContextRequestListener(OnFormContextRequestListener contextRequestListener) {
+        this.contextRequestListener = contextRequestListener;
+    }
+
     public interface FormMapper {
         int getTotalCount();
 
@@ -45,4 +52,10 @@ public class FormMappingAdapter extends RecyclerView.Adapter<FormCell> {
 
         void bindView(FormCell cell, int position);
     }
+
+    public interface OnFormContextRequestListener {
+        Context onFormContextRequest();
+    }
+
+    FormCell.OnCellContextRequestListener contextRequestHandler = () -> null != contextRequestListener ? contextRequestListener.onFormContextRequest() : null;
 }

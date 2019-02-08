@@ -13,6 +13,8 @@ import com.guestlogix.traveleruikit.R;
 public class TextCell extends FormCell {
     private EditText editText;
 
+    private OnTextChangedListener onTextChangedListener;
+
     public TextCell(@NonNull View itemView) {
         super(itemView);
         init();
@@ -27,24 +29,12 @@ public class TextCell extends FormCell {
         editText.setHint(hint);
     }
 
-    // Sets all
+    public void setOnTextChangedListener(OnTextChangedListener onTextChangedListener) {
+        this.onTextChangedListener = onTextChangedListener;
+    }
+
     private void init() {
         editText = itemView.findViewById(R.id.input);
-
-        editText.setOnLongClickListener(v -> {
-            if (this.mLongClickListener != null) {
-                return this.mLongClickListener.onLongClick(this);
-            }
-            return false;
-        });
-
-        editText.setOnClickListener(v -> {
-            if (null != this.mClickListener) {
-                this.mClickListener.onClick(this);
-            }
-        });
-
-        FormCell selfRef = this;
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -53,8 +43,8 @@ public class TextCell extends FormCell {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (null != mTextChangesListener) {
-                    mTextChangesListener.onTextChanged(selfRef, s);
+                if (null != onTextChangedListener) {
+                    onTextChangedListener.onTextChanged(s);
                 }
             }
 
@@ -62,5 +52,9 @@ public class TextCell extends FormCell {
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    public interface OnTextChangedListener {
+        void onTextChanged(CharSequence value);
     }
 }

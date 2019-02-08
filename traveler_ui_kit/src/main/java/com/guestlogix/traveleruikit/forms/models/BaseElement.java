@@ -2,12 +2,21 @@ package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.forms.cells.FormCell;
+import com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
 public abstract class BaseElement {
     protected String title;
 
     private int index;
+
+    protected OnFormElementValueChangedListener onFormElementValueChangedListener;
+
+    public BaseElement(String title) {
+        this.title = title;
+    }
+
+    public BaseElement() {}
 
     @NonNull
     public abstract FormType getType();
@@ -36,5 +45,9 @@ public abstract class BaseElement {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public void setOnFormElementValueChangedListener(OnFormElementValueChangedListener onFormElementValueChangedListener) {
+        this.onFormElementValueChangedListener = onFormElementValueChangedListener;
     }
 }

@@ -3,12 +3,12 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="wrap_content">
 
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/label"
+            android:id="@+id/title"
             tools:text="Label"/>
 
     <Button
@@ -16,17 +16,5 @@
             android:layout_height="wrap_content"
             android:id="@+id/button"
             tools:text="Button"/>
-    
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/info"
-            tools:text="Info"/>
-
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Error"
-            android:id="@+id/error"/>
 
 </LinearLayout>

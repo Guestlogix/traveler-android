@@ -20,6 +20,8 @@ public class FormBuilder {
     private Map<Integer, CustomCellAdapter> customComponentMap = new HashMap<>();
     private static int FORM_TYPE_COUNT;
 
+    private OnElementValueChangedListener onElementValueChangedListener;
+
     static {
         FORM_TYPE_COUNT = FormType.getTypeCount();
     }
@@ -46,15 +48,105 @@ public class FormBuilder {
     }
 
     /**
+     * Adds an element to the Form with type BUTTON in {@link FormType} enum.
+     *
+     * @param text Will be displayed on the button.
+     */
+    public void addButtonElement(String text) {
+        ButtonElement element = new ButtonElement(text);
+        elements.add(element);
+    }
+
+    /**
+     * Adds an element to the form of type QUANTITY in {@link FormType} enum.
+     *
+     * @param title    Title to be displayed on the cell.
+     * @param subtitle Subtitle to be displayed on the cell.
+     * @param minValue Minimum value for the quantity picker. Default is 0.
+     * @param maxValue Maximum value for the quantity picker. -1 for unlimited quantity.
+     */
+    public void addQuantityElement(String title, String subtitle, int minValue, int maxValue) {
+        QuantityElement element = new QuantityElement(title, subtitle, minValue, maxValue);
+        elements.add(element);
+    }
+
+    /**
+     * Adds a blank element to the form of type QUANTITY in {@link FormType} enum.
+     * Sets default values of 0 for min value and -1 for max value.
+     */
+    public void addQuantityElement() {
+        elements.add(new QuantityElement());
+    }
+
+    /**
+     * Adds an element to the form of type HEADER in {@link FormType} enum.
+     *
+     * @param title    Title to be displayed on the cell.
+     * @param subtitle Subtitle to be displayed on the cell.
+     */
+    public void addHeaderElement(String title, String subtitle) {
+        elements.add(new HeaderElement(title, subtitle));
+    }
+
+    /**
+     * Adds an element to the form of type HEADER in {@link FormType} enum.
+     *
+     * @param title Title to be displayed on the cell.
+     */
+    public void addHeaderElement(String title) {
+        elements.add(new HeaderElement(title));
+    }
+
+    /**
+     * Adds a blank element to the form of type HEADER in {@link FormType} enum.
+     */
+    public void addHeaderElement() {
+        elements.add(new HeaderElement());
+    }
+
+    /**
+     * Adds an element to the form of type TEXT in {@link FormType} enum.
+     *
+     * @param title Title to be displayed on the cell.
+     * @param hint  Hint for the edit text.
+     */
+    public void addTextElement(String title, String hint) {
+        TextElement element = new TextElement(title, hint);
+        element.setOnFormElementValueChangedListener(this::onValueChanged);
+        elements.add(element);
+    }
+
+    /**
+     * Adds an element to the form of type TEXT in {@link FormType} enum.
+     *
+     * @param title Title to be displayed on the cell.
+     */
+    public void addTextElement(String title) {
+        elements.add(new TextElement(title));
+    }
+
+    /**
+     * Adds a blank element to the form of type TEXT in {@link FormType} enum.
+     */
+    public void addTextElement() {
+        elements.add(new TextElement());
+    }
+
+    /**
      * Adds a custom element to the tree.
+     *
      * @param elementType
      */
     public BaseElement addElement(int elementType) {
+        BaseElement element = null;
         if (elementType < FORM_TYPE_COUNT) {
-            return addExistingElement(elementType);
+            element = addExistingElement(elementType);
         } else {
-            return addCustomElement(elementType);
+            element = addCustomElement(elementType);
         }
+
+        element.setOnFormElementValueChangedListener(this::onValueChanged);
+        return element;
     }
 
     public BaseElement addElement(FormType elementType) {
@@ -89,23 +181,27 @@ public class FormBuilder {
         return elements.size();
     }
 
+    public void setOnElementValueChangedListener(OnElementValueChangedListener onElementValueChangedListener) {
+        this.onElementValueChangedListener = onElementValueChangedListener;
+    }
+
     private FormCell inflateHeader(ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(FormLayout.HEADER_LAYOUT, parent);
+        View view = LayoutInflater.from(context).inflate(FormLayout.HEADER_LAYOUT, parent, false);
         return new HeaderCell(view);
     }
 
     private FormCell inflateButton(ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(FormLayout.BUTTON_LAYOUT, parent);
+        View view = LayoutInflater.from(context).inflate(FormLayout.BUTTON_LAYOUT, parent, false);
         return new ButtonCell(view);
     }
 
     private FormCell inflateText(ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(FormLayout.TEXT_LAYOUT, parent);
+        View view = LayoutInflater.from(context).inflate(FormLayout.TEXT_LAYOUT, parent, false);
         return new TextCell(view);
     }
 
     private FormCell inflateQuantity(ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(FormLayout.QUANTITY_LAYOUT, parent);
+        View view = LayoutInflater.from(context).inflate(FormLayout.QUANTITY_LAYOUT, parent, false);
         return new QuantityCell(view);
     }
 
@@ -122,8 +218,10 @@ public class FormBuilder {
         throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
     }
 
-    private void onValueCHnaged(BaseElement e) {
-//        callback(int, int, e)
+    private void onValueChanged(BaseElement e) {
+        if (null != onElementValueChangedListener) {
+            onElementValueChangedListener.onValueChanged(e);
+        }
     }
 
     private BaseElement addExistingElement(int type) {
@@ -185,4 +283,7 @@ public class FormBuilder {
         BaseElement createCustomElement();
     }
 
+    public interface OnElementValueChangedListener {
+        void onValueChanged(BaseElement element);
+    }
 }

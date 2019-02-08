@@ -5,12 +5,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.R;
 
 public class QuantityCell extends FormCell {
-    private EditText quantity;
+    private TextView quantity;
+    private TextView title;
+    private TextView subTitle;
+    private String sTitle;
+
     private QuantityCellAdapter adapter;
+
+    private OnQuantityChangedListener onQuantityChanged;
 
     public QuantityCell(@NonNull View itemView) {
         super(itemView);
@@ -19,30 +26,69 @@ public class QuantityCell extends FormCell {
 
     @Override
     public void reload() {
+        quantity.setText("");
+    }
 
+    public void setAdapter (QuantityCellAdapter adapter) {
+        this.adapter = adapter;
+    }
+
+    public void setOnQuantityChangedListener(OnQuantityChangedListener listener) {
+        this.onQuantityChanged = listener;
+    }
+
+    public void setTitle(String title) {
+        sTitle = title;
+        this.title.setText(sTitle);
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle.setText(subTitle);
+    }
+
+    public void setQuantity (String quantity) {
+        this.quantity.setText(quantity);
     }
 
     private void init () {
         quantity = itemView.findViewById(R.id.quantity);
+        title = itemView.findViewById(R.id.title);
+        subTitle = itemView.findViewById(R.id.subTitle);
 
-        // TODO: make this cleaner.
+        if (null != adapter) {
+            quantity.setText(adapter.getMinQuantity());
+        } else {
+            quantity.setText("0");
+        }
+
         quantity.setOnClickListener(v -> {
-            final Dialog d = new Dialog(itemView.getContext());
+            final Dialog d = new Dialog(contextRequestListener.onCellContextRequest());
             d.setTitle(adapter.getTitle());
             d.setContentView(R.layout.number_picker_dialog);
 
-            Button accept = d.findViewById(R.id.button1);
-            Button cancel = d.findViewById(R.id.button2);
+            Button accept = d.findViewById(R.id.okButton);
+            Button cancel = d.findViewById(R.id.cancelButton);
+            TextView e = d.findViewById(R.id.numberPickerTitle);
             NumberPicker np = d.findViewById(R.id.numberPicker);
 
+            e.setText(sTitle);
+
+            np.setMaxValue(Integer.MAX_VALUE);
             if (adapter.isMaxQuantityRequired()) {
                 np.setMaxValue(adapter.getMaxQuantity());
             }
 
-            np.setMinValue(0);
+            np.setMinValue(adapter.getMinQuantity());
+            np.setWrapSelectorWheel(false);
 
             accept.setOnClickListener(v2 -> {
-                quantity.setText(String.valueOf(np.getValue()));
+                int value = np.getValue();
+                quantity.setText(String.valueOf(value));
+
+                if (null != onQuantityChanged) {
+                    onQuantityChanged.onQuantityChanged(value);
+                }
+
                 d.dismiss();
             });
 
@@ -52,14 +98,14 @@ public class QuantityCell extends FormCell {
         });
     }
 
-    public void setAdapter (QuantityCellAdapter adapter) {
-        this.adapter = adapter;
-    }
-
     public interface QuantityCellAdapter {
         String getTitle();
         boolean isMaxQuantityRequired();
         int getMaxQuantity();
         int getMinQuantity();
+    }
+
+    public interface OnQuantityChangedListener {
+        void onQuantityChanged(int quantity);
     }
 }
