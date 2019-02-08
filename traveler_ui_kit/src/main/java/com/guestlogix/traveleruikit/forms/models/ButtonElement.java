@@ -7,6 +7,13 @@ import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
 public class ButtonElement extends BaseElement {
     public final static FormType TYPE = FormType.BUTTON;
+    private String title;
+
+    public ButtonElement(String title) {
+        this.title = title;
+    }
+
+    public ButtonElement() {}
 
     @NonNull
     @Override
@@ -20,5 +27,22 @@ public class ButtonElement extends BaseElement {
 
     @Override
     public void updateCell(FormCell cell) {
+        ButtonCell bCell = (ButtonCell) cell;
+
+        bCell.setText(title);
     }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    ButtonCell.OnButtonClickListener clickListener = () -> {
+        // TODO: Add click callback.
+    };
 }

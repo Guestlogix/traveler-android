@@ -5,14 +5,35 @@ import com.guestlogix.traveleruikit.forms.cells.FormCell;
 import com.guestlogix.traveleruikit.forms.cells.QuantityCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
-import java.util.Queue;
-
 public class QuantityElement extends BaseElement {
     public static final FormType TYPE = FormType.QUANTITY;
-    private String value;
-    private boolean isMaxRequired = false;
+    private int value;
     private int maxRequired;
     private int minRequired;
+    private String subtitle;
+
+    public QuantityElement(String title, String subtitle, int minRequired, int maxRequired) {
+        super (title);
+
+        this.subtitle = subtitle;
+        this.minRequired = minRequired;
+        this.maxRequired = maxRequired;
+        value = minRequired;
+    }
+
+    public QuantityElement(String title, String subtitle, int minRequired) {
+        super(title);
+        this.subtitle = subtitle;
+        this.minRequired = minRequired;
+        this.maxRequired = -1;
+        value = minRequired;
+    }
+
+    public QuantityElement () {
+        minRequired = 0;
+        maxRequired = -1;
+        value = minRequired;
+    }
 
     @NonNull
     @Override
@@ -29,19 +50,14 @@ public class QuantityElement extends BaseElement {
         QuantityCell qCell = (QuantityCell) cell;
 
         qCell.setAdapter(adapter);
-        qCell.setmOnValueChangedLister(valueChangedListener);
+        qCell.setOnQuantityChangedListener(onQuantityChanged);
+        qCell.setTitle(title);
+        qCell.setSubTitle(subtitle);
+        qCell.setQuantity(String.valueOf(value));
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
-    }
-
-    public boolean isMaxRequired() {
-        return isMaxRequired;
-    }
-
-    public void setMaxRequired(boolean maxRequired) {
-        isMaxRequired = maxRequired;
     }
 
     public int getMaxRequired() {
@@ -60,7 +76,15 @@ public class QuantityElement extends BaseElement {
         this.minRequired = minRequired;
     }
 
-    QuantityCell.OnValueChangedListener valueChangedListener = newValue -> value = newValue;
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    // How to initialize the quantity picker.
     QuantityCell.QuantityCellAdapter adapter = new QuantityCell.QuantityCellAdapter() {
         @Override
         public String getTitle() {
@@ -69,17 +93,30 @@ public class QuantityElement extends BaseElement {
 
         @Override
         public boolean isMaxQuantityRequired() {
-            return false;
+            return isMaxRequired();
         }
 
         @Override
         public int getMaxQuantity() {
-            return 0;
+            return maxRequired;
         }
 
         @Override
         public int getMinQuantity() {
-            return 0;
+            return minRequired;
+        }
+    };
+
+    public boolean isMaxRequired() {
+        return maxRequired >= 0;
+    }
+
+    // Signal value changed.
+    QuantityCell.OnQuantityChangedListener onQuantityChanged = (val) -> {
+        value = val;
+
+        if (null != onFormElementValueChangedListener) {
+            onFormElementValueChangedListener.onValueChanged(this);
         }
     };
 }

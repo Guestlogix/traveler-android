@@ -8,14 +8,12 @@ import com.guestlogix.traveleruikit.R;
 
 /**
  * A Button input cell type.
- * Expects a layout containing exactly 4 different fields.
- * <p>
- * 1. A Label TextView with the android:id 'label'
- * 2. A Button with the android:id 'button'
- * 3. An Info TextView with the android:id 'info'
- * 4. An Error TextView with the android:id 'error'
  */
 public class ButtonCell extends FormCell {
+
+    private Button button;
+    private TextView title;
+    private OnButtonClickListener buttonClickListener;
 
     public ButtonCell(@NonNull View itemView) {
         super(itemView);
@@ -27,62 +25,35 @@ public class ButtonCell extends FormCell {
 
     }
 
+    public void setText(String text) {
+        if (null != button) {
+            button.setText(text);
+        }
+    }
+
+    public void setTitle(String title) {
+        this.title.setText(title);
+    }
+
+    public void setButtonClickListener(OnButtonClickListener buttonClickListener) {
+        this.buttonClickListener = buttonClickListener;
+    }
+
     /**
      * Sets the specific listeners for this cell.
      */
     private void init() {
-        Button b = itemView.findViewById(R.id.button);
+        button = itemView.findViewById(R.id.button);
+        title = itemView.findViewById(R.id.title);
 
-        b.setOnClickListener(v -> {
-            if (null != mClickListener) {
-                mClickListener.onClick(this);
+        button.setOnClickListener(v -> {
+            if (null != buttonClickListener) {
+                buttonClickListener.onButtonClick();
             }
         });
-
-        b.setOnLongClickListener(v -> mLongClickListener != null && mLongClickListener.onLongClick(this));
     }
 
-    public void showInfo(String info) {
-        TextView t = itemView.findViewById(R.id.info);
-
-        if (null != t) {
-            t.setText(info);
-            t.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void hideInfo() {
-        TextView t = itemView.findViewById(R.id.info);
-
-        if (null != t) {
-            t.setText("");
-            t.setVisibility(View.GONE);
-        }
-    }
-
-    public void showError(String error) {
-        TextView t = itemView.findViewById(R.id.error);
-
-        if (null != t) {
-            t.setText(error);
-            t.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void hideError() {
-        TextView t = itemView.findViewById(R.id.error);
-
-        if (null != t) {
-            t.setText("");
-            t.setVisibility(View.GONE);
-        }
-    }
-
-    public void setText(String text) {
-        Button b = itemView.findViewById(R.id.button);
-
-        if (null != b) {
-            b.setText(text);
-        }
+    public interface OnButtonClickListener {
+        void onButtonClick();
     }
 }

@@ -14,11 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.forms.adapters.FormMappingAdapter;
+import com.guestlogix.traveleruikit.forms.adapters.FormAdapter;
 import com.guestlogix.traveleruikit.forms.cells.FormCell;
+import com.guestlogix.traveleruikit.forms.models.BaseElement;
 import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,10 +26,9 @@ import java.util.List;
  */
 public class Form extends FrameLayout {
 
-    private RecyclerView formCells;
+    private RecyclerView cellsRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private FormMappingAdapter adapter;
-    private FormStrategy formStrategy;
+    private FormAdapter adapter;
     private FormBuilder builder;
 
     /**
@@ -73,21 +72,35 @@ public class Form extends FrameLayout {
         initView(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    public void updateView(BaseElement e) {
+        int pos = e.getIndex();
+        FormCell cell = (FormCell) cellsRecyclerView.findViewHolderForLayoutPosition(pos);
+        e.updateCell(cell);
+    }
+
+    public void setError(int position, String error) {
+        FormCell cell = (FormCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
+    }
+
     /**
-     * Sets the strategy used to display the form.
-     * The {@link FormStrategy} provides an interface used to determine how to display the form.
+     * Uses the {@link FormBuilder} to initialize the form layout.
      *
-     * @param strategy used to instantiate the form.
+     * @param builder FormBuilder
      */
-    public void setFormStrategy(FormStrategy strategy) {
-        this.formStrategy = strategy;
-        setUpIndexMap();
+    public void initialize(FormBuilder builder) {
+        initialize(builder, new LinearLayoutManager(getContext()));
+    }
 
-        layoutManager = new LinearLayoutManager(getContext());
-        adapter = new FormMappingAdapter(formMapper);
+    public void initialize(FormBuilder builder, RecyclerView.LayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
+        this.builder = builder;
+        adapter = new FormAdapter(formMapper);
+        adapter.setContextRequestListener(this.contextRequestListener);
 
-        formCells.setLayoutManager(layoutManager);
-        formCells.setAdapter(adapter);
+        builder.setOnElementValueChangedListener(this::onElementValueChange);
+
+        cellsRecyclerView.setLayoutManager(layoutManager);
+        cellsRecyclerView.setAdapter(adapter);
     }
 
     public void reload() {
@@ -97,92 +110,17 @@ public class Form extends FrameLayout {
     private void initView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (!isInEditMode()) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_form, this, true);
-            formCells = view.findViewById(R.id.sections);
+            cellsRecyclerView = view.findViewById(R.id.sections);
         }
     }
 
-    private void setUpIndexMap() {
-        indexMap = new ArrayList<>();
-        int sections = formStrategy.getSectionCount();
-
-        for (int i = 0; i < sections; i++) {
-            indexMap.add(new Pair<>(i, -1));
-            int inputs = formStrategy.getSectionInputCount(i);
-
-            for (int j = 0; j < inputs; j++) {
-                indexMap.add(new Pair<>(i, j));
-            }
+    private void onElementValueChange(BaseElement element) {
+        if (null != this.onFormValueChangedListener) {
+            this.onFormValueChangedListener.onFormValueChanged(element.getIndex(), "TestValue");
         }
     }
 
-    /**
-     * Callback interface responsible for defining the instantiation of the form.
-     */
-    public interface FormStrategy {
-        /**
-         * Binds a cell which contains the header type.
-         *
-         * @param sectionId section index.
-         */
-        void bindSection(int sectionId, FormCell sectionCell);
-
-        /**
-         * Binds a cell which contains an input.
-         *
-         * @param sectionId HeaderCell Index.
-         * @param inputId   TextCell index within the HeaderCell.
-         * @param inputCell
-         */
-        void bindInput(int sectionId, int inputId, FormCell inputCell);
-
-        /**
-         * Creates a FormCell based on the given type.
-         *
-         * @param parent   Root where the view should be created at.
-         * @param viewType Integer representing the type
-         * @return Cell holding the view.
-         */
-        FormCell createView(ViewGroup parent, int viewType);
-
-        /**
-         * Determines the type of the input cell based on the section and input indices combination.
-         *
-         * @param sectionId HeaderCell index.
-         * @param inputId   TextCell index within the section.
-         * @return Type of the given input cell
-         */
-        int getInputType(int sectionId, int inputId);
-
-        /**
-         * Determines the type of the current section cell based on the section index.
-         *
-         * @param sectionId HeaderCell index.
-         * @return Type of current section cell.
-         */
-        int getSectionType(int sectionId);
-
-        /**
-         * How many sections are there in this form.
-         *
-         * @return Amount of sections in the form.
-         */
-        default int getSectionCount() {
-            return 0;
-        }
-
-        /**
-         * How many inputs there is in total in this section.
-         *
-         * @param sectionId HeaderCell index where to look.
-         * @return Amount of inputs in the given section.
-         */
-        default int getSectionInputCount(int sectionId) {
-            return 0;
-        }
-
-    }
-
-    FormMappingAdapter.FormMapper formMapper = new FormMappingAdapter.FormMapper() {
+    FormAdapter.FormMapper formMapper = new FormAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
             return builder.getSize();
@@ -265,10 +203,11 @@ public class Form extends FrameLayout {
         /**
          * Is invoked whenever an TextCell had his value changed.
          *
-         * @param sectionId HeaderCell index where the value was changed.
-         * @param inputId   TextCell index within the section where the value was changed.
-         * @param newValue  Current value of the input.
+         * @param position Relative position of the element in the form where the value was changed.
+         * @param newValue Current value of the input.
          */
-        void onFormValueChanged(int sectionId, int inputId, CharSequence newValue);
+        void onFormValueChanged(int position, CharSequence newValue);
     }
+
+    FormAdapter.OnFormContextRequestListener contextRequestListener = this::getContext;
 }

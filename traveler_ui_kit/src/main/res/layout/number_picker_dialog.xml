@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_normal">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/numberPickerTitle"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center"/>
 
     <NumberPicker
             android:id="@+id/numberPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="64dp"/>
+            android:layout_below="@id/numberPickerTitle"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_centerHorizontal="true"/>
 
     <Button
-            android:id="@+id/button2"
+            android:id="@+id/okButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/numberPicker"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/numberPicker"
-            android:text="Cancel"
-            android:layout_toEndOf="@+id/numberPicker"
-            android:layout_marginStart="20dp"/>
+            android:layout_below="@id/numberPicker"
+            android:layout_alignParentRight="true"
+            android:text="@string/ok"/>
 
     <Button
-            android:id="@+id/button1"
+            android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/button2"
-            android:layout_alignBottom="@+id/button2"
-            android:layout_marginRight="16dp"
-            android:layout_toLeftOf="@+id/numberPicker"
-            android:text="Accept"
-            android:layout_marginEnd="16dp"
-            android:layout_toStartOf="@+id/numberPicker"/>
+            android:layout_below="@id/numberPicker"
+            android:layout_toLeftOf="@+id/okButton"
+            android:text="@string/cancel"/>
 
 </RelativeLayout>
