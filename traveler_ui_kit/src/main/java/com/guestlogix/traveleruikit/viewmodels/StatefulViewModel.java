@@ -1,4 +1,4 @@
-package com.guestlogix.viewmodels;
+package com.guestlogix.traveleruikit.viewmodels;
 
 import androidx.lifecycle.ViewModel;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;

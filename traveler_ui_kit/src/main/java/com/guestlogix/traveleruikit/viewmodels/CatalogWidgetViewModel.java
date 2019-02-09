@@ -19,7 +19,7 @@ public class CatalogWidgetViewModel extends ViewModel {
     private MutableLiveData<List<CatalogGroup>> catalogGroupList;
     private MutableLiveData<CatalogWidgetViewState> viewState = new MutableLiveData<>();
 
-    public MutableLiveData<CatalogWidgetViewState> getViewStateObservable() {
+    public LiveData<CatalogWidgetViewState> getViewStateObservable() {
         return viewState;
     }
 
@@ -35,6 +35,7 @@ public class CatalogWidgetViewModel extends ViewModel {
 
     public void updateCatalog(CatalogQuery catalogQuery) {
         viewState.postValue(CatalogWidgetViewState.LOADING);
+        viewState.setValue(CatalogWidgetViewState.LOADING);
         catalogWidgetRepository.catalogSearch(catalogQuery, catalogSearchCallback);
     }
 
@@ -54,6 +55,6 @@ public class CatalogWidgetViewModel extends ViewModel {
     public enum CatalogWidgetViewState {
         LOADING,
         SUCCESS,
-        ERROR,
+        ERROR
     }
 }

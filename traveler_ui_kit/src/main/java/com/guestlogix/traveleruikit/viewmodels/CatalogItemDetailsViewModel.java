@@ -1,4 +1,4 @@
-package com.guestlogix.viewmodels;
+package com.guestlogix.traveleruikit.viewmodels;
 
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
