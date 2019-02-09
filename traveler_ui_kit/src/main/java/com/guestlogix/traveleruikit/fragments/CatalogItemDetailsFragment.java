@@ -27,7 +27,7 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.adapters.TimeSlotSpinnerAdapter;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
-import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
+import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 
 import java.util.Calendar;
 import java.util.List;
@@ -115,7 +115,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
         catalogItemDetailsViewModel.getSelectedDateObservable().observe(this, this::onSelectedDateChanged);
         catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
-        catalogItemDetailsViewModel.getTimeRequiredObservable().observe(this, this::onTimeRequiredChanged);
     }
 
     private void setView(CatalogItemDetails catalogItemDetails) {
@@ -243,16 +242,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         setDateLabel();
         timeRelativeLayout.setVisibility(View.GONE);
         catalogItemDetailsViewModel.checkAvailability();
-    }
-
-    private void onTimeRequiredChanged(Boolean timeRequired) {
-//        if (timeRequired) {
-//            timeTextInputLayout.setVisibility(View.GONE);
-//            timeSlotsSpinner.setVisibility(View.INVISIBLE);
-//        } else {
-//            timeTextInputLayout.setVisibility(View.VISIBLE);
-//            timeSlotsSpinner.setVisibility(View.VISIBLE);
-//        }
     }
 
     private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {

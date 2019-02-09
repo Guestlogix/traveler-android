@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'androidx.navigation.safeargs'
 ext {
     androidx_version = '1.0.2'
 }
