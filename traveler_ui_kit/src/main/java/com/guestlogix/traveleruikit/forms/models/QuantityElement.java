@@ -5,6 +5,11 @@ import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.cells.QuantityCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
+/**
+ * Form element which contains information required to update a {@link BaseCell} with a quantity.
+ * Implements:
+ * {@link com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener}
+ */
 public class QuantityElement extends BaseElement {
     public static final FormType TYPE = FormType.QUANTITY;
     private Integer value;
@@ -12,7 +17,7 @@ public class QuantityElement extends BaseElement {
     private int minRequired;
 
     public QuantityElement(String title, String subtitle, int minRequired, int maxRequired) {
-        super (title, subtitle);
+        super(title, subtitle);
 
         this.minRequired = minRequired;
         this.maxRequired = maxRequired;
@@ -27,7 +32,7 @@ public class QuantityElement extends BaseElement {
         value = minRequired;
     }
 
-    public QuantityElement () {
+    public QuantityElement() {
         minRequired = 0;
         maxRequired = -1;
         value = minRequired;

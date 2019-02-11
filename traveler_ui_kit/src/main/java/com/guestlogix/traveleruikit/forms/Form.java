@@ -22,7 +22,10 @@ import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
 import java.util.List;
 
 /**
- * A form layout used to display a list of sections each containing a set of questions.
+ * A form layout used to render and display a flat form. The implementing class has to provide a FormBuilder object
+ * which hosts the underlying structure of the form.
+ *
+ * Since the form takes a flat object structure, the implementing activity/fragment must have a flattening strategy.
  */
 public class Form extends FrameLayout {
 
@@ -75,16 +78,30 @@ public class Form extends FrameLayout {
     public void updateView(BaseElement e) {
         int pos = e.getIndex();
         BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(pos);
+        scrollToPosition(pos);
         e.updateCell(cell);
     }
 
     public void setError(int position, String error) {
+        BaseElement element = builder.getElement(position);
         BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
-
+        element.setState(BaseElement.State.ERROR);
+        element.setErrorMessage(error);
+        scrollToPosition(position);
+        element.updateCell(cell);
     }
 
+    /**
+     *
+     * @param position
+     * @param info
+     */
     public void setInfo(int position, String info) {
         BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
+    }
+
+    public void scrollToPosition(int position) {
+        layoutManager.scrollToPosition(position);
     }
 
     /**
@@ -109,8 +126,22 @@ public class Form extends FrameLayout {
         cellsRecyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Reloads all elements in the form.
+     */
     public void reload() {
+        builder.reloadAll();
+    }
 
+    /**
+     * Reloads a specific element in the form.
+     *
+     * @param position index of the element to reload.
+     */
+    public void reload(int position) {
+        BaseElement element = builder.getElement(position);
+        element.reload();
+        updateView(element);
     }
 
     private void initView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

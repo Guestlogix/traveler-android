@@ -15,6 +15,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Builder class which holds the underlying structure of the form.
+ * <p>
+ * How to use:
+ * 1.   If you want to use any of your own views and classes, first register them with the builder. It will return to you
+ * a type id which you will be then able to use to appropriately display your views.
+ * <p>
+ * 2.   Add the a form element one by one to the builder until the structure is built. The form will automatically inflate
+ * all views as they are needed.
+ * <p>
+ * 3.   Pass the builder to the Form class to start rendering.
+ * <p>
+ * 4.   Do not subscribe to any of the listeners in the builder.
+ * <p>
+ * All available view types can be seen in {@link FormType}.
+ */
 public class FormBuilder {
     private final Context context;
 
@@ -38,7 +54,8 @@ public class FormBuilder {
     }
 
     /**
-     * Adds a custom View instantiation logic for the
+     * Registers a custom form cell element to be used in the form. The integer value returned by this method will used
+     * to instantiate views and models as they are needed.
      *
      * @param strategy Methods to instantiate custom elements.
      * @return Type of the current custom cell.
@@ -58,6 +75,7 @@ public class FormBuilder {
     public void addButtonElement(String text) {
         ButtonElement element = new ButtonElement(text);
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
     }
 
@@ -72,6 +90,7 @@ public class FormBuilder {
     public void addQuantityElement(String title, String subtitle, int minValue, int maxValue) {
         QuantityElement element = new QuantityElement(title, subtitle, minValue, maxValue);
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
     }
 
@@ -82,6 +101,7 @@ public class FormBuilder {
     public void addQuantityElement() {
         QuantityElement element = new QuantityElement();
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
     }
 
@@ -92,7 +112,9 @@ public class FormBuilder {
      * @param subtitle Subtitle to be displayed on the cell.
      */
     public void addHeaderElement(String title, String subtitle) {
-        elements.add(new HeaderElement(title, subtitle));
+        HeaderElement element = new HeaderElement(title, subtitle);
+        element.setIndex(elements.size());
+        elements.add(element);
     }
 
     /**
@@ -101,14 +123,18 @@ public class FormBuilder {
      * @param title Title to be displayed on the cell.
      */
     public void addHeaderElement(String title) {
-        elements.add(new HeaderElement(title));
+        HeaderElement element = new HeaderElement(title);
+        element.setIndex(elements.size());
+        elements.add(element);
     }
 
     /**
      * Adds a blank element to the form of type HEADER in {@link FormType} enum.
      */
     public void addHeaderElement() {
-        elements.add(new HeaderElement());
+        HeaderElement element = new HeaderElement();
+        element.setIndex(elements.size());
+        elements.add(element);
     }
 
     /**
@@ -120,6 +146,7 @@ public class FormBuilder {
     public void addTextElement(String title, String hint) {
         TextElement element = new TextElement(title, hint);
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
     }
 
@@ -131,6 +158,7 @@ public class FormBuilder {
     public void addTextElement(String title) {
         TextElement element = new TextElement(title);
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
     }
 
@@ -140,6 +168,7 @@ public class FormBuilder {
     public void addTextElement() {
         TextElement element = new TextElement();
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
     }
 
@@ -153,6 +182,7 @@ public class FormBuilder {
     public void addSpinnerElement(String title, String subtitle, List<String> options) {
         SpinnerElement element = new SpinnerElement(title, subtitle, options);
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
     }
 
@@ -167,7 +197,12 @@ public class FormBuilder {
     public void addSpinnerElement(String title, String subtitle, List<String> options, int defaultValue) {
         SpinnerElement element = new SpinnerElement(title, subtitle, options, defaultValue);
         setListeners(element);
+        element.setIndex(elements.size());
         elements.add(element);
+    }
+
+    public BaseElement getElement(int position) {
+        return elements.get(position);
     }
 
     /**
@@ -176,14 +211,14 @@ public class FormBuilder {
      * @param elementType
      */
     public BaseElement addElement(int elementType) {
-        BaseElement element = null;
+        BaseElement element;
         if (elementType < FORM_TYPE_COUNT) {
             element = addExistingElement(elementType);
         } else {
             element = addCustomElement(elementType);
         }
 
-        element.setOnFormElementValueChangedListener(this::onValueChanged);
+        setListeners(element);
         return element;
     }
 
@@ -229,6 +264,16 @@ public class FormBuilder {
         this.onElementClickListener = onElementClickListener;
     }
 
+    /**
+     * Signals to all elements in the form to reload.
+     */
+    public void reloadAll() {
+        // Change min java api to 24 so we can use functional methods?
+        for (BaseElement element : elements) {
+            element.reload();
+        }
+    }
+
     private BaseCell inflateHeader(ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(FormLayout.HEADER_LAYOUT, parent, false);
         return new HeaderCell(view);
@@ -258,9 +303,6 @@ public class FormBuilder {
         CustomCellAdapter adapter = customComponentMap.get(type);
 
         if (null != adapter) {
-            BaseElement element = adapter.createCustomElement();
-            element.setType(type);
-            elements.add(element);
             return adapter.inflateCustomCell(context, parent);
         }
 
@@ -285,32 +327,29 @@ public class FormBuilder {
     }
 
     private BaseElement addExistingElement(int type) {
-        BaseElement element = null;
+        BaseElement element;
         switch (FormType.valueOf(type)) {
             case TEXT:
                 element = new TextElement();
-                elements.add(element);
                 break;
             case BUTTON:
                 element = new ButtonElement();
-                elements.add(element);
                 break;
             case HEADER:
                 element = new HeaderElement();
-                elements.add(element);
                 break;
             case QUANTITY:
                 element = new QuantityElement();
-                elements.add(element);
                 break;
             case SPINNER:
                 element = new SpinnerElement();
-                elements.add(element);
                 break;
             default:
                 throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
         }
 
+        element.setIndex(elements.size());
+        elements.add(element);
         return element;
     }
 
@@ -323,6 +362,7 @@ public class FormBuilder {
 
         BaseElement element = adapter.createCustomElement();
         element.setType(type);
+        element.setIndex(elements.size());
         elements.add(element);
 
         return element;

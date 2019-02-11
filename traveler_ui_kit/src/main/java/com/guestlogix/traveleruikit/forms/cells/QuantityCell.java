@@ -8,6 +8,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.R;
 
+/**
+ * Cell which contains a quantity picker.
+ * Implements:
+ * {@link OnQuantityChangedListener}
+ */
 public class QuantityCell extends BaseCell {
     private TextView quantity;
     private TextView title;
@@ -28,7 +33,7 @@ public class QuantityCell extends BaseCell {
         quantity.setText("");
     }
 
-    public void setAdapter (QuantityCellAdapter adapter) {
+    public void setAdapter(QuantityCellAdapter adapter) {
         this.adapter = adapter;
     }
 
@@ -45,11 +50,11 @@ public class QuantityCell extends BaseCell {
         this.subTitle.setText(subTitle);
     }
 
-    public void setQuantity (String quantity) {
+    public void setQuantity(String quantity) {
         this.quantity.setText(quantity);
     }
 
-    private void init () {
+    private void init() {
         quantity = itemView.findViewById(R.id.quantity);
         title = itemView.findViewById(R.id.title);
         subTitle = itemView.findViewById(R.id.subTitle);
@@ -91,7 +96,7 @@ public class QuantityCell extends BaseCell {
                 d.dismiss();
             });
 
-            cancel.setOnClickListener( v2 -> d.dismiss());
+            cancel.setOnClickListener(v2 -> d.dismiss());
 
             d.show();
         });
@@ -99,9 +104,13 @@ public class QuantityCell extends BaseCell {
 
     public interface QuantityCellAdapter {
         String getTitle();
+
         boolean isMaxQuantityRequired();
+
         int getMaxQuantity();
+
         int getMinQuantity();
+
         int getValue();
     }
 

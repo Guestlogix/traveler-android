@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.R;
 
 /**
- * View holder which can hide
+ * Form cell which contains an EditText
+ * Implements:
+ * {@link OnTextChangedListener}
  */
 public class TextCell extends BaseCell {
     private EditText editText;
@@ -22,7 +24,7 @@ public class TextCell extends BaseCell {
 
     @Override
     public void reload() {
-
+        hideError();
     }
 
     public void setHint(String hint) {
@@ -31,6 +33,14 @@ public class TextCell extends BaseCell {
 
     public void setOnTextChangedListener(OnTextChangedListener onTextChangedListener) {
         this.onTextChangedListener = onTextChangedListener;
+    }
+
+    public void setError(String error) {
+        editText.setError(error);
+    }
+
+    public void hideError() {
+        editText.setError(null);
     }
 
     private void init() {

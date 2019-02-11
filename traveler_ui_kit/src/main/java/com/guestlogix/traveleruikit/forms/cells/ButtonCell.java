@@ -8,6 +8,8 @@ import com.guestlogix.traveleruikit.R;
 
 /**
  * A Button input cell type.
+ * Implements:
+ * {@link OnButtonClickListener}
  */
 public class ButtonCell extends BaseCell {
 

@@ -5,9 +5,19 @@ import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.listeners.OnFormElementClickListener;
 import com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener;
 
+/**
+ * Data holder class used to update any {@link BaseCell} classes with the appropriate values.
+ * <p>
+ * Usually each specific {@link BaseElement} class has a specific {@link BaseCell} class coupled with it so updating the
+ * view holder is trivial.
+ */
 public abstract class BaseElement {
     protected String title;
     protected String subtitle;
+
+    protected State state;
+    protected String errorMessage;
+    protected String infoMessage;
 
     private int index;
 
@@ -23,18 +33,25 @@ public abstract class BaseElement {
 
     public BaseElement(String title) {
         this.title = title;
+        state = State.DEFAULT;
     }
 
     public BaseElement(String title, String subtitle) {
         this.title = title;
         this.subtitle = subtitle;
+        state = State.DEFAULT;
     }
 
     public BaseElement() {
+        state = State.DEFAULT;
     }
 
     @NonNull
     public abstract int getType();
+
+    public void reload() {
+        this.state = State.DEFAULT;
+    }
 
     /**
      * Sets the type for any user defined elements.
@@ -44,6 +61,11 @@ public abstract class BaseElement {
      */
     public abstract void setType(int type);
 
+    /**
+     * Used to update a specific cell. Can assume that the given cell is of a matching type.
+     *
+     * @param cell View Holder to update.
+     */
     public abstract void updateCell(BaseCell cell);
 
     public String getTitle() {
@@ -70,6 +92,18 @@ public abstract class BaseElement {
         this.index = index;
     }
 
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public void setInfoMessage(String infoMessage) {
+        this.infoMessage = infoMessage;
+    }
+
     /**
      * Sets the callback interface for value change events. Does not guarantee that all extending elements provide click events
      * or implement this callback interface.
@@ -88,5 +122,9 @@ public abstract class BaseElement {
      */
     public void setOnFormElementClickListener(OnFormElementClickListener onFormElementClickListener) {
         this.onFormElementClickListener = onFormElementClickListener;
+    }
+
+    public enum State {
+        DEFAULT, ERROR, INFO
     }
 }

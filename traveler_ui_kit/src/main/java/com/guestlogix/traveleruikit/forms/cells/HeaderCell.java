@@ -5,6 +5,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.R;
 
+/**
+ * Header cell. Does not implement any listeners.
+ */
 public class HeaderCell extends BaseCell {
     public HeaderCell(@NonNull View itemView) {
         super(itemView);
@@ -28,7 +31,7 @@ public class HeaderCell extends BaseCell {
         this.subTitle.setText(subTitle);
     }
 
-    private void init () {
+    private void init() {
         title = itemView.findViewById(R.id.headerTitle);
         subTitle = itemView.findViewById(R.id.headerSubtitle);
     }
