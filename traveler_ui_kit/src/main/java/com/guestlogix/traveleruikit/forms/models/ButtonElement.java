@@ -1,8 +1,8 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.NonNull;
+import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.cells.ButtonCell;
-import com.guestlogix.traveleruikit.forms.cells.FormCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
 public class ButtonElement extends BaseElement {
@@ -17,8 +17,8 @@ public class ButtonElement extends BaseElement {
 
     @NonNull
     @Override
-    public FormType getType() {
-        return TYPE;
+    public int getType() {
+        return TYPE.getValue();
     }
 
     @Override
@@ -26,10 +26,11 @@ public class ButtonElement extends BaseElement {
     }
 
     @Override
-    public void updateCell(FormCell cell) {
+    public void updateCell(BaseCell cell) {
         ButtonCell bCell = (ButtonCell) cell;
 
         bCell.setText(title);
+        bCell.setButtonClickListener(clickListener);
     }
 
     @Override
@@ -43,6 +44,8 @@ public class ButtonElement extends BaseElement {
     }
 
     ButtonCell.OnButtonClickListener clickListener = () -> {
-        // TODO: Add click callback.
+        if (null != onFormElementClickListener) {
+            onFormElementClickListener.onFormElementClick(this);
+        }
     };
 }

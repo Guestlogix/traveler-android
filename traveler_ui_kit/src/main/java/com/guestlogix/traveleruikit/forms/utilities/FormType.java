@@ -1,12 +1,15 @@
 package com.guestlogix.traveleruikit.forms.utilities;
 
+import android.annotation.SuppressLint;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public enum FormType {
-    HEADER(0), TEXT(1), BUTTON(2), QUANTITY(3);
+    HEADER(0), TEXT(1), BUTTON(2), QUANTITY(3), SPINNER(4);
 
     private int value;
+    @SuppressLint("UseSparseArrays")
     private static Map<Integer, FormType> map = new HashMap<>();
 
 

@@ -1,7 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.NonNull;
-import com.guestlogix.traveleruikit.forms.cells.FormCell;
+import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.cells.TextCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
@@ -23,8 +23,8 @@ public class TextElement extends BaseElement {
 
     @NonNull
     @Override
-    public FormType getType() {
-        return TYPE;
+    public int getType() {
+        return TYPE.getValue();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class TextElement extends BaseElement {
     }
 
     @Override
-    public void updateCell(FormCell cell) {
+    public void updateCell(BaseCell cell) {
         TextCell tCell = (TextCell) cell;
         tCell.setHint(hint);
         tCell.setOnTextChangedListener(listener);
@@ -47,7 +47,7 @@ public class TextElement extends BaseElement {
         this.hint = hint;
     }
 
-    TextCell.OnTextChangedListener listener = (val) -> {
+    private TextCell.OnTextChangedListener listener = (val) -> {
         value = val;
 
         if (null != this.onFormElementValueChangedListener) {

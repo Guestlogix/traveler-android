@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * the cells require specific ids to operate correctly. Right now there is no mechanism stopping someone from
  * creating a ViewHolder with an incompatible view type. This will cause the app to crash at runtime.
  */
-public abstract class FormCell extends RecyclerView.ViewHolder {
+public abstract class BaseCell extends RecyclerView.ViewHolder {
 
     /**
      * Index of the Holder Cell within the Form
@@ -26,7 +26,7 @@ public abstract class FormCell extends RecyclerView.ViewHolder {
 
     protected OnCellContextRequestListener contextRequestListener;
 
-    public FormCell(@NonNull View itemView) {
+    public BaseCell(@NonNull View itemView) {
         super(itemView);
     }
 

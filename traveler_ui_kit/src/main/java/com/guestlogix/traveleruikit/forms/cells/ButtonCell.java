@@ -9,7 +9,7 @@ import com.guestlogix.traveleruikit.R;
 /**
  * A Button input cell type.
  */
-public class ButtonCell extends FormCell {
+public class ButtonCell extends BaseCell {
 
     private Button button;
     private TextView title;

@@ -3,13 +3,12 @@ package com.guestlogix.traveleruikit.forms.cells;
 import android.app.Dialog;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.R;
 
-public class QuantityCell extends FormCell {
+public class QuantityCell extends BaseCell {
     private TextView quantity;
     private TextView title;
     private TextView subTitle;
@@ -103,6 +102,7 @@ public class QuantityCell extends FormCell {
         boolean isMaxQuantityRequired();
         int getMaxQuantity();
         int getMinQuantity();
+        int getValue();
     }
 
     public interface OnQuantityChangedListener {

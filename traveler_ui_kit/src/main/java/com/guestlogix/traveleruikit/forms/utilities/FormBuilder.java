@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.forms.cells.*;
+import com.guestlogix.traveleruikit.forms.listeners.OnFormElementClickListener;
+import com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener;
 import com.guestlogix.traveleruikit.forms.models.*;
 
 import java.util.ArrayList;
@@ -20,7 +22,8 @@ public class FormBuilder {
     private Map<Integer, CustomCellAdapter> customComponentMap = new HashMap<>();
     private static int FORM_TYPE_COUNT;
 
-    private OnElementValueChangedListener onElementValueChangedListener;
+    private OnFormElementValueChangedListener onElementValueChangedListener;
+    private OnFormElementClickListener onElementClickListener;
 
     static {
         FORM_TYPE_COUNT = FormType.getTypeCount();
@@ -48,17 +51,18 @@ public class FormBuilder {
     }
 
     /**
-     * Adds an element to the Form with type BUTTON in {@link FormType} enum.
+     * Adds an element to the Form with type BUTTON.
      *
      * @param text Will be displayed on the button.
      */
     public void addButtonElement(String text) {
         ButtonElement element = new ButtonElement(text);
+        setListeners(element);
         elements.add(element);
     }
 
     /**
-     * Adds an element to the form of type QUANTITY in {@link FormType} enum.
+     * Adds an element to the form of type QUANTITY.
      *
      * @param title    Title to be displayed on the cell.
      * @param subtitle Subtitle to be displayed on the cell.
@@ -67,19 +71,22 @@ public class FormBuilder {
      */
     public void addQuantityElement(String title, String subtitle, int minValue, int maxValue) {
         QuantityElement element = new QuantityElement(title, subtitle, minValue, maxValue);
+        setListeners(element);
         elements.add(element);
     }
 
     /**
-     * Adds a blank element to the form of type QUANTITY in {@link FormType} enum.
+     * Adds a blank element to the form of type QUANTITY.
      * Sets default values of 0 for min value and -1 for max value.
      */
     public void addQuantityElement() {
-        elements.add(new QuantityElement());
+        QuantityElement element = new QuantityElement();
+        setListeners(element);
+        elements.add(element);
     }
 
     /**
-     * Adds an element to the form of type HEADER in {@link FormType} enum.
+     * Adds an element to the form of type HEADER.
      *
      * @param title    Title to be displayed on the cell.
      * @param subtitle Subtitle to be displayed on the cell.
@@ -89,7 +96,7 @@ public class FormBuilder {
     }
 
     /**
-     * Adds an element to the form of type HEADER in {@link FormType} enum.
+     * Adds an element to the form of type HEADER.
      *
      * @param title Title to be displayed on the cell.
      */
@@ -105,31 +112,62 @@ public class FormBuilder {
     }
 
     /**
-     * Adds an element to the form of type TEXT in {@link FormType} enum.
+     * Adds an element to the form of type TEXT.
      *
      * @param title Title to be displayed on the cell.
      * @param hint  Hint for the edit text.
      */
     public void addTextElement(String title, String hint) {
         TextElement element = new TextElement(title, hint);
-        element.setOnFormElementValueChangedListener(this::onValueChanged);
+        setListeners(element);
         elements.add(element);
     }
 
     /**
-     * Adds an element to the form of type TEXT in {@link FormType} enum.
+     * Adds an element to the form of type TEXT.
      *
      * @param title Title to be displayed on the cell.
      */
     public void addTextElement(String title) {
-        elements.add(new TextElement(title));
+        TextElement element = new TextElement(title);
+        setListeners(element);
+        elements.add(element);
     }
 
     /**
-     * Adds a blank element to the form of type TEXT in {@link FormType} enum.
+     * Adds a blank element to the form of type TEXT.
      */
     public void addTextElement() {
-        elements.add(new TextElement());
+        TextElement element = new TextElement();
+        setListeners(element);
+        elements.add(element);
+    }
+
+    /**
+     * Adds an element to the form of type SPINNER.
+     *
+     * @param title    Title to be displayed for this element.
+     * @param subtitle Subtitle to be displayed for this element.
+     * @param options  List of options to be used in the dropdown.
+     */
+    public void addSpinnerElement(String title, String subtitle, List<String> options) {
+        SpinnerElement element = new SpinnerElement(title, subtitle, options);
+        setListeners(element);
+        elements.add(element);
+    }
+
+    /**
+     * Adds an element to the form of type SPINNER with a default value.
+     *
+     * @param title        Title to be displayed for this element.
+     * @param subtitle     Subtitle to be displayed for this element.
+     * @param options      List of options to be used in the dropdown.
+     * @param defaultValue Default value for the dropdown.
+     */
+    public void addSpinnerElement(String title, String subtitle, List<String> options, int defaultValue) {
+        SpinnerElement element = new SpinnerElement(title, subtitle, options, defaultValue);
+        setListeners(element);
+        elements.add(element);
     }
 
     /**
@@ -154,10 +192,10 @@ public class FormBuilder {
     }
 
     public int getElementType(int position) {
-        return elements.get(position).getType().getValue();
+        return elements.get(position).getType();
     }
 
-    public FormCell createFormCell(ViewGroup parent, int elementType) {
+    public BaseCell createFormCell(ViewGroup parent, int elementType) {
         switch (FormType.valueOf(elementType)) {
             case HEADER:
                 return inflateHeader(parent);
@@ -167,12 +205,14 @@ public class FormBuilder {
                 return inflateText(parent);
             case QUANTITY:
                 return inflateQuantity(parent);
+            case SPINNER:
+                return inflateSpinner(parent);
             default:
                 return createCustomCell(parent, elementType);
         }
     }
 
-    public void bindFormCell(FormCell cell, int position) {
+    public void bindFormCell(BaseCell cell, int position) {
         BaseElement element = elements.get(position); // Element associated with the current view holder.
         element.updateCell(cell);
     }
@@ -181,31 +221,40 @@ public class FormBuilder {
         return elements.size();
     }
 
-    public void setOnElementValueChangedListener(OnElementValueChangedListener onElementValueChangedListener) {
+    public void setOnElementValueChangedListener(OnFormElementValueChangedListener onElementValueChangedListener) {
         this.onElementValueChangedListener = onElementValueChangedListener;
     }
 
-    private FormCell inflateHeader(ViewGroup parent) {
+    public void setOnElementClickListener(OnFormElementClickListener onElementClickListener) {
+        this.onElementClickListener = onElementClickListener;
+    }
+
+    private BaseCell inflateHeader(ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(FormLayout.HEADER_LAYOUT, parent, false);
         return new HeaderCell(view);
     }
 
-    private FormCell inflateButton(ViewGroup parent) {
+    private BaseCell inflateButton(ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(FormLayout.BUTTON_LAYOUT, parent, false);
         return new ButtonCell(view);
     }
 
-    private FormCell inflateText(ViewGroup parent) {
+    private BaseCell inflateText(ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(FormLayout.TEXT_LAYOUT, parent, false);
         return new TextCell(view);
     }
 
-    private FormCell inflateQuantity(ViewGroup parent) {
+    private BaseCell inflateQuantity(ViewGroup parent) {
         View view = LayoutInflater.from(context).inflate(FormLayout.QUANTITY_LAYOUT, parent, false);
         return new QuantityCell(view);
     }
 
-    private FormCell createCustomCell(ViewGroup parent, int type) {
+    private BaseCell inflateSpinner(ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(FormLayout.SPINNER_LAYOUT, parent, false);
+        return new SpinnerCell(view);
+    }
+
+    private BaseCell createCustomCell(ViewGroup parent, int type) {
         CustomCellAdapter adapter = customComponentMap.get(type);
 
         if (null != adapter) {
@@ -218,9 +267,20 @@ public class FormBuilder {
         throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
     }
 
+    private void setListeners(BaseElement e) {
+        e.setOnFormElementValueChangedListener(this::onValueChanged);
+        e.setOnFormElementClickListener(this::onClick);
+    }
+
     private void onValueChanged(BaseElement e) {
         if (null != onElementValueChangedListener) {
             onElementValueChangedListener.onValueChanged(e);
+        }
+    }
+
+    private void onClick(BaseElement e) {
+        if (null != onElementClickListener) {
+            onElementClickListener.onFormElementClick(e);
         }
     }
 
@@ -241,6 +301,10 @@ public class FormBuilder {
                 break;
             case QUANTITY:
                 element = new QuantityElement();
+                elements.add(element);
+                break;
+            case SPINNER:
+                element = new SpinnerElement();
                 elements.add(element);
                 break;
             default:
@@ -269,21 +333,17 @@ public class FormBuilder {
      */
     public interface CustomCellAdapter {
         /**
-         * Inflates a custom view and binds it to its associated ViewHolder of type FormCell.
+         * Inflates a custom view and binds it to its associated ViewHolder of type BaseCell.
          *
          * @param context Where to inflate.
          * @param parent  Parent element to attach to.
          * @return Cell to add to the tree.
          */
-        FormCell inflateCustomCell(Context context, ViewGroup parent);
+        BaseCell inflateCustomCell(Context context, ViewGroup parent);
 
         /**
          * @return
          */
         BaseElement createCustomElement();
-    }
-
-    public interface OnElementValueChangedListener {
-        void onValueChanged(BaseElement element);
     }
 }
