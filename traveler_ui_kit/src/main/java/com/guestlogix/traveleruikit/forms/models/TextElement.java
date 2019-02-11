@@ -39,8 +39,20 @@ public class TextElement extends BaseElement {
     @Override
     public void updateCell(BaseCell cell) {
         TextCell tCell = (TextCell) cell;
+
+        // Unregister listeners to not mess with values of other elements.
+        tCell.setOnTextChangedListener(null);
+        tCell.setOnFocusChangedListener(null);
+
         tCell.reload();
+
+        if (null != value) {
+            tCell.setValue(value);
+        }
+
         tCell.setHint(hint);
+
+        // Set our own listeners.
         tCell.setOnTextChangedListener(textChangedListener);
         tCell.setOnFocusChangedListener(focusChangedListener);
 
