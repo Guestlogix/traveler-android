@@ -3,6 +3,7 @@ package com.guestlogix.traveleruikit.forms.models;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.listeners.OnFormElementClickListener;
+import com.guestlogix.traveleruikit.forms.listeners.OnFormElementFocusChangedListener;
 import com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener;
 
 /**
@@ -30,6 +31,11 @@ public abstract class BaseElement {
      * Callback for click events on elements of the form. Up to individual classes to implement.
      */
     protected OnFormElementClickListener onFormElementClickListener;
+
+    /**
+     * Callback for focus changed events. Up to individual classes to implement.
+     */
+    protected OnFormElementFocusChangedListener onFormElementFocusChangedListener;
 
     public BaseElement(String title) {
         this.title = title;
@@ -122,6 +128,16 @@ public abstract class BaseElement {
      */
     public void setOnFormElementClickListener(OnFormElementClickListener onFormElementClickListener) {
         this.onFormElementClickListener = onFormElementClickListener;
+    }
+
+    /**
+     * Sets the callback interface for focus change events. Does not guarantee that all cells will provide implementation
+     * for focus change events.
+     *
+     * @param onFormElementFocusChangedListener callback for focus change events
+     */
+    public void setOnFormElementFocusChangedListener(OnFormElementFocusChangedListener onFormElementFocusChangedListener) {
+        this.onFormElementFocusChangedListener = onFormElementFocusChangedListener;
     }
 
     public enum State {

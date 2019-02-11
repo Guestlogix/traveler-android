@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.forms.cells.*;
 import com.guestlogix.traveleruikit.forms.listeners.OnFormElementClickListener;
+import com.guestlogix.traveleruikit.forms.listeners.OnFormElementFocusChangedListener;
 import com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener;
 import com.guestlogix.traveleruikit.forms.models.*;
 
@@ -40,6 +41,7 @@ public class FormBuilder {
 
     private OnFormElementValueChangedListener onElementValueChangedListener;
     private OnFormElementClickListener onElementClickListener;
+    private OnFormElementFocusChangedListener onFormElementFocusChangedListener;
 
     static {
         FORM_TYPE_COUNT = FormType.getTypeCount();
@@ -264,6 +266,10 @@ public class FormBuilder {
         this.onElementClickListener = onElementClickListener;
     }
 
+    public void setOnFormElementFocusChangedListener(OnFormElementFocusChangedListener onFormElementFocusChangedListener) {
+        this.onFormElementFocusChangedListener = onFormElementFocusChangedListener;
+    }
+
     /**
      * Signals to all elements in the form to reload.
      */
@@ -312,6 +318,7 @@ public class FormBuilder {
     private void setListeners(BaseElement e) {
         e.setOnFormElementValueChangedListener(this::onValueChanged);
         e.setOnFormElementClickListener(this::onClick);
+        e.setOnFormElementFocusChangedListener(this::onFocusChanged);
     }
 
     private void onValueChanged(BaseElement e) {
@@ -323,6 +330,12 @@ public class FormBuilder {
     private void onClick(BaseElement e) {
         if (null != onElementClickListener) {
             onElementClickListener.onFormElementClick(e);
+        }
+    }
+
+    private void onFocusChanged(BaseElement e, boolean hasFocus) {
+        if (null != onFormElementFocusChangedListener) {
+            onFormElementFocusChangedListener.onFocusChanged(e, hasFocus);
         }
     }
 
@@ -382,7 +395,8 @@ public class FormBuilder {
         BaseCell inflateCustomCell(Context context, ViewGroup parent);
 
         /**
-         * @return
+         * Instantiates the custom element extending {@link BaseElement}
+         * @return Some custom element.
          */
         BaseElement createCustomElement();
     }

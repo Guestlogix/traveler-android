@@ -11,11 +11,14 @@ import com.guestlogix.traveleruikit.R;
  * Form cell which contains an EditText
  * Implements:
  * {@link OnTextChangedListener}
+ * {@link OnFocusChangedListener}
  */
 public class TextCell extends BaseCell {
     private EditText editText;
 
     private OnTextChangedListener onTextChangedListener;
+
+    private OnFocusChangedListener onFocusChangedListener;
 
     public TextCell(@NonNull View itemView) {
         super(itemView);
@@ -33,6 +36,10 @@ public class TextCell extends BaseCell {
 
     public void setOnTextChangedListener(OnTextChangedListener onTextChangedListener) {
         this.onTextChangedListener = onTextChangedListener;
+    }
+
+    public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
+        this.onFocusChangedListener = onFocusChangedListener;
     }
 
     public void setError(String error) {
@@ -62,9 +69,19 @@ public class TextCell extends BaseCell {
             public void afterTextChanged(Editable s) {
             }
         });
+
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (null != onFocusChangedListener) {
+                onFocusChangedListener.onFocusChanged(hasFocus);
+            }
+        });
     }
 
     public interface OnTextChangedListener {
         void onTextChanged(CharSequence value);
+    }
+
+    public interface OnFocusChangedListener {
+        void onFocusChanged(boolean hasFocus);
     }
 }
