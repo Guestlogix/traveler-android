@@ -106,6 +106,22 @@ public class Form extends FrameLayout {
     }
 
     /**
+     * Removes the error state from a cell and updates the view.
+     *
+     * @param position Position of the cell within the form to update.
+     */
+    public void removeError(int position) {
+        BaseElement element = builder.getElement(position);
+
+        if (element.getState() == BaseElement.State.ERROR) {
+            BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
+            element.setState(BaseElement.State.DEFAULT);
+            scrollToPosition(position);
+            element.updateCell(cell);
+        }
+    }
+
+    /**
      * Adds an info message to the cell. Up to individual cells to decide how this looks.
      *
      * @param position relative position of the cell in the form.
@@ -118,6 +134,22 @@ public class Form extends FrameLayout {
         element.setInfoMessage(info);
         scrollToPosition(position);
         element.updateCell(cell);
+    }
+
+    /**
+     * Removes the info state from a cell and updates the view.
+     *
+     * @param position Position of the cell in the form to update.
+     */
+    public void removeInfo(int position) {
+        BaseElement element = builder.getElement(position);
+
+        if (element.getState() == BaseElement.State.DEFAULT) {
+            BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
+            element.setState(BaseElement.State.DEFAULT);
+            scrollToPosition(position);
+            element.updateCell(cell);
+        }
     }
 
     /**

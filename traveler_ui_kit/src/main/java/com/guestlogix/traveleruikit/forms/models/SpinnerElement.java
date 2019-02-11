@@ -49,15 +49,19 @@ public class SpinnerElement extends BaseElement {
     public void updateCell(BaseCell cell) {
         SpinnerCell sCell = (SpinnerCell) cell;
 
+        // Unregister all other callbacks.
+        sCell.setSpinnerCellCallback(null);
+
         sCell.setTitle(title);
         sCell.setSubtitle(subtitle);
-        sCell.setSpinnerCellCallback(listener);
 
         if (null != value) {
             sCell.setOptions(options, value);
         } else {
             sCell.setOptions(options);
         }
+
+        sCell.setSpinnerCellCallback(listener);
     }
 
     /**

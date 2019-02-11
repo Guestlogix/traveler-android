@@ -28,6 +28,7 @@ public class TextCell extends BaseCell {
     @Override
     public void reload() {
         hideError();
+        editText.setText(null);
     }
 
     public void setHint(String hint) {
@@ -48,6 +49,10 @@ public class TextCell extends BaseCell {
 
     public void hideError() {
         editText.setError(null);
+    }
+
+    public void setValue(CharSequence value) {
+        editText.setText(value);
     }
 
     private void init() {

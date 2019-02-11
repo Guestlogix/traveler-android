@@ -102,6 +102,10 @@ public abstract class BaseElement {
         this.state = state;
     }
 
+    public State getState() {
+        return state;
+    }
+
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
