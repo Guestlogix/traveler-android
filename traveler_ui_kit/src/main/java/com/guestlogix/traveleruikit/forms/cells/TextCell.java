@@ -10,7 +10,7 @@ import com.guestlogix.traveleruikit.R;
 /**
  * View holder which can hide
  */
-public class TextCell extends FormCell {
+public class TextCell extends BaseCell {
     private EditText editText;
 
     private OnTextChangedListener onTextChangedListener;

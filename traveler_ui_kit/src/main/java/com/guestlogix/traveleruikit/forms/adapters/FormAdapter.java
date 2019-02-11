@@ -4,10 +4,9 @@ import android.content.Context;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.guestlogix.traveleruikit.forms.cells.FormCell;
-import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
+import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 
-public class FormAdapter extends RecyclerView.Adapter<FormCell> {
+public class FormAdapter extends RecyclerView.Adapter<BaseCell> {
     private FormMapper formMapper;
     private OnFormContextRequestListener contextRequestListener;
 
@@ -17,14 +16,14 @@ public class FormAdapter extends RecyclerView.Adapter<FormCell> {
 
     @NonNull
     @Override
-    public FormCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        FormCell cell = formMapper.createViewHolder(parent, viewType);
+    public BaseCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        BaseCell cell = formMapper.createViewHolder(parent, viewType);
         cell.setContextRequestListener(contextRequestHandler);
         return cell;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FormCell holder, int position) {
+    public void onBindViewHolder(@NonNull BaseCell holder, int position) {
         formMapper.bindView(holder, position);
         holder.setIndex(position);
     }
@@ -48,14 +47,14 @@ public class FormAdapter extends RecyclerView.Adapter<FormCell> {
 
         int getViewType(int position);
 
-        FormCell createViewHolder(ViewGroup parent, int type);
+        BaseCell createViewHolder(ViewGroup parent, int type);
 
-        void bindView(FormCell cell, int position);
+        void bindView(BaseCell cell, int position);
     }
 
     public interface OnFormContextRequestListener {
         Context onFormContextRequest();
     }
 
-    FormCell.OnCellContextRequestListener contextRequestHandler = () -> null != contextRequestListener ? contextRequestListener.onFormContextRequest() : null;
+    private BaseCell.OnCellContextRequestListener contextRequestHandler = () -> null != contextRequestListener ? contextRequestListener.onFormContextRequest() : null;
 }

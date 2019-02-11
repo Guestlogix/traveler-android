@@ -5,7 +5,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.R;
 
-public class HeaderCell extends FormCell {
+public class HeaderCell extends BaseCell {
     public HeaderCell(@NonNull View itemView) {
         super(itemView);
         init();

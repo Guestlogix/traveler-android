@@ -1,7 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.NonNull;
-import com.guestlogix.traveleruikit.forms.cells.FormCell;
+import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.cells.HeaderCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
@@ -23,8 +23,8 @@ public class HeaderElement extends BaseElement {
 
     @NonNull
     @Override
-    public FormType getType() {
-        return TYPE;
+    public int getType() {
+        return TYPE.getValue();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class HeaderElement extends BaseElement {
     }
 
     @Override
-    public void updateCell(FormCell cell) {
+    public void updateCell(BaseCell cell) {
         HeaderCell hCell = (HeaderCell) cell;
 
         hCell.setTitle(title);

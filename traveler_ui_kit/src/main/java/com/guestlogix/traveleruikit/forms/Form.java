@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.adapters.FormAdapter;
-import com.guestlogix.traveleruikit.forms.cells.FormCell;
+import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.models.BaseElement;
 import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
 
@@ -74,12 +74,17 @@ public class Form extends FrameLayout {
 
     public void updateView(BaseElement e) {
         int pos = e.getIndex();
-        FormCell cell = (FormCell) cellsRecyclerView.findViewHolderForLayoutPosition(pos);
+        BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(pos);
         e.updateCell(cell);
     }
 
     public void setError(int position, String error) {
-        FormCell cell = (FormCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
+        BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
+
+    }
+
+    public void setInfo(int position, String info) {
+        BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
     }
 
     /**
@@ -98,6 +103,7 @@ public class Form extends FrameLayout {
         adapter.setContextRequestListener(this.contextRequestListener);
 
         builder.setOnElementValueChangedListener(this::onElementValueChange);
+        builder.setOnElementClickListener(this::onElementClick);
 
         cellsRecyclerView.setLayoutManager(layoutManager);
         cellsRecyclerView.setAdapter(adapter);
@@ -114,13 +120,19 @@ public class Form extends FrameLayout {
         }
     }
 
-    private void onElementValueChange(BaseElement element) {
-        if (null != this.onFormValueChangedListener) {
-            this.onFormValueChangedListener.onFormValueChanged(element.getIndex(), "TestValue");
+    private void onElementClick(BaseElement element) {
+        if (null != this.onFormClickListener) {
+            onFormClickListener.onFormClick(element.getIndex());
         }
     }
 
-    FormAdapter.FormMapper formMapper = new FormAdapter.FormMapper() {
+    private void onElementValueChange(BaseElement element) {
+        if (null != this.onFormValueChangedListener) {
+            this.onFormValueChangedListener.onFormValueChanged(element.getIndex(), element);
+        }
+    }
+
+    private FormAdapter.FormMapper formMapper = new FormAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
             return builder.getSize();
@@ -132,33 +144,15 @@ public class Form extends FrameLayout {
         }
 
         @Override
-        public FormCell createViewHolder(ViewGroup parent, int type) {
+        public BaseCell createViewHolder(ViewGroup parent, int type) {
             return builder.createFormCell(parent, type);
         }
 
         @Override
-        public void bindView(FormCell cell, int position) {
+        public void bindView(BaseCell cell, int position) {
             builder.bindFormCell(cell, position);
         }
     };
-
-    /**
-     * Subscribes to click events.
-     *
-     * @param onFormClickListener callback method for click events.
-     */
-    public void setOnFormClickListener(OnFormClickListener onFormClickListener) {
-        this.onFormClickListener = onFormClickListener;
-    }
-
-    /**
-     * Subscribes to long click events.
-     *
-     * @param onFormLongClickListener callback method for long click events.
-     */
-    public void setOnFormLongClickListener(OnFormLongClickListener onFormLongClickListener) {
-        this.onFormLongClickListener = onFormLongClickListener;
-    }
 
     /**
      * Subscribes to value changed events.
@@ -176,10 +170,9 @@ public class Form extends FrameLayout {
         /**
          * Is invoked whenever the user clicked on an TextCell in the form.
          *
-         * @param sectionId HeaderCell index where the click was done.
-         * @param inputId   TextCell index within the section where the click was done.
+         * @param position Relative position of the element in the form where the user has clicked.
          */
-        void onFormClick(int sectionId, int inputId);
+        void onFormClick(int position);
     }
 
     /**
@@ -189,11 +182,10 @@ public class Form extends FrameLayout {
         /**
          * Is invoked whenever the TextCell section was long clicked.
          *
-         * @param sectionId HeaderCell index where the long click was performed.
-         * @param inputId   TextCell index within the section where the long click was performed.
+         * @param position Relative position of the element in the form where the user has clicked.
          * @return Whether the event was consumed.
          */
-        boolean onFormLongClick(int sectionId, int inputId);
+        boolean onFormLongClick(int position);
     }
 
     /**
@@ -204,9 +196,10 @@ public class Form extends FrameLayout {
          * Is invoked whenever an TextCell had his value changed.
          *
          * @param position Relative position of the element in the form where the value was changed.
-         * @param newValue Current value of the input.
+         * @param element Element in which the value was changed. Cast the element to the appropriate type using getType()
+         *                And then use getValue() to get the most recent contents.
          */
-        void onFormValueChanged(int position, CharSequence newValue);
+        void onFormValueChanged(int position, BaseElement element);
     }
 
     FormAdapter.OnFormContextRequestListener contextRequestListener = this::getContext;
