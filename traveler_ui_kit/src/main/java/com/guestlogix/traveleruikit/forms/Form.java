@@ -24,8 +24,11 @@ import java.util.List;
 /**
  * A form layout used to render and display a flat form. The implementing class has to provide a FormBuilder object
  * which hosts the underlying structure of the form.
- *
+ * <p>
  * Since the form takes a flat object structure, the implementing activity/fragment must have a flattening strategy.
+ * <p>
+ * All form events are not guaranteed to be invoked. It is up-to individual {@link BaseCell}s to implement event listeners
+ * and dispatch the appropriate events.
  */
 public class Form extends FrameLayout {
 
@@ -33,11 +36,6 @@ public class Form extends FrameLayout {
     private RecyclerView.LayoutManager layoutManager;
     private FormAdapter adapter;
     private FormBuilder builder;
-
-    /**
-     * Unidirectional map which maps the Absolute index into sectionId/inputId pair.
-     */
-    private List<Pair<Integer, Integer>> indexMap;
 
     /**
      * Callback interface used to notify any subscriber whenever a click was performed on an TextCell in the form.
@@ -53,6 +51,11 @@ public class Form extends FrameLayout {
      * Callback Interface used to notify any subscriber whenever a value was changed in the form.
      */
     protected OnFormValueChangedListener onFormValueChangedListener;
+
+    /**
+     * Callback interface used to notify any subscriber whenever a focus was changed in an element of the form.
+     */
+    protected OnFormFocusChangedListener onFormFocusChangedListener;
 
     public Form(@NonNull Context context) {
         super(context);
@@ -75,6 +78,11 @@ public class Form extends FrameLayout {
         initView(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    /**
+     * Updates a view with a particular cell.
+     *
+     * @param e Element to update. Must have been instantiated by the {@link FormBuilder}
+     */
     public void updateView(BaseElement e) {
         int pos = e.getIndex();
         BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(pos);
@@ -82,6 +90,12 @@ public class Form extends FrameLayout {
         e.updateCell(cell);
     }
 
+    /**
+     * Adds an error message to the cell. Up to individual cells to decide how this error looks.
+     *
+     * @param position Relative position of the cell in the form.
+     * @param error    Error message to display.
+     */
     public void setError(int position, String error) {
         BaseElement element = builder.getElement(position);
         BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
@@ -92,14 +106,25 @@ public class Form extends FrameLayout {
     }
 
     /**
+     * Adds an info message to the cell. Up to individual cells to decide how this looks.
      *
-     * @param position
-     * @param info
+     * @param position relative position of the cell in the form.
+     * @param info     Information to be displayed.
      */
     public void setInfo(int position, String info) {
         BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
+        BaseElement element = builder.getElement(position);
+        element.setState(BaseElement.State.INFO);
+        element.setInfoMessage(info);
+        scrollToPosition(position);
+        element.updateCell(cell);
     }
 
+    /**
+     * Scrolls to a particular position in the form.
+     *
+     * @param position Where to scroll to.
+     */
     public void scrollToPosition(int position) {
         layoutManager.scrollToPosition(position);
     }
@@ -107,12 +132,18 @@ public class Form extends FrameLayout {
     /**
      * Uses the {@link FormBuilder} to initialize the form layout.
      *
-     * @param builder FormBuilder
+     * @param builder
      */
     public void initialize(FormBuilder builder) {
         initialize(builder, new LinearLayoutManager(getContext()));
     }
 
+    /**
+     * Begins rendering the form using the data provided by the {@link FormBuilder}.
+     *
+     * @param builder
+     * @param layoutManager
+     */
     public void initialize(FormBuilder builder, RecyclerView.LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
         this.builder = builder;
@@ -121,6 +152,7 @@ public class Form extends FrameLayout {
 
         builder.setOnElementValueChangedListener(this::onElementValueChange);
         builder.setOnElementClickListener(this::onElementClick);
+        builder.setOnFormElementFocusChangedListener(this::onElementFocusChange);
 
         cellsRecyclerView.setLayoutManager(layoutManager);
         cellsRecyclerView.setAdapter(adapter);
@@ -163,6 +195,12 @@ public class Form extends FrameLayout {
         }
     }
 
+    private void onElementFocusChange(BaseElement element, boolean hasFocus) {
+        if (null != this.onFormFocusChangedListener) {
+            this.onFormFocusChangedListener.onFormFocusChanged(hasFocus, element);
+        }
+    }
+
     private FormAdapter.FormMapper formMapper = new FormAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
@@ -195,11 +233,29 @@ public class Form extends FrameLayout {
     }
 
     /**
-     * This listener is used to indicate that an input value was clicked in the {@link Form}.
+     * Subscribes to cell focus change events.
+     *
+     * @param onFormFocusChangedListener callback method for focus change events.
+     */
+    public void setOnFormFocusChangedListener(OnFormFocusChangedListener onFormFocusChangedListener) {
+        this.onFormFocusChangedListener = onFormFocusChangedListener;
+    }
+
+    /**
+     * Subscribes to cell click events.
+     *
+     * @param onFormClickListener callback method for click events.
+     */
+    public void setOnFormClickListener(OnFormClickListener onFormClickListener) {
+        this.onFormClickListener = onFormClickListener;
+    }
+
+    /**
+     * This listener is used to indicate that a cell was clicked.
      */
     public interface OnFormClickListener {
         /**
-         * Is invoked whenever the user clicked on an TextCell in the form.
+         * Is invoked whenever there was a click on the cell.
          *
          * @param position Relative position of the element in the form where the user has clicked.
          */
@@ -207,11 +263,11 @@ public class Form extends FrameLayout {
     }
 
     /**
-     * This listener is used to indicate that an input value was long clicked.
+     * This listener is used to indicate that a cell was "long pressed"
      */
     public interface OnFormLongClickListener {
         /**
-         * Is invoked whenever the TextCell section was long clicked.
+         * Is invoked whenever a cell was long clicked.
          *
          * @param position Relative position of the element in the form where the user has clicked.
          * @return Whether the event was consumed.
@@ -224,13 +280,26 @@ public class Form extends FrameLayout {
      */
     public interface OnFormValueChangedListener {
         /**
-         * Is invoked whenever an TextCell had his value changed.
+         * Is invoked whenever an cell had his value changed.
          *
          * @param position Relative position of the element in the form where the value was changed.
-         * @param element Element in which the value was changed. Cast the element to the appropriate type using getType()
-         *                And then use getValue() to get the most recent contents.
+         * @param element  Element in which the value was changed. Cast the element to the appropriate type using getType()
+         *                 And then use getValue() to get the most recent contents.
          */
         void onFormValueChanged(int position, BaseElement element);
+    }
+
+    /**
+     * This listener is used to indicate that the focus has changed for a given input field.
+     */
+    public interface OnFormFocusChangedListener {
+        /**
+         * Is invoked whenever the focus state is changed for a given element of the form.
+         *
+         * @param hasFocus Whether the element now has focus.
+         * @param element  Element in which the focus was changed.
+         */
+        void onFormFocusChanged(boolean hasFocus, BaseElement element);
     }
 
     FormAdapter.OnFormContextRequestListener contextRequestListener = this::getContext;

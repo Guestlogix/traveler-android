@@ -5,9 +5,10 @@ import com.guestlogix.traveleruikit.forms.cells.TextCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
 /**
- * Form element containing information which can be used to update {@link BaseCell} with an edit text.
+ * Form element containing information which can be used to update {@link BaseCell} with an edit textChangedListener.
  * Implements:
  * {@link com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener}
+ * {@link com.guestlogix.traveleruikit.forms.listeners.OnFormElementFocusChangedListener}
  */
 public class TextElement extends BaseElement {
     public final static FormType TYPE = FormType.TEXT;
@@ -40,7 +41,8 @@ public class TextElement extends BaseElement {
         TextCell tCell = (TextCell) cell;
         tCell.reload();
         tCell.setHint(hint);
-        tCell.setOnTextChangedListener(listener);
+        tCell.setOnTextChangedListener(textChangedListener);
+        tCell.setOnFocusChangedListener(focusChangedListener);
 
         if (state == State.ERROR) {
             updateErrorState(tCell);
@@ -63,11 +65,17 @@ public class TextElement extends BaseElement {
         cell.setError(errorMessage);
     }
 
-    private TextCell.OnTextChangedListener listener = (val) -> {
+    private TextCell.OnTextChangedListener textChangedListener = (val) -> {
         value = val;
 
         if (null != this.onFormElementValueChangedListener) {
             this.onFormElementValueChangedListener.onValueChanged(this);
         }
     };
+
+    private TextCell.OnFocusChangedListener focusChangedListener = (hasFocus -> {
+        if (null != this.onFormElementFocusChangedListener) {
+            this.onFormElementFocusChangedListener.onFocusChanged(this, hasFocus);
+        }
+    });
 }
