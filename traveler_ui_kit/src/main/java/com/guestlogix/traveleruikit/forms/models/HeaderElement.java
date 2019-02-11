@@ -5,21 +5,24 @@ import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.cells.HeaderCell;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
+/**
+ * Form Element used to update {@link BaseCell} elements which are headers.
+ * <p>
+ * Does not implement any click or value change listeners.
+ */
 public class HeaderElement extends BaseElement {
     public static final FormType TYPE = FormType.HEADER;
 
-    private String subtitle;
-
     public HeaderElement(String title, String subtitle) {
-        super(title);
-        this.subtitle = subtitle;
+        super(title, subtitle);
     }
 
     public HeaderElement(String title) {
         super(title);
     }
 
-    public HeaderElement() {}
+    public HeaderElement() {
+    }
 
     @NonNull
     @Override
@@ -29,7 +32,6 @@ public class HeaderElement extends BaseElement {
 
     @Override
     public void setType(int type) {
-
     }
 
     @Override
@@ -38,13 +40,5 @@ public class HeaderElement extends BaseElement {
 
         hCell.setTitle(title);
         hCell.setSubTitle(subtitle);
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
     }
 }

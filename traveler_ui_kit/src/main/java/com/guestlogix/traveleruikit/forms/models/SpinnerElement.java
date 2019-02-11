@@ -7,6 +7,11 @@ import com.guestlogix.traveleruikit.forms.utilities.FormType;
 
 import java.util.List;
 
+/**
+ * Form element which holds information to update a {@link BaseCell} with a spinner.
+ * Implements:
+ * {@link com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener}
+ */
 public class SpinnerElement extends BaseElement {
     public static final FormType TYPE = FormType.SPINNER;
 
@@ -37,7 +42,8 @@ public class SpinnerElement extends BaseElement {
     }
 
     @Override
-    public void setType(int type) { }
+    public void setType(int type) {
+    }
 
     @Override
     public void updateCell(BaseCell cell) {

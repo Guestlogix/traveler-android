@@ -10,6 +10,11 @@ import com.guestlogix.traveleruikit.R;
 
 import java.util.List;
 
+/**
+ * Form cell which contains a spinner.
+ * Implements:
+ * {@link SpinnerCellCallback}
+ */
 public class SpinnerCell extends BaseCell {
     private TextView title;
     private TextView subtitle;
@@ -46,7 +51,7 @@ public class SpinnerCell extends BaseCell {
      * Populates the view with a list of options and sets the current option to the given index. Does not check whether
      * the option is currently selected.
      *
-     * @param options Items to display in the dropdown list.
+     * @param options  Items to display in the dropdown list.
      * @param position Element to select after populating the list.
      */
     public void setOptions(List<String> options, int position) {
