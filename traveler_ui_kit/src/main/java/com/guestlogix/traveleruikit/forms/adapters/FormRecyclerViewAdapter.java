@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 
-public class FormAdapter extends RecyclerView.Adapter<BaseCell> {
+public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
     private FormMapper formMapper;
     private OnFormContextRequestListener contextRequestListener;
 
-    public FormAdapter(@NonNull FormMapper formMapper) {
+    public FormRecyclerViewAdapter(@NonNull FormMapper formMapper) {
         this.formMapper = formMapper;
     }
 
