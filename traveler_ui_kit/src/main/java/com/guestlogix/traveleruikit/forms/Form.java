@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.forms.adapters.FormAdapter;
+import com.guestlogix.traveleruikit.forms.adapters.FormRecyclerViewAdapter;
 import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 import com.guestlogix.traveleruikit.forms.models.BaseElement;
 import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
-
-import java.util.List;
 
 /**
  * A form layout used to render and display a flat form. The implementing class has to provide a FormBuilder object
@@ -34,8 +31,8 @@ public class Form extends FrameLayout {
 
     private RecyclerView cellsRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private FormAdapter adapter;
-    private FormBuilder builder;
+    private FormRecyclerViewAdapter rvAdapter;
+    private final FormBuilder builder;
 
     /**
      * Callback interface used to notify any subscriber whenever a click was performed on an TextCell in the form.
@@ -60,22 +57,26 @@ public class Form extends FrameLayout {
     public Form(@NonNull Context context) {
         super(context);
         initView(context, null, 0, 0);
+        builder = new FormBuilder(getContext());
     }
 
     public Form(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initView(context, attrs, 0, 0);
+        builder = new FormBuilder(getContext());
     }
 
     public Form(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context, attrs, defStyleAttr, 0);
+        builder = new FormBuilder(getContext());
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Form(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(context, attrs, defStyleAttr, defStyleRes);
+        builder = new FormBuilder(getContext());
     }
 
     /**
@@ -161,34 +162,34 @@ public class Form extends FrameLayout {
         layoutManager.scrollToPosition(position);
     }
 
-    /**
-     * Uses the {@link FormBuilder} to initialize the form layout.
-     *
-     * @param builder
-     */
-    public void initialize(FormBuilder builder) {
-        initialize(builder, new LinearLayoutManager(getContext()));
-    }
+//    /**
+//     * Uses the {@link FormBuilder} to initialize the form layout.
+//     *
+//     * @param builder
+//     */
+//    public void initialize(FormBuilder builder) {
+//        initialize(builder, new LinearLayoutManager(getContext()));
+//    }
 
-    /**
-     * Begins rendering the form using the data provided by the {@link FormBuilder}.
-     *
-     * @param builder
-     * @param layoutManager
-     */
-    public void initialize(FormBuilder builder, RecyclerView.LayoutManager layoutManager) {
-        this.layoutManager = layoutManager;
-        this.builder = builder;
-        adapter = new FormAdapter(formMapper);
-        adapter.setContextRequestListener(this.contextRequestListener);
-
-        builder.setOnElementValueChangedListener(this::onElementValueChange);
-        builder.setOnElementClickListener(this::onElementClick);
-        builder.setOnFormElementFocusChangedListener(this::onElementFocusChange);
-
-        cellsRecyclerView.setLayoutManager(layoutManager);
-        cellsRecyclerView.setAdapter(adapter);
-    }
+//    /**
+//     * Begins rendering the form using the data provided by the {@link FormBuilder}.
+//     *
+//     * @param builder
+//     * @param layoutManager
+//     */
+//    public void initialize(FormBuilder builder, RecyclerView.LayoutManager layoutManager) {
+//        this.layoutManager = layoutManager;
+//        this.builder = builder;
+//        rvAdapter = new FormRecyclerViewAdapter(formMapper);
+//        rvAdapter.setContextRequestListener(this.contextRequestListener);
+//
+//        builder.setOnElementValueChangedListener(this::onElementValueChange);
+//        builder.setOnElementClickListener(this::onElementClick);
+//        builder.setOnFormElementFocusChangedListener(this::onElementFocusChange);
+//
+//        cellsRecyclerView.setLayoutManager(layoutManager);
+//        cellsRecyclerView.setAdapter(rvAdapter);
+//    }
 
     /**
      * Reloads all elements in the form.
@@ -233,7 +234,7 @@ public class Form extends FrameLayout {
         }
     }
 
-    private FormAdapter.FormMapper formMapper = new FormAdapter.FormMapper() {
+    private FormRecyclerViewAdapter.FormMapper formMapper = new FormRecyclerViewAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
             return builder.getSize();
@@ -254,6 +255,11 @@ public class Form extends FrameLayout {
             builder.bindFormCell(cell, position);
         }
     };
+
+    public abstract static class FormAdapter {
+        public abstract int getItemCount();
+        public abstract int getViewType(int position);
+    }
 
     /**
      * Subscribes to value changed events.
@@ -334,5 +340,5 @@ public class Form extends FrameLayout {
         void onFormFocusChanged(boolean hasFocus, BaseElement element);
     }
 
-    FormAdapter.OnFormContextRequestListener contextRequestListener = this::getContext;
+    FormRecyclerViewAdapter.OnFormContextRequestListener contextRequestListener = this::getContext;
 }
