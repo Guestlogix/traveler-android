@@ -49,6 +49,14 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
         this.index = index;
     }
 
+    public void hide() {
+        itemView.setVisibility(View.GONE);
+    }
+
+    public void show() {
+        itemView.setVisibility(View.VISIBLE);
+    }
+
     /**
      * Signals the cell that it needs to be reloaded to a fresh state.
      */

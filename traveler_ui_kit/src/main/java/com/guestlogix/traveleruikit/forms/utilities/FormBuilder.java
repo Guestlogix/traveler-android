@@ -96,9 +96,6 @@ public class FormBuilder {
             case QUANTITY:
                 bindQuantityCell(cell, descriptor);
                 break;
-            case HEADER:
-                bindHeaderCell(cell, descriptor);
-                break;
             case TEXT:
                 bindTextCell(cell, descriptor);
                 break;
@@ -231,14 +228,14 @@ public class FormBuilder {
     /**
      * Binds a header cell with the appropriate values.
      * @param cell Cell of {@link HeaderCell} to be bound.
-     * @param descriptor Expects an input descriptor of type {@link HeaderDescriptor}.
+     * @param title Title of the header.
+     * @param disclaimer Disclaimer for the header
      */
-    public void bindHeaderCell(BaseCell cell, InputDescriptor descriptor) {
-        HeaderDescriptor h = (HeaderDescriptor) descriptor;
+    public void bindHeaderCell(BaseCell cell, String title, String disclaimer) {
         HeaderCell c = (HeaderCell) cell;
 
-        c.setTitle(h.title);
-        c.setSubtitle(h.subtitle);
+        c.setTitle(title);
+        c.setSubtitle(disclaimer);
     }
 
     public void bindCustomCell(BaseCell cell, InputDescriptor descriptor, int type) {
@@ -250,7 +247,7 @@ public class FormBuilder {
             if (null != adapter) {
                 adapter.bindCell(cell, descriptor, type);
             } else {
-                Log.w(TAG, String.format("CustomCellAdapter is null, cannot proceed with view binding"));
+                Log.w(TAG, "CustomCellAdapter is null, cannot proceed with view binding");
             }
         } else {
             Log.w(TAG, String.format("Requested custom type %d was not registered with the builder", type));
