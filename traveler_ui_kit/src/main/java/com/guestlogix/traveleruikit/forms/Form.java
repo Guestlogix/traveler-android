@@ -91,7 +91,6 @@ public class Form extends FrameLayout {
 
     /**
      * Scrolls to a particular position in the form.
-     *
      */
     public void scrollToPosition(int sectionId, int fieldId) {
         Pair<Integer, Integer> p = new Pair<>(sectionId, fieldId);
@@ -131,7 +130,7 @@ public class Form extends FrameLayout {
      * The form will use the data set to update the specific item
      *
      * @param sectionId Section where to update.
-     * @param fieldId Item within the section to update.
+     * @param fieldId   Item within the section to update.
      */
     public void updateField(int sectionId, int fieldId) {
         Integer pos = pairToPos.get(new Pair<>(sectionId, fieldId));
@@ -159,6 +158,18 @@ public class Form extends FrameLayout {
         setDataSource(dataSource, new LinearLayoutManager(getContext()));
     }
 
+    public int getType(FormType type) {
+        return builder.getType(type);
+    }
+
+    public FormBuilder getBuilder() {
+        return builder;
+    }
+
+    public int registerCustomView(FormBuilder.CustomCellAdapter adapter) {
+        return builder.registerCustomCell(adapter);
+    }
+
     private void initView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (!isInEditMode()) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_form, this, true);
@@ -173,17 +184,16 @@ public class Form extends FrameLayout {
         pairToPos = new HashMap<>();
 
         for (int i = 0; i < dataSource.getSectionCount(); i++) {
-            if (dataSource.hasTitle(i)) {
-                Pair<Integer, Integer> p = new Pair<>(i, -1);
-                posToPair.put(count, p);
-                posToType.put(count, builder.getType(FormType.HEADER));
-                count++;
-            }
+            Pair<Integer, Integer> p = new Pair<>(i, -1);
+            posToPair.put(count, p);
+            posToType.put(count, builder.getType(FormType.HEADER));
+            count++;
+
 
             for (int j = 0; j < dataSource.getFieldCount(i); j++) {
                 int type = dataSource.getType(i, j);
                 posToType.put(count, type);
-                Pair<Integer, Integer> p = new Pair<>(i, j);
+                p = new Pair<>(i, j);
                 posToPair.put(count, p);
                 pairToPos.put(p, count);
                 count++;
@@ -200,7 +210,7 @@ public class Form extends FrameLayout {
 
         @Override
         public int getViewType(int position) {
-            if (! posToType.containsKey(position)) {
+            if (!posToType.containsKey(position)) {
                 Log.e("Form", "Type is not defined");
                 return 0;
             }
@@ -227,11 +237,10 @@ public class Form extends FrameLayout {
                 InputDescriptor descriptor;
                 if (p.second >= 0) {
                     descriptor = dataSource.getDescriptor(p.first, p.second, type);
+                    builder.bindView(cell, descriptor, type);
                 } else {
-                    descriptor = dataSource.getDescriptor(p.first);
+                    builder.bindHeaderCell(cell, dataSource.getTitle(p.first), dataSource.getDisclaimer(p.first));
                 }
-
-                builder.bindView(cell, descriptor, type);
             } else {
                 Log.e(TAG, "Position/Type was expected, but got null");
             }
@@ -306,8 +315,9 @@ public class Form extends FrameLayout {
     public interface OnFormClickListener {
         /**
          * Is invoked whenever a click was performed in the form.
+         *
          * @param sectionId Section where the field happened.
-         * @param fieldId Field within the Section where the click happened.
+         * @param fieldId   Field within the Section where the click happened.
          */
         void onFormClick(int sectionId, int fieldId);
     }
@@ -318,9 +328,10 @@ public class Form extends FrameLayout {
     public interface OnFormValueChangedListener {
         /**
          * Is invoked whenever a value is changed in the form.
+         *
          * @param sectionId Section where the value was changed.
-         * @param fieldId Field which was changed in the Section.
-         * @param value new value for the field.
+         * @param fieldId   Field which was changed in the Section.
+         * @param value     new value for the field.
          */
         void onFormValueChanged(int sectionId, int fieldId, Object value);
     }
@@ -331,9 +342,10 @@ public class Form extends FrameLayout {
     public interface OnFormFocusChangedListener {
         /**
          * Is invoked whenever a focus change happens for a field in the form.
+         *
          * @param sectionId Section where the event occurred.
-         * @param fieldId Fields in the Section where the event occurred.
-         * @param hasFocus Whether the field has focus now.
+         * @param fieldId   Fields in the Section where the event occurred.
+         * @param hasFocus  Whether the field has focus now.
          */
         void onFormFocusChanged(int sectionId, int fieldId, boolean hasFocus);
     }
@@ -342,13 +354,16 @@ public class Form extends FrameLayout {
 
     public interface DataSource {
         int getSectionCount();
+
         int getFieldCount(int sectionId);
+
         int getType(int sectionId, int fieldId);
 
-        boolean hasTitle(int sectionId);
+        String getTitle(int sectionId);
+
+        String getDisclaimer(int sectionId);
 
         InputDescriptor getDescriptor(int sectionId, int fieldId, int type);
-        InputDescriptor getDescriptor(int sectionId);
     }
 
     DefaultItemAnimator animator = new DefaultItemAnimator() {

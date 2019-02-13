@@ -19,16 +19,26 @@ public class HeaderCell extends BaseCell {
 
     @Override
     public void reload() {
-        title.setText("");
-        subtitle.setText("");
+        title.setText(null);
+        subtitle.setText(null);
     }
 
     public void setTitle(String title) {
-        this.title.setText(title);
+        if (title == null) {
+            this.title.setVisibility(View.GONE);
+        } else {
+            this.title.setVisibility(View.VISIBLE);
+            this.title.setText(title);
+        }
     }
 
-    public void setSubtitle(String subTitle) {
-        this.subtitle.setText(subTitle);
+    public void setSubtitle(String subtitle) {
+        if (subtitle == null) {
+            this.subtitle.setVisibility(View.GONE);
+        } else {
+            this.subtitle.setVisibility(View.VISIBLE);
+            this.subtitle.setText(subtitle);
+        }
     }
 
     private void init() {
