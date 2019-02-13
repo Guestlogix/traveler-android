@@ -1,22 +1,30 @@
 package com.guestlogix.traveleruikit.forms;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.adapters.FormRecyclerViewAdapter;
 import com.guestlogix.traveleruikit.forms.cells.BaseCell;
-import com.guestlogix.traveleruikit.forms.models.BaseElement;
+import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
 import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
+import com.guestlogix.traveleruikit.forms.utilities.FormType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A form layout used to render and display a flat form. The implementing class has to provide a FormBuilder object
@@ -27,22 +35,24 @@ import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
  * All form events are not guaranteed to be invoked. It is up-to individual {@link BaseCell}s to implement event listeners
  * and dispatch the appropriate events.
  */
+@SuppressLint("UseSparseArrays")
 public class Form extends FrameLayout {
+    private static final String TAG = "Form";
 
     private RecyclerView cellsRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private FormRecyclerViewAdapter rvAdapter;
+    private DataSource dataSource;
     private final FormBuilder builder;
+    private Map<Pair<Integer, Integer>, Integer> pairToPos;
+    private Map<Integer, Pair<Integer, Integer>> posToPair;
+    private Map<Integer, Integer> posToType;
+    private int count;
 
     /**
      * Callback interface used to notify any subscriber whenever a click was performed on an TextCell in the form.
      */
     protected OnFormClickListener onFormClickListener;
-
-    /**
-     * Callback interface used to notify any subscriber whenever a long click was performed on an TextCell in the form.
-     */
-    protected OnFormLongClickListener onFormLongClickListener;
 
     /**
      * Callback Interface used to notify any subscriber whenever a value was changed in the form.
@@ -80,133 +90,73 @@ public class Form extends FrameLayout {
     }
 
     /**
-     * Updates a view with a particular cell.
-     *
-     * @param e Element to update. Must have been instantiated by the {@link FormBuilder}
-     */
-    public void updateView(BaseElement e) {
-        int pos = e.getIndex();
-        BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(pos);
-        scrollToPosition(pos);
-        e.updateCell(cell);
-    }
-
-    /**
-     * Adds an error message to the cell. Up to individual cells to decide how this error looks.
-     *
-     * @param position Relative position of the cell in the form.
-     * @param error    Error message to display.
-     */
-    public void setError(int position, String error) {
-        BaseElement element = builder.getElement(position);
-        BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
-        element.setState(BaseElement.State.ERROR);
-        element.setErrorMessage(error);
-        scrollToPosition(position);
-        element.updateCell(cell);
-    }
-
-    /**
-     * Removes the error state from a cell and updates the view.
-     *
-     * @param position Position of the cell within the form to update.
-     */
-    public void removeError(int position) {
-        BaseElement element = builder.getElement(position);
-
-        if (element.getState() == BaseElement.State.ERROR) {
-            BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
-            element.setState(BaseElement.State.DEFAULT);
-            scrollToPosition(position);
-            element.updateCell(cell);
-        }
-    }
-
-    /**
-     * Adds an info message to the cell. Up to individual cells to decide how this looks.
-     *
-     * @param position relative position of the cell in the form.
-     * @param info     Information to be displayed.
-     */
-    public void setInfo(int position, String info) {
-        BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
-        BaseElement element = builder.getElement(position);
-        element.setState(BaseElement.State.INFO);
-        element.setInfoMessage(info);
-        scrollToPosition(position);
-        element.updateCell(cell);
-    }
-
-    /**
-     * Removes the info state from a cell and updates the view.
-     *
-     * @param position Position of the cell in the form to update.
-     */
-    public void removeInfo(int position) {
-        BaseElement element = builder.getElement(position);
-
-        if (element.getState() == BaseElement.State.DEFAULT) {
-            BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(position);
-            element.setState(BaseElement.State.DEFAULT);
-            scrollToPosition(position);
-            element.updateCell(cell);
-        }
-    }
-
-    /**
      * Scrolls to a particular position in the form.
      *
-     * @param position Where to scroll to.
      */
-    public void scrollToPosition(int position) {
-        layoutManager.scrollToPosition(position);
+    public void scrollToPosition(int sectionId, int fieldId) {
+        Pair<Integer, Integer> p = new Pair<>(sectionId, fieldId);
+        Integer pos = pairToPos.get(p);
+
+        if (pos == null) {
+            Log.w(TAG, "Could not find position to scroll to");
+        } else {
+            layoutManager.scrollToPosition(pos);
+        }
     }
 
-//    /**
-//     * Uses the {@link FormBuilder} to initialize the form layout.
-//     *
-//     * @param builder
-//     */
-//    public void initialize(FormBuilder builder) {
-//        initialize(builder, new LinearLayoutManager(getContext()));
-//    }
+    public void scrollToPosition(int sectionId) {
+        // Header should be
+        Pair<Integer, Integer> p = new Pair<>(sectionId, -1);
+        Integer pos = pairToPos.get(p);
 
-//    /**
-//     * Begins rendering the form using the data provided by the {@link FormBuilder}.
-//     *
-//     * @param builder
-//     * @param layoutManager
-//     */
-//    public void initialize(FormBuilder builder, RecyclerView.LayoutManager layoutManager) {
-//        this.layoutManager = layoutManager;
-//        this.builder = builder;
-//        rvAdapter = new FormRecyclerViewAdapter(formMapper);
-//        rvAdapter.setContextRequestListener(this.contextRequestListener);
-//
-//        builder.setOnElementValueChangedListener(this::onElementValueChange);
-//        builder.setOnElementClickListener(this::onElementClick);
-//        builder.setOnFormElementFocusChangedListener(this::onElementFocusChange);
-//
-//        cellsRecyclerView.setLayoutManager(layoutManager);
-//        cellsRecyclerView.setAdapter(rvAdapter);
-//    }
+        if (pos == null) {
+            Log.w(TAG, "Could not find position to scroll to");
+        } else {
+            if (pos != 0) {
+                layoutManager.scrollToPosition(pos);
+            }
+        }
+    }
 
     /**
      * Reloads all elements in the form.
      */
     public void reload() {
-        builder.reloadAll();
+        buildMappings();
+        rvAdapter.notifyDataSetChanged();
     }
 
     /**
-     * Reloads a specific element in the form.
+     * Notifies the form that an item needs to be updated.
+     * The form will use the data set to update the specific item
      *
-     * @param position index of the element to reload.
+     * @param sectionId Section where to update.
+     * @param fieldId Item within the section to update.
      */
-    public void reload(int position) {
-        BaseElement element = builder.getElement(position);
-        element.reload();
-        updateView(element);
+    public void updateField(int sectionId, int fieldId) {
+        Integer pos = pairToPos.get(new Pair<>(sectionId, fieldId));
+
+        if (null != pos) {
+            rvAdapter.notifyItemChanged(pos);
+        }
+    }
+
+    public void setDataSource(@NonNull DataSource dataSource, RecyclerView.LayoutManager layoutManager) {
+        this.dataSource = dataSource;
+        this.layoutManager = layoutManager;
+        buildMappings();
+
+        rvAdapter = new FormRecyclerViewAdapter(formMapper);
+        rvAdapter.setContextRequestListener(contextRequestListener);
+        rvAdapter.setCellEventsListener(cellEventsListener);
+
+        cellsRecyclerView.setLayoutManager(this.layoutManager);
+        cellsRecyclerView.setAdapter(rvAdapter);
+        cellsRecyclerView.setItemAnimator(animator);
+    }
+
+    public void setDataSource(@NonNull DataSource dataSource) {
+        setDataSource(dataSource, new LinearLayoutManager(getContext()));
     }
 
     private void initView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -216,33 +166,51 @@ public class Form extends FrameLayout {
         }
     }
 
-    private void onElementClick(BaseElement element) {
-        if (null != this.onFormClickListener) {
-            onFormClickListener.onFormClick(element.getIndex());
-        }
-    }
+    private void buildMappings() {
+        count = 0;
+        posToPair = new HashMap<>();
+        posToType = new HashMap<>();
+        pairToPos = new HashMap<>();
 
-    private void onElementValueChange(BaseElement element) {
-        if (null != this.onFormValueChangedListener) {
-            this.onFormValueChangedListener.onFormValueChanged(element.getIndex(), element);
-        }
-    }
+        for (int i = 0; i < dataSource.getSectionCount(); i++) {
+            if (dataSource.hasTitle(i)) {
+                Pair<Integer, Integer> p = new Pair<>(i, -1);
+                posToPair.put(count, p);
+                posToType.put(count, builder.getType(FormType.HEADER));
+                count++;
+            }
 
-    private void onElementFocusChange(BaseElement element, boolean hasFocus) {
-        if (null != this.onFormFocusChangedListener) {
-            this.onFormFocusChangedListener.onFormFocusChanged(hasFocus, element);
+            for (int j = 0; j < dataSource.getFieldCount(i); j++) {
+                int type = dataSource.getType(i, j);
+                posToType.put(count, type);
+                Pair<Integer, Integer> p = new Pair<>(i, j);
+                posToPair.put(count, p);
+                pairToPos.put(p, count);
+                count++;
+            }
+
         }
     }
 
     private FormRecyclerViewAdapter.FormMapper formMapper = new FormRecyclerViewAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
-            return builder.getSize();
+            return count;
         }
 
         @Override
         public int getViewType(int position) {
-            return builder.getElementType(position);
+            if (! posToType.containsKey(position)) {
+                Log.e("Form", "Type is not defined");
+                return 0;
+            }
+
+            Integer type = posToType.get(position);
+            if (type == null) {
+                Log.w(TAG, String.format("Could not match type for position %d, using default 0", position));
+                type = 0;
+            }
+            return type;
         }
 
         @Override
@@ -252,14 +220,58 @@ public class Form extends FrameLayout {
 
         @Override
         public void bindView(BaseCell cell, int position) {
-            builder.bindFormCell(cell, position);
+            Pair<Integer, Integer> p = posToPair.get(position);
+            Integer type = posToType.get(position);
+
+            if (null != p && null != type) {
+                InputDescriptor descriptor;
+                if (p.second >= 0) {
+                    descriptor = dataSource.getDescriptor(p.first, p.second, type);
+                } else {
+                    descriptor = dataSource.getDescriptor(p.first);
+                }
+
+                builder.bindView(cell, descriptor, type);
+            } else {
+                Log.e(TAG, "Position/Type was expected, but got null");
+            }
         }
     };
 
-    public abstract static class FormAdapter {
-        public abstract int getItemCount();
-        public abstract int getViewType(int position);
-    }
+    private FormRecyclerViewAdapter.CellEventsListener cellEventsListener = new FormRecyclerViewAdapter.CellEventsListener() {
+        @Override
+        public void onValueChanged(int pos, Object value) {
+            if (onFormValueChangedListener != null) {
+                Pair<Integer, Integer> p = posToPair.get(pos);
+
+                if (p != null) {
+                    onFormValueChangedListener.onFormValueChanged(p.first, p.second, value);
+                }
+            }
+        }
+
+        @Override
+        public void onFocusChanged(int pos, boolean hasFocus) {
+            if (onFormFocusChangedListener != null) {
+                Pair<Integer, Integer> p = posToPair.get(pos);
+
+                if (p != null) {
+                    onFormFocusChangedListener.onFormFocusChanged(p.first, p.second, hasFocus);
+                }
+            }
+        }
+
+        @Override
+        public void onClick(int pos) {
+            if (onFormClickListener != null) {
+                Pair<Integer, Integer> p = posToPair.get(pos);
+
+                if (p != null) {
+                    onFormClickListener.onFormClick(p.first, p.second);
+                }
+            }
+        }
+    };
 
     /**
      * Subscribes to value changed events.
@@ -293,24 +305,11 @@ public class Form extends FrameLayout {
      */
     public interface OnFormClickListener {
         /**
-         * Is invoked whenever there was a click on the cell.
-         *
-         * @param position Relative position of the element in the form where the user has clicked.
+         * Is invoked whenever a click was performed in the form.
+         * @param sectionId Section where the field happened.
+         * @param fieldId Field within the Section where the click happened.
          */
-        void onFormClick(int position);
-    }
-
-    /**
-     * This listener is used to indicate that a cell was "long pressed"
-     */
-    public interface OnFormLongClickListener {
-        /**
-         * Is invoked whenever a cell was long clicked.
-         *
-         * @param position Relative position of the element in the form where the user has clicked.
-         * @return Whether the event was consumed.
-         */
-        boolean onFormLongClick(int position);
+        void onFormClick(int sectionId, int fieldId);
     }
 
     /**
@@ -318,13 +317,12 @@ public class Form extends FrameLayout {
      */
     public interface OnFormValueChangedListener {
         /**
-         * Is invoked whenever an cell had his value changed.
-         *
-         * @param position Relative position of the element in the form where the value was changed.
-         * @param element  Element in which the value was changed. Cast the element to the appropriate type using getType()
-         *                 And then use getValue() to get the most recent contents.
+         * Is invoked whenever a value is changed in the form.
+         * @param sectionId Section where the value was changed.
+         * @param fieldId Field which was changed in the Section.
+         * @param value new value for the field.
          */
-        void onFormValueChanged(int position, BaseElement element);
+        void onFormValueChanged(int sectionId, int fieldId, Object value);
     }
 
     /**
@@ -332,13 +330,31 @@ public class Form extends FrameLayout {
      */
     public interface OnFormFocusChangedListener {
         /**
-         * Is invoked whenever the focus state is changed for a given element of the form.
-         *
-         * @param hasFocus Whether the element now has focus.
-         * @param element  Element in which the focus was changed.
+         * Is invoked whenever a focus change happens for a field in the form.
+         * @param sectionId Section where the event occurred.
+         * @param fieldId Fields in the Section where the event occurred.
+         * @param hasFocus Whether the field has focus now.
          */
-        void onFormFocusChanged(boolean hasFocus, BaseElement element);
+        void onFormFocusChanged(int sectionId, int fieldId, boolean hasFocus);
     }
 
     FormRecyclerViewAdapter.OnFormContextRequestListener contextRequestListener = this::getContext;
+
+    public interface DataSource {
+        int getSectionCount();
+        int getFieldCount(int sectionId);
+        int getType(int sectionId, int fieldId);
+
+        boolean hasTitle(int sectionId);
+
+        InputDescriptor getDescriptor(int sectionId, int fieldId, int type);
+        InputDescriptor getDescriptor(int sectionId);
+    }
+
+    DefaultItemAnimator animator = new DefaultItemAnimator() {
+        @Override
+        public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+            return true;
+        }
+    };
 }

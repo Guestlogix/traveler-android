@@ -6,22 +6,20 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.R;
 
 /**
  * Cell which contains a quantity picker.
  * Implements:
- * {@link OnQuantityChangedListener}
+ * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
  */
 public class QuantityCell extends BaseCell {
     private TextView quantity;
     private TextView title;
     private TextView subTitle;
-    private String sTitle;
 
     private QuantityCellAdapter adapter;
-
-    private OnQuantityChangedListener onQuantityChanged;
 
     public QuantityCell(@NonNull View itemView) {
         super(itemView);
@@ -37,16 +35,11 @@ public class QuantityCell extends BaseCell {
         this.adapter = adapter;
     }
 
-    public void setOnQuantityChangedListener(OnQuantityChangedListener listener) {
-        this.onQuantityChanged = listener;
-    }
-
     public void setTitle(String title) {
-        sTitle = title;
-        this.title.setText(sTitle);
+        this.title.setText(title);
     }
 
-    public void setSubTitle(String subTitle) {
+    public void setSubtitle(String subTitle) {
         this.subTitle.setText(subTitle);
     }
 
@@ -75,10 +68,10 @@ public class QuantityCell extends BaseCell {
             TextView e = d.findViewById(R.id.numberPickerTitle);
             NumberPicker np = d.findViewById(R.id.numberPicker);
 
-            e.setText(sTitle);
+            e.setText(adapter.getTitle());
 
             np.setMaxValue(Integer.MAX_VALUE);
-            if (adapter.isMaxQuantityRequired()) {
+            if (adapter.getMaxQuantity() != null) {
                 np.setMaxValue(adapter.getMaxQuantity());
             }
 
@@ -86,11 +79,11 @@ public class QuantityCell extends BaseCell {
             np.setWrapSelectorWheel(false);
 
             accept.setOnClickListener(v2 -> {
-                int value = np.getValue();
+                Integer value = np.getValue();
                 quantity.setText(String.valueOf(value));
 
-                if (null != onQuantityChanged) {
-                    onQuantityChanged.onQuantityChanged(value);
+                if (null != onCellValueChangedListener) {
+                    onCellValueChangedListener.onCellValueChanged(this, value);
                 }
 
                 d.dismiss();
@@ -104,17 +97,8 @@ public class QuantityCell extends BaseCell {
 
     public interface QuantityCellAdapter {
         String getTitle();
-
-        boolean isMaxQuantityRequired();
-
-        int getMaxQuantity();
-
-        int getMinQuantity();
-
-        int getValue();
-    }
-
-    public interface OnQuantityChangedListener {
-        void onQuantityChanged(int quantity);
+        @Nullable Integer getMaxQuantity();
+        @NonNull Integer getMinQuantity();
+        @NonNull Integer getValue();
     }
 }

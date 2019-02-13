@@ -10,15 +10,11 @@ import com.guestlogix.traveleruikit.R;
 /**
  * Form cell which contains an EditText
  * Implements:
- * {@link OnTextChangedListener}
- * {@link OnFocusChangedListener}
+ * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
+ * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellFocusChangeListener}
  */
 public class TextCell extends BaseCell {
     private EditText editText;
-
-    private OnTextChangedListener onTextChangedListener;
-
-    private OnFocusChangedListener onFocusChangedListener;
 
     public TextCell(@NonNull View itemView) {
         super(itemView);
@@ -28,19 +24,12 @@ public class TextCell extends BaseCell {
     @Override
     public void reload() {
         hideError();
+        hideInfo();
         editText.setText(null);
     }
 
     public void setHint(String hint) {
         editText.setHint(hint);
-    }
-
-    public void setOnTextChangedListener(OnTextChangedListener onTextChangedListener) {
-        this.onTextChangedListener = onTextChangedListener;
-    }
-
-    public void setOnFocusChangedListener(OnFocusChangedListener onFocusChangedListener) {
-        this.onFocusChangedListener = onFocusChangedListener;
     }
 
     public void setError(String error) {
@@ -49,6 +38,14 @@ public class TextCell extends BaseCell {
 
     public void hideError() {
         editText.setError(null);
+    }
+
+    public void setInfo(String info) {
+        // Empty for now.
+    }
+
+    public void hideInfo() {
+        // Empty for now
     }
 
     public void setValue(CharSequence value) {
@@ -65,8 +62,8 @@ public class TextCell extends BaseCell {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (null != onTextChangedListener) {
-                    onTextChangedListener.onTextChanged(s);
+                if (null != TextCell.this.onCellValueChangedListener) {
+                    TextCell.this.onCellValueChangedListener.onCellValueChanged(TextCell.this, s);
                 }
             }
 
@@ -76,17 +73,10 @@ public class TextCell extends BaseCell {
         });
 
         editText.setOnFocusChangeListener((v, hasFocus) -> {
-            if (null != onFocusChangedListener) {
-                onFocusChangedListener.onFocusChanged(hasFocus);
+            if (null != this.onCellFocusChangeListener) {
+                this.onCellFocusChangeListener.onCellFocusChange(this, hasFocus);
             }
         });
     }
 
-    public interface OnTextChangedListener {
-        void onTextChanged(CharSequence value);
-    }
-
-    public interface OnFocusChangedListener {
-        void onFocusChanged(boolean hasFocus);
-    }
 }

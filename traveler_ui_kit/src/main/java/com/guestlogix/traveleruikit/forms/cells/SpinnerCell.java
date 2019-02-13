@@ -13,14 +13,12 @@ import java.util.List;
 /**
  * Form cell which contains a spinner.
  * Implements:
- * {@link SpinnerCellCallback}
+ * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
  */
 public class SpinnerCell extends BaseCell {
     private TextView title;
     private TextView subtitle;
     private Spinner spinner;
-
-    private SpinnerCellCallback spinnerCellCallback;
 
     public SpinnerCell(@NonNull View itemView) {
         super(itemView);
@@ -44,6 +42,7 @@ public class SpinnerCell extends BaseCell {
 
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(adapter);
+
         }
     }
 
@@ -84,10 +83,6 @@ public class SpinnerCell extends BaseCell {
         }
     }
 
-    public void setSpinnerCellCallback(SpinnerCellCallback spinnerCellCallback) {
-        this.spinnerCellCallback = spinnerCellCallback;
-    }
-
     private void init() {
         this.title = itemView.findViewById(R.id.title);
         this.subtitle = itemView.findViewById(R.id.subTitle);
@@ -96,8 +91,8 @@ public class SpinnerCell extends BaseCell {
         this.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (null != spinnerCellCallback) {
-                    spinnerCellCallback.onItemSelected(position);
+                if (null != SpinnerCell.this.onCellValueChangedListener) {
+                    SpinnerCell.this.onCellValueChangedListener.onCellValueChanged(SpinnerCell.this, Integer.valueOf(position));
                 }
             }
 
@@ -106,9 +101,5 @@ public class SpinnerCell extends BaseCell {
                 // Do nothing
             }
         });
-    }
-
-    public interface SpinnerCellCallback {
-        void onItemSelected(int pos);
     }
 }
