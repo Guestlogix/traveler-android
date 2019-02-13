@@ -9,13 +9,12 @@ import com.guestlogix.traveleruikit.R;
 /**
  * A Button input cell type.
  * Implements:
- * {@link OnButtonClickListener}
+ * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellClickListener}
  */
 public class ButtonCell extends BaseCell {
 
     private Button button;
     private TextView title;
-    private OnButtonClickListener buttonClickListener;
 
     public ButtonCell(@NonNull View itemView) {
         super(itemView);
@@ -37,10 +36,6 @@ public class ButtonCell extends BaseCell {
         this.title.setText(title);
     }
 
-    public void setButtonClickListener(OnButtonClickListener buttonClickListener) {
-        this.buttonClickListener = buttonClickListener;
-    }
-
     /**
      * Sets the specific listeners for this cell.
      */
@@ -49,13 +44,9 @@ public class ButtonCell extends BaseCell {
         title = itemView.findViewById(R.id.title);
 
         button.setOnClickListener(v -> {
-            if (null != buttonClickListener) {
-                buttonClickListener.onButtonClick();
+            if (null != onCellClickListener) {
+                onCellClickListener.onCellClick(this);
             }
         });
-    }
-
-    public interface OnButtonClickListener {
-        void onButtonClick();
     }
 }

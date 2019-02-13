@@ -1,19 +1,17 @@
 package com.guestlogix.traveleruikit.forms.utilities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.forms.cells.*;
-import com.guestlogix.traveleruikit.forms.listeners.OnFormElementClickListener;
-import com.guestlogix.traveleruikit.forms.listeners.OnFormElementFocusChangedListener;
-import com.guestlogix.traveleruikit.forms.listeners.OnFormElementValueChangedListener;
-import com.guestlogix.traveleruikit.forms.models.*;
+import com.guestlogix.traveleruikit.forms.descriptors.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,16 +30,12 @@ import java.util.Map;
  * <p>
  * All available view types can be seen in {@link FormType}.
  */
+@SuppressLint("UseSparseArrays")
 public class FormBuilder {
+    public static final String TAG = "FormBuilder";
     private final Context context;
-
-    private final List<BaseElement> elements;
     private Map<Integer, CustomCellAdapter> customComponentMap = new HashMap<>();
     private static int FORM_TYPE_COUNT;
-
-    private OnFormElementValueChangedListener onElementValueChangedListener;
-    private OnFormElementClickListener onElementClickListener;
-    private OnFormElementFocusChangedListener onFormElementFocusChangedListener;
 
     static {
         FORM_TYPE_COUNT = FormType.getTypeCount();
@@ -49,9 +43,8 @@ public class FormBuilder {
 
     private int customCellCount;
 
-    public FormBuilder(Context context) {
+    public FormBuilder(@NonNull Context context) {
         this.context = context;
-        elements = new ArrayList<>();
         customCellCount = 0;
     }
 
@@ -63,176 +56,21 @@ public class FormBuilder {
      * @return Type of the current custom cell.
      */
     public int registerCustomCell(@NonNull CustomCellAdapter strategy) {
+        Log.v(TAG, "Registering a new custom cell");
         int type = FORM_TYPE_COUNT + customCellCount;
         customComponentMap.put(type, strategy);
+
+        Log.i(TAG, String.format("Custom cell with type %d has been added to the builder", type));
         customCellCount++;
         return type;
     }
 
-    /**
-     * Adds an element to the Form with type BUTTON.
-     *
-     * @param text Will be displayed on the button.
-     */
-    public void addButtonElement(String text) {
-        ButtonElement element = new ButtonElement(text);
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds an element to the form of type QUANTITY.
-     *
-     * @param title    Title to be displayed on the cell.
-     * @param subtitle Subtitle to be displayed on the cell.
-     * @param minValue Minimum value for the quantity picker. Default is 0.
-     * @param maxValue Maximum value for the quantity picker. -1 for unlimited quantity.
-     */
-    public void addQuantityElement(String title, String subtitle, int minValue, int maxValue) {
-        QuantityElement element = new QuantityElement(title, subtitle, minValue, maxValue);
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds a blank element to the form of type QUANTITY.
-     * Sets default values of 0 for min value and -1 for max value.
-     */
-    public void addQuantityElement() {
-        QuantityElement element = new QuantityElement();
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds an element to the form of type HEADER.
-     *
-     * @param title    Title to be displayed on the cell.
-     * @param subtitle Subtitle to be displayed on the cell.
-     */
-    public void addHeaderElement(String title, String subtitle) {
-        HeaderElement element = new HeaderElement(title, subtitle);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds an element to the form of type HEADER.
-     *
-     * @param title Title to be displayed on the cell.
-     */
-    public void addHeaderElement(String title) {
-        HeaderElement element = new HeaderElement(title);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds a blank element to the form of type HEADER in {@link FormType} enum.
-     */
-    public void addHeaderElement() {
-        HeaderElement element = new HeaderElement();
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds an element to the form of type TEXT.
-     *
-     * @param title Title to be displayed on the cell.
-     * @param hint  Hint for the edit text.
-     */
-    public void addTextElement(String title, String hint) {
-        TextElement element = new TextElement(title, hint);
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds an element to the form of type TEXT.
-     *
-     * @param title Title to be displayed on the cell.
-     */
-    public void addTextElement(String title) {
-        TextElement element = new TextElement(title);
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds a blank element to the form of type TEXT.
-     */
-    public void addTextElement() {
-        TextElement element = new TextElement();
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds an element to the form of type SPINNER.
-     *
-     * @param title    Title to be displayed for this element.
-     * @param subtitle Subtitle to be displayed for this element.
-     * @param options  List of options to be used in the dropdown.
-     */
-    public void addSpinnerElement(String title, String subtitle, List<String> options) {
-        SpinnerElement element = new SpinnerElement(title, subtitle, options);
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    /**
-     * Adds an element to the form of type SPINNER with a default value.
-     *
-     * @param title        Title to be displayed for this element.
-     * @param subtitle     Subtitle to be displayed for this element.
-     * @param options      List of options to be used in the dropdown.
-     * @param defaultValue Default value for the dropdown.
-     */
-    public void addSpinnerElement(String title, String subtitle, List<String> options, int defaultValue) {
-        SpinnerElement element = new SpinnerElement(title, subtitle, options, defaultValue);
-        setListeners(element);
-        element.setIndex(elements.size());
-        elements.add(element);
-    }
-
-    public BaseElement getElement(int position) {
-        return elements.get(position);
-    }
-
-    /**
-     * Adds a custom element to the tree.
-     *
-     * @param elementType
-     */
-    public BaseElement addElement(int elementType) {
-        BaseElement element;
-        if (elementType < FORM_TYPE_COUNT) {
-            element = addExistingElement(elementType);
-        } else {
-            element = addCustomElement(elementType);
-        }
-
-        setListeners(element);
-        return element;
-    }
-
-    public BaseElement addElement(FormType elementType) {
-        return addExistingElement(elementType.getValue()); // TODO: Remove unnecessary conversion.
-    }
-
-    public int getElementType(int position) {
-        return elements.get(position).getType();
+    public int getType(FormType type) {
+        return type.getValue();
     }
 
     public BaseCell createFormCell(ViewGroup parent, int elementType) {
+        Log.v(TAG, String.format("Creating cell of type: %d", elementType));
         switch (FormType.valueOf(elementType)) {
             case HEADER:
                 return inflateHeader(parent);
@@ -249,34 +87,173 @@ public class FormBuilder {
         }
     }
 
-    public void bindFormCell(BaseCell cell, int position) {
-        BaseElement element = elements.get(position); // Element associated with the current view holder.
-        element.updateCell(cell);
-    }
-
-    public int getSize() {
-        return elements.size();
-    }
-
-    public void setOnElementValueChangedListener(OnFormElementValueChangedListener onElementValueChangedListener) {
-        this.onElementValueChangedListener = onElementValueChangedListener;
-    }
-
-    public void setOnElementClickListener(OnFormElementClickListener onElementClickListener) {
-        this.onElementClickListener = onElementClickListener;
-    }
-
-    public void setOnFormElementFocusChangedListener(OnFormElementFocusChangedListener onFormElementFocusChangedListener) {
-        this.onFormElementFocusChangedListener = onFormElementFocusChangedListener;
+    public void bindView(BaseCell cell, InputDescriptor descriptor, int type) {
+        Log.v(TAG, String.format("Binding cell of type: %d", type));
+        switch (FormType.valueOf(type)) {
+            case SPINNER:
+                bindSpinnerCell(cell, descriptor);
+                break;
+            case QUANTITY:
+                bindQuantityCell(cell, descriptor);
+                break;
+            case HEADER:
+                bindHeaderCell(cell, descriptor);
+                break;
+            case TEXT:
+                bindTextCell(cell, descriptor);
+                break;
+            case BUTTON:
+                bindButtonCell(cell, descriptor);
+                break;
+            default:
+                bindCustomCell(cell, descriptor, type);
+                break;
+        }
     }
 
     /**
-     * Signals to all elements in the form to reload.
+     * Binds a spinner cell with the appropriate values.
+     *
+     * @param cell       Cell of type {@link SpinnerCell} to be bound.
+     * @param descriptor Expects an input descriptor of type {@link SpinnerDescriptor}.
      */
-    public void reloadAll() {
-        // Change min java api to 24 so we can use functional methods?
-        for (BaseElement element : elements) {
-            element.reload();
+    public void bindSpinnerCell(BaseCell cell, InputDescriptor descriptor) {
+        SpinnerDescriptor s = (SpinnerDescriptor) descriptor;
+        SpinnerCell c = (SpinnerCell) cell;
+
+        if (s.title != null) {
+            c.setTitle(s.title);
+        }
+
+        if (s.subtitle != null) {
+            c.setSubtitle(s.subtitle);
+        }
+
+        if (s.options != null) {
+            if (s.value != null) {
+                c.setOptions(s.options, s.value);
+            } else {
+                c.setOptions(s.options);
+            }
+        }
+    }
+
+    /**
+     * Binds a text cell with the appropriate values.
+     *
+     * @param cell       Cell of type {@link TextCell} to be bound.
+     * @param descriptor Expects an input descriptor of type {@link TextDescriptor}.
+     */
+    public void bindTextCell(BaseCell cell, InputDescriptor descriptor) {
+        TextDescriptor t = (TextDescriptor) descriptor;
+        TextCell c = (TextCell) cell;
+
+        if (t.hint != null) {
+            c.setHint(t.hint);
+        }
+
+        if (t.value != null) {
+            c.setValue(t.value);
+        }
+
+        c.setError(t.error);
+
+        if (t.info != null) {
+            c.setInfo(t.info);
+        }
+    }
+
+    /**
+     * Binds a quantity cell with the appropriate values.
+     *
+     * @param cell       Cell of type {@link QuantityCell} to be bound.
+     * @param descriptor Expects an input descriptor of type {@link QuantityDescriptor}.
+     */
+    public void bindQuantityCell(BaseCell cell, InputDescriptor descriptor) {
+        QuantityDescriptor q = (QuantityDescriptor) descriptor;
+        QuantityCell c = (QuantityCell) cell;
+
+        if (q.title != null) {
+            c.setTitle(q.title);
+        }
+
+        if (q.subtitle != null) {
+            c.setSubtitle(q.subtitle);
+        }
+
+        if (q.value != null) {
+            c.setQuantity(String.valueOf(q.value));
+        }
+
+        c.setAdapter(new QuantityCell.QuantityCellAdapter() {
+            @Override
+            public String getTitle() {
+                return q.title;
+            }
+
+            @Nullable
+            @Override
+            public Integer getMaxQuantity() {
+                return q.maxQuantity;
+            }
+
+            @NonNull
+            @Override
+            public Integer getMinQuantity() {
+                return null != q.minQuantity ? q.minQuantity : 0;
+            }
+
+            @NonNull
+            @Override
+            public Integer getValue() {
+                return null == q.value ? q.minQuantity : q.value;
+            }
+        });
+    }
+
+    /**
+     * Binds a button cell with the appropriate values.
+     *
+     * @param cell Cell of type {@link ButtonCell} to be bound.
+     * @param descriptor Expects an input descriptor of type {@link ButtonDescriptor}.
+     */
+    public void bindButtonCell(BaseCell cell, InputDescriptor descriptor) {
+        ButtonDescriptor b = (ButtonDescriptor) descriptor;
+        ButtonCell c = (ButtonCell) cell;
+
+        if (b.title != null) {
+            c.setTitle(b.title);
+        }
+
+        c.setText(b.text);
+    }
+
+    /**
+     * Binds a header cell with the appropriate values.
+     * @param cell Cell of {@link HeaderCell} to be bound.
+     * @param descriptor Expects an input descriptor of type {@link HeaderDescriptor}.
+     */
+    public void bindHeaderCell(BaseCell cell, InputDescriptor descriptor) {
+        HeaderDescriptor h = (HeaderDescriptor) descriptor;
+        HeaderCell c = (HeaderCell) cell;
+
+        c.setTitle(h.title);
+        c.setSubtitle(h.subtitle);
+    }
+
+    public void bindCustomCell(BaseCell cell, InputDescriptor descriptor, int type) {
+        Log.v(TAG, "Attempting to bind custom cell type");
+
+        if (customComponentMap.containsKey(type)) {
+            CustomCellAdapter adapter = customComponentMap.get(type);
+
+            if (null != adapter) {
+                adapter.bindCell(cell, descriptor, type);
+            } else {
+                Log.w(TAG, String.format("CustomCellAdapter is null, cannot proceed with view binding"));
+            }
+        } else {
+            Log.w(TAG, String.format("Requested custom type %d was not registered with the builder", type));
         }
     }
 
@@ -315,72 +292,6 @@ public class FormBuilder {
         throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
     }
 
-    private void setListeners(BaseElement e) {
-        e.setOnFormElementValueChangedListener(this::onValueChanged);
-        e.setOnFormElementClickListener(this::onClick);
-        e.setOnFormElementFocusChangedListener(this::onFocusChanged);
-    }
-
-    private void onValueChanged(BaseElement e) {
-        if (null != onElementValueChangedListener) {
-            onElementValueChangedListener.onValueChanged(e);
-        }
-    }
-
-    private void onClick(BaseElement e) {
-        if (null != onElementClickListener) {
-            onElementClickListener.onFormElementClick(e);
-        }
-    }
-
-    private void onFocusChanged(BaseElement e, boolean hasFocus) {
-        if (null != onFormElementFocusChangedListener) {
-            onFormElementFocusChangedListener.onFocusChanged(e, hasFocus);
-        }
-    }
-
-    private BaseElement addExistingElement(int type) {
-        BaseElement element;
-        switch (FormType.valueOf(type)) {
-            case TEXT:
-                element = new TextElement();
-                break;
-            case BUTTON:
-                element = new ButtonElement();
-                break;
-            case HEADER:
-                element = new HeaderElement();
-                break;
-            case QUANTITY:
-                element = new QuantityElement();
-                break;
-            case SPINNER:
-                element = new SpinnerElement();
-                break;
-            default:
-                throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
-        }
-
-        element.setIndex(elements.size());
-        elements.add(element);
-        return element;
-    }
-
-    private BaseElement addCustomElement(int type) {
-        CustomCellAdapter adapter = customComponentMap.get(type);
-
-        if (null == adapter) {
-            throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
-        }
-
-        BaseElement element = adapter.createCustomElement();
-        element.setType(type);
-        element.setIndex(elements.size());
-        elements.add(element);
-
-        return element;
-    }
-
     /**
      * Adapter interface used to create new FormCells and corresponding model Elements.
      */
@@ -394,10 +305,7 @@ public class FormBuilder {
          */
         BaseCell inflateCustomCell(Context context, ViewGroup parent);
 
-        /**
-         * Instantiates the custom element extending {@link BaseElement}
-         * @return Some custom element.
-         */
-        BaseElement createCustomElement();
+        void bindCell(BaseCell cell, InputDescriptor descriptor, int type);
     }
 }
+

@@ -9,6 +9,7 @@ import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
     private FormMapper formMapper;
     private OnFormContextRequestListener contextRequestListener;
+    private CellEventsListener cellEventsListener;
 
     public FormRecyclerViewAdapter(@NonNull FormMapper formMapper) {
         this.formMapper = formMapper;
@@ -18,7 +19,7 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
     @Override
     public BaseCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         BaseCell cell = formMapper.createViewHolder(parent, viewType);
-        cell.setContextRequestListener(contextRequestHandler);
+        subscribeToCellEvents(cell);
         return cell;
     }
 
@@ -42,19 +43,58 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
         this.contextRequestListener = contextRequestListener;
     }
 
+    public void setCellEventsListener(CellEventsListener cellEventsListener) {
+        this.cellEventsListener = cellEventsListener;
+    }
+
     public interface FormMapper {
         int getTotalCount();
-
         int getViewType(int position);
-
         BaseCell createViewHolder(ViewGroup parent, int type);
-
         void bindView(BaseCell cell, int position);
+    }
+
+    public interface CellEventsListener {
+        void onValueChanged(int pos, Object value);
+        void onFocusChanged(int pos, boolean hasFocus);
+        void onClick(int pos);
     }
 
     public interface OnFormContextRequestListener {
         Context onFormContextRequest();
     }
 
-    private BaseCell.OnCellContextRequestListener contextRequestHandler = () -> null != contextRequestListener ? contextRequestListener.onFormContextRequest() : null;
+    private void subscribeToCellEvents(BaseCell cell) {
+        cell.setOnCellClickListener(this::onCellClick);
+        cell.setOnCellFocusChangeListener(this::onCellFocusChange);
+        cell.setOnCellValueChangedListener(this::onCellValueChanged);
+        cell.setContextRequestListener(contextRequestHandler);
+    }
+
+    private void onCellClick(BaseCell cell) {
+        int pos = cell.getIndex();
+
+        if (cellEventsListener != null) {
+            cellEventsListener.onClick(pos);
+        }
+    }
+
+    private void onCellFocusChange(BaseCell cell, boolean hasFocus) {
+        int pos = cell.getIndex();
+
+        if (cellEventsListener != null) {
+            cellEventsListener.onFocusChanged(pos, hasFocus);
+        }
+    }
+
+    private void onCellValueChanged(BaseCell cell, Object value) {
+        int pos = cell.getIndex();
+
+        if (cellEventsListener != null) {
+            cellEventsListener.onValueChanged(pos, value);
+        }
+    }
+
+    private BaseCell.OnCellContextRequestListener contextRequestHandler = () -> null != contextRequestListener ?
+            contextRequestListener.onFormContextRequest() : null;
 }

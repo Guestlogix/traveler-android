@@ -15,24 +15,24 @@ public class HeaderCell extends BaseCell {
     }
 
     private TextView title;
-    private TextView subTitle;
+    private TextView subtitle;
 
     @Override
     public void reload() {
         title.setText("");
-        subTitle.setText("");
+        subtitle.setText("");
     }
 
     public void setTitle(String title) {
         this.title.setText(title);
     }
 
-    public void setSubTitle(String subTitle) {
-        this.subTitle.setText(subTitle);
+    public void setSubtitle(String subTitle) {
+        this.subtitle.setText(subTitle);
     }
 
     private void init() {
         title = itemView.findViewById(R.id.headerTitle);
-        subTitle = itemView.findViewById(R.id.headerSubtitle);
+        subtitle = itemView.findViewById(R.id.headerSubtitle);
     }
 }
