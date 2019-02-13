@@ -16,6 +16,7 @@ import java.util.List;
 
 public class Traveler {
     private static Traveler localInstance;
+
     private TaskManager taskManager = new TaskManager();
     private Session session;
 
@@ -207,6 +208,7 @@ public class Traveler {
      */
     public static void fetchPasses(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
         if (null == localInstance) {
+
             fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             if (bookingContext.getSelectedDate() == null) {
