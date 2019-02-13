@@ -15,6 +15,7 @@ import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogWidgetFragment;
 
+
 import java.util.List;
 
 public class CatalogFragment extends BaseFragment {
