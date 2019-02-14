@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.viewmodels;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
@@ -17,32 +18,43 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CatalogItemDetailsViewModel extends StatefulViewModel {
-    private MutableLiveData<CatalogItemDetails> catalogItemDetails = new MutableLiveData<>();
-    private MutableLiveData<CatalogItem> catalogItem = new MutableLiveData<>();
-    private MutableLiveData<Calendar> selectedDate = new MutableLiveData<>();
-    private MutableLiveData<Long> selectedTime = new MutableLiveData<>();
-    private MutableLiveData<BookingContext> bookingContext = new MutableLiveData<>();
-    private SingleLiveEvent<CheckAvailabilityState> availabilityStatus = new SingleLiveEvent<>();
+
+    // Live Data
+    private MutableLiveData<CatalogItemDetails> catalogItemDetails;
+    private MutableLiveData<CatalogItem> catalogItem;
+    private MutableLiveData<Calendar> selectedDate;
+    private MutableLiveData<Long> selectedTime;
+    private SingleLiveEvent<CheckAvailabilityState> availabilityStatus;
     private CatalogItemDetailsRepository catalogItemDetailsRepository;
-    private MutableLiveData<List<Long>> availableTimeSlots = new MutableLiveData<>();
-    private MutableLiveData<Boolean> timeRequired = new MutableLiveData<>();
+    private MutableLiveData<List<Long>> availableTimeSlots;
+    private MutableLiveData<Boolean> timeRequired;
+    private MutableLiveData<BookingContext> bookingRequested;
+
+    // Other fields.
+    private BookingContext bookingContext;
 
     public CatalogItemDetailsViewModel() {
         this.catalogItemDetailsRepository = new CatalogItemDetailsRepository();
+
+        catalogItemDetails = new MutableLiveData<>();
+        catalogItem = new MutableLiveData<>();
+        selectedDate = new MutableLiveData<>();
+        selectedTime = new MutableLiveData<>();
+        availabilityStatus = new SingleLiveEvent<>();
+        availableTimeSlots = new MutableLiveData<>();
+        timeRequired = new MutableLiveData<>();
+        bookingRequested = new MutableLiveData<>();
+
         this.selectedTime.postValue(null);
         this.timeRequired.setValue(true);
     }
 
-    public MutableLiveData<CatalogItemDetails> getCatalogItemDetailsObservable() {
+    public LiveData<CatalogItemDetails> getCatalogItemDetailsObservable() {
         return catalogItemDetails;
     }
 
-    public SingleLiveEvent<CheckAvailabilityState> getAvailabilityStatus() {
+    public LiveData<CheckAvailabilityState> getAvailabilityStatus() {
         return availabilityStatus;
-    }
-
-    public void setBookingContext(BookingContext bookingContext) {
-        this.bookingContext.setValue(bookingContext);
     }
 
     public void setCatalogItem(CatalogItem catalogItem) {
@@ -56,21 +68,20 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         this.selectedDate.postValue(selectedDate);
         this.selectedTime.postValue(null);
 
-        bookingContext.getValue().setSelectedDate(selectedDate.getTime());
-        bookingContext.getValue().setEndDateTime(selectedDate.getTime());
-        bookingContext.postValue(bookingContext.getValue());
+        bookingContext.setSelectedDate(selectedDate.getTime());
+        bookingContext.setEndDateTime(selectedDate.getTime());
     }
 
     public void setSelectedTime(int index) {
         selectedTime.setValue(getAvailableTimeSlots().get(index));
-        bookingContext.getValue().setSelectedTime(selectedTime.getValue());
+        bookingContext.setSelectedTime(selectedTime.getValue());
     }
 
-    public MutableLiveData<Long> getSelectedTimeObservable() {
+    public LiveData<Long> getSelectedTimeObservable() {
         return selectedTime;
     }
 
-    public MutableLiveData<Calendar> getSelectedDateObservable() {
+    public LiveData<Calendar> getSelectedDateObservable() {
         return selectedDate;
     }
 
@@ -82,15 +93,23 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         return selectedDate.getValue();
     }
 
-    public MutableLiveData<List<Long>> getAvailableTimeSlotsObservable() {
+    public LiveData<List<Long>> getAvailableTimeSlotsObservable() {
         return availableTimeSlots;
+    }
+
+    public LiveData<BookingContext> getBookingRequestObservable() {
+        return bookingRequested;
+    }
+
+    public void requestBooking() {
+        bookingRequested.setValue(bookingContext);
     }
 
     public List<Long> getAvailableTimeSlots() {
         return availableTimeSlots.getValue();
     }
 
-    public MutableLiveData<Boolean> getTimeRequiredObservable() {
+    public LiveData<Boolean> getTimeRequiredObservable() {
         return timeRequired;
     }
 
@@ -100,7 +119,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     public void setTimeRequired(Boolean timeRequired) {
         this.timeRequired.setValue(timeRequired);
-        this.bookingContext.getValue().setTimeRequired(timeRequired);
+        this.bookingContext.setTimeRequired(timeRequired);
     }
 
     public void updateCatalog(CatalogItem catalogItem) {
@@ -110,7 +129,11 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     public void checkAvailability() {
         availabilityStatus.postValue(CheckAvailabilityState.LOADING);
-        this.catalogItemDetailsRepository.fetchAvailability(bookingContext.getValue(), checkAvailabilityCallback);
+        this.catalogItemDetailsRepository.fetchAvailability(bookingContext, checkAvailabilityCallback);
+    }
+
+    public BookingContext getBookingContext() {
+        return bookingContext;
     }
 
     private CatalogItemDetailsCallback catalogSearchCallback = new CatalogItemDetailsCallback() {
@@ -160,6 +183,10 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         } else {
             availableTimeSlots.postValue(new ArrayList<>());
         }
+    }
+
+    private void setBookingContext(BookingContext bookingContext) {
+        this.bookingContext = bookingContext;
     }
 
     public enum CheckAvailabilityState {
