@@ -149,17 +149,17 @@ public class Question {
         }
 
         private QuestionType determineQuestionType(String type) throws ObjectMappingException {
-            QuestionType questionType = null;
 
             if (null != type) {
-                if (type.equals("MultipleChoice")) {
-                    questionType = new MultipleChoiceType();
-                } else if (type.equals("Text")) {
-                    questionType = new StringType();
-                } else if (type.equals("Quantity")) {
-                    questionType = new QuantityType();
+                switch (type) {
+                    case "MultipleChoice":
+                        return new MultipleChoiceType();
+                    case "Text":
+                        return new StringType();
+                    case "Quantity":
+                        return new QuantityType();
+                    // Add more question types here.
                 }
-                // Add more question types here.
             }
 
             throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid json. Unsupported question type."));

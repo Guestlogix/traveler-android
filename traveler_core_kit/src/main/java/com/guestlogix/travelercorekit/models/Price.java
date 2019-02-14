@@ -59,6 +59,7 @@ public class Price implements Serializable {
                         break;
                 }
             }
+            reader.endObject();
             return new Price(value, currency);
         }
     }
