@@ -16,7 +16,14 @@ import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_E
 import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_MESSAGE;
 import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_TITLE;
 
-public class SupplierQuestionsActivity extends AppCompatActivity implements TravelerErrorFragment.OnErrorInteractionListener {
+/**
+ * Activity which encapsulates the whole booking flow.
+ * Selecting pass quantities.
+ * Supplier questions.
+ * <p>
+ * Expects a valid booking context.
+ */
+public class BookingActivity extends AppCompatActivity implements TravelerErrorFragment.OnErrorInteractionListener {
 
     public static final String ARG_BOOKING_CONTEXT = "booking_context";
     private static final String TAG = "Traveler UI Kit";
@@ -28,7 +35,7 @@ public class SupplierQuestionsActivity extends AppCompatActivity implements Trav
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_supplier_questions);
+        setContentView(R.layout.activity_booking);
 
         Bundle extras = getIntent().getExtras();
 

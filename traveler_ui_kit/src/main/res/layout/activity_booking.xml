@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activities.SupplierQuestionsActivity">
+        tools:context=".activities.BookingActivity">
 
     <fragment
             android:id="@+id/supplierInformationHostFragment"
@@ -15,6 +15,6 @@
             android:layout_weight="1"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/supplier_questions_navigation"/>
+            app:navGraph="@navigation/booking_navigation"/>
 
 </LinearLayout>

@@ -3,7 +3,7 @@
           package="com.guestlogix.traveleruikit">
 
     <application android:theme="@style/AppTheme">
-        <activity android:name=".activities.SupplierQuestionsActivity">
+        <activity android:name=".activities.BookingActivity">
         </activity>
         <activity android:name=".activities.CatalogItemDetailsActivity">
         </activity>

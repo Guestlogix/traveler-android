@@ -19,6 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -216,7 +217,7 @@ public class CatalogItemDetailsFragment extends Fragment {
         }
 
         if (isFormComplete) {
-            //TODO Fetch Pass for selected product
+            catalogItemDetailsViewModel.requestBooking();
         }
     }
 
