@@ -1,8 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BookingContext {
+public class BookingContext implements Serializable {
 
     Product product;
     Date selectedDate;
