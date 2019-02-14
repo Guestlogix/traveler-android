@@ -11,6 +11,7 @@ import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragmentDirections;
 import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
 import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.viewmodels.StatefulViewModel;
@@ -37,6 +38,7 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Tra
 
             catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
             catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
+            catalogItemDetailsViewModel.getBookingRequestObservable().observe(this, this::onBookingRequest);
 
             catalogItem = (CatalogItem) extras.getSerializable(ARG_CATALOG_ITEM);
             catalogItemDetailsViewModel.setCatalogItem(catalogItem);
@@ -66,8 +68,8 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Tra
     }
 
     private void onBookingRequest(BookingContext bookingContext) {
-//        navController.navigate();
-
+        CatalogItemDetailsFragmentDirections.bookNowAction(bookingContext);
+        navController.navigate(CatalogItemDetailsFragmentDirections.bookNowAction(bookingContext));
     }
 
     @Override

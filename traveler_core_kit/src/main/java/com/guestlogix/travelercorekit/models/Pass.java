@@ -14,10 +14,10 @@ public class Pass {
     private String name;
     private String description;
     private Integer maxQuantity;
-    private Double price;
+    private Price price;
     private List<Question> questions;
 
-    public Pass(String id, String name, String description, Integer maxQuantity, Double price, List<Question> questions) {
+    public Pass(String id, String name, String description, Integer maxQuantity, Price price, List<Question> questions) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -58,11 +58,11 @@ public class Pass {
         this.id = id;
     }
 
-    public Double getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Price price) {
         this.price = price;
     }
 
@@ -94,7 +94,7 @@ public class Pass {
             String name = "";
             String description = "";
             Integer maxQuantity = 0;
-            Double price = 0.0;
+            Price price = null;
             List<Question> questions = null;
 
             reader.beginObject();
@@ -113,7 +113,8 @@ public class Pass {
                         description = JsonReaderHelper.readString(reader);
                         break;
                     case "price":
-                        price = JsonReaderHelper.readDouble(reader);
+                        ObjectMappingFactory<Price> p = new Price.PriceObjectMappingFactory();
+                        price = p.instantiate(reader);
                         break;
                     case "maximumQuantity":
                         maxQuantity = JsonReaderHelper.readInteger(reader);

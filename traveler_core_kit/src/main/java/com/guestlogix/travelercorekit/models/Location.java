@@ -5,8 +5,9 @@ import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Location {
+public class Location implements Serializable {
     private String address;
     private double latitude;
     private double longitude;
