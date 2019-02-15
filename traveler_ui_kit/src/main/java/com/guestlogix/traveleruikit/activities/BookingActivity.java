@@ -10,7 +10,7 @@ import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
 import com.guestlogix.viewmodels.StatefulViewModel;
-import com.guestlogix.viewmodels.SupplierQuestionsViewModel;
+import com.guestlogix.viewmodels.BookingViewModel;
 
 import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_ACTION;
 import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_MESSAGE;
@@ -28,7 +28,7 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
     public static final String ARG_BOOKING_CONTEXT = "booking_context";
     private static final String TAG = "Traveler UI Kit";
 
-    private SupplierQuestionsViewModel questionsViewModel;
+    private BookingViewModel questionsViewModel;
     private NavController navController;
     private BookingContext bookingContext;
 
@@ -42,7 +42,7 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
         if (null != extras && extras.containsKey(ARG_BOOKING_CONTEXT)) {
             navController = Navigation.findNavController(this, R.id.supplierInformationHostFragment);
 
-            questionsViewModel = ViewModelProviders.of(this).get(SupplierQuestionsViewModel.class);
+            questionsViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
             questionsViewModel.getStatus().observe(this, this::onStateChange);
 
             bookingContext = (BookingContext) extras.getSerializable(ARG_BOOKING_CONTEXT);

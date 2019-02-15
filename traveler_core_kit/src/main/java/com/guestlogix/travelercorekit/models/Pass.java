@@ -26,7 +26,7 @@ public class Pass {
         this.questions = questions;
     }
 
-    public int getMaxQuantity() {
+    public Integer getMaxQuantity() {
         return maxQuantity;
     }
 
