@@ -1,6 +1,9 @@
 package com.guestlogix.travelercorekit.validators;
 
+import com.guestlogix.travelercorekit.models.Answer;
+
 public abstract class ValidationRule {
+    protected ValidationError error;
 
     /**
      * Validates the given string.
@@ -8,5 +11,9 @@ public abstract class ValidationRule {
      * @param toValidate string to validate.
      * @return true if the validation passes.
      */
-    abstract boolean validate(String toValidate);
+    public abstract boolean validate(Answer answer);
+
+    public ValidationError getError() {
+        return error;
+    }
 }

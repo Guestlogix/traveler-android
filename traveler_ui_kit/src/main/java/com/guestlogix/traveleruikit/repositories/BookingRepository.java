@@ -4,7 +4,7 @@ import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.models.BookingContext;
 
-public class SupplierQuestionsRepository {
+public class BookingRepository {
     public void fetchPasses(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
         Traveler.fetchPass(bookingContext, fetchPassesCallback);
     }
