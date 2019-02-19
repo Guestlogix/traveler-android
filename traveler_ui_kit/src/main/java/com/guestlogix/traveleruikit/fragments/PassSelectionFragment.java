@@ -53,8 +53,6 @@ public class PassSelectionFragment extends Fragment {
         viewModel.getPassesObservable().observe(this, this::onPasses);
         viewModel.getPriceChangeObservable().observe(this, this::onPriceChange);
 
-        setFormObservers();
-
         return view;
     }
 
@@ -105,19 +103,8 @@ public class PassSelectionFragment extends Fragment {
         });
     }
 
-
     @SuppressLint("DefaultLocale")
     private void onPriceChange(Double price) {
         priceLbl.setText(String.format("$%.2f", price));
     }
-
-    private void setFormObservers() {
-        form.setOnFormValueChangedListener((sectionId, fieldId, value) -> {
-            Integer i = (Integer) value; // Expecting integer for quantity pickers.
-            if (i != null) {
-                viewModel.updateValueForPass(fieldId, i);
-            }
-        });
-    }
-
 }
