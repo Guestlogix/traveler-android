@@ -52,19 +52,13 @@ public class BookingViewModel extends StatefulViewModel {
         return quantity;
     }
 
-    public void updateValueForPass(int passId, int newQuantity) {
+    public void updateValueForPass(Pass pass, int newQuantity) {
         if (passesLiveData.getValue() == null) {
             Log.w(TAG, "updateValueForPass - Passes are not initialized yet");
             return;
         }
 
-        if (passId >= passesLiveData.getValue().size()) {
-            Log.w(TAG, String.format("updateValueForPass - Incorrect passId: %d", passId));
-            return;
-        }
-
-        Pass p = passesLiveData.getValue().get(passId);
-        passQuantityMap.put(p, newQuantity);
+        passQuantityMap.put(pass, newQuantity);
         calculateTotalPrice();
     }
 

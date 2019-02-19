@@ -354,11 +354,13 @@ public class Form extends FrameLayout {
         String getDisclaimer(int sectionId);
 
         InputDescriptor getDescriptor(int sectionId, int fieldId, int type);
+
+
     }
 
     DefaultItemAnimator animator = new DefaultItemAnimator() {
         @Override
-        public boolean canReuseUpdatedViewHolder(RecyclerView.ViewHolder viewHolder) {
+        public boolean canReuseUpdatedViewHolder(@NonNull RecyclerView.ViewHolder viewHolder) {
             return true;
         }
     };
