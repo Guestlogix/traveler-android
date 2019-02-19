@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.models.Pass;
@@ -37,7 +38,7 @@ public class PassSelectionFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pass_selection, container, false);
 
@@ -101,6 +102,11 @@ public class PassSelectionFragment extends Fragment {
                 return q;
             }
         });
+
+        form.setOnFormValueChangedListener(((sectionId, fieldId, value) -> {
+            Pass p = passes.get(fieldId);
+            viewModel.updateValueForPass(p, (Integer) value);
+        }));
     }
 
     @SuppressLint("DefaultLocale")

@@ -7,7 +7,7 @@ import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.Pass;
-import com.guestlogix.traveleruikit.repositories.SupplierQuestionsRepository;
+import com.guestlogix.traveleruikit.repositories.BookingRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,14 +17,14 @@ public class BookingViewModel extends StatefulViewModel {
     private static final String TAG = "SupplierQuestionsVM";
 
     private BookingContext bookingContext;
-    private SupplierQuestionsRepository supplierQuestionsRepository;
+    private BookingRepository bookingRepository;
     private MutableLiveData<List<Pass>> passesLiveData;
     private MutableLiveData<Double> priceChange;
     private Map<Pass, Integer> passQuantityMap;
 
 
     public BookingViewModel() {
-        supplierQuestionsRepository = new SupplierQuestionsRepository();
+        bookingRepository = new BookingRepository();
         passesLiveData = new MutableLiveData<>();
         priceChange = new MutableLiveData<>();
     }
@@ -52,19 +52,26 @@ public class BookingViewModel extends StatefulViewModel {
         return quantity;
     }
 
-    public void updateValueForPass(Pass pass, int newQuantity) {
-        if (passesLiveData.getValue() == null) {
+    public void updateValueForPass(Pass pass, Integer newQuantity) {
+        if (passQuantityMap == null) {
             Log.w(TAG, "updateValueForPass - Passes are not initialized yet");
             return;
         }
 
-        passQuantityMap.put(pass, newQuantity);
+        int quantity = 0;
+
+        // Null check.
+        if (newQuantity != null) {
+            quantity = newQuantity;
+        }
+
+        passQuantityMap.put(pass, quantity);
         calculateTotalPrice();
     }
 
     private void updatePass(BookingContext bookingContext) {
         status.setValue(State.LOADING);
-        supplierQuestionsRepository.fetchPasses(bookingContext, fetchPassesCallback);
+        bookingRepository.fetchPasses(bookingContext, fetchPassesCallback);
     }
 
     private void calculateTotalPrice() {

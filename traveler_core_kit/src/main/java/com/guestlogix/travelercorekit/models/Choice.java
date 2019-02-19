@@ -15,6 +15,14 @@ public class Choice {
         this.value = value;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
     public static class ChoiceObjectMappingFactory implements ObjectMappingFactory<Choice> {
 
         /**

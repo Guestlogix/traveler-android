@@ -1,5 +1,7 @@
 package com.guestlogix.travelercorekit.validators;
 
+import com.guestlogix.travelercorekit.models.Answer;
+
 import java.util.regex.Pattern;
 
 public class PatternValidationRule extends ValidationRule {
@@ -18,11 +20,17 @@ public class PatternValidationRule extends ValidationRule {
 
     /**
      * Validates the given string based on the pattern.
-     * @param toValidate string to validate.
+     * @param answer To validate
      * @return true if regex validation passes.
      */
     @Override
-    boolean validate(String toValidate) {
-        return REGEX.matcher(toValidate).find();
+    boolean validate(Answer answer) {
+        boolean isValid = answer != null && REGEX.matcher(answer.getCodedValue()).find();
+
+        if (!isValid) {
+            error = ValidationError.REGEX_MISMATCH;
+        }
+
+        return isValid;
     }
 }
