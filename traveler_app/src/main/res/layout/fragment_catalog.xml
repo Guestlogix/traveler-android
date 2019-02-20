@@ -17,57 +17,15 @@
             android:layout_height="53dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-    <LinearLayout
-            android:id="@+id/emptyCatalogLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/flightResultRecyclerView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            tools:visibility="visible"
-            android:layout_centerInParent="true">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_sorry"
-                android:textStyle="bold"
-                android:textSize="20sp"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:textAlignment="center"
-                android:textSize="17sp"
-                android:text="@string/label_nothing_to_show"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/tryAgainTextView"
-                android:layout_height="wrap_content"
-                android:text="@string/try_again"
-                android:textColor="@color/colorLink"
-                android:padding="10dp"/>
-    </LinearLayout>
-    <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/catalogProgressBar"
-            app:layout_constraintTop_toBottomOf="@id/flightResultRecyclerView"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            android:layout_centerInParent="true"/>
-    <com.guestlogix.traveleruikit.widgets.CatalogView
-            android:id="@+id/catalogView"
-            android:layout_marginTop="55dp"
-            android:visibility="visible"
-            android:padding="16dp"
+    <fragment
             app:layout_constraintTop_toBottomOf="@+id/flightResultRecyclerView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/catalogFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-    </com.guestlogix.traveleruikit.widgets.CatalogView>
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="1"
+            android:name="com.guestlogix.traveleruikit.fragments.CatalogWidgetFragment"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

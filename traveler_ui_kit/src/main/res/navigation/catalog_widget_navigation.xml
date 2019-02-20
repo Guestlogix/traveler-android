@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/catalogItemDetailsNavigation"
+            android:id="@+id/catalogNavigation"
             app:startDestination="@+id/loading_destination">
     <fragment
             android:id="@+id/loading_destination"
@@ -11,19 +11,25 @@
             tools:layout="@layout/fragment_traveler_loading">
     </fragment>
     <fragment
-            android:id="@+id/catalog_item_details_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment"
-            android:label="@string/app_name"
-            tools:layout="@layout/fragment_catalog_item_details">
-        <argument android:name="catalog_item" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>
-    </fragment>
-
-    <fragment
             android:id="@+id/error_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.TravelerActivityErrorFragment"
+            android:name="com.guestlogix.traveleruikit.fragments.TravelerFragmentErrorFragment"
             android:label="Error"
             tools:layout="@layout/fragment_traveler_error">
     </fragment>
+    <fragment
+            android:id="@+id/catalog_destination"
+            android:name="com.guestlogix.traveleruikit.fragments.CatalogWidgetSuccessFragment"
+            android:label="@string/app_name"
+            tools:layout="@layout/fragment_catalog_widget_success">
+        <action android:id="@+id/catalog_item_details_action"
+                app:destination="@id/catalog_item_details_destination"/>
+    </fragment>
+    <activity android:id="@+id/catalog_item_details_destination"
+              android:name="com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity"
+              android:label="CatalogItemDetailsFragment"
+              tools:layout="@layout/activity_catalog_item_details">
+        <argument android:name="catalog_item" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>
+    </activity>
     <action
             android:id="@+id/loading_action"
             app:launchSingleTop="true"
@@ -31,15 +37,15 @@
             app:popUpToInclusive="true"
             app:destination="@+id/loading_destination"/>
     <action
-            android:id="@+id/catalog_item_details_action"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/loading_destination"
-            app:popUpToInclusive="true"
-            app:destination="@+id/catalog_item_details_destination"/>
-    <action
             android:id="@+id/error_action"
             app:launchSingleTop="true"
             app:popUpTo="@id/loading_destination"
             app:popUpToInclusive="true"
             app:destination="@+id/error_destination"/>
+    <action
+            android:id="@+id/catalog_action"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/loading_destination"
+            app:popUpToInclusive="true"
+            app:destination="@+id/catalog_destination"/>
 </navigation>

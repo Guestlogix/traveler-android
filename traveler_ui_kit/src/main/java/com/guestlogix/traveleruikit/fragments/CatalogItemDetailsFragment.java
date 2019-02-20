@@ -15,10 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
@@ -30,10 +27,8 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.adapters.TimeSlotSpinnerAdapter;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
-import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
-import com.guestlogix.viewmodels.StatefulViewModel;
+import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -120,7 +115,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
         catalogItemDetailsViewModel.getSelectedDateObservable().observe(this, this::onSelectedDateChanged);
         catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
-        catalogItemDetailsViewModel.getTimeRequiredObservable().observe(this, this::onTimeRequiredChanged);
     }
 
     private void setView(CatalogItemDetails catalogItemDetails) {
@@ -142,7 +136,24 @@ public class CatalogItemDetailsFragment extends Fragment {
         adapter.setInformationList(catalogItemDetails.getInformation());
         adapter.setLocationsList(catalogItemDetails.getLocations());
         catalogItemDetailsPager.setAdapter(adapter);
+        catalogItemDetailsPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                catalogItemDetailsPager.requestLayout();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         adapter.notifyDataSetChanged();
+
         catalogItemDetailsTabs.setupWithViewPager(catalogItemDetailsPager);
     }
 
@@ -231,16 +242,6 @@ public class CatalogItemDetailsFragment extends Fragment {
         setDateLabel();
         timeRelativeLayout.setVisibility(View.GONE);
         catalogItemDetailsViewModel.checkAvailability();
-    }
-
-    private void onTimeRequiredChanged(Boolean timeRequired) {
-//        if (timeRequired) {
-//            timeTextInputLayout.setVisibility(View.GONE);
-//            timeSlotsSpinner.setVisibility(View.INVISIBLE);
-//        } else {
-//            timeTextInputLayout.setVisibility(View.VISIBLE);
-//            timeSlotsSpinner.setVisibility(View.VISIBLE);
-//        }
     }
 
     private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {

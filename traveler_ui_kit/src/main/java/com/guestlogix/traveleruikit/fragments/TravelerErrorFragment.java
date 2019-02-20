@@ -3,31 +3,29 @@ package com.guestlogix.traveleruikit.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.TextView;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import com.guestlogix.traveleruikit.R;
 
-import static com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity.*;
-
 /**
- * A simple {@link Fragment} subclass.
+ * Abstract Fragment to show error state with title, message and action.
+ * Set title message and action via bundle arguments.
+ * Subclass must implement {@link #onAttachFragment}
  */
-public class TravelerErrorFragment extends Fragment {
+public abstract class TravelerErrorFragment extends Fragment {
 
     public static final String ARG_ERROR_TITLE = "error_title";
     public static final String ARG_ERROR_MESSAGE = "error_message";
     public static final String ARG_ERROR_ACTION = "error_action";
 
-    private TextView titleTextView;
-    private TextView messageTextView;
-    private TextView actionTextView;
-    private View view;
+    OnErrorInteractionListener onErrorFragmentInteractionListener = null;
 
-    private OnErrorInteractionListener mListener;
+    abstract void onAttachFragment(Context context);
 
     public TravelerErrorFragment() {
         // Required empty public constructor
@@ -36,10 +34,10 @@ public class TravelerErrorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_traveler_error, container, false);
-        titleTextView = view.findViewById(R.id.titleTextView);
-        messageTextView = view.findViewById(R.id.messageTextView);
-        actionTextView = view.findViewById(R.id.actionTextView);
+        View view = inflater.inflate(R.layout.fragment_traveler_error, container, false);
+        TextView titleTextView = view.findViewById(R.id.titleTextView);
+        TextView messageTextView = view.findViewById(R.id.messageTextView);
+        TextView actionTextView = view.findViewById(R.id.actionTextView);
 
         Bundle bundle = getArguments();
         if (null != bundle) {
@@ -64,25 +62,20 @@ public class TravelerErrorFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof OnErrorInteractionListener) {
-            mListener = (OnErrorInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnErrorInteractionListener");
-        }
+        onAttachFragment(context);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        onErrorFragmentInteractionListener = null;
     }
 
     public interface OnErrorInteractionListener {
         void onRetry();
     }
 
-    private View.OnClickListener actionOnClickListener = v -> mListener.onRetry();
+    private View.OnClickListener actionOnClickListener = v -> onErrorFragmentInteractionListener.onRetry();
 }

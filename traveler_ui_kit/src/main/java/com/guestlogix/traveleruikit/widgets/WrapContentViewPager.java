@@ -7,7 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
+/**
+ * A custom ViewPager to measure the height of its current child fragment so that parent can adjust its height accordingly.
+ */
 public class WrapContentViewPager extends ViewPager {
+
     public WrapContentViewPager(@NonNull Context context) {
         super(context);
     }
@@ -18,19 +22,20 @@ public class WrapContentViewPager extends ViewPager {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         int height = 0;
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-            int h = child.getMeasuredHeight();
-            if (h > height) height = h;
+        int width = 0;
+
+        if (getChildCount() > 0) {
+            View child = getChildAt(getCurrentItem());
+            child.measure(widthMeasureSpec, heightMeasureSpec);
+            height = child.getMeasuredHeight();
+            width = child.getMeasuredWidth();
         }
 
         if (height != 0) {
             heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            setMeasuredDimension(width, height);
         }
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }
