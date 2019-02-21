@@ -1,5 +1,6 @@
 package com.guestlogix.traveler.viewmodels;
 
+import android.content.Intent;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,7 +15,11 @@ import com.guestlogix.travelercorekit.models.CatalogGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class CatalogViewModel extends ViewModel {
+    public static final int ADD_FLIGHT_REQUEST_CODE = 1;
+    public static final String EXRTA_FLIGHT = "extra_flight";
     private MutableLiveData<List<Flight>> flightsList;
     private MutableLiveData<List<CatalogGroup>> catalogGroupList;
     private CatalogSearchRepository catalogRepository;
@@ -28,7 +33,7 @@ public class CatalogViewModel extends ViewModel {
         this.catalogRepository = new CatalogSearchRepository();
     }
 
-    public LiveData<List<Flight>> getFlightsObservable() {
+    public LiveData<List<Flight>> getObservableFlights() {
         return flightsList;
     }
 
@@ -36,21 +41,9 @@ public class CatalogViewModel extends ViewModel {
         return flightsList.getValue();
     }
 
-    public MutableLiveData<CatalogViewState> getViewStateObservable() {
-        return viewState;
-    }
-
     public void updateCatalog(CatalogQuery catalogQuery) {
         viewState.postValue(CatalogViewState.LOADING);
         catalogRepository.catalogSearch(catalogQuery, catalogSearchCallback);
-    }
-
-    public LiveData<List<CatalogGroup>> getGroupsObservable() {
-        return catalogGroupList;
-    }
-
-    public List<CatalogGroup> getGroups() {
-        return catalogGroupList.getValue();
     }
 
     public void addFlight(Flight flight) {
@@ -86,6 +79,17 @@ public class CatalogViewModel extends ViewModel {
             viewState.postValue(CatalogViewState.ERROR);
         }
     };
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case ADD_FLIGHT_REQUEST_CODE:
+                    Flight flight = (Flight) data.getExtras().getSerializable(EXRTA_FLIGHT);
+                    addFlight(flight);
+                    break;
+            }
+        }
+    }
 
     public enum CatalogViewState {
         LOADING,

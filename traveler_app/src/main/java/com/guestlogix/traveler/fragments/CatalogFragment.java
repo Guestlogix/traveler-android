@@ -43,7 +43,7 @@ public class CatalogFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         catalogViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
-        catalogViewModel.getFlightsObservable().observe(this, this::flightsUpdateHandler);
+        catalogViewModel.getObservableFlights().observe(this, this::flightsUpdateHandler);
 
         flightsUpdateHandler(catalogViewModel.getFlights());
     }

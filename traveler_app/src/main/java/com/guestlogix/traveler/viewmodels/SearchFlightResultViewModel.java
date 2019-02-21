@@ -1,6 +1,5 @@
 package com.guestlogix.traveler.viewmodels;
 
-import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,36 +8,48 @@ import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
+import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
+
 import java.util.List;
 
-public class FlightSearchViewModel extends ViewModel {
-
+public class SearchFlightResultViewModel extends ViewModel {
     private MutableLiveData<List<Flight>> flightsList;
+    private SingleLiveEvent<FlightSearchState> flightSearchState = new SingleLiveEvent<>();
     private FlightSearchRepository flightSearchRepository;
 
-    public FlightSearchViewModel() {
+    public SearchFlightResultViewModel() {
         this.flightsList = new MutableLiveData<>();
         this.flightSearchRepository = new FlightSearchRepository();
     }
 
-    public LiveData<List<Flight>> getFlightsObservAble() {
+    public LiveData<List<Flight>> getObservableFlights() {
         return flightsList;
+    }
+    public SingleLiveEvent<FlightSearchState> getFlightSearchState() {
+        return flightSearchState;
     }
 
     public void flightSearch(FlightQuery query) {
+        flightSearchState.setValue(FlightSearchState.LOADING);
         flightSearchRepository.flightSearch(query, flightSearchCallback);
     }
 
     private FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
         @Override
         public void onFlightSearchSuccess(List<Flight> flights) {
-            flightsList.setValue(flights);
+            flightSearchState.setValue(FlightSearchState.SUCCESS);
+            flightsList.postValue(flights);
         }
 
         @Override
         public void onFlightSearchError(TravelerError error) {
-            // TODO: Tell the user that something went wrong
-            Log.e("FlightSearchViewModel", error.toString());
+            flightSearchState.setValue(FlightSearchState.ERROR);
         }
     };
+
+    public enum FlightSearchState {
+        LOADING,
+        SUCCESS,
+        ERROR
+    }
 }
