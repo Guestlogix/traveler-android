@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.models.Pass;
@@ -30,7 +31,6 @@ public class PassSelectionFragment extends Fragment {
     private Form form;
     private TextView priceLbl;
     private Button bookNowBtn;
-    private ProgressBar progressBar;
 
     private BookingViewModel viewModel;
 
@@ -45,7 +45,6 @@ public class PassSelectionFragment extends Fragment {
         form = view.findViewById(R.id.passForm);
         priceLbl = view.findViewById(R.id.startingAtValueTextView);
         bookNowBtn = view.findViewById(R.id.bookNowBtn);
-        progressBar = view.findViewById(R.id.bookNowPrgBar);
 
         bookNowBtn.setOnClickListener(this::onBookNowClick);
 
@@ -58,7 +57,7 @@ public class PassSelectionFragment extends Fragment {
     }
 
     private void onBookNowClick(View view) {
-        // TODO
+        viewModel.bookNow();
     }
 
     private void onPasses(List<Pass> passes) {
@@ -100,6 +99,18 @@ public class PassSelectionFragment extends Fragment {
                 q.title = p.getName();
                 q.subtitle = p.getDescription();
                 return q;
+            }
+
+            @Nullable
+            @Override
+            public String getError(int sectionId, int fieldId) {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            public Object getValue(int sectionId, int fieldId) {
+                return viewModel.getPassQuantity(passes.get(fieldId));
             }
         });
 

@@ -27,6 +27,13 @@
         <argument android:name="booking_context" app:argType="com.guestlogix.travelercorekit.models.BookingContext"/>
     </fragment>
 
+    <fragment
+            android:id="@+id/supplier_questions_destination"
+            android:name="com.guestlogix.traveleruikit.fragments.SupplierQuestionsFragment"
+            android:label="Pass Selection"
+            tools:layout="@layout/fragment_pass_selection">
+    </fragment>
+
 
     <action
             android:id="@+id/loading_action"
@@ -48,5 +55,12 @@
         app:popUpTo="@id/loading_destination"
         app:popUpToInclusive="true"
         app:destination="@+id/pass_selection_destination"/>
+
+    <action
+            android:id="@+id/supplier_questions_action"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/loading_destination"
+            app:popUpToInclusive="true"
+            app:destination="@id/supplier_questions_destination"/>
 
 </navigation>

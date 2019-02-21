@@ -24,7 +24,7 @@ public class PatternValidationRule extends ValidationRule {
      * @return true if regex validation passes.
      */
     @Override
-    boolean validate(Answer answer) {
+    public boolean validate(Answer answer) {
         boolean isValid = answer != null && REGEX.matcher(answer.getCodedValue()).find();
 
         if (!isValid) {

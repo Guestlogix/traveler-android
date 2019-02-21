@@ -1,4 +1,5 @@
 package com.guestlogix.travelercorekit.models;
 
-public abstract class QuestionType {
+public enum QuestionType {
+    QUANTITY, STRING, MULTIPLE_CHOICE
 }

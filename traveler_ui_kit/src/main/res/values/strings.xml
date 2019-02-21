@@ -22,4 +22,7 @@
     <string name="try_again">Try Again</string>
     <string name="cancel">Cancel</string>
     <string name="book_now">Book Now</string>
+    <string name="checkout">Checkout</string>
+    <string name="required">This field is required.</string>
+    <string name="regex_mismatch">Incorrect pattern</string>
 </resources>

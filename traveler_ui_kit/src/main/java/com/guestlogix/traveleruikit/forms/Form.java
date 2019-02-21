@@ -95,7 +95,7 @@ public class Form extends FrameLayout {
         Integer pos = pairToPos.get(p);
 
         if (pos != null) {
-            layoutManager.scrollToPosition(pos);
+            layoutManager.smoothScrollToPosition(cellsRecyclerView, null, pos);
         }
     }
 
@@ -106,7 +106,7 @@ public class Form extends FrameLayout {
 
         if (pos != null) {
             if (pos != 0) {
-                layoutManager.scrollToPosition(pos);
+                layoutManager.smoothScrollToPosition(cellsRecyclerView, null, pos);
             }
         }
     }
@@ -228,8 +228,23 @@ public class Form extends FrameLayout {
             if (null != p && null != type) {
                 InputDescriptor descriptor;
                 if (p.second >= 0) {
+                    rvAdapter.setCellEventsListener(null);
                     descriptor = dataSource.getDescriptor(p.first, p.second, type);
-                    builder.bindView(cell, descriptor, type);
+
+                    builder.bindView(cell, descriptor, type, new FormBuilder.BuilderDataSource() {
+                        @Nullable
+                        @Override
+                        public Object getValue() {
+                            return dataSource.getValue(p.first, p.second);
+                        }
+
+                        @Nullable
+                        @Override
+                        public String getError() {
+                            return dataSource.getError(p.first, p.second);
+                        }
+                    });
+                    rvAdapter.setCellEventsListener(cellEventsListener);
                 } else {
                     builder.bindHeaderCell(cell, dataSource.getTitle(p.first), dataSource.getDisclaimer(p.first));
                 }
@@ -355,7 +370,11 @@ public class Form extends FrameLayout {
 
         InputDescriptor getDescriptor(int sectionId, int fieldId, int type);
 
+        @Nullable
+        String getError(int sectionId, int fieldId);
 
+        @Nullable
+        Object getValue(int sectionId, int fieldId);
     }
 
     DefaultItemAnimator animator = new DefaultItemAnimator() {

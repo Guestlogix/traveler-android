@@ -1,23 +1,27 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.annotation.SuppressLint;
-import android.util.SparseArray;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import com.guestlogix.travelercorekit.validators.PatternValidationRule;
 import com.guestlogix.travelercorekit.validators.RequiredValidationRule;
 import com.guestlogix.travelercorekit.validators.ValidationError;
 import com.guestlogix.travelercorekit.validators.ValidationRule;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class BookingForm {
     private List<QuestionGroup> questionGroups;
-    private SparseArray<Answer> answers;
+    private Map<IndexedQuestion, Answer> answerMap;
+    private Map<IndexedQuestion, List<BookingFormError>> errorMap;
+    private Set<IndexedQuestion> flatQuestions;
+    private List<Pass> passes;
 
     public BookingForm(List<Pass> passes) {
         questionGroups = new ArrayList<>();
-        answers = new SparseArray<>();
+        answerMap = new HashMap<>();
+        flatQuestions = new HashSet<>();
 
         // Required questions.
         questionGroups.add(buildDefault());
@@ -25,59 +29,100 @@ public class BookingForm {
         // Copy questions for each pass and assign other id.
         for (int i = 0; i < passes.size(); i++) {
             Pass p = passes.get(i);
-
-            List<Question> questions = makeQuestions(p, i);
-            QuestionGroup questionGroup = new QuestionGroup(
-                    String.format("Guest %d: %s", questionGroups.size(), p.getName()),
-                    null,
-                    questions);
-
-            questionGroups.add(questionGroup);
+            questionGroups.add(buildIndexedQuestionGroup(p, i));
         }
+
+        this.passes = passes;
     }
 
-    public void addAnswer(Answer answer) {
-        containsOrError(answer.questionId);
-        answers.append(answer.questionId.hashCode(), answer);
+    public void addAnswer(Answer answer, Question question) {
+        if (question instanceof IndexedQuestion) {
+            IndexedQuestion q = (IndexedQuestion) question;
+
+            if (flatQuestions.contains(q)) {
+                answerMap.put(q, answer);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Question is not part of the BookingForm");
     }
 
+    @Nullable
     public Answer getAnswer(Question question) {
-        containsOrError(question.getId());
-        return answers.get(question.getId().hashCode());
+        if (question instanceof IndexedQuestion) {
+            IndexedQuestion q = (IndexedQuestion) question;
+
+            if (flatQuestions.contains(q)) {
+                return answerMap.get(q);
+            }
+        }
+        throw new IllegalArgumentException("Question is not part of the BookingForm");
     }
 
-    public List<BookingFormError> validate() {
-        List<BookingFormError> errors = new ArrayList<>();
+    public List<QuestionGroup> getQuestionGroups() {
+        return questionGroups;
+    }
+
+    public List<Pass> getPasses() {
+        return passes;
+    }
+
+    @Nullable
+    public Pair<Integer, Integer> validate() {
+        errorMap = new HashMap<>();
+        Pair<Integer, Integer> firstError = null;
 
         for (int i = 0; i < questionGroups.size(); i++) {
             for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
-                Question question = questionGroups.get(i).getQuestions().get(j);
-                Answer answer = answers.get(question.getId().hashCode());
+                IndexedQuestion question = (IndexedQuestion) questionGroups.get(i).getQuestions().get(j);
+                Answer answer = getAnswer(question);
 
-                for (ValidationRule validationRule : question.getValidationRules()) {
-                    boolean isValid = validationRule.validate(answer);
+                if (question.getValidationRules() != null) {
+                    for (ValidationRule validationRule : question.getValidationRules()) {
+                        boolean isValid = validationRule.validate(answer);
 
-                    if (!isValid) {
-                        errors.add(new BookingFormError(i, j, validationRule.getError()));
+                        if (!isValid) {
+                            BookingFormError error = new BookingFormError(i, j, validationRule.getError());
+
+                            if (firstError == null) {
+                                firstError = new Pair<>(i, j);
+                            }
+
+                            if (!errorMap.containsKey(question)) {
+                                errorMap.put(question, new ArrayList<>());
+                            }
+
+                            errorMap.get(question).add(error);
+                        }
                     }
                 }
             }
         }
 
-        return errors;
+        return firstError;
     }
 
-    // Checks if id is in the questions else throws error.
-    private void containsOrError(String id) {
-        for (int i = 0; i < questionGroups.size(); i++) {
-            for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
-                if (questionGroups.get(i).getQuestions().get(j).getId().equals(id)) {
-                    return;
-                }
+    @Nullable
+    public List<BookingFormError> getErrors(Question question) {
+        if (question instanceof IndexedQuestion) {
+            IndexedQuestion q = (IndexedQuestion) question;
+
+            if (errorMap == null) {
+                return null;
+            } else {
+                return errorMap.get(q);
             }
         }
 
-        throw new Error(); // TODO: Change this.
+        throw new IllegalArgumentException("Question is not part of the form.");
+    }
+
+    @SuppressLint("DefaultLocale")
+    private QuestionGroup buildIndexedQuestionGroup(Pass pass, int index) {
+        List<Question> groupQuestions = makeQuestions(pass, index);
+        String title = String.format("Guest %d - %s", index + 1, pass.getName());
+
+        return new QuestionGroup(title, null, groupQuestions);
     }
 
     // TODO: Extract default string literals into a resource.
@@ -89,23 +134,26 @@ public class BookingForm {
         ValidationRule phone = new PatternValidationRule("^\\d*$");
 
 
-        Question q1 = new Question("title", "Title", null, new MultipleChoiceType(), null);
+        List<Choice> choices = new ArrayList<>();
+        choices.add(new Choice("Mr.", "Mr."));
+        choices.add(new Choice("Mrs.", "Mrs."));
+        Question q1 = createQuestion("title", "Title", null, QuestionType.MULTIPLE_CHOICE, null, choices, 0);
 
         List<ValidationRule> nameRules = new ArrayList<>();
         nameRules.add(required);
         nameRules.add(names);
-        Question q2 = new Question("firstName", "First Name", null, new StringType(), nameRules);
-        Question q3 = new Question("lastName", "Last Name", null, new StringType(), nameRules);
+        Question q2 = createQuestion("firstName", "First Name", null, QuestionType.STRING, nameRules, null, 0);
+        Question q3 = createQuestion("lastName", "Last Name", null, QuestionType.STRING, nameRules, null, 0);
 
         List<ValidationRule> phoneRules = new ArrayList<>();
         phoneRules.add(required);
         phoneRules.add(phone);
-        Question q4 = new Question("phone", "Phone number", null, new StringType(), phoneRules);
+        Question q4 = createQuestion("phone", "Phone number", null, QuestionType.STRING, phoneRules, null, 0);
 
         List<ValidationRule> emailRules = new ArrayList<>();
         emailRules.add(required);
         emailRules.add(email);
-        Question q5 = new Question("email", "Email", null, new StringType(), emailRules);
+        Question q5 = createQuestion("email", "Email", null, QuestionType.STRING, emailRules, null, 0);
 
         List<Question> primaryQuestions = new ArrayList<>();
         primaryQuestions.add(q1);
@@ -122,21 +170,46 @@ public class BookingForm {
         List<Question> questions = new ArrayList<>();
 
         for (Question q : p.getQuestions()) {
-            questions.add(new Question(String.format("%s-%d", q.getId(), index), q.getTitle(), q.getDescription(), q.getType(), q.getValidationRules()));
+            Question copy = createQuestion(q.getId(), q.getTitle(), q.getDescription(), q.getType(), q.getValidationRules(), q.getOptions(), index);
+
+            questions.add(copy);
         }
 
         return questions;
     }
 
-    public class BookingFormError extends Error {
-        public final int groupIndex;
-        public final int questionIndex;
+    private Question createQuestion(String id, String title, String description, QuestionType type, List<ValidationRule> rules, Object o, Integer i) {
+        IndexedQuestion indexedQuestion = new IndexedQuestion(id, title, description, type, rules, o, i);
+        flatQuestions.add(indexedQuestion);
+        return indexedQuestion;
+    }
+
+    public class BookingFormError {
+        final int groupIndex;
+        final int questionIndex;
         public final ValidationError error;
 
-        public BookingFormError(int groupIndex, int questionIndex, ValidationError error) {
+        BookingFormError(int groupIndex, int questionIndex, ValidationError error) {
             this.groupIndex = groupIndex;
             this.questionIndex = questionIndex;
             this.error = error;
+        }
+    }
+
+    private class IndexedQuestion extends Question {
+        int index;
+
+        IndexedQuestion(String id, String title, String description, QuestionType type, List<ValidationRule> rules,
+                        Object options, int index) {
+            super(id, title, description, type, rules, options);
+
+            this.index = index;
+        }
+
+        // Helper method for better mapping.
+        @Override
+        public int hashCode() {
+            return super.hashCode() * index * 59;
         }
     }
 }

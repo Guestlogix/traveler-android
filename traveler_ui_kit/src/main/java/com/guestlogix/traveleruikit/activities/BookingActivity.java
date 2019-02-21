@@ -1,20 +1,17 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
-import com.guestlogix.viewmodels.StatefulViewModel;
 import com.guestlogix.viewmodels.BookingViewModel;
 
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_ACTION;
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_MESSAGE;
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_TITLE;
+import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
 
 /**
  * Activity which encapsulates the whole booking flow.
@@ -53,13 +50,16 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
         }
     }
 
-    private void onStateChange(StatefulViewModel.State state) {
+    private void onStateChange(BookingViewModel.State state) {
         switch (state) {
             case LOADING:
                 navController.navigate(R.id.loading_action);
                 break;
-            case SUCCESS:
+            case PASS_SELECTION:
                 navController.navigate(R.id.pass_selection_action);
+                break;
+            case QUESTIONS:
+                navController.navigate(R.id.supplier_questions_action);
                 break;
             case ERROR:
                 Bundle arguments = new Bundle();
