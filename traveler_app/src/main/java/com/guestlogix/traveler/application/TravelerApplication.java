@@ -13,5 +13,6 @@ public class TravelerApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext());
+        AppCenter.start(this, BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
     }
 }
