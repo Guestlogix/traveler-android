@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FlightSearchFragment extends Fragment {
+public class SearchFlightFragment extends Fragment {
 
     private TextView flightNumberEditText;
     private TextView departureDateEditText;
@@ -31,16 +31,11 @@ public class FlightSearchFragment extends Fragment {
     private final Calendar departureDateCalendar = Calendar.getInstance();
     private final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9][0-9]{0,3}|[0-9]{0,3}[1-9])$");
 
-    public static FlightSearchFragment newInstance() {
-        return new FlightSearchFragment();
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_flight_search, container, false);
-
 
         flightNumberEditText = view.findViewById(R.id.flightNumberEditText);
         departureDateEditText = view.findViewById(R.id.departureDateEditText);
@@ -55,19 +50,13 @@ public class FlightSearchFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
     private void navigateToFlightSearchResults(View view) {
         String flightNumber = flightNumberEditText.getText().toString();
         String departureDate = DateHelper.getDateTimeAsString(departureDateCalendar.getTime());
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             hideKeyboard(getActivity());
-            FlightSearchFragmentDirections.FlightSearchResultAction directions = FlightSearchFragmentDirections
+            SearchFlightFragmentDirections.FlightSearchResultAction directions = SearchFlightFragmentDirections
                     .flightSearchResultAction(departureDate, flightNumber);
 
             Navigation.findNavController(this.view).navigate(directions);
