@@ -9,8 +9,9 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Airport {
+public class Airport implements Serializable {
     private String code;
     private String name;
     private String city;
