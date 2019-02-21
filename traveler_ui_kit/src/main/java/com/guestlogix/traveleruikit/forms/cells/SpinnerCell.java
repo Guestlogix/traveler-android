@@ -1,10 +1,8 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
+import android.text.InputType;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import com.guestlogix.traveleruikit.R;
 
@@ -16,9 +14,8 @@ import java.util.List;
  * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
  */
 public class SpinnerCell extends BaseCell {
-    private TextView title;
-    private TextView subtitle;
-    private Spinner spinner;
+    //    private Spinner spinner;
+    private AutoCompleteTextView autocomplete;
 
     public SpinnerCell(@NonNull View itemView) {
         super(itemView);
@@ -27,7 +24,10 @@ public class SpinnerCell extends BaseCell {
 
     @Override
     public void reload() {
-
+        autocomplete.setText(null);
+        autocomplete.setError(null);
+        autocomplete.setHint(null);
+        autocomplete.setAdapter(null);
     }
 
     /**
@@ -36,13 +36,12 @@ public class SpinnerCell extends BaseCell {
      * @param options Items to display in the dropdown list.
      */
     public void setOptions(List<String> options) {
-        if (null != contextRequestListener && null != spinner) {
+        if (null != contextRequestListener && null != autocomplete) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(contextRequestListener.onCellContextRequest(),
-                    android.R.layout.simple_spinner_item, options);
+                    android.R.layout.simple_list_item_1, options);
 
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(adapter);
-
+//            adapter.setDropDownViewResource(R.layout.form_spinner_dropdown_item);
+            autocomplete.setAdapter(adapter);
         }
     }
 
@@ -56,39 +55,29 @@ public class SpinnerCell extends BaseCell {
     public void setOptions(List<String> options, int position) {
         setOptions(options);
 
-        if (null != spinner) {
-            spinner.setSelection(position);
+        if (null != autocomplete) {
+//            autocomplete.setSelection(position);
+            autocomplete.setText((String) autocomplete.getAdapter().getItem(position));
         }
     }
 
     /**
-     * Sets the title of the view with the given String.
+     * Displays an error with the autocomplete field.
      *
-     * @param title Title to display on the view.
+     * @param error String to display as error.
      */
+    public void setError(String error) {
+        this.autocomplete.setError(error);
+    }
+
     public void setTitle(String title) {
-        if (null != this.title) {
-            this.title.setText(title);
-        }
-    }
-
-    /**
-     * Sets the subtitle of the view with the given String.
-     *
-     * @param subtitle Sub Title to display on the view.
-     */
-    public void setSubtitle(String subtitle) {
-        if (null != this.subtitle) {
-            this.subtitle.setText(subtitle);
-        }
+        this.autocomplete.setHint(title);
     }
 
     private void init() {
-        this.title = itemView.findViewById(R.id.title);
-        this.subtitle = itemView.findViewById(R.id.subTitle);
-        this.spinner = itemView.findViewById(R.id.spinner);
+        this.autocomplete = itemView.findViewById(R.id.autocomplete);
 
-        this.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.autocomplete.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (null != SpinnerCell.this.onCellValueChangedListener) {
@@ -98,8 +87,23 @@ public class SpinnerCell extends BaseCell {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+
             }
         });
+
+        this.autocomplete.setOnItemClickListener((parent, view, position, id) -> {
+            if (null != SpinnerCell.this.onCellValueChangedListener) {
+                SpinnerCell.this.onCellValueChangedListener.onCellValueChanged(SpinnerCell.this, position);
+            }
+        });
+
+        this.autocomplete.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                this.autocomplete.showDropDown();
+            }
+        });
+
+        this.autocomplete.setOnClickListener(v -> this.autocomplete.showDropDown());
+        this.autocomplete.setInputType(InputType.TYPE_NULL);
     }
 }

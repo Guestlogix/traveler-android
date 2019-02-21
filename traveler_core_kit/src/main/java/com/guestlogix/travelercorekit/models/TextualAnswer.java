@@ -4,7 +4,7 @@ public class TextualAnswer extends Answer {
     private String value;
 
     public TextualAnswer(String value, Question question) {
-        if (!(question.getType() instanceof StringType)) {
+        if (question.getType() != QuestionType.STRING) {
             throw new AnswerError();
         }
 

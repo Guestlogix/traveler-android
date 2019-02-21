@@ -13,4 +13,9 @@ public class SpinnerDescriptor extends InputDescriptor {
      * Leave null, if no options were selected yet.
      */
     public Integer value;
+
+    /**
+     * Error for the descriptor.
+     */
+    public String error;
 }

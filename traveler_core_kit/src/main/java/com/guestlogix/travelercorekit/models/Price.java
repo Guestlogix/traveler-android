@@ -57,6 +57,8 @@ public class Price implements Serializable {
                     case "currency":
                         currency = JsonReaderHelper.readString(reader);
                         break;
+                    default:
+                        reader.skipValue();
                 }
             }
             reader.endObject();

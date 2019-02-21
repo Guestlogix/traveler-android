@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingBottom="@dimen/padding_small">
+
+    <CheckedTextView
+            android:id="@android:id/text1"
+            style="?android:attr/spinnerDropDownItemStyle"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/text_view_default"
+            android:ellipsize="marquee"/>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"/>
+
+</LinearLayout>

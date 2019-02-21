@@ -7,27 +7,18 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_large">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/title"
-            android:textSize="@dimen/text_view_default"
-            tools:text="Adult: 18-64"/>
+    <!--<Spinner-->
+    <!--android:id="@+id/spinner"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignParentEnd="true"-->
+    <!--android:textSize="@dimen/text_view_large"/>-->
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/subTitle"
-            android:textSize="@dimen/text_view_xsmall"
-            tools:text="starting at $100.00"
-            android:layout_below="@id/title"/>
-
-    <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:textSize="@dimen/text_view_large"/>
+    <AutoCompleteTextView
+            android:id="@+id/autocomplete"
+            android:completionThreshold="0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 </RelativeLayout>

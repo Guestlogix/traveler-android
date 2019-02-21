@@ -16,7 +16,7 @@ public class MaxQuantityValidationRule extends ValidationRule {
      * @return true if the validation passes.
      */
     @Override
-    boolean validate(Answer answer) {
+    public boolean validate(Answer answer) {
         try {
             int value = Integer.parseInt(answer.getCodedValue());
 

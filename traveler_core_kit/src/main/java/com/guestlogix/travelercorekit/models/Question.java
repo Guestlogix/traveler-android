@@ -22,13 +22,19 @@ public class Question {
     private String description;
     private QuestionType type;
     private List<ValidationRule> validationRules;
+    private Object options;
 
-    public Question(String id, String title, String description, QuestionType type, List<ValidationRule> rules) {
+    public Question(String id, String title, String description, QuestionType type, List<ValidationRule> rules, Object options) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.type = type;
         this.validationRules = rules;
+        this.options = options;
+    }
+
+    public Object getOptions() {
+        return options;
     }
 
     public String getId() {
@@ -85,6 +91,7 @@ public class Question {
             String description = "";
             QuestionType type = null;
             List<ValidationRule> rules = new ArrayList<>();
+            Object options = null;
 
             List<Choice> choices = null;
 
@@ -121,11 +128,11 @@ public class Question {
             reader.endObject();
 
             // Add choices if it's a multiple choice question type.
-            if (type instanceof MultipleChoiceType) {
-                ((MultipleChoiceType) type).setChoices(choices);
+            if (type == QuestionType.MULTIPLE_CHOICE) {
+                options = choices;
             }
 
-            return new Question(id, title, description, type, rules);
+            return new Question(id, title, description, type, rules, options);
         }
 
         private QuestionType determineQuestionType(String type) throws ObjectMappingException {
@@ -133,11 +140,11 @@ public class Question {
             if (null != type) {
                 switch (type) {
                     case "MultipleChoice":
-                        return new MultipleChoiceType();
+                        return QuestionType.MULTIPLE_CHOICE;
                     case "Text":
-                        return new StringType();
+                        return QuestionType.STRING;
                     case "Quantity":
-                        return new QuantityType();
+                        return QuestionType.QUANTITY;
                     // Add more question types here.
                 }
             }

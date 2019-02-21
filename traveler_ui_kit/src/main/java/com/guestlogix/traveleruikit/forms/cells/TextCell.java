@@ -10,7 +10,7 @@ import com.guestlogix.traveleruikit.R;
 /**
  * Form cell which contains an EditText
  * Implements:
- * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
+ * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener} with value of type {@link CharSequence}
  * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellFocusChangeListener}
  */
 public class TextCell extends BaseCell {

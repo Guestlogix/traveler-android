@@ -85,13 +85,13 @@ public class FormBuilder {
     public void bindView(BaseCell cell, InputDescriptor descriptor, int type) {
         switch (FormType.valueOf(type)) {
             case SPINNER:
-                bindSpinnerCell(cell, descriptor);
+                bindSpinnerCell(cell, descriptor, ds);
                 break;
             case QUANTITY:
-                bindQuantityCell(cell, descriptor);
+                bindQuantityCell(cell, descriptor, ds);
                 break;
             case TEXT:
-                bindTextCell(cell, descriptor);
+                bindTextCell(cell, descriptor, ds);
                 break;
             case BUTTON:
                 bindButtonCell(cell, descriptor);
@@ -108,25 +108,25 @@ public class FormBuilder {
      * @param cell       Cell of type {@link SpinnerCell} to be bound.
      * @param descriptor Expects an input descriptor of type {@link SpinnerDescriptor}.
      */
-    public void bindSpinnerCell(BaseCell cell, InputDescriptor descriptor) {
+    public void bindSpinnerCell(BaseCell cell, InputDescriptor descriptor, BuilderDataSource ds) {
         SpinnerDescriptor s = (SpinnerDescriptor) descriptor;
         SpinnerCell c = (SpinnerCell) cell;
+
+        c.reload();
 
         if (s.title != null) {
             c.setTitle(s.title);
         }
 
-        if (s.subtitle != null) {
-            c.setSubtitle(s.subtitle);
-        }
-
         if (s.options != null) {
-            if (s.value != null) {
-                c.setOptions(s.options, s.value);
+            if (ds.getValue() != null) {
+                c.setOptions(s.options, (Integer) ds.getValue());
             } else {
                 c.setOptions(s.options);
             }
         }
+
+        c.setError(ds.getError());
     }
 
     /**
@@ -135,19 +135,19 @@ public class FormBuilder {
      * @param cell       Cell of type {@link TextCell} to be bound.
      * @param descriptor Expects an input descriptor of type {@link TextDescriptor}.
      */
-    public void bindTextCell(BaseCell cell, InputDescriptor descriptor) {
+    public void bindTextCell(BaseCell cell, InputDescriptor descriptor, BuilderDataSource ds) {
         TextDescriptor t = (TextDescriptor) descriptor;
         TextCell c = (TextCell) cell;
+
+        c.reload();
 
         if (t.hint != null) {
             c.setHint(t.hint);
         }
 
-        if (t.value != null) {
-            c.setValue(t.value);
-        }
+        c.setValue((String) ds.getValue());
 
-        c.setError(t.error);
+        c.setError(ds.getError());
 
         if (t.info != null) {
             c.setInfo(t.info);
@@ -160,7 +160,7 @@ public class FormBuilder {
      * @param cell       Cell of type {@link QuantityCell} to be bound.
      * @param descriptor Expects an input descriptor of type {@link QuantityDescriptor}.
      */
-    public void bindQuantityCell(BaseCell cell, InputDescriptor descriptor) {
+    public void bindQuantityCell(BaseCell cell, InputDescriptor descriptor, BuilderDataSource ds) {
         QuantityDescriptor q = (QuantityDescriptor) descriptor;
         QuantityCell c = (QuantityCell) cell;
 
@@ -172,9 +172,7 @@ public class FormBuilder {
             c.setSubtitle(q.subtitle);
         }
 
-        if (q.value != null) {
-            c.setQuantity(String.valueOf(q.value));
-        }
+        c.setQuantity(String.valueOf(ds.getValue()));
 
         c.setAdapter(new QuantityCell.QuantityCellAdapter() {
             @Override
@@ -197,7 +195,7 @@ public class FormBuilder {
             @NonNull
             @Override
             public Integer getValue() {
-                return null == q.value ? q.minQuantity : q.value;
+                return ds.getValue() != null ? (Integer) ds.getValue() : q.minQuantity;
             }
         });
     }
@@ -297,6 +295,14 @@ public class FormBuilder {
         BaseCell inflateCustomCell(Context context, ViewGroup parent);
 
         void bindCell(BaseCell cell, InputDescriptor descriptor, int type);
+    }
+
+    public interface BuilderDataSource {
+        @Nullable
+        Object getValue();
+
+        @Nullable
+        String getError();
     }
 }
 
