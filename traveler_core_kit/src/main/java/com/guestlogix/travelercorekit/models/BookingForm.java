@@ -8,14 +8,15 @@ import com.guestlogix.travelercorekit.validators.RequiredValidationRule;
 import com.guestlogix.travelercorekit.validators.ValidationError;
 import com.guestlogix.travelercorekit.validators.ValidationRule;
 
+import java.io.Serializable;
 import java.util.*;
 
 
-public class BookingForm {
+public class BookingForm implements Serializable {
     private List<QuestionGroup> questionGroups;
     private Map<IndexedQuestion, Answer> answerMap;
-    private Map<IndexedQuestion, List<BookingFormError>> errorMap;
-    private Set<IndexedQuestion> flatQuestions;
+    transient private Map<IndexedQuestion, List<BookingFormError>> errorMap;
+    transient private Set<IndexedQuestion> flatQuestions;
     private List<Pass> passes;
 
     public BookingForm(List<Pass> passes) {
@@ -196,7 +197,7 @@ public class BookingForm {
         }
     }
 
-    private class IndexedQuestion extends Question {
+    private class IndexedQuestion extends Question implements Serializable {
         int index;
 
         IndexedQuestion(String id, String title, String description, QuestionType type, List<ValidationRule> rules,

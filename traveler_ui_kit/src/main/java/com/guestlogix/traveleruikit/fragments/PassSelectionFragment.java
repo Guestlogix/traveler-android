@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +18,7 @@ import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
 import com.guestlogix.traveleruikit.forms.descriptors.QuantityDescriptor;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
-import com.guestlogix.viewmodels.BookingViewModel;
+import com.guestlogix.traveleruikit.viewmodels.BookingViewModel;
 
 import java.util.List;
 
@@ -46,21 +45,28 @@ public class PassSelectionFragment extends Fragment {
         priceLbl = view.findViewById(R.id.startingAtValueTextView);
         bookNowBtn = view.findViewById(R.id.bookNowBtn);
 
+        // Events.
         bookNowBtn.setOnClickListener(this::onBookNowClick);
 
         // View Model
         viewModel = ViewModelProviders.of(getActivity()).get(BookingViewModel.class);
-        viewModel.getPassesObservable().observe(this, this::onPasses);
-        viewModel.getPriceChangeObservable().observe(this, this::onPriceChange);
+
+        viewModel.getPasses().observe(getViewLifecycleOwner(), this::buildPassForm);
+        viewModel.getPrice().observe(getViewLifecycleOwner(), this::onPriceChange);
 
         return view;
     }
 
     private void onBookNowClick(View view) {
-        viewModel.bookNow();
+        viewModel.submitPasses();
     }
 
-    private void onPasses(List<Pass> passes) {
+    private void buildPassForm(List<Pass> passes) {
+        createNewDataSource(passes);
+        setFormListeners(passes);
+    }
+
+    private void createNewDataSource(List<Pass> passes) {
         form.setDataSource(new Form.DataSource() {
             @Override
             public int getSectionCount() {
@@ -74,7 +80,7 @@ public class PassSelectionFragment extends Fragment {
 
             @Override
             public int getType(int sectionId, int fieldId) {
-                return form.getType(FormType.QUANTITY); // Only have quantities for this fragment.
+                return form.getType(FormType.QUANTITY); // Only dealing with quantities for passes.
             }
 
             @Override
@@ -89,13 +95,11 @@ public class PassSelectionFragment extends Fragment {
 
             @Override
             public InputDescriptor getDescriptor(int sectionId, int fieldId, int type) {
-                // There is a bug with sending the value like this. Because it never gets updated.
                 Pass p = passes.get(fieldId);
                 QuantityDescriptor q = new QuantityDescriptor();
 
                 q.maxQuantity = p.getMaxQuantity();
                 q.minQuantity = 0;
-                q.value = viewModel.getPassQuantity(p);
                 q.title = p.getName();
                 q.subtitle = p.getDescription();
                 return q;
@@ -113,7 +117,9 @@ public class PassSelectionFragment extends Fragment {
                 return viewModel.getPassQuantity(passes.get(fieldId));
             }
         });
+    }
 
+    private void setFormListeners(List<Pass> passes) {
         form.setOnFormValueChangedListener(((sectionId, fieldId, value) -> {
             Pass p = passes.get(fieldId);
             viewModel.updateValueForPass(p, (Integer) value);

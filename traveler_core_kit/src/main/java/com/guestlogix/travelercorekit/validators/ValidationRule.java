@@ -2,7 +2,9 @@ package com.guestlogix.travelercorekit.validators;
 
 import com.guestlogix.travelercorekit.models.Answer;
 
-public abstract class ValidationRule {
+import java.io.Serializable;
+
+public abstract class ValidationRule implements Serializable {
     protected ValidationError error;
 
     /**

@@ -7,9 +7,10 @@ import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-public class Pass {
+public class Pass implements Serializable {
     private String id;
     private String name;
     private String description;
