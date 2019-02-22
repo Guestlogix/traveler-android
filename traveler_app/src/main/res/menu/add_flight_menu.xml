@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-            android:id="@+id/flight_add_action"
+            android:id="@+id/cancel_action"
             android:orderInCategory="100"
             app:showAsAction="ifRoom"
-            android:title="@string/add_flight"/>
+            android:title="@string/cancel"/>
 </menu>

@@ -13,11 +13,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
+import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.traveler.R;
+import com.guestlogix.traveler.viewmodels.SearchFlightResultViewModel;
+import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +31,7 @@ public class SearchFlightFragment extends Fragment {
     private TextView departureDateEditText;
     private TextView searchFlightsButton;
     private View view;
+    private SearchFlightResultViewModel searchFlightResultViewModel;
 
     private final Calendar departureDateCalendar = Calendar.getInstance();
     private final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9][0-9]{0,3}|[0-9]{0,3}[1-9])$");
@@ -35,6 +40,8 @@ public class SearchFlightFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        searchFlightResultViewModel = ViewModelProviders.of(getActivity()).get(SearchFlightResultViewModel.class);
+
         view = inflater.inflate(R.layout.fragment_flight_search, container, false);
 
         flightNumberEditText = view.findViewById(R.id.flightNumberEditText);
@@ -56,10 +63,14 @@ public class SearchFlightFragment extends Fragment {
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             hideKeyboard(getActivity());
-            SearchFlightFragmentDirections.FlightSearchResultAction directions = SearchFlightFragmentDirections
-                    .flightSearchResultAction(departureDate, flightNumber);
+            try {
+                Date date = DateHelper.getDateTimeAsObject(departureDate);
+                FlightQuery flightQuery = new FlightQuery(flightNumber, date);
+                searchFlightResultViewModel.flightSearch(flightQuery);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-            Navigation.findNavController(this.view).navigate(directions);
         } else {
             validateFlightNumber(flightNumber);
             validateFlightDate(departureDate);

@@ -9,12 +9,17 @@ import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
+import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
+import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import java.util.List;
 
-public class SearchFlightResultViewModel extends ViewModel {
+import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.ERROR;
+import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.LOADING;
+import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.SUCCESS;
+
+public class SearchFlightResultViewModel extends StatefulViewModel {
     private MutableLiveData<List<Flight>> flightsList;
-    private SingleLiveEvent<FlightSearchState> flightSearchState = new SingleLiveEvent<>();
     private FlightSearchRepository flightSearchRepository;
 
     public SearchFlightResultViewModel() {
@@ -25,31 +30,25 @@ public class SearchFlightResultViewModel extends ViewModel {
     public LiveData<List<Flight>> getObservableFlights() {
         return flightsList;
     }
-    public SingleLiveEvent<FlightSearchState> getFlightSearchState() {
-        return flightSearchState;
-    }
+
 
     public void flightSearch(FlightQuery query) {
-        flightSearchState.setValue(FlightSearchState.LOADING);
+        status.postValue(LOADING);
         flightSearchRepository.flightSearch(query, flightSearchCallback);
     }
 
     private FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
         @Override
         public void onFlightSearchSuccess(List<Flight> flights) {
-            flightSearchState.setValue(FlightSearchState.SUCCESS);
             flightsList.postValue(flights);
+            status.setValue(SUCCESS);
         }
 
         @Override
         public void onFlightSearchError(TravelerError error) {
-            flightSearchState.setValue(FlightSearchState.ERROR);
+            status.setValue(ERROR);
         }
     };
 
-    public enum FlightSearchState {
-        LOADING,
-        SUCCESS,
-        ERROR
-    }
+
 }

@@ -19,7 +19,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class CatalogViewModel extends ViewModel {
     public static final int ADD_FLIGHT_REQUEST_CODE = 1;
-    public static final String EXRTA_FLIGHT = "extra_flight";
+    public static final String EXTRA_FLIGHT = "extra_flight";
     private MutableLiveData<List<Flight>> flightsList;
     private MutableLiveData<List<CatalogGroup>> catalogGroupList;
     private CatalogSearchRepository catalogRepository;
@@ -84,7 +84,7 @@ public class CatalogViewModel extends ViewModel {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case ADD_FLIGHT_REQUEST_CODE:
-                    Flight flight = (Flight) data.getExtras().getSerializable(EXRTA_FLIGHT);
+                    Flight flight = (Flight) data.getExtras().getSerializable(EXTRA_FLIGHT);
                     addFlight(flight);
                     break;
             }

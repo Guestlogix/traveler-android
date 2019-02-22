@@ -16,6 +16,7 @@ import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.CatalogWidgetViewModel;
+import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class CatalogWidgetFragment extends Fragment implements TravelerErrorFrag
     private View catalogFragmentView;
     private CatalogWidgetViewModel catalogWidgetViewModel;
     private List<Flight> flights = new ArrayList<>();
+
     public CatalogWidgetFragment() {
         // Required empty public constructor
     }
@@ -47,9 +49,8 @@ public class CatalogWidgetFragment extends Fragment implements TravelerErrorFrag
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(catalogFragmentView.findViewById(R.id.catalogHostFragment));
-
         catalogWidgetViewModel = ViewModelProviders.of(getActivity()).get(CatalogWidgetViewModel.class);
-        catalogWidgetViewModel.getViewStateObservable().observe(this, this::onStateChange);
+        catalogWidgetViewModel.getStatus().observe(this, this::onStateChange);
 
         updateCatalog(new ArrayList<>());
     }
@@ -59,12 +60,12 @@ public class CatalogWidgetFragment extends Fragment implements TravelerErrorFrag
         fetchCatalog();
     }
 
-    private void fetchCatalog(){
+    private void fetchCatalog() {
         CatalogQuery catalogQuery = new CatalogQuery(flights);
         catalogWidgetViewModel.updateCatalog(catalogQuery);
     }
 
-    private void onStateChange(CatalogWidgetViewModel.CatalogWidgetViewState state) {
+    private void onStateChange(StatefulViewModel.State state) {
         switch (state) {
             case LOADING:
                 navController.navigate(R.id.loading_action);

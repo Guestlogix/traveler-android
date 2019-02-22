@@ -1,6 +1,5 @@
 package com.guestlogix.traveleruikit.viewmodels;
 
-import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
