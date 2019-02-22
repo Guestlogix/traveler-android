@@ -2,7 +2,6 @@ package com.guestlogix.traveleruikit.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Catalog;
@@ -13,15 +12,12 @@ import com.guestlogix.traveleruikit.repositories.CatalogWidgetRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CatalogWidgetViewModel extends ViewModel {
+import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.*;
+
+public class CatalogWidgetViewModel extends StatefulViewModel {
 
     private CatalogWidgetRepository catalogWidgetRepository;
     private MutableLiveData<List<CatalogGroup>> catalogGroupList;
-    private MutableLiveData<CatalogWidgetViewState> viewState = new MutableLiveData<>();
-
-    public LiveData<CatalogWidgetViewState> getViewStateObservable() {
-        return viewState;
-    }
 
     public LiveData<List<CatalogGroup>> getGroupsObservable() {
         return catalogGroupList;
@@ -34,8 +30,7 @@ public class CatalogWidgetViewModel extends ViewModel {
     }
 
     public void updateCatalog(CatalogQuery catalogQuery) {
-        viewState.postValue(CatalogWidgetViewState.LOADING);
-        viewState.setValue(CatalogWidgetViewState.LOADING);
+        status.postValue(LOADING);
         catalogWidgetRepository.catalogSearch(catalogQuery, catalogSearchCallback);
     }
 
@@ -43,12 +38,12 @@ public class CatalogWidgetViewModel extends ViewModel {
         @Override
         public void onCatalogSearchSuccess(Catalog catalog) {
             catalogGroupList.postValue(catalog.getGroups());
-            viewState.postValue(CatalogWidgetViewState.SUCCESS);
+            status.postValue(SUCCESS);
         }
 
         @Override
         public void onCatalogSearchError(TravelerError error) {
-            viewState.postValue(CatalogWidgetViewState.ERROR);
+            status.postValue(ERROR);
         }
     };
 

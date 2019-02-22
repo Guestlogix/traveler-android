@@ -40,7 +40,7 @@ public class CatalogActivity extends AppCompatActivity {
                 startActivityForResult(addFlightIntent, CatalogViewModel.ADD_FLIGHT_REQUEST_CODE);
                 return true;
             default:
-                return true;
+                return false;
         }
     }
 
