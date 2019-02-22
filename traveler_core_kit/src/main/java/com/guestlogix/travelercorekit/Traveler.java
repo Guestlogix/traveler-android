@@ -2,12 +2,7 @@ package com.guestlogix.travelercorekit;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
-import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
-import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
-import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
-import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
-import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
+import com.guestlogix.travelercorekit.callbacks.*;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.*;
@@ -21,7 +16,6 @@ import java.util.List;
 
 public class Traveler {
     private static Traveler mLocalInstance;
-    private static final String TAG = "Traveler";
     private TaskManager mTaskManager = new TaskManager();
     private Session mSession;
 
@@ -55,11 +49,7 @@ public class Traveler {
         BlockTask sessionBeginBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                if (TextUtils.isEmpty(sessionBeginTask.getSession().getAuthToken().getValue())) {
-                    Log.v("Traveler", "Could not Find Token on disk, continue fetch token task...");
-                } else {
-                    Log.v("Traveler", "Found Token on disk: " + sessionBeginTask.getSession().getAuthToken().getValue());
-
+                if (!TextUtils.isEmpty(sessionBeginTask.getSession().getAuthToken().getValue())) {
                     authTokenFetchTask.cancel();
                     authTokenFetchBlockTask.cancel();
                 }
