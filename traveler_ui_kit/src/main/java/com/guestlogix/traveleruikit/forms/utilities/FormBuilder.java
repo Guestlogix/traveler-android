@@ -82,7 +82,7 @@ public class FormBuilder {
         }
     }
 
-    public void bindView(BaseCell cell, InputDescriptor descriptor, int type) {
+    public void bindView(BaseCell cell, InputDescriptor descriptor, int type, BuilderDataSource ds) {
         switch (FormType.valueOf(type)) {
             case SPINNER:
                 bindSpinnerCell(cell, descriptor, ds);
