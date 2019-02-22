@@ -64,7 +64,7 @@ public class SearchFlightFragment extends Fragment {
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             hideKeyboard(getActivity());
             try {
-                Date date = DateHelper.getDateTimeAsObject(departureDate);
+                Date date = DateHelper.parseISO8601(departureDate);
                 FlightQuery flightQuery = new FlightQuery(flightNumber, date);
                 searchFlightResultViewModel.flightSearch(flightQuery);
             } catch (ParseException e) {
