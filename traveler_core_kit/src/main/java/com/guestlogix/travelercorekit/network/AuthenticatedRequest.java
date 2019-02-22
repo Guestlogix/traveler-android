@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 public class AuthenticatedRequest implements NetworkTask.Request {

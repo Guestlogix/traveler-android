@@ -1,7 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.Log;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
@@ -51,7 +50,6 @@ public class Price implements Serializable {
             reader.beginObject();
             while (reader.hasNext()) {
                 String name = reader.nextName();
-                Log.d("Price", "Key:" + name);
                 switch (name) {
                     case "value":
                         value = JsonReaderHelper.readDouble(reader);

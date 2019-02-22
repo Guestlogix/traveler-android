@@ -2,14 +2,12 @@ package com.guestlogix.traveleruikit.fragments;
 
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageView;
+import android.widget.TextView;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
@@ -62,13 +60,10 @@ public class CatalogWidgetSuccessFragment extends Fragment {
 
         @Override
         public void onSeeAllClick(int sectionPosition) {
-            Log.v("CatalogWidgetFragment", "Clicked SeeAll for:" + sectionPosition);
         }
 
         @Override
         public void onItemClick(int sectionPosition, int itemIndex) {
-            Log.v("CatalogWidgetFragment", "Clicked Item " + itemIndex + " for:" + sectionPosition);
-
             CatalogItem catalogItem = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
 
             CatalogWidgetSuccessFragmentDirections.CatalogItemDetailsAction directions = CatalogWidgetSuccessFragmentDirections.catalogItemDetailsAction(catalogItem);

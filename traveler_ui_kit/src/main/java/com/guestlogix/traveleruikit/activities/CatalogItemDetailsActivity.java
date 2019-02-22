@@ -1,25 +1,22 @@
 package com.guestlogix.traveleruikit.activities;
 
-import android.util.Log;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.CatalogItem;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_ACTION;
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_MESSAGE;
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_TITLE;
+import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
 
 public class CatalogItemDetailsActivity extends AppCompatActivity implements TravelerErrorFragment.OnErrorInteractionListener {
 
     public static final String ARG_CATALOG_ITEM = "catalog_item";
-    private static final String TAG = "Traveler UI Kit";
 
     private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
     private NavController navController;
@@ -41,7 +38,7 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Tra
             catalogItem = (CatalogItem) extras.getSerializable(ARG_CATALOG_ITEM);
             catalogItemDetailsViewModel.setCatalogItem(catalogItem);
         } else {
-            Log.e(TAG, String.format(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, this.getLocalClassName()));
+            TravelerLog.e(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, this.getLocalClassName());
             finish();
         }
     }

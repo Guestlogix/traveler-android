@@ -59,7 +59,6 @@ public class Traveler {
                     Log.v("Traveler", "Could not Find Token on disk, continue fetch token task...");
                 } else {
                     Log.v("Traveler", "Found Token on disk: " + sessionBeginTask.getSession().getAuthToken().getValue());
-                    Log.v("Traveler", "Cancelling fetch token tasks");
 
                     authTokenFetchTask.cancel();
                     authTokenFetchBlockTask.cancel();
@@ -84,7 +83,6 @@ public class Traveler {
      * @param flightSearchCallback Callback methods which will be executed after the data is fetched.
      */
     public static void flightSearch(FlightQuery flightQuery, FlightSearchCallback flightSearchCallback) {
-
         if (null == mLocalInstance) {
             flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
@@ -152,7 +150,6 @@ public class Traveler {
             catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             AuthenticatedRequest request = Router.getCatalogItem(mLocalInstance.mSession, catalogItem, mLocalInstance.mSession.getContext());
-
             AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
 
             BlockTask searchGroupBlockTask = new BlockTask() {
@@ -198,7 +195,7 @@ public class Traveler {
                 protected void main() {
                     if (null != checkAvailabilityTask.getError()) {
                         checkAvailabilityCallback.onCheckAvailabilityError(checkAvailabilityTask.getError());
-                        Log.e("Traveler", checkAvailabilityTask.getError().toString());
+                        TravelerLog.e(checkAvailabilityTask.getError().toString());
                     } else {
                         checkAvailabilityCallback.onCheckAvailabilitySuccess(checkAvailabilityTask.getResource());
                     }
@@ -219,9 +216,7 @@ public class Traveler {
      * @param fetchPassesCallback Callback methods which will be executed after the data is fetched.
      */
     public static void fetchPass(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
-        Log.d(TAG, "fetching passes");
         if (null == mLocalInstance) {
-            Log.i(TAG, "Cannot use Traveler before initializing");
             fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             if (bookingContext.getSelectedDate() == null) {

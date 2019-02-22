@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +36,6 @@ import java.util.Map;
  */
 @SuppressLint("UseSparseArrays")
 public class Form extends FrameLayout {
-    private static final String TAG = "Form";
 
     private RecyclerView cellsRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -96,9 +94,7 @@ public class Form extends FrameLayout {
         Pair<Integer, Integer> p = new Pair<>(sectionId, fieldId);
         Integer pos = pairToPos.get(p);
 
-        if (pos == null) {
-            Log.w(TAG, "Could not find position to scroll to");
-        } else {
+        if (pos != null) {
             layoutManager.scrollToPosition(pos);
         }
     }
@@ -108,9 +104,7 @@ public class Form extends FrameLayout {
         Pair<Integer, Integer> p = new Pair<>(sectionId, -1);
         Integer pos = pairToPos.get(p);
 
-        if (pos == null) {
-            Log.w(TAG, "Could not find position to scroll to");
-        } else {
+        if (pos != null) {
             if (pos != 0) {
                 layoutManager.scrollToPosition(pos);
             }
@@ -211,13 +205,11 @@ public class Form extends FrameLayout {
         @Override
         public int getViewType(int position) {
             if (!posToType.containsKey(position)) {
-                Log.e("Form", "Type is not defined");
                 return 0;
             }
 
             Integer type = posToType.get(position);
             if (type == null) {
-                Log.w(TAG, String.format("Could not match type for position %d, using default 0", position));
                 type = 0;
             }
             return type;
@@ -241,8 +233,6 @@ public class Form extends FrameLayout {
                 } else {
                     builder.bindHeaderCell(cell, dataSource.getTitle(p.first), dataSource.getDisclaimer(p.first));
                 }
-            } else {
-                Log.e(TAG, "Position/Type was expected, but got null");
             }
         }
     };

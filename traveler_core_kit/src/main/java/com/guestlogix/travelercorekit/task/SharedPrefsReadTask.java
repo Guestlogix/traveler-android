@@ -2,7 +2,6 @@ package com.guestlogix.travelercorekit.task;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class SharedPrefsReadTask extends SharedPrefsTask {
 
@@ -22,8 +21,6 @@ public class SharedPrefsReadTask extends SharedPrefsTask {
 
     @Override
     public void execute() {
-        Log.v("Traveler", "SharedPrefsReadTask  execute()");
-
         if (TextUtils.isEmpty(mKey)) {
             mError = new SharedPrefsReadError();
             finish();

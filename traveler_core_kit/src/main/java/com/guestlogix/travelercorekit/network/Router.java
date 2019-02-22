@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.models.*;
-import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.task.NetworkTask;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import org.json.JSONObject;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,7 +24,7 @@ public class Router {
         try {
             return new URL(BASE_URL + path + "?" + urlEncodeUTF8(queryParams));
         } catch (MalformedURLException e) {
-            Log.e("Router", "Bad URL: " + BASE_URL + path);
+            TravelerLog.e("Bad URL: %s", BASE_URL + path);
             return null;
         }
     }

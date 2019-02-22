@@ -1,6 +1,6 @@
 package com.guestlogix.travelercorekit.task;
 
-import android.util.Log;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.util.concurrent.Semaphore;
 
@@ -22,7 +22,7 @@ class TaskWrapper implements Runnable, TaskObserver {
         try {
             mSemephore.acquire();
         } catch (InterruptedException e) {
-            Log.e("TaskWrapper", "Could not block thread");
+            TravelerLog.e("Could not block thread");
         }
 
         mTask.removeObserver(this);

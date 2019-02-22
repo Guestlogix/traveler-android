@@ -18,8 +18,6 @@ public class SharedPrefsWriteTask extends SharedPrefsTask {
 
     @Override
     public void execute() {
-        Log.v("Traveler", "SharedPrefsWriteTask: execute()");
-
         if (TextUtils.isEmpty(mKey)) {
             //throw empty key exception
             finish();
