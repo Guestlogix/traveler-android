@@ -1,8 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class QuestionGroup {
+public class QuestionGroup implements Serializable {
     private String title;
     private String disclaimer;
     private List<Question> questions;

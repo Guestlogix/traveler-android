@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,9 +8,10 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.BookingContext;
+import com.guestlogix.travelercorekit.models.BookingForm;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
-import com.guestlogix.viewmodels.BookingViewModel;
+import com.guestlogix.traveleruikit.viewmodels.BookingViewModel;
 
 import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
 
@@ -23,9 +25,10 @@ import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
 public class BookingActivity extends AppCompatActivity implements TravelerErrorFragment.OnErrorInteractionListener {
 
     public static final String ARG_BOOKING_CONTEXT = "booking_context";
+    public static final String RESULT_BOOKING_FORM = "booking_form";
     private static final String TAG = "Traveler UI Kit";
 
-    private BookingViewModel questionsViewModel;
+    private BookingViewModel bookingViewModel;
     private NavController navController;
     private BookingContext bookingContext;
 
@@ -39,11 +42,11 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
         if (null != extras && extras.containsKey(ARG_BOOKING_CONTEXT)) {
             navController = Navigation.findNavController(this, R.id.supplierInformationHostFragment);
 
-            questionsViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
-            questionsViewModel.getStatus().observe(this, this::onStateChange);
+            bookingViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
+            bookingViewModel.getStatus().observe(this, this::onStateChange);
 
             bookingContext = (BookingContext) extras.getSerializable(ARG_BOOKING_CONTEXT);
-            questionsViewModel.setBookingContext(bookingContext);
+            bookingViewModel.setBookingContext(bookingContext);
         } else {
             Log.e(TAG, String.format(getString(R.string.no_argument_exception), ARG_BOOKING_CONTEXT, this.getLocalClassName()));
             finish();
@@ -52,6 +55,9 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
 
     private void onStateChange(BookingViewModel.State state) {
         switch (state) {
+            case SUCCESS:
+                finishActivityWithResult();
+                break;
             case LOADING:
                 navController.navigate(R.id.loading_action);
                 break;
@@ -74,6 +80,15 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
 
     @Override
     public void onRetry() {
-        questionsViewModel.setBookingContext(bookingContext);
+        bookingViewModel.setBookingContext(bookingContext);
+    }
+
+    private void finishActivityWithResult() {
+        BookingForm result = bookingViewModel.getBookingFormObject();
+
+        Intent _result = new Intent();
+        _result.putExtra(RESULT_BOOKING_FORM, result);
+        setResult(0, _result);
+        finish();
     }
 }

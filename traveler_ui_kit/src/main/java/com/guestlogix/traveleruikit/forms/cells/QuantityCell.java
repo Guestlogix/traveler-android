@@ -78,6 +78,8 @@ public class QuantityCell extends BaseCell {
             np.setMinValue(adapter.getMinQuantity());
             np.setWrapSelectorWheel(false);
 
+            np.setValue(adapter.getValue());
+
             accept.setOnClickListener(v2 -> {
                 Integer value = np.getValue();
                 quantity.setText(String.valueOf(value));

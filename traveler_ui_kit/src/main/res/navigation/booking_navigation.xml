@@ -31,7 +31,7 @@
             android:id="@+id/supplier_questions_destination"
             android:name="com.guestlogix.traveleruikit.fragments.SupplierQuestionsFragment"
             android:label="Pass Selection"
-            tools:layout="@layout/fragment_pass_selection">
+            tools:layout="@layout/fragment_supplier_questions">
     </fragment>
 
 

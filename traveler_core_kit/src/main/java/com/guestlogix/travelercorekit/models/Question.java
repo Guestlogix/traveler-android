@@ -13,10 +13,11 @@ import com.guestlogix.travelercorekit.validators.RequiredValidationRule;
 import com.guestlogix.travelercorekit.validators.ValidationRule;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Question {
+public class Question implements Serializable {
     private String id;
     private String title;
     private String description;

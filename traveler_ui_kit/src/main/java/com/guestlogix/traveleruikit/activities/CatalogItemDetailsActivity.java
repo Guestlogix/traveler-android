@@ -4,17 +4,16 @@ import android.os.Bundle;
 import androidx.core.util.Pair;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.*;
-import androidx.navigation.fragment.FragmentNavigator;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragmentDirections;
 import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
-import com.guestlogix.viewmodels.CatalogItemDetailsViewModel;
-import com.guestlogix.viewmodels.StatefulViewModel;
+import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
+import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
 

@@ -1,6 +1,8 @@
 package com.guestlogix.travelercorekit.models;
 
-public abstract class Answer {
+import java.io.Serializable;
+
+public abstract class Answer implements Serializable {
     protected String questionId;
     protected String codedValue;
 
