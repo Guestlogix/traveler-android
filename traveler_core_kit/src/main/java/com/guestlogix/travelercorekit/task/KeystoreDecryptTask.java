@@ -29,8 +29,6 @@ public class KeystoreDecryptTask extends Task {
 
     @Override
     public void execute() {
-        Log.v("Traveler", "KeystoreDecryptTask: execute(): Token: ");
-
 //        decryptData(mKey);
 
     }

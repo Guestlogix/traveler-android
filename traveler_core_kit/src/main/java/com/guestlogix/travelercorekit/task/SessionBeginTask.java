@@ -1,6 +1,5 @@
 package com.guestlogix.travelercorekit.task;
 
-import android.util.Log;
 import com.guestlogix.travelercorekit.models.Session;
 
 public class SessionBeginTask extends Task {
@@ -18,8 +17,6 @@ public class SessionBeginTask extends Task {
 
     @Override
     public void execute() {
-        Log.v("Traveler", "SessionBeginTask execute()");
-
         //read encrypted data from shared prefs
         SharedPrefsReadTask sharedPrefsReadTask = new SharedPrefsReadTask(mSession.getContext(), mSession.getApiKey());
 

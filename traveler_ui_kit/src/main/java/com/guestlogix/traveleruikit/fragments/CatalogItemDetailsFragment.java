@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +22,12 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.adapters.TimeSlotSpinnerAdapter;
-import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
+import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
 import java.util.Calendar;
 import java.util.List;
@@ -38,7 +38,6 @@ import java.util.Locale;
  */
 public class CatalogItemDetailsFragment extends Fragment {
     private static final String ARG_CATALOG_ITEM = "catalog_item";
-    private static final String TAG = "Item Details";
 
     private View mView;
     private NestedScrollView mainNestedScrollView;
@@ -101,7 +100,7 @@ public class CatalogItemDetailsFragment extends Fragment {
             catalogItem = (CatalogItem) bundle.getSerializable(ARG_CATALOG_ITEM);
         } else {
             //TODO throw runtime exception, fragment needs catalog item to show details
-            Log.e(TAG, String.format(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, CatalogItemDetailsFragment.class.getName()));
+            TravelerLog.e(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, CatalogItemDetailsFragment.class.getName());
         }
     }
 
@@ -225,12 +224,10 @@ public class CatalogItemDetailsFragment extends Fragment {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             catalogItemDetailsViewModel.setSelectedTime(position);
-            Log.v("CatalogItemDetails", String.format("Selected %d", position));
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            Log.v("CatalogItemDetails", String.format("Selected none"));
         }
     };
 

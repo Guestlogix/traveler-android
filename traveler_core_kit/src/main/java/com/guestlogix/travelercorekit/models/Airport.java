@@ -1,12 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.Log;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.io.IOException;
 
@@ -34,13 +34,11 @@ public class Airport {
     }
 
     public static class AirportObjectMappingFactory implements ObjectMappingFactory<Airport> {
-        private static final String TAG = "AirportMapping";
         @Override
         public Airport instantiate(JsonReader reader) throws ObjectMappingException {
             try {
                 return readAirport(reader);
             } catch (IOException e) {
-                Log.e(TAG, "Error reading Airport");
                 throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
             }
         }

@@ -9,6 +9,7 @@ import com.guestlogix.travelercorekit.models.Availability;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.repositories.CatalogItemDetailsRepository;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 
@@ -132,29 +133,24 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
             if (availabilityList.size() > 0) {
                 Availability availability = availabilityList.get(0);
                 if (availability.isAvailable()) {
-                    Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Available:" + availabilityList.get(0).isAvailable());
                     availabilityStatus.postValue(CheckAvailabilityState.AVAILABLE);
                     if (availability.getTimes().size() > 0) {
-                        Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Slots: " + availability.getTimes().size());
                         setTimeRequired(true);
                     } else {
-                        Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: No Slots");
                         setTimeRequired(false);
                     }
                     extractPrettyTimeSlots(availabilityList);
                 } else {
-                    Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not Available because availability false");
                     availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
                 }
             } else {
-                Log.d("CatalogItemDetailsVM", "onCheckAvailabilitySuccess: Not available because empty response");
                 availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
             }
         }
 
         @Override
         public void onCheckAvailabilityError(TravelerError error) {
-            Log.d("CatalogItemDetailsVM", "onCheckAvailabilityError: ");
+            TravelerLog.e("Failed to check availability. Error Code: %d", error.getCode());
             availabilityStatus.postValue(CheckAvailabilityState.ERROR);
         }
     };

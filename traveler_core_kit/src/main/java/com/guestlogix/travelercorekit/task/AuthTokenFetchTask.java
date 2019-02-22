@@ -1,7 +1,6 @@
 package com.guestlogix.travelercorekit.task;
 
 import android.content.Context;
-import android.util.Log;
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.Token;
@@ -31,8 +30,6 @@ public class AuthTokenFetchTask extends Task {
 
     @Override
     public void execute() {
-        Log.v("Traveler", "AuthTokenFetchTask execute()");
-
         //Writing encrypted token to shared prefs
         SharedPrefsWriteTask sharedPrefsWriteTask = new SharedPrefsWriteTask(mContext, mApiKey);
 
@@ -43,7 +40,6 @@ public class AuthTokenFetchTask extends Task {
         NetworkTask fetchTokenNetworkTask = new NetworkTask(Router.authenticate(mApiKey, mContext), new JsonObjectMapper<>(new Token.AuthTokenObjectMappingFactory(), new JsonObjectMapperCallback<Token>() {
             @Override
             public void onSuccess(Token token) {
-                Log.v("Traveler", "Fetched  Token:" + token.getValue());
                 //keystoreEncryptTask.setData(token.getValue().getBytes());
                 sharedPrefsWriteTask.setData(token.getValue());
                 mToken = token;
@@ -51,7 +47,6 @@ public class AuthTokenFetchTask extends Task {
 
             @Override
             public void onError(TravelerError error) {
-                Log.v("Traveler", error.toString());
                 mError = error;
             }
         }));

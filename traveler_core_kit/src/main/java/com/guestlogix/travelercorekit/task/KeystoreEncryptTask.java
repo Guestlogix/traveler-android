@@ -3,7 +3,6 @@ package com.guestlogix.travelercorekit.task;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.util.Log;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
@@ -55,13 +54,11 @@ public class KeystoreEncryptTask extends Task {
         if (getState() == State.READY) {
             this.mData = data;
         } else {
-            Log.v("Traveler", "KeystoreEncryptTask: Invalid State, Task is already executing or finished ");
         }
     }
 
     @Override
     public void execute() {
-        Log.v("Traveler", "KeystoreEncryptTask: execute(): Token: ");
         try {
 
             new String(encryptText(mKey, mData));

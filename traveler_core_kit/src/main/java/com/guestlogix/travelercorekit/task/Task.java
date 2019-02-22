@@ -1,9 +1,9 @@
 package com.guestlogix.travelercorekit.task;
 
 import android.util.Log;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 
 public abstract class Task implements TaskObserver {
@@ -53,7 +53,7 @@ public abstract class Task implements TaskObserver {
             try {
                 mSemaphore.acquire();
             } catch (InterruptedException e) {
-                Log.e("TASK", "Could not acquire lock for dependencies. Will abort task.");
+                TravelerLog.e("Could not acquire lock for dependencies. Will abort task.");
                 mCancelled = true;
                 setState(State.FINISHED);
                 return;
@@ -106,12 +106,12 @@ public abstract class Task implements TaskObserver {
 
     final public void addDependency(Task task) {
         if (mState != State.READY) {
-            Log.e("TASK", "Cannot add dependency when task has already started or finished.");
+            TravelerLog.e("Cannot add dependency when task has already started or finished.");
             return;
         }
 
         if (task.getState() != State.READY) {
-            Log.e("TASK", "Dependent task must not have been started or finished.");
+            TravelerLog.e("Dependent task must not have been started or finished.");
             return;
         }
 
@@ -121,12 +121,12 @@ public abstract class Task implements TaskObserver {
 
     final public void removeDependency(Task task) {
         if (mState != State.READY) {
-            Log.e("TASK", "Cannot remove dependency when task has already started or finished.");
+            TravelerLog.e("Cannot remove dependency when task has already started or finished.");
             return;
         }
 
         if (task.getState() == State.READY) {
-            Log.e("TASK", "Dependent task must not have been started or finished.");
+            TravelerLog.e("Dependent task must not have been started or finished.");
             return;
         }
 

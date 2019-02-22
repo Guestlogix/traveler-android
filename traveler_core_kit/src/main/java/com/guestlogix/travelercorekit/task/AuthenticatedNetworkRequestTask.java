@@ -1,6 +1,5 @@
 package com.guestlogix.travelercorekit.task;
 
-import android.util.Log;
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
@@ -27,13 +26,11 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         mJsonObjectMapper = new JsonObjectMapper<>(mObjectMappingFactory, new JsonObjectMapperCallback<T>() {
             @Override
             public void onSuccess(T resource) {
-                Log.v("Traveler", "AuthenticatedNetworkRequestTask: onSuccess()");
                 mResource = resource;
             }
 
             @Override
             public void onError(TravelerError error) {
-                Log.v("Traveler", error.toString());
                 mError = error;
             }
         });
@@ -57,7 +54,6 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
             @Override
             protected void main() {
                 if (null == authTokenFetchTask.getError()) {
-                    Log.v("Traveler", "Setting Session token:" + authTokenFetchTask.getAuthToken().getValue());
                     //TODO: decouple headers from NetworkTask.Request and make it NetworkTask property to update it only in Network Task
                     //TODO: rewrite header new token
                     mSession.setAuthToken(authTokenFetchTask.getAuthToken());

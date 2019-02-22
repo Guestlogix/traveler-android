@@ -2,12 +2,12 @@ package com.guestlogix.traveleruikit.forms.utilities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.forms.cells.*;
 import com.guestlogix.traveleruikit.forms.descriptors.*;
 
@@ -32,7 +32,6 @@ import java.util.Map;
  */
 @SuppressLint("UseSparseArrays")
 public class FormBuilder {
-    public static final String TAG = "FormBuilder";
     private final Context context;
     private Map<Integer, CustomCellAdapter> customComponentMap = new HashMap<>();
     private static int FORM_TYPE_COUNT;
@@ -56,11 +55,8 @@ public class FormBuilder {
      * @return Type of the current custom cell.
      */
     public int registerCustomCell(@NonNull CustomCellAdapter strategy) {
-        Log.v(TAG, "Registering a new custom cell");
         int type = FORM_TYPE_COUNT + customCellCount;
         customComponentMap.put(type, strategy);
-
-        Log.i(TAG, String.format("Custom cell with type %d has been added to the builder", type));
         customCellCount++;
         return type;
     }
@@ -70,7 +66,6 @@ public class FormBuilder {
     }
 
     public BaseCell createFormCell(ViewGroup parent, int elementType) {
-        Log.v(TAG, String.format("Creating cell of type: %d", elementType));
         switch (FormType.valueOf(elementType)) {
             case HEADER:
                 return inflateHeader(parent);
@@ -88,7 +83,6 @@ public class FormBuilder {
     }
 
     public void bindView(BaseCell cell, InputDescriptor descriptor, int type) {
-        Log.v(TAG, String.format("Binding cell of type: %d", type));
         switch (FormType.valueOf(type)) {
             case SPINNER:
                 bindSpinnerCell(cell, descriptor);
@@ -239,7 +233,6 @@ public class FormBuilder {
     }
 
     public void bindCustomCell(BaseCell cell, InputDescriptor descriptor, int type) {
-        Log.v(TAG, "Attempting to bind custom cell type");
 
         if (customComponentMap.containsKey(type)) {
             CustomCellAdapter adapter = customComponentMap.get(type);
@@ -247,10 +240,10 @@ public class FormBuilder {
             if (null != adapter) {
                 adapter.bindCell(cell, descriptor, type);
             } else {
-                Log.w(TAG, "CustomCellAdapter is null, cannot proceed with view binding");
+                TravelerLog.e("CustomCellAdapter is null, cannot proceed with view binding");
             }
         } else {
-            Log.w(TAG, String.format("Requested custom type %d was not registered with the builder", type));
+            TravelerLog.e("Requested custom type %d was not registered with the builder", type);
         }
     }
 
@@ -286,6 +279,7 @@ public class FormBuilder {
             return adapter.inflateCustomCell(context, parent);
         }
 
+        TravelerLog.e("Cell type %d is not registered with the form builder.", type);
         throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
     }
 
