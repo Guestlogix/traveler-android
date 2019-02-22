@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.tasks;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;

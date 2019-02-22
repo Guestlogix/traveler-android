@@ -71,7 +71,7 @@ public class Availability {
                 switch (name) {
                     case "date":
                         try {
-                            date = DateHelper.getDateAsObject(JsonReaderHelper.readString(reader));
+                            date = DateHelper.parseDate(JsonReaderHelper.readString(reader));
                         } catch (ParseException e) {
                             throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, e.getMessage()));
                         }

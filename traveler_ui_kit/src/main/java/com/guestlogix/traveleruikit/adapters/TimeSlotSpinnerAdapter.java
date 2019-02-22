@@ -20,7 +20,7 @@ public class TimeSlotSpinnerAdapter extends ArrayAdapter<Long> {
     public View getDropDownView(int position, View convertView,
                                 ViewGroup parent) {
         TextView label = (TextView) super.getDropDownView(position, convertView, parent);
-        label.setText(DateHelper.getDayMinutesAsTimeString(getItem(position)));
+        label.setText(DateHelper.formatTime(getItem(position)));
 
         return label;
     }

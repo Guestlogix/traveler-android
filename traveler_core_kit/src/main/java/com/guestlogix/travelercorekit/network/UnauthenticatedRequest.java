@@ -1,6 +1,6 @@
 package com.guestlogix.travelercorekit.network;
 
-import com.guestlogix.travelercorekit.task.NetworkTask;
+import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import org.json.JSONObject;
 
 import java.io.IOException;

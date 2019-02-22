@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.tasks;
 
 import com.guestlogix.travelercorekit.models.Session;
 

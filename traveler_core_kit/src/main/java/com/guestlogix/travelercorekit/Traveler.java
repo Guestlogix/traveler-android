@@ -9,7 +9,7 @@ import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
 import com.guestlogix.travelercorekit.network.Router;
-import com.guestlogix.travelercorekit.task.*;
+import com.guestlogix.travelercorekit.tasks.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.util.List;
@@ -205,7 +205,7 @@ public class Traveler {
      * @param bookingContext      context for which to fetch.
      * @param fetchPassesCallback Callback methods which will be executed after the data is fetched.
      */
-    public static void fetchPass(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
+    public static void fetchPasses(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
         if (null == mLocalInstance) {
             fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {

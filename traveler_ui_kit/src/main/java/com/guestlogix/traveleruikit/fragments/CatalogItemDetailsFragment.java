@@ -166,7 +166,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     };
 
     private void setDateLabel() {
-        String selectedDate = DateHelper.getPrettyDateAsString(catalogItemDetailsViewModel.getSelectedDate().getTime());
+        String selectedDate = DateHelper.formatDate(catalogItemDetailsViewModel.getSelectedDate().getTime());
         if (null != selectedDate && !selectedDate.isEmpty()) {
             dateEditText.setText(selectedDate);
         } else {
@@ -176,7 +176,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     }
 
     private void setTimeLabel() {
-        String selectedTime = DateHelper.getDayMinutesAsTimeString(catalogItemDetailsViewModel.getSelectedTime());
+        String selectedTime = DateHelper.formatTime(catalogItemDetailsViewModel.getSelectedTime());
         if (null != selectedTime && !selectedTime.isEmpty()) {
             timeEditText.setText(selectedTime);
         } else {

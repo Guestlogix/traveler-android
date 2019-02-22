@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.tasks;
 
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 public class NetworkTask extends Task {
