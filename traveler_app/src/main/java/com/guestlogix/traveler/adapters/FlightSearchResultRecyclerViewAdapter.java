@@ -36,10 +36,10 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         holder.mItem = flightsList.get(position);
         holder.departureCityTextView.setText(flightsList.get(position).getDepartureAirport().getCity());
         holder.departureIataTextView.setText(flightsList.get(position).getDepartureAirport().getCode());
-        holder.departureTimeTextView.setText(DateHelper.getTimeAsString(flightsList.get(position).getDepartureDate()));
+        holder.departureTimeTextView.setText(DateHelper.formatTime(flightsList.get(position).getDepartureDate()));
         holder.arrivalCityTextView.setText(flightsList.get(position).getArrivalAirport().getCity());
         holder.arrivalIataTextView.setText(flightsList.get(position).getArrivalAirport().getCode());
-        holder.arrivalTimeTextView.setText(DateHelper.getTimeAsString(flightsList.get(position).getArrivalDate()));
+        holder.arrivalTimeTextView.setText(DateHelper.formatTime(flightsList.get(position).getArrivalDate()));
 
         holder.addFlightTextView.setTag(position);
         holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);

@@ -59,7 +59,7 @@ public class SearchFlightFragment extends Fragment {
 
     private void navigateToFlightSearchResults(View view) {
         String flightNumber = flightNumberEditText.getText().toString();
-        String departureDate = DateHelper.getDateTimeAsString(departureDateCalendar.getTime());
+        String departureDate = DateHelper.formatDateToISO8601(departureDateCalendar.getTime());
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
             hideKeyboard(getActivity());
@@ -85,7 +85,7 @@ public class SearchFlightFragment extends Fragment {
     };
 
     private void updateLabel() {
-        departureDateEditText.setText(DateHelper.getPrettyDateAsString(departureDateCalendar.getTime()));
+        departureDateEditText.setText(DateHelper.formatDate(departureDateCalendar.getTime()));
     }
 
     private Boolean isFlightNumberValid(String flightNumber) {

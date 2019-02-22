@@ -96,10 +96,10 @@ public class Flight implements Serializable {
                     destination = new Airport.AirportObjectMappingFactory().instantiate(reader);
                     break;
                 case "departureTime":
-                    departure = DateHelper.getDateTimeAsObject(JsonReaderHelper.readString(reader));
+                    departure = DateHelper.parseISO8601(JsonReaderHelper.readString(reader));
                     break;
                 case "arrivalTime":
-                    arrival = DateHelper.getDateTimeAsObject(JsonReaderHelper.readString(reader));
+                    arrival = DateHelper.parseISO8601(JsonReaderHelper.readString(reader));
                     break;
                 default:
                     reader.skipValue();

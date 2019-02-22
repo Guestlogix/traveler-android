@@ -6,7 +6,7 @@ import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
-import com.guestlogix.travelercorekit.task.NetworkTask;
+import com.guestlogix.travelercorekit.tasks.NetworkTask;
 
 import java.io.IOException;
 import java.io.InputStream;

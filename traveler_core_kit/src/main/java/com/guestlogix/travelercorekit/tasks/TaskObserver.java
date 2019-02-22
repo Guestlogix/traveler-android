@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.tasks;
 
 interface TaskObserver {
     void onStateChanged(Task task);
