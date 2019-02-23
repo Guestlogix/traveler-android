@@ -6,13 +6,13 @@
             app:startDestination="@+id/flight_search_dest">
     <fragment
             android:id="@+id/loading_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.TravelerLoadingFragment"
+            android:name="com.guestlogix.traveler.fragments.LoadingFragment"
             android:label="Loading"
             tools:layout="@layout/fragment_traveler_loading">
     </fragment>
     <fragment
             android:id="@+id/error_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.TravelerFragmentErrorFragment"
+            android:name="com.guestlogix.traveler.fragments.ErrorFragment"
             android:label="Error"
             tools:layout="@layout/fragment_traveler_error">
     </fragment>
@@ -35,6 +35,8 @@
     <action
             android:id="@+id/flight_search_action"
             app:launchSingleTop="true"
+            app:popUpTo="@id/flight_search_dest"
+            app:popUpToInclusive="true"
             app:destination="@+id/flight_search_dest"/>
     <action
             android:id="@+id/flight_search_result_action"
