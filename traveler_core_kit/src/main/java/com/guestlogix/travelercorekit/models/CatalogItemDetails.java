@@ -2,7 +2,6 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
@@ -136,7 +135,6 @@ public class CatalogItemDetails extends Product {
 
             while (reader.hasNext()) {
                 String name = reader.nextName();
-                Log.d("CatalogItemDetail", "Key:" + name);
                 switch (name) {
                     case "id":
                         id = JsonReaderHelper.readString(reader);

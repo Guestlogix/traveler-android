@@ -74,6 +74,10 @@ public class ActionStrip extends FrameLayout {
 
             state = ActionStripState.ENABLED; // Default behaviour.
             onStateChange();
+
+            actionButton.setOnClickListener(v -> {
+                if (onClickListener != null) onClickListener.onClick();
+            });
         }
     }
 
@@ -119,11 +123,13 @@ public class ActionStrip extends FrameLayout {
                 actionButton.setVisibility(VISIBLE);
                 progressBar.setVisibility(INVISIBLE);
                 actionButton.setEnabled(true);
+                actionButton.setAlpha(1f);
                 break;
             case DISABLED:
                 actionButton.setVisibility(VISIBLE);
                 progressBar.setVisibility(INVISIBLE);
                 actionButton.setEnabled(false);
+                actionButton.setAlpha(0.5f);
                 break;
         }
     }

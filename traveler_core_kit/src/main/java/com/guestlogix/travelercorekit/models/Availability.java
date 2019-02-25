@@ -38,14 +38,6 @@ public class Availability {
         return times;
     }
 
-    public void setTimes(List<Long> times) {
-        this.times = times;
-    }
-
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
-    }
-
     public boolean isAvailable() {
         return isAvailable;
     }
