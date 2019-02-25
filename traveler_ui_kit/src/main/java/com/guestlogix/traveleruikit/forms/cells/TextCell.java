@@ -1,6 +1,8 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
+import android.os.Build;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -50,6 +52,11 @@ public class TextCell extends BaseCell {
 
     public void setValue(CharSequence value) {
         editText.setText(value);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            editText.setText( Html.fromHtml(value.toString(), Html.FROM_HTML_MODE_COMPACT).toString());
+        } else {
+            editText.setText(Html.fromHtml(value.toString()).toString());
+        }
     }
 
     private void init() {

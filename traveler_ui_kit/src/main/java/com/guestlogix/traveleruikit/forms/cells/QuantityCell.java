@@ -1,6 +1,8 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
 import android.app.Dialog;
+import android.os.Build;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -41,6 +43,12 @@ public class QuantityCell extends BaseCell {
 
     public void setSubtitle(String subTitle) {
         this.subTitle.setText(subTitle);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            this.subTitle.setText(Html.fromHtml(subTitle, Html.FROM_HTML_MODE_COMPACT).toString());
+        } else {
+            this.subTitle.setText(Html.fromHtml(subTitle).toString());
+        }
     }
 
     public void setQuantity(String quantity) {
