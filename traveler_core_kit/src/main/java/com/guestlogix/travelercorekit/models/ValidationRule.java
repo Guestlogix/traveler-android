@@ -1,6 +1,7 @@
-package com.guestlogix.travelercorekit.validators;
+package com.guestlogix.travelercorekit.models;
 
 import com.guestlogix.travelercorekit.models.Answer;
+import com.guestlogix.travelercorekit.models.ValidationError;
 
 import java.io.Serializable;
 

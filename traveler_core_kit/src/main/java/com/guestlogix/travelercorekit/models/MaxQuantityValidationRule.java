@@ -1,6 +1,4 @@
-package com.guestlogix.travelercorekit.validators;
-
-import com.guestlogix.travelercorekit.models.Answer;
+package com.guestlogix.travelercorekit.models;
 
 public class MaxQuantityValidationRule extends ValidationRule {
     private final int maxQuantity;
