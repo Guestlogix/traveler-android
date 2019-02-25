@@ -19,40 +19,40 @@ public class KeystoreEncryptTask extends Task {
     private byte[] encryption;
     private byte[] iv;
 
-    private String mKey;
-    private byte[] mData;
-    private Error mError;
+    private String key;
+    private byte[] data;
+    private Error error;
 
     public enum ErrorCode {
         EMPTY_DATA, ENCRYPTION_ERROR
     }
 
     public class KeystoreWriteTaskError extends Error {
-        private ErrorCode mCode;
-        private String mMessage;
+        private ErrorCode code;
+        private String message;
 
         KeystoreWriteTaskError(ErrorCode code, String message) {
-            mCode = code;
-            mMessage = message;
+            this.code = code;
+            this.message = message;
         }
 
         public String toString() {
-            return mCode + mMessage;
+            return code + message;
         }
     }
 
     public KeystoreEncryptTask(String key) {
-        this.mKey = key;
+        this.key = key;
     }
 
     public String getKey() {
-        return mKey;
+        return key;
     }
 
     public void setData(byte[] data) {
 
         if (getState() == State.READY) {
-            this.mData = data;
+            this.data = data;
         } else {
         }
     }
@@ -61,28 +61,28 @@ public class KeystoreEncryptTask extends Task {
     public void execute() {
         try {
 
-            new String(encryptText(mKey, mData));
+            new String(encryptText(key, data));
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            mError = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
+            error = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
         } catch (NoSuchProviderException e) {
-            mError = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
+            error = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
-            mError = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
+            error = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            mError = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
+            error = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
             e.printStackTrace();
         } catch (InvalidAlgorithmParameterException e) {
-            mError = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
+            error = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
             e.printStackTrace();
         } catch (BadPaddingException e) {
-            mError = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
+            error = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
-            mError = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
+            error = new KeystoreWriteTaskError(ENCRYPTION_ERROR, e.getMessage());
             e.printStackTrace();
         } finally {
             finish();

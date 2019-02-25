@@ -1,7 +1,5 @@
 package com.guestlogix.travelercorekit.tasks;
 
-import android.util.Log;
-
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import java.io.IOException;
@@ -10,17 +8,17 @@ import java.security.cert.CertificateException;
 
 public class KeystoreDecryptTask extends Task {
 
-    private String mKey;
+    private String key;
     private byte[] mData;
     private static final int IV_LENGTH = 128;
 
     public KeystoreDecryptTask(String key) throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-        this.mKey = key;
+        this.key = key;
         initKeyStore();
     }
 
     public String getKey() {
-        return mKey;
+        return key;
     }
 
     public void setData(byte[] data) {
@@ -29,7 +27,7 @@ public class KeystoreDecryptTask extends Task {
 
     @Override
     public void execute() {
-//        decryptData(mKey);
+//        decryptData(key);
 
     }
 

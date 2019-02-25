@@ -13,24 +13,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
-    private ObjectMappingFactory<T> mObjectMappingFactory;
-    private JsonObjectMapperCallback<T> mCallback;
+    private ObjectMappingFactory<T> objectMappingFactory;
+    private JsonObjectMapperCallback<T> callback;
 
     public JsonObjectMapper(ObjectMappingFactory<T> objectMappingFactory, JsonObjectMapperCallback<T> callback) {
-        mObjectMappingFactory = objectMappingFactory;
-        mCallback = callback;
+        this.objectMappingFactory = objectMappingFactory;
+        this.callback = callback;
     }
 
     @Override
     public void onHandleResponse(InputStream stream) {
         try (JsonReader reader = new JsonReader(new InputStreamReader(stream))) {
-            T model = mObjectMappingFactory.instantiate(reader);
+            T model = objectMappingFactory.instantiate(reader);
 
-            mCallback.onSuccess(model);
+            callback.onSuccess(model);
         } catch (IOException e) {
-            mCallback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid JSON stream"));
+            callback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid JSON stream"));
         } catch (ObjectMappingException e) {
-            mCallback.onError(e.getError());
+            callback.onError(e.getError());
         }
     }
 }

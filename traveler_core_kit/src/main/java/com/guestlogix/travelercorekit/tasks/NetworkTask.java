@@ -14,9 +14,9 @@ import java.util.Map;
 
 public class NetworkTask extends Task {
 
-    private Request mRequest;
-    private TravelerError mError;
-    private ResponseHandler mResponseHandler;
+    private Request request;
+    private TravelerError error;
+    private ResponseHandler responseHandler;
 
     public interface Request {
         enum Method {
@@ -37,43 +37,43 @@ public class NetworkTask extends Task {
     }
 
     public void setRequest(Request mRequest) {
-        this.mRequest = mRequest;
+        this.request = mRequest;
     }
 
     public NetworkTask(Request request, ResponseHandler responseHandler) {
-        mRequest = request;
-        mResponseHandler = responseHandler;
+        this.request = request;
+        this.responseHandler = responseHandler;
     }
 
     public TravelerError getError() {
-        return mError;
+        return error;
     }
 
     @Override
     public void execute() {
         // Some initial error handling
-        if (mRequest == null) {
-            mError = new TravelerError(TravelerErrorCode.NO_REQUEST, null);
+        if (request == null) {
+            error = new TravelerError(TravelerErrorCode.NO_REQUEST, null);
             finish();
             return;
         }
 
         URL url = null;
         try {
-            url = mRequest.getURL();
+            url = request.getURL();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
         if (url == null) {
-            mError = new TravelerError(TravelerErrorCode.BAD_URL, null);
+            error = new TravelerError(TravelerErrorCode.BAD_URL, null);
             finish();
             return;
         }
 
         String protocol = url.getProtocol();
         if (protocol == null || !(protocol.equalsIgnoreCase("http") || protocol.equalsIgnoreCase("https"))) {
-            mError = new TravelerError(TravelerErrorCode.BAD_URL, null);
+            error = new TravelerError(TravelerErrorCode.BAD_URL, null);
             finish();
             return;
         }
@@ -98,7 +98,7 @@ public class NetworkTask extends Task {
                 errorMessage = InputStreamHelper.getStringFromInputStream(urlConnection.getErrorStream());
             }
 
-            mError = new TravelerError(TravelerErrorCode.CONNECTION_ERROR, errorMessage);
+            error = new TravelerError(TravelerErrorCode.CONNECTION_ERROR, errorMessage);
         }
         finish();
     }
@@ -109,7 +109,7 @@ public class NetworkTask extends Task {
     }
 
     private void setHeaders(HttpURLConnection urlConnection) {
-        Map<String, String> headers = mRequest.getHeaders();
+        Map<String, String> headers = request.getHeaders();
 
         if (headers != null) {
             for (Map.Entry<String, String> header :
@@ -123,7 +123,7 @@ public class NetworkTask extends Task {
     }
 
     private void setMethod(HttpURLConnection urlConnection) throws IOException {
-        switch (mRequest.getMethod()) {
+        switch (request.getMethod()) {
             case GET:
                 urlConnection.setRequestMethod("GET");
                 urlConnection.setDoOutput(false);
@@ -131,17 +131,17 @@ public class NetworkTask extends Task {
             case PUT:
                 urlConnection.setRequestMethod("PUT");
                 urlConnection.setDoOutput(true);
-                mRequest.onProvidePayload(urlConnection.getOutputStream());
+                request.onProvidePayload(urlConnection.getOutputStream());
                 break;
             case POST:
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setDoOutput(true);
-                mRequest.onProvidePayload(urlConnection.getOutputStream());
+                request.onProvidePayload(urlConnection.getOutputStream());
                 break;
             case PATCH:
                 urlConnection.setRequestMethod("PATCH");
                 urlConnection.setDoOutput(true);
-                mRequest.onProvidePayload(urlConnection.getOutputStream());
+                request.onProvidePayload(urlConnection.getOutputStream());
                 break;
             case DELETE:
                 urlConnection.setRequestMethod("DELETE");
@@ -154,18 +154,18 @@ public class NetworkTask extends Task {
         int statusCode = urlConnection.getResponseCode();
 
         if (statusCode == 401) {
-            mError = new TravelerError(TravelerErrorCode.UNAUTHORIZED,
+            error = new TravelerError(TravelerErrorCode.UNAUTHORIZED,
                     InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
         } else if (statusCode == 403) {
-            mError = new TravelerError(TravelerErrorCode.FORBIDDEN, null);
+            error = new TravelerError(TravelerErrorCode.FORBIDDEN, null);
         } else if (statusCode >= 500) {
-            mError = new TravelerError(TravelerErrorCode.SERVER_ERROR,
+            error = new TravelerError(TravelerErrorCode.SERVER_ERROR,
                     InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
         } else {
             InputStream is = urlConnection.getInputStream();
 
-            if (mResponseHandler != null) {
-                mResponseHandler.onHandleResponse(is);
+            if (responseHandler != null) {
+                responseHandler.onHandleResponse(is);
             }
             is.close();
         }

@@ -7,11 +7,11 @@ import java.util.concurrent.Executor;
 
 class MainTaskManager extends TaskManager implements Task.Performer {
 
-    private Executor mMainExecutor;
+    private Executor mainExecutor;
 
     MainTaskManager() {
         super();
-        mMainExecutor = new MainThreadExecutor();
+        mainExecutor = new MainThreadExecutor();
     }
 
     @Override
@@ -22,7 +22,7 @@ class MainTaskManager extends TaskManager implements Task.Performer {
 
     @Override
     public void onPerform(final Task task) {
-        mMainExecutor.execute(new Runnable() {
+        mainExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 task.execute();
@@ -31,11 +31,11 @@ class MainTaskManager extends TaskManager implements Task.Performer {
     }
 
     static private class MainThreadExecutor implements Executor {
-        private final Handler mHandler = new Handler(Looper.getMainLooper());
+        private final Handler handler = new Handler(Looper.getMainLooper());
 
         @Override
         public void execute(Runnable command) {
-            mHandler.post(command);
+            handler.post(command);
         }
     }
 }

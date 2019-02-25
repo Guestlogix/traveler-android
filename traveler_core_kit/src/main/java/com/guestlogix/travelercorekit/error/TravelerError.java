@@ -3,20 +3,20 @@ package com.guestlogix.travelercorekit.error;
 import java.util.Locale;
 
 public class TravelerError {
-    private TravelerErrorCode mCode;
-    private String mMessage;
+    private TravelerErrorCode code;
+    private String message;
 
     public TravelerError(TravelerErrorCode code, String message) {
-        mCode = code;
-        mMessage = message;
+        this.code = code;
+        this.message = message;
     }
 
     public TravelerErrorCode getCode() {
-        return mCode;
+        return code;
     }
 
     public String toString() {
-        return String.format(Locale.CANADA, "%s %s", mCode , mMessage);
+        return String.format(Locale.CANADA, "%s %s", code, message);
     }
 
     @Override
@@ -32,6 +32,6 @@ public class TravelerError {
         }
         final TravelerError error = (TravelerError) obj;
 
-        return this.mCode == error.getCode();
+        return this.code == error.getCode();
     }
 }

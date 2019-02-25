@@ -22,17 +22,17 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
     /**
      * Index of the Holder Cell within the Form
      */
-    protected int index;
+    private int index;
 
-    protected OnCellContextRequestListener contextRequestListener;
+    OnCellContextRequestListener contextRequestListener;
 
-    protected OnCellValueChangedListener onCellValueChangedListener;
+    OnCellValueChangedListener onCellValueChangedListener;
 
-    protected OnCellClickListener onCellClickListener;
+    OnCellClickListener onCellClickListener;
 
-    protected OnCellFocusChangeListener onCellFocusChangeListener;
+    OnCellFocusChangeListener onCellFocusChangeListener;
 
-    public BaseCell(@NonNull View itemView) {
+    BaseCell(@NonNull View itemView) {
         super(itemView);
     }
 

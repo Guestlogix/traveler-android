@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class CatalogItemProviderInformationFragment extends Fragment {
+public class CatalogItemProviderInformationFragment extends BaseFragment {
 
     private ContactInfo contactInfo;
     private List<Location> locationsList = new ArrayList<>();
@@ -137,7 +137,7 @@ public class CatalogItemProviderInformationFragment extends Fragment {
         Uri gmmIntentUri = Uri.parse(uri);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+        if (mapIntent.resolveActivity(getActivityContext().getPackageManager()) != null) {
             startActivity(mapIntent);
         }
     }

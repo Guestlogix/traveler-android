@@ -16,6 +16,7 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.SearchFlightResultViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 
 import java.util.List;
@@ -25,7 +26,7 @@ import static com.guestlogix.traveler.viewmodels.CatalogViewModel.EXTRA_FLIGHT;
 /**
  * A fragment representing a list of Flights.
  */
-public class SearchFlightResultsFragment extends Fragment {
+public class SearchFlightResultsFragment extends BaseFragment {
 
     private View view;
     private RecyclerView flightResultRecyclerView;
@@ -38,7 +39,7 @@ public class SearchFlightResultsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        searchFlightResultViewModel = ViewModelProviders.of(getActivity()).get(SearchFlightResultViewModel.class);
+        searchFlightResultViewModel = ViewModelProviders.of(getActivityContext()).get(SearchFlightResultViewModel.class);
         searchFlightResultViewModel.getObservableFlights().observe(this, this::flightsUpdateHandler);
 
         view = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
@@ -68,8 +69,8 @@ public class SearchFlightResultsFragment extends Fragment {
         Flight flight = searchFlightResultViewModel.getObservableFlights().getValue().get(index);
         Intent data = new Intent();
         data.putExtra(EXTRA_FLIGHT, flight);
-        getActivity().setResult(Activity.RESULT_OK, data);
-        getActivity().finish();
+        getActivityContext().setResult(Activity.RESULT_OK, data);
+        getActivityContext().finish();
     }
 
 }

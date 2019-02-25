@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface CheckAvailabilityCallback {
-
     void onCheckAvailabilitySuccess(List<Availability> availability);
 
     void onCheckAvailabilityError(TravelerError error);

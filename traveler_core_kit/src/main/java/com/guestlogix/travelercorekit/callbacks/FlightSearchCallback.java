@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface FlightSearchCallback {
     void onFlightSearchSuccess(List<Flight> flights);
+
     void onFlightSearchError(TravelerError error);
 }

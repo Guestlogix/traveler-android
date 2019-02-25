@@ -15,25 +15,25 @@ import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import java.util.List;
 
 public class Traveler {
-    private static Traveler mLocalInstance;
-    private TaskManager mTaskManager = new TaskManager();
-    private Session mSession;
+    private static Traveler localInstance;
+    private TaskManager taskManager = new TaskManager();
+    private Session session;
 
     public static void initialize(String apiKey, Context applicationContext) {
-        if (mLocalInstance != null) {
+        if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
         } else {
-            mLocalInstance = new Traveler(apiKey, applicationContext);
+            localInstance = new Traveler(apiKey, applicationContext);
         }
     }
 
     private Traveler(String apiKey, Context context) {
-        this.mSession = new Session(apiKey, context);
+        this.session = new Session(apiKey, context);
 
         //read token from disk
-        SessionBeginTask sessionBeginTask = new SessionBeginTask(this.mSession);
+        SessionBeginTask sessionBeginTask = new SessionBeginTask(this.session);
         //fetch token from backend if disk does not have one
-        AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.mSession.getApiKey(), mSession.getContext());
+        AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.session.getApiKey(), session.getContext());
 
         BlockTask authTokenFetchBlockTask = new BlockTask() {
             @Override
@@ -41,7 +41,7 @@ public class Traveler {
                 if (authTokenFetchTask.getError() != null) {
                     throw new RuntimeException(String.format("Could not initialize Traveler SDK. %s ", authTokenFetchTask.getError()));
                 } else {
-                    mSession.setAuthToken(authTokenFetchTask.getAuthToken());
+                    session.setAuthToken(authTokenFetchTask.getAuthToken());
                 }
             }
         };
@@ -60,10 +60,10 @@ public class Traveler {
         authTokenFetchTask.addDependency(sessionBeginBlockTask);
         authTokenFetchBlockTask.addDependency(authTokenFetchTask);
 
-        mTaskManager.addTask(sessionBeginTask);
-        mTaskManager.addTask(sessionBeginBlockTask);
-        mTaskManager.addTask(authTokenFetchTask);
-        mTaskManager.addTask(authTokenFetchBlockTask);
+        taskManager.addTask(sessionBeginTask);
+        taskManager.addTask(sessionBeginBlockTask);
+        taskManager.addTask(authTokenFetchTask);
+        taskManager.addTask(authTokenFetchBlockTask);
     }
 
     /**
@@ -73,12 +73,12 @@ public class Traveler {
      * @param flightSearchCallback Callback methods which will be executed after the data is fetched.
      */
     public static void flightSearch(FlightQuery flightQuery, FlightSearchCallback flightSearchCallback) {
-        if (null == mLocalInstance) {
+        if (null == localInstance) {
             flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.searchFlight(mLocalInstance.mSession, flightQuery, mLocalInstance.mSession.getContext());
+            AuthenticatedRequest request = Router.searchFlight(localInstance.session, flightQuery, localInstance.session.getContext());
 
-            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
@@ -93,7 +93,7 @@ public class Traveler {
 
             searchFlightBlockTask.addDependency(searchFlightTask);
 
-            mLocalInstance.mTaskManager.addTask(searchFlightTask);
+            localInstance.taskManager.addTask(searchFlightTask);
             TaskManager.getMainTaskManager().addTask(searchFlightBlockTask);
         }
     }
@@ -105,12 +105,12 @@ public class Traveler {
      * @param catalogSearchCallback Callback methods which will be executed after the data is fetched.
      */
     public static void fetchCatalog(CatalogQuery catalogQuery, CatalogSearchCallback catalogSearchCallback) {
-        if (null == mLocalInstance) {
+        if (null == localInstance) {
             catalogSearchCallback.onCatalogSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.getCatalog(mLocalInstance.mSession, catalogQuery, mLocalInstance.mSession.getContext());
+            AuthenticatedRequest request = Router.getCatalog(localInstance.session, catalogQuery, localInstance.session.getContext());
 
-            AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new Catalog.CatalogObjectMappingFactory());
+            AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Catalog.CatalogObjectMappingFactory());
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override
@@ -124,7 +124,7 @@ public class Traveler {
             };
 
             searchGroupBlockTask.addDependency(searchGroupTask);
-            mLocalInstance.mTaskManager.addTask(searchGroupTask);
+            localInstance.taskManager.addTask(searchGroupTask);
             TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
         }
     }
@@ -136,11 +136,11 @@ public class Traveler {
      * @param catalogItemDetailsCallback Callback methods which will be executed after the data is fetched.
      */
     public static void fetchCatalogItemDetails(CatalogItem catalogItem, CatalogItemDetailsCallback catalogItemDetailsCallback) {
-        if (null == mLocalInstance) {
+        if (null == localInstance) {
             catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.getCatalogItem(mLocalInstance.mSession, catalogItem, mLocalInstance.mSession.getContext());
-            AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+            AuthenticatedRequest request = Router.getCatalogItem(localInstance.session, catalogItem, localInstance.session.getContext());
+            AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override
@@ -154,7 +154,7 @@ public class Traveler {
             };
 
             searchGroupBlockTask.addDependency(catalogItemDetailsTask);
-            mLocalInstance.mTaskManager.addTask(catalogItemDetailsTask);
+            localInstance.taskManager.addTask(catalogItemDetailsTask);
             TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
         }
     }
@@ -166,7 +166,7 @@ public class Traveler {
      * @param checkAvailabilityCallback Callback methods which will be executed after the data is fetched.
      */
     public static void checkAvailability(BookingContext bookingContext, CheckAvailabilityCallback checkAvailabilityCallback) {
-        if (null == mLocalInstance) {
+        if (null == localInstance) {
             checkAvailabilityCallback.onCheckAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
 
@@ -177,8 +177,8 @@ public class Traveler {
 
             bookingContext.setReady(false);
 
-            AuthenticatedRequest request = Router.productSchedule(mLocalInstance.mSession, bookingContext, mLocalInstance.mSession.getContext());
-            AuthenticatedNetworkRequestTask<List<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
+            AuthenticatedRequest request = Router.productSchedule(localInstance.session, bookingContext, localInstance.session.getContext());
+            AuthenticatedNetworkRequestTask<List<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override
@@ -194,7 +194,7 @@ public class Traveler {
             };
 
             searchGroupBlockTask.addDependency(checkAvailabilityTask);
-            mLocalInstance.mTaskManager.addTask(checkAvailabilityTask);
+            localInstance.taskManager.addTask(checkAvailabilityTask);
             TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
         }
     }
@@ -206,7 +206,7 @@ public class Traveler {
      * @param fetchPassesCallback Callback methods which will be executed after the data is fetched.
      */
     public static void fetchPasses(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
-        if (null == mLocalInstance) {
+        if (null == localInstance) {
             fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             if (bookingContext.getSelectedDate() == null) {
@@ -219,8 +219,8 @@ public class Traveler {
                 return;
             }
 
-            AuthenticatedRequest request = Router.productPass(mLocalInstance.mSession, bookingContext, mLocalInstance.mSession.getContext());
-            AuthenticatedNetworkRequestTask<List<Pass>> passFetchTask = new AuthenticatedNetworkRequestTask<>(mLocalInstance.mSession, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
+            AuthenticatedRequest request = Router.productPass(localInstance.session, bookingContext, localInstance.session.getContext());
+            AuthenticatedNetworkRequestTask<List<Pass>> passFetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
 
             BlockTask fetchPassBlockTask = new BlockTask() {
                 @Override
@@ -234,7 +234,7 @@ public class Traveler {
             };
 
             fetchPassBlockTask.addDependency(passFetchTask);
-            mLocalInstance.mTaskManager.addTask(passFetchTask);
+            localInstance.taskManager.addTask(passFetchTask);
             TaskManager.getMainTaskManager().addTask(fetchPassBlockTask);
         }
     }

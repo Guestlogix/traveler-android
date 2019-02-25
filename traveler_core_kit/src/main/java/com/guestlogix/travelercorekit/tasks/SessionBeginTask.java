@@ -4,26 +4,26 @@ import com.guestlogix.travelercorekit.models.Session;
 
 public class SessionBeginTask extends Task {
 
-    private TaskManager mTaskManager = new TaskManager();
-    private Session mSession;
+    private TaskManager taskManager = new TaskManager();
+    private Session session;
 
     public SessionBeginTask(Session session) {
-        this.mSession = session;
+        this.session = session;
     }
 
     public Session getSession() {
-        return mSession;
+        return session;
     }
 
     @Override
     public void execute() {
         //read encrypted data from shared prefs
-        SharedPrefsReadTask sharedPrefsReadTask = new SharedPrefsReadTask(mSession.getContext(), mSession.getApiKey());
+        SharedPrefsReadTask sharedPrefsReadTask = new SharedPrefsReadTask(session.getContext(), session.getApiKey());
 
         BlockTask sharedPrefsReadBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                mSession.getAuthToken().setValue(sharedPrefsReadTask.getResult());
+                session.getAuthToken().setValue(sharedPrefsReadTask.getResult());
             }
         };
 
@@ -42,8 +42,8 @@ public class SessionBeginTask extends Task {
         sharedPrefsReadBlockTask.addDependency(sharedPrefsReadTask);
         finishTask.addDependency(sharedPrefsReadBlockTask);
 
-        mTaskManager.addTask(sharedPrefsReadTask);
-        mTaskManager.addTask(sharedPrefsReadBlockTask);
-        mTaskManager.addTask(finishTask);
+        taskManager.addTask(sharedPrefsReadTask);
+        taskManager.addTask(sharedPrefsReadBlockTask);
+        taskManager.addTask(finishTask);
     }
 }
