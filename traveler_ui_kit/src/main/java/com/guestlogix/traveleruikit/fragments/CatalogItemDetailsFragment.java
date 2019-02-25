@@ -27,6 +27,7 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.adapters.TimeSlotSpinnerAdapter;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
+import com.guestlogix.traveleruikit.widgets.ActionStrip;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
 import java.util.Calendar;
@@ -47,15 +48,14 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private TextView titleTextView;
     private TextView descriptionTextView;
     private ImageView imageView;
-    private TextView startingAtValueTextView;
-    private Button checkAvailabilityButton;
     private TextInputEditText dateEditText;
     private TextInputLayout dateTextInputLayout;
     private TextInputEditText timeEditText;
     private TextInputLayout timeTextInputLayout;
     private Spinner timeSlotsSpinner;
     private RelativeLayout timeRelativeLayout;
-    private ProgressBar checkAvailabilityProgressBar;
+
+    private ActionStrip actionStrip;
 
     private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
@@ -70,8 +70,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         titleTextView = mView.findViewById(R.id.titleTextView);
         descriptionTextView = mView.findViewById(R.id.descriptionTextView);
         imageView = mView.findViewById(R.id.imageView);
-        startingAtValueTextView = mView.findViewById(R.id.startingAtValueTextView);
-        checkAvailabilityButton = mView.findViewById(R.id.checkAvailabilityButton);
         catalogItemDetailsPager = mView.findViewById(R.id.catalogItemPager);
         catalogItemDetailsTabs = mView.findViewById(R.id.catalogItemTabs);
         dateEditText = mView.findViewById(R.id.dateEditText);
@@ -79,12 +77,12 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         timeEditText = mView.findViewById(R.id.timeEditText);
         timeTextInputLayout = mView.findViewById(R.id.timeTextInputLayout);
         timeSlotsSpinner = mView.findViewById(R.id.timeSlotsSpinner);
-        checkAvailabilityProgressBar = mView.findViewById(R.id.checkAvailabilityProgressBar);
         timeRelativeLayout = mView.findViewById(R.id.timeRelativeLayout);
+        actionStrip = mView.findViewById(R.id.action_container);
 
         timeEditText.setOnClickListener(this::timePickerOnclick);
         dateEditText.setOnClickListener(this::datePickerOnclick);
-        checkAvailabilityButton.setOnClickListener(this::checkAvailabilityOnClick);
+        //checkAvailabilityButton.setOnClickListener(this::checkAvailabilityOnClick);
         timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
 
         return mView;
@@ -110,7 +108,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
 
         catalogItemDetailsViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
         catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, this::setView);
-        catalogItemDetailsViewModel.getAvailabilityStatus().observe(this, this::onAvailabilityStateChange);
         catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
         catalogItemDetailsViewModel.getSelectedDateObservable().observe(this, this::onSelectedDateChanged);
         catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
@@ -118,7 +115,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
 
     private void setView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
-        startingAtValueTextView.setText(String.format(Locale.getDefault(), "%s per person", catalogItemDetails.getPriceStartingAt().getFormattedValue()));
 
         if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
             //TODO Load Image: Traveler.loadImage(new URL(catalogItemDetails.getImageURL().get(0)), imageView);
@@ -241,29 +237,29 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         catalogItemDetailsViewModel.checkAvailability();
     }
 
-    private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {
-        if (state == CatalogItemDetailsViewModel.CheckAvailabilityState.LOADING) {
-            checkAvailabilityProgressBar.setVisibility(View.VISIBLE);
-            checkAvailabilityButton.setVisibility(View.INVISIBLE);
-        } else {
-            checkAvailabilityProgressBar.setVisibility(View.GONE);
-            checkAvailabilityButton.setVisibility(View.VISIBLE);
-
-            switch (state) {
-                case AVAILABLE:
-                    checkAvailabilityButton.setEnabled(true);
-                    dateEditText.setError(null);
-                    break;
-                case NOT_AVAILABLE:
-                    checkAvailabilityButton.setEnabled(false);
-                    dateEditText.setError(getString(R.string.not_available));
-                    break;
-                case ERROR:
-                    onCheckAvailabilityError();
-                    break;
-            }
-        }
-    }
+//    private void onAvailabilityStateChange(CatalogItemDetailsViewModel.CheckAvailabilityState state) {
+//        if (state == CatalogItemDetailsViewModel.CheckAvailabilityState.LOADING) {
+//            checkAvailabilityProgressBar.setVisibility(View.VISIBLE);
+//            checkAvailabilityButton.setVisibility(View.INVISIBLE);
+//        } else {
+//            checkAvailabilityProgressBar.setVisibility(View.GONE);
+//            checkAvailabilityButton.setVisibility(View.VISIBLE);
+//
+//            switch (state) {
+//                case AVAILABLE:
+//                    checkAvailabilityButton.setEnabled(true);
+//                    dateEditText.setError(null);
+//                    break;
+//                case NOT_AVAILABLE:
+//                    checkAvailabilityButton.setEnabled(false);
+//                    dateEditText.setError(getString(R.string.not_available));
+//                    break;
+//                case ERROR:
+//                    onCheckAvailabilityError();
+//                    break;
+//            }
+//        }
+//    }
 
     private void onTimeSlotsChanged(List<Long> availableTimeSlots) {
         if (availableTimeSlots.size() > 0) {
