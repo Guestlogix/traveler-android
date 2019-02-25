@@ -47,9 +47,4 @@ public class CatalogWidgetViewModel extends StatefulViewModel {
         }
     };
 
-    public enum CatalogWidgetViewState {
-        LOADING,
-        SUCCESS,
-        ERROR
-    }
 }

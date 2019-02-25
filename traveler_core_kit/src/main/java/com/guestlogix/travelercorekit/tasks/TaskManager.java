@@ -5,8 +5,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TaskManager implements TaskObserver {
-    private ArrayList<Task> mTasks;
-    private ExecutorService mExecutor;
+    private ArrayList<Task> tasks;
+    private ExecutorService executor;
 
     private static TaskManager mainTaskManager = new MainTaskManager();
     public static TaskManager getMainTaskManager() {
@@ -14,14 +14,14 @@ public class TaskManager implements TaskObserver {
     }
 
     public TaskManager() {
-        mTasks = new ArrayList<Task>();
-        mExecutor = Executors.newCachedThreadPool();
+        tasks = new ArrayList<Task>();
+        executor = Executors.newCachedThreadPool();
     }
 
     public void addTask(Task task) {
         task.addObserver(this);
-        mTasks.add(task);
-        mExecutor.execute(new TaskWrapper(task));
+        tasks.add(task);
+        executor.execute(new TaskWrapper(task));
     }
 
     // TASK OBSERVER
@@ -35,7 +35,7 @@ public class TaskManager implements TaskObserver {
                 break;
             case FINISHED:
                 task.removeObserver(this);
-                mTasks.remove(task);
+                tasks.remove(task);
         }
     }
 }

@@ -10,7 +10,7 @@ public abstract class ValidationRule implements Serializable {
     /**
      * Validates the given string.
      *
-     * @param toValidate string to validate.
+     * @param answer string to validate.
      * @return true if the validation passes.
      */
     public abstract boolean validate(Answer answer);

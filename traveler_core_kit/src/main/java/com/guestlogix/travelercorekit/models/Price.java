@@ -6,16 +6,21 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Currency;
+import java.util.Locale;
 
 public class Price implements Serializable {
 
-    Double value;
-    String currency;
+    private Double value;
+    private String currency;
 
-    public Price() {
+    Price() {
     }
 
-    public Price(Double value, String currency) {
+    private Price(Double value, String currency) {
         this.value = value;
         this.currency = currency;
     }
@@ -53,8 +58,10 @@ public class Price implements Serializable {
             String currency = "";
 
             reader.beginObject();
+
             while (reader.hasNext()) {
                 String name = reader.nextName();
+
                 switch (name) {
                     case "value":
                         value = JsonReaderHelper.readDouble(reader);
@@ -67,6 +74,7 @@ public class Price implements Serializable {
                 }
             }
             reader.endObject();
+
             return new Price(value, currency);
         }
     }

@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * A fragment which displays all the supplier questions in the form.
  */
-public class SupplierQuestionsFragment extends Fragment {
+public class SupplierQuestionsFragment extends BaseFragment {
     private Form form;
     private BookingViewModel viewModel;
 
@@ -43,7 +43,7 @@ public class SupplierQuestionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_supplier_questions, container, false);
 
         form = view.findViewById(R.id.questionsForm);
-        viewModel = ViewModelProviders.of(getActivity()).get(BookingViewModel.class);
+        viewModel = ViewModelProviders.of(getActivityContext()).get(BookingViewModel.class);
 
         viewModel.getBookingFormErrorPosition().observe(getViewLifecycleOwner(), this::updateForm);
         viewModel.getBookingForm().observe(getViewLifecycleOwner(), this::buildSupplierForm);

@@ -5,37 +5,37 @@ import android.text.TextUtils;
 
 public class SharedPrefsReadTask extends SharedPrefsTask {
 
-    private Error mError = null;
-    private String mResult = null;
+    private Error error = null;
+    private String result = null;
 
-    public class SharedPrefsReadError extends Error {
+    private class SharedPrefsReadError extends Error {
     }
 
-    public SharedPrefsReadTask(Context context, String key) {
+    SharedPrefsReadTask(Context context, String key) {
         super(context,key);
     }
 
-    public String getResult() {
-        return mResult;
+    String getResult() {
+        return result;
     }
 
     @Override
     public void execute() {
-        if (TextUtils.isEmpty(mKey)) {
-            mError = new SharedPrefsReadError();
+        if (TextUtils.isEmpty(key)) {
+            error = new SharedPrefsReadError();
             finish();
             return;
         }
 
-        String value = mSharedPreferences.getString(mKey, "");
+        String value = sharedPreferences.getString(key, "");
 
         if (TextUtils.isEmpty(value)) {
-            mError = new SharedPrefsReadError(); // Add somethign here
+            error = new SharedPrefsReadError(); // Add somethign here
             finish();
             return;
         }
 
-        mResult = value;
+        result = value;
 
         finish();
     }

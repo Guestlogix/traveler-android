@@ -16,11 +16,11 @@ import java.util.Date;
 import java.util.List;
 
 public class Availability {
-    Date date;
-    List<Long> times;
-    Boolean isAvailable;
+    private Date date;
+    private List<Long> times;
+    private Boolean isAvailable;
 
-    public Availability(Date date, List<Long> times, Boolean isAvailable) {
+    private Availability(Date date, List<Long> times, Boolean isAvailable) {
         this.date = date;
         this.times = times;
         this.isAvailable = isAvailable;

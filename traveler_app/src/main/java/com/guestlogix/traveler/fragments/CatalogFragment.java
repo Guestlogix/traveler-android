@@ -13,11 +13,12 @@ import com.guestlogix.traveler.adapters.HomeFragmentRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.CatalogViewModel;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.traveleruikit.fragments.BaseFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogWidgetFragment;
 
 import java.util.List;
 
-public class CatalogFragment extends Fragment {
+public class CatalogFragment extends BaseFragment {
 
     private View catalogFragmentView;
     private CatalogWidgetFragment catalogWidgetFragment;
@@ -28,7 +29,6 @@ public class CatalogFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         catalogFragmentView = inflater.inflate(R.layout.fragment_catalog, container, false);
-        //TODO Find a better way to set fragment attributes
         catalogWidgetFragment = (CatalogWidgetFragment) getChildFragmentManager().findFragmentById(R.id.catalogFragment);
         RecyclerView flightResultRecyclerView = catalogFragmentView.findViewById(R.id.flightResultRecyclerView);
 
@@ -42,8 +42,8 @@ public class CatalogFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        catalogViewModel = ViewModelProviders.of(getActivity()).get(CatalogViewModel.class);
-        catalogViewModel.getObservableFlights().observe(this, this::flightsUpdateHandler);
+        catalogViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogViewModel.class);
+        catalogViewModel.getObservableFlights().observe(getActivityContext(), this::flightsUpdateHandler);
 
         flightsUpdateHandler(catalogViewModel.getFlights());
     }

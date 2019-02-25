@@ -5,27 +5,27 @@ import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import java.util.concurrent.Semaphore;
 
 class TaskWrapper implements Runnable, TaskObserver {
-    private Task mTask;
-    private Semaphore mSemephore;
+    private Task task;
+    private Semaphore semephore;
 
     TaskWrapper(Task task) {
-        mTask = task;
-        mSemephore = new Semaphore(0);
+        this.task = task;
+        semephore = new Semaphore(0);
     }
 
     @Override
     public void run() {
-        mTask.addObserver(this);
+        task.addObserver(this);
 
-        mTask.start();
+        task.start();
 
         try {
-            mSemephore.acquire();
+            semephore.acquire();
         } catch (InterruptedException e) {
             TravelerLog.e("Could not block thread");
         }
 
-        mTask.removeObserver(this);
+        task.removeObserver(this);
     }
 
     @Override
@@ -34,7 +34,7 @@ class TaskWrapper implements Runnable, TaskObserver {
             case RUNNING:
                 break;
             case FINISHED:
-                mSemephore.release();
+                semephore.release();
             case READY:
                 break;
         }

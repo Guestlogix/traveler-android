@@ -22,7 +22,7 @@ import java.util.List;
  * Fragment to hold the Catalog widget.
  */
 //TODO: Give developer flexibility to change item clicks and see all clicks.
-public class CatalogWidgetSuccessFragment extends Fragment {
+public class CatalogWidgetSuccessFragment extends BaseFragment {
 
     private List<CatalogGroup> catalogGroups;
     private CatalogView catalogView;
@@ -39,7 +39,7 @@ public class CatalogWidgetSuccessFragment extends Fragment {
         View catalogFragmentView = inflater.inflate(R.layout.fragment_catalog_widget_success, container, false);
         catalogView = catalogFragmentView.findViewById(R.id.catalogView);
 
-        CatalogWidgetViewModel catalogWidgetViewModel = ViewModelProviders.of(getActivity()).get(CatalogWidgetViewModel.class);
+        CatalogWidgetViewModel catalogWidgetViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogWidgetViewModel.class);
         catalogWidgetViewModel.getGroupsObservable().observe(this, this::catalogUpdateHandler);
 
         return catalogFragmentView;

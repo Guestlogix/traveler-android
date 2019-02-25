@@ -28,7 +28,7 @@ import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_E
 /**
  * A widget to show catalog. Add a fragment tag in layout.
  */
-public class CatalogWidgetFragment extends Fragment implements TravelerErrorFragment.OnErrorInteractionListener {
+public class CatalogWidgetFragment extends BaseFragment implements TravelerErrorFragment.OnErrorInteractionListener {
     private NavController navController;
     private View catalogFragmentView;
     private CatalogWidgetViewModel catalogWidgetViewModel;
@@ -49,7 +49,7 @@ public class CatalogWidgetFragment extends Fragment implements TravelerErrorFrag
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(catalogFragmentView.findViewById(R.id.catalogHostFragment));
-        catalogWidgetViewModel = ViewModelProviders.of(getActivity()).get(CatalogWidgetViewModel.class);
+        catalogWidgetViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogWidgetViewModel.class);
         catalogWidgetViewModel.getStatus().observe(this, this::onStateChange);
 
         updateCatalog(new ArrayList<>());

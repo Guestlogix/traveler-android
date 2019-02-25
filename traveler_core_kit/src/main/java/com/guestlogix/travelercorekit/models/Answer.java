@@ -3,16 +3,12 @@ package com.guestlogix.travelercorekit.models;
 import java.io.Serializable;
 
 public abstract class Answer implements Serializable {
-    protected String questionId;
-    protected String codedValue;
-
-    public String getQuestionId() {
-        return questionId;
-    }
+    String questionId;
+    String codedValue;
 
     public abstract String getCodedValue();
 
-    public class AnswerError extends Error {
+    class AnswerError extends Error {
 
     }
 }

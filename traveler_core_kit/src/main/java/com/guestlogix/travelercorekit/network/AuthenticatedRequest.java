@@ -9,12 +9,12 @@ public class AuthenticatedRequest extends UnauthenticatedRequest {
     private String mToken;
 
 
-    public AuthenticatedRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers, JSONObject payload) {
+    AuthenticatedRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers, JSONObject payload) {
         super(method, URL, apiKey, headers, payload);
         this.mToken = token;
     }
 
-    public AuthenticatedRequest(Method method, URL url, String apiKey, Map<String, String> headers, String token) {
+    AuthenticatedRequest(Method method, URL url, String apiKey, Map<String, String> headers, String token) {
         this(method, url, apiKey, token, headers, null);
     }
 

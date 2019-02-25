@@ -11,7 +11,7 @@ public class DateHelper {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String PRETTY_DATE_PATTERN = "dd MMM yyyy";
     private static final String TIME_PATTERN = "HH:mm";
-    private static final Calendar mCalendar = Calendar.getInstance();
+    private static final Calendar calendar = Calendar.getInstance();
 
     public static String formatDateToISO8601(Date date) {
         return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.US).format(date);
@@ -36,9 +36,9 @@ public class DateHelper {
     public static String formatTime(Long rowItem) {
         if (null == rowItem)
             return null;
-        mCalendar.set(Calendar.HOUR_OF_DAY, rowItem.intValue() / 60);
-        mCalendar.set(Calendar.MINUTE, rowItem.intValue() % 60);
+        calendar.set(Calendar.HOUR_OF_DAY, rowItem.intValue() / 60);
+        calendar.set(Calendar.MINUTE, rowItem.intValue() % 60);
 
-        return DateHelper.formatTime(mCalendar.getTime());
+        return DateHelper.formatTime(calendar.getTime());
     }
 }

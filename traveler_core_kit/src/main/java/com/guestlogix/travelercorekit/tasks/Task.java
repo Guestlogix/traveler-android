@@ -16,61 +16,61 @@ public abstract class Task implements TaskObserver {
         void onPerform(Task task);
     }
 
-    private State mState;
-    private ArrayList<TaskObserver> mObservers;
-    private ArrayList<Task> mDependentTasks;
-    private volatile boolean mCancelled = false;
-    private Semaphore mSemaphore;
-    private Performer mPerformer = null;
+    private State state;
+    private ArrayList<TaskObserver> observers;
+    private ArrayList<Task> dependentTasks;
+    private volatile boolean cancelled = false;
+    private Semaphore semaphore;
+    private Performer performer = null;
 
     public Task() {
-        mObservers = new ArrayList<>();
-        mDependentTasks = new ArrayList<>();
-        mSemaphore = new Semaphore(0);
+        observers = new ArrayList<>();
+        dependentTasks = new ArrayList<>();
+        semaphore = new Semaphore(0);
         setState(State.READY);
     }
 
     final public State getState() {
-        return mState;
+        return state;
     }
 
     final void setPerformer(Performer performer) {
-        mPerformer = performer;
+        this.performer = performer;
     }
 
     final void start() {
-        if (mState == State.FINISHED) {
+        if (state == State.FINISHED) {
             Log.d("TASK", "Task already finished.");
             return;
         }
 
-        if (mState == State.RUNNING) {
+        if (state == State.RUNNING) {
             Log.d("TASK", "Task already running.");
             return;
         }
 
-        for (int i = 0; i < mDependentTasks.size(); i++) {
+        for (int i = 0; i < dependentTasks.size(); i++) {
             try {
-                mSemaphore.acquire();
+                semaphore.acquire();
             } catch (InterruptedException e) {
                 TravelerLog.e("Could not acquire lock for dependencies. Will abort task.");
-                mCancelled = true;
+                cancelled = true;
                 setState(State.FINISHED);
                 return;
             }
         }
 
-        if (mCancelled) {
+        if (cancelled) {
             setState(State.FINISHED);
             return;
         }
 
         setState(State.RUNNING);
 
-        if (mPerformer == null) {
+        if (performer == null) {
             execute();
         } else {
-            mPerformer.onPerform(this);
+            performer.onPerform(this);
         }
     }
 
@@ -78,34 +78,34 @@ public abstract class Task implements TaskObserver {
 
     public final void finish() {
         setState(State.FINISHED);
-        mPerformer = null;
+        performer = null;
     }
 
     public final void cancel() {
         Log.d("Traveler", "Cancelling:" + this.getClass().getSimpleName());
-        mCancelled = true;
+        cancelled = true;
     }
 
     protected void addObserver(TaskObserver observer) {
-        mObservers.add(observer);
+        observers.add(observer);
     }
 
     protected void removeObserver(TaskObserver observer) {
-        mObservers.remove(observer);
+        observers.remove(observer);
     }
 
     private void setState(State state) {
-        mState = state;
+        this.state = state;
 
-        for (int i = 0; i < mObservers.size(); i++) {
-            mObservers.get(i).onStateChanged(this);
+        for (int i = 0; i < observers.size(); i++) {
+            observers.get(i).onStateChanged(this);
         }
     }
 
     // Dependency Management
 
     final public void addDependency(Task task) {
-        if (mState != State.READY) {
+        if (state != State.READY) {
             TravelerLog.e("Cannot add dependency when task has already started or finished.");
             return;
         }
@@ -115,12 +115,12 @@ public abstract class Task implements TaskObserver {
             return;
         }
 
-        mDependentTasks.add(task);
+        dependentTasks.add(task);
         task.addObserver(this);
     }
 
     final public void removeDependency(Task task) {
-        if (mState != State.READY) {
+        if (state != State.READY) {
             TravelerLog.e("Cannot remove dependency when task has already started or finished.");
             return;
         }
@@ -130,7 +130,7 @@ public abstract class Task implements TaskObserver {
             return;
         }
 
-        mDependentTasks.remove(task);
+        dependentTasks.remove(task);
         task.addObserver(this);
     }
 
@@ -140,7 +140,7 @@ public abstract class Task implements TaskObserver {
             case READY:
                 break;
             case FINISHED:
-                mSemaphore.release();
+                semaphore.release();
             case RUNNING:
                 break;
         }

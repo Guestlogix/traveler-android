@@ -38,7 +38,7 @@ import java.util.Locale;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CatalogItemDetailsFragment extends Fragment {
+public class CatalogItemDetailsFragment extends BaseFragment {
     private static final String ARG_CATALOG_ITEM = "catalog_item";
 
     private View mView;
@@ -110,7 +110,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        catalogItemDetailsViewModel = ViewModelProviders.of(getActivity()).get(CatalogItemDetailsViewModel.class);
+        catalogItemDetailsViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
         catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, this::setView);
         catalogItemDetailsViewModel.getAvailabilityStatus().observe(this, this::onAvailabilityStateChange);
         catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
@@ -132,7 +132,7 @@ public class CatalogItemDetailsFragment extends Fragment {
             descriptionTextView.setText(Html.fromHtml(catalogItemDetails.getDescription()));
         }
 
-        ItemInformationTabsPagerAdapter adapter = new ItemInformationTabsPagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
+        ItemInformationTabsPagerAdapter adapter = new ItemInformationTabsPagerAdapter(getActivityContext().getSupportFragmentManager(), getActivityContext());
         adapter.setContactInfo(catalogItemDetails.getContact());
         adapter.setInformationList(catalogItemDetails.getInformation());
         adapter.setLocationsList(catalogItemDetails.getLocations());
@@ -195,7 +195,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     private void datePickerOnclick(View view) {
         dateEditText.setError(null);
         Calendar myCalendar = catalogItemDetailsViewModel.getSelectedDate();
-        new DatePickerDialog(getActivity(), datePickerListener, myCalendar
+        new DatePickerDialog(getActivityContext(), datePickerListener, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
@@ -271,13 +271,13 @@ public class CatalogItemDetailsFragment extends Fragment {
         if (availableTimeSlots.size() > 0) {
             timeRelativeLayout.setVisibility(View.VISIBLE);
         }
-        TimeSlotSpinnerAdapter timeSlotSpinnerAdapter = new TimeSlotSpinnerAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, availableTimeSlots);
+        TimeSlotSpinnerAdapter timeSlotSpinnerAdapter = new TimeSlotSpinnerAdapter(getActivityContext(), android.R.layout.simple_spinner_dropdown_item, availableTimeSlots);
         timeSlotsSpinner.setAdapter(timeSlotSpinnerAdapter);
         timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
     }
 
     private void onCheckAvailabilityError() {
-        final AlertDialog dialog = new AlertDialog.Builder(getActivity())
+        final AlertDialog dialog = new AlertDialog.Builder(getActivityContext())
                 .setTitle(getString(R.string.unexpected_error))
                 .setMessage(getString(R.string.unknown_error_message))
                 .create();

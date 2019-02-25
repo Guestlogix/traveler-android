@@ -18,6 +18,7 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.SearchFlightResultViewModel;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -25,7 +26,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SearchFlightFragment extends Fragment {
+public class SearchFlightFragment extends BaseFragment {
 
     private TextView flightNumberEditText;
     private TextView departureDateEditText;
@@ -40,7 +41,7 @@ public class SearchFlightFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        searchFlightResultViewModel = ViewModelProviders.of(getActivity()).get(SearchFlightResultViewModel.class);
+        searchFlightResultViewModel = ViewModelProviders.of(getActivityContext()).get(SearchFlightResultViewModel.class);
 
         view = inflater.inflate(R.layout.fragment_flight_search, container, false);
 
@@ -62,7 +63,7 @@ public class SearchFlightFragment extends Fragment {
         String departureDate = DateHelper.formatDateToISO8601(departureDateCalendar.getTime());
 
         if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
-            hideKeyboard(getActivity());
+            hideKeyboard(getActivityContext());
             try {
                 Date date = DateHelper.parseISO8601(departureDate);
                 FlightQuery flightQuery = new FlightQuery(flightNumber, date);
@@ -126,8 +127,8 @@ public class SearchFlightFragment extends Fragment {
     }
 
     private void showDatePickerDialog() {
-        if (null != getActivity()) {
-            new DatePickerDialog(getActivity(), datePickerListener, departureDateCalendar
+        if (null != getActivityContext()) {
+            new DatePickerDialog(getActivityContext(), datePickerListener, departureDateCalendar
                     .get(Calendar.YEAR), departureDateCalendar.get(Calendar.MONTH),
                     departureDateCalendar.get(Calendar.DAY_OF_MONTH)).show();
         }

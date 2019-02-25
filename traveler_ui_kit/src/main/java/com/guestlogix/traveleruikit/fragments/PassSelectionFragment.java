@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Fragment which lets the user to select any number of passes.
  */
-public class PassSelectionFragment extends Fragment {
+public class PassSelectionFragment extends BaseFragment {
 
     private Form form;
     private TextView priceLbl;
@@ -49,7 +49,7 @@ public class PassSelectionFragment extends Fragment {
         bookNowBtn.setOnClickListener(this::onBookNowClick);
 
         // View Model
-        viewModel = ViewModelProviders.of(getActivity()).get(BookingViewModel.class);
+        viewModel = ViewModelProviders.of(getActivityContext()).get(BookingViewModel.class);
 
         viewModel.getPasses().observe(getViewLifecycleOwner(), this::buildPassForm);
         viewModel.getPrice().observe(getViewLifecycleOwner(), this::onPriceChange);

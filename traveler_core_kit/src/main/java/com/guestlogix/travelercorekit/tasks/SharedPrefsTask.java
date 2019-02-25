@@ -7,27 +7,27 @@ import static android.content.Context.MODE_PRIVATE;
 
 public abstract class SharedPrefsTask extends Task {
 
-    Context mContext;
-    String mKey;
-    String MY_PREFS_NAME = "TRAVELER";
-    SharedPreferences mSharedPreferences;
+    private String MY_PREFS_NAME = "TRAVELER";
+    private Context context;
+    protected String key;
+    SharedPreferences sharedPreferences;
 
-    SharedPrefsTask(Context mContext, String key) {
-        this.mContext = mContext;
-        this.mKey = key;
-        mSharedPreferences = mContext.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+    SharedPrefsTask(Context context, String key) {
+        this.context = context;
+        this.key = key;
+        this.sharedPreferences = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
     }
 
-    public Context getmContext() {
-        return mContext;
+    public Context getContext() {
+        return context;
     }
 
-    public void setmContext(Context mContext) {
-        this.mContext = mContext;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
-    public void setmKey(String mKey) {
-        this.mKey = mKey;
+    public void setKey(String key) {
+        this.key = key;
     }
 }

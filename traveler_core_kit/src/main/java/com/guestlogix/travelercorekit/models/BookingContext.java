@@ -5,12 +5,12 @@ import java.util.Date;
 
 public class BookingContext implements Serializable {
 
-    Product product;
-    Date selectedDate;
-    Long selectedTime;
-    Date endDateTime;//TODO
-    Boolean isTimeRequired;
-    Boolean isReady;
+    private Product product;
+    private Date selectedDate;
+    private Long selectedTime;
+    private Date endDateTime;//TODO
+    private Boolean isTimeRequired;
+    private Boolean isReady;
 
     public BookingContext(Product product) {
         this.product = product;
