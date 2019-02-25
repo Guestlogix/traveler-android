@@ -28,12 +28,17 @@ public class Price implements Serializable {
         this.value = value;
     }
 
-    public String getCurrency() {
-        return currency;
+    private String getCurrencySymbol() {
+        Currency currency = Currency.getInstance(this.currency);
+        return currency.getSymbol(Locale.getDefault());
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
+    public String getFormattedValue() {
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.getDefault());
+        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+        symbols.setCurrencySymbol(getCurrencySymbol());
+        formatter.setDecimalFormatSymbols(symbols);
+        return formatter.format(value);
     }
 
     public static class PriceObjectMappingFactory implements ObjectMappingFactory<Price> {
