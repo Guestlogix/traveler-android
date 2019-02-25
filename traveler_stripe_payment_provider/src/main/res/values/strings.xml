@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My Library</string>
+    <string name="title_activity_payment_collection">PaymentCollectionActivity</string>
+</resources>
