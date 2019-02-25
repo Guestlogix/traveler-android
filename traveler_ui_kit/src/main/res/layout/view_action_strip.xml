@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <androidx.constraintlayout.widget.Guideline
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rightGuideline"
+            app:layout_constraintGuide_end="@dimen/margin_default"/>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/leftGuideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintGuide_begin="@dimen/margin_default"/>
+
+    <View
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/action_container"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/margin_default"
+            android:background="@color/gray"/>
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/action_container"
+            app:layout_constraintRight_toLeftOf="@+id/rightGuideline"
+            app:layout_constraintTop_toBottomOf="@+id/separator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/margin_default">
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/actionButton"
+                tools:text="Check Availability"/>
+
+        <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:id="@+id/progress_bar"
+                android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <TextView
+            android:id="@+id/actionLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Starting at"
+            app:layout_constraintTop_toBottomOf="@id/separator"
+            app:layout_constraintBottom_toTopOf="@+id/actionValue"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+            android:textSize="@dimen/text_view_xxxsmall"/>
+
+    <TextView
+            android:id="@+id/actionValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0.00$"
+            app:layout_constraintTop_toBottomOf="@+id/actionLabel"
+            app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
+            android:textSize="@dimen/text_view_large"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

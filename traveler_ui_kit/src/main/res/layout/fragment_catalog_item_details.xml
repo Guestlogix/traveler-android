@@ -8,7 +8,7 @@
 
     <androidx.core.widget.NestedScrollView
             android:id="@+id/mainNestedScrollView"
-            android:layout_above="@id/checkAvailabilityRelativeLayout"
+            android:layout_above="@id/action_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -116,46 +116,10 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <RelativeLayout
-            android:id="@+id/checkAvailabilityRelativeLayout"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white"
-            android:padding="@dimen/padding_large"
+    <com.guestlogix.traveleruikit.widgets.ActionStrip
+            android:id="@+id/action_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <TextView android:layout_width="wrap_content"
-                  android:id="@+id/startingAtLabelTextView"
-                  android:layout_height="wrap_content"
-                  android:text="@string/label_starting_at"/>
-
-        <TextView android:layout_width="wrap_content"
-                  style="@style/TitleThree"
-                  android:layout_below="@+id/startingAtLabelTextView"
-                  android:id="@+id/startingAtValueTextView"
-                  android:layout_height="wrap_content"
-                  android:text="@string/label_starting_at"/>
-
-        <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true">
-
-            <Button android:layout_width="wrap_content"
-                    style="@style/CaptionOneTextView"
-                    android:text="@string/button_check_availability"
-                    android:layout_centerInParent="true"
-                    android:textColor="@color/black"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/checkAvailabilityButton"/>
-            <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerInParent="true"
-                    android:id="@+id/checkAvailabilityProgressBar"
-                    tools:visibility="visible"
-                    android:visibility="gone"/>
-        </RelativeLayout>
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            tools:layout="@layout/view_action_strip"/>
 </RelativeLayout>
