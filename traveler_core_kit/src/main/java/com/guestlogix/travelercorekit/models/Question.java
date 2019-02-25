@@ -7,10 +7,6 @@ import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.validators.MaxQuantityValidationRule;
-import com.guestlogix.travelercorekit.validators.PatternValidationRule;
-import com.guestlogix.travelercorekit.validators.RequiredValidationRule;
-import com.guestlogix.travelercorekit.validators.ValidationRule;
 
 import java.io.IOException;
 import java.io.Serializable;

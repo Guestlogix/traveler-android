@@ -1,7 +1,6 @@
-package com.guestlogix.travelercorekit.validators;
+package com.guestlogix.travelercorekit.models;
 
 import android.text.TextUtils;
-import com.guestlogix.travelercorekit.models.Answer;
 
 public class RequiredValidationRule extends ValidationRule {
 
