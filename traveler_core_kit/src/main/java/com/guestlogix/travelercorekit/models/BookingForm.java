@@ -3,10 +3,6 @@ package com.guestlogix.travelercorekit.models;
 import android.annotation.SuppressLint;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
-import com.guestlogix.travelercorekit.validators.PatternValidationRule;
-import com.guestlogix.travelercorekit.validators.RequiredValidationRule;
-import com.guestlogix.travelercorekit.validators.ValidationError;
-import com.guestlogix.travelercorekit.validators.ValidationRule;
 
 import java.io.Serializable;
 import java.util.*;
