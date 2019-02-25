@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
@@ -38,6 +40,7 @@ dependencies {
     //Traveler SDK
     implementation project(path: ':traveler_core_kit')
     implementation project(path: ':traveler_ui_kit')
+    implementation project(path: ':traveler_stripe_payment_provider')
 
     //Android support dependencies
     implementation "com.android.support:appcompat-v7:${android_support_version}"
@@ -55,4 +58,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
     testImplementation "junit:junit:${junit_version}"
     androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
