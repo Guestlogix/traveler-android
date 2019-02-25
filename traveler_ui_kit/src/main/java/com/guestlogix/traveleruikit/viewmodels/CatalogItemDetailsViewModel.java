@@ -9,7 +9,7 @@ import com.guestlogix.travelercorekit.models.Availability;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.repositories.CatalogItemDetailsRepository;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 
@@ -21,115 +21,74 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     // Live Data
     private MutableLiveData<CatalogItemDetails> catalogItemDetails;
-    private MutableLiveData<CatalogItem> catalogItem;
+    private MutableLiveData<List<String>> timeSlotsTransformed;
     private MutableLiveData<Calendar> selectedDate;
-    private MutableLiveData<Long> selectedTime;
-    private SingleLiveEvent<CheckAvailabilityState> availabilityStatus;
+    private SingleLiveEvent<ActionState> actionState;
+    private SingleLiveEvent<BookingContext> bookingRequest;
+
     private CatalogItemDetailsRepository catalogItemDetailsRepository;
-    private MutableLiveData<List<Long>> availableTimeSlots;
-    private MutableLiveData<Boolean> timeRequired;
-    private MutableLiveData<BookingContext> bookingRequested;
 
     // Other fields.
     private BookingContext bookingContext;
+    private List<Long> timeSlots;
 
     public CatalogItemDetailsViewModel() {
         this.catalogItemDetailsRepository = new CatalogItemDetailsRepository();
 
         catalogItemDetails = new MutableLiveData<>();
-        catalogItem = new MutableLiveData<>();
+        timeSlotsTransformed = new MutableLiveData<>();
         selectedDate = new MutableLiveData<>();
-        selectedTime = new MutableLiveData<>();
-        availabilityStatus = new SingleLiveEvent<>();
-        availableTimeSlots = new MutableLiveData<>();
-        timeRequired = new MutableLiveData<>();
-        bookingRequested = new MutableLiveData<>();
-
-        this.selectedTime.postValue(null);
-        this.timeRequired.setValue(true);
+        actionState = new SingleLiveEvent<>();
+        bookingRequest = new SingleLiveEvent<>();
     }
 
-    public LiveData<CatalogItemDetails> getCatalogItemDetailsObservable() {
+    public LiveData<CatalogItemDetails> getObservableCatalogItemDetails() {
         return catalogItemDetails;
     }
 
-    public LiveData<CheckAvailabilityState> getAvailabilityStatus() {
-        return availabilityStatus;
+    public LiveData<List<String>> getObservableTimeSlots() {
+        return timeSlotsTransformed;
     }
 
-    public void setCatalogItem(CatalogItem catalogItem) {
-        this.catalogItem.setValue(catalogItem);
-        setBookingContext(new BookingContext(catalogItem));
-        setSelectedDate(Calendar.getInstance());
-        updateCatalog(catalogItem);
-    }
-
-    public void setSelectedDate(Calendar selectedDate) {
-        this.selectedDate.postValue(selectedDate);
-        this.selectedTime.postValue(null);
-
-        bookingContext.setSelectedDate(selectedDate.getTime());
-        bookingContext.setEndDateTime(selectedDate.getTime());
-    }
-
-    public void setSelectedTime(int index) {
-        selectedTime.setValue(getAvailableTimeSlots().get(index));
-        bookingContext.setSelectedTime(selectedTime.getValue());
-    }
-
-    public LiveData<Long> getSelectedTimeObservable() {
-        return selectedTime;
-    }
-
-    public LiveData<Calendar> getSelectedDateObservable() {
+    public LiveData<Calendar> getObservableSelectedDate() {
         return selectedDate;
     }
 
-    public Long getSelectedTime() {
-        return selectedTime.getValue();
+    public LiveData<ActionState> getObservableActionState() {
+        return actionState;
     }
 
-    public Calendar getSelectedDate() {
-        return selectedDate.getValue();
+    public LiveData<BookingContext> getBookingRequest() {
+        return bookingRequest;
     }
 
-    public LiveData<List<Long>> getAvailableTimeSlotsObservable() {
-        return availableTimeSlots;
+    public void setCatalogItem(CatalogItem catalogItem) {
+
+        setBookingContext(new BookingContext(catalogItem));
+        setBookingDate(Calendar.getInstance());
+        updateCatalog(catalogItem);
     }
 
-    public LiveData<BookingContext> getBookingRequestObservable() {
-        return bookingRequested;
+    public void setBookingDate(Calendar bookingDate) {
+
+        bookingContext.setSelectedDate(bookingDate.getTime());
+        bookingContext.setEndDateTime(bookingDate.getTime());
+        updateAvailability();
     }
 
-    public void requestBooking() {
-        bookingRequested.setValue(bookingContext);
+    public void setBookingTime(int index) {
+        bookingContext.setSelectedTime(timeSlots.get(index));
+        actionState.postValue(ActionState.AVAILABLE);
     }
 
-    public List<Long> getAvailableTimeSlots() {
-        return availableTimeSlots.getValue();
-    }
-
-    public LiveData<Boolean> getTimeRequiredObservable() {
-        return timeRequired;
-    }
-
-    public Boolean getTimeRequired() {
-        return timeRequired.getValue();
-    }
-
-    public void setTimeRequired(Boolean timeRequired) {
-        this.timeRequired.setValue(timeRequired);
-        this.bookingContext.setTimeRequired(timeRequired);
-    }
-
-    public void updateCatalog(CatalogItem catalogItem) {
-        status.setValue(State.LOADING);
-        catalogItemDetailsRepository.fetchDetails(catalogItem, catalogSearchCallback);
-    }
-
-    public void checkAvailability() {
-        availabilityStatus.postValue(CheckAvailabilityState.LOADING);
-        this.catalogItemDetailsRepository.fetchAvailability(bookingContext, checkAvailabilityCallback);
+    public void onActionSubmit() {
+        if (bookingContext.getSelectedDate() == null) {
+            actionState.postValue(ActionState.NOT_AVAILABLE);
+        } else if (bookingContext.getTimeRequired() && bookingContext.getSelectedTime() == null) {
+            actionState.postValue(ActionState.TIME_REQUIRED);
+        } else {
+            bookingRequest.setValue(bookingContext);
+        }
     }
 
     public BookingContext getBookingContext() {
@@ -149,50 +108,66 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         }
     };
 
-    CheckAvailabilityCallback checkAvailabilityCallback = new CheckAvailabilityCallback() {
+    private CheckAvailabilityCallback checkAvailabilityCallback = new CheckAvailabilityCallback() {
         @Override
         public void onCheckAvailabilitySuccess(List<Availability> availabilityList) {
-            if (availabilityList.size() > 0) {
-                Availability availability = availabilityList.get(0);
-                if (availability.isAvailable()) {
-                    availabilityStatus.postValue(CheckAvailabilityState.AVAILABLE);
-                    if (availability.getTimes().size() > 0) {
-                        setTimeRequired(true);
-                    } else {
-                        setTimeRequired(false);
-                    }
-                    extractPrettyTimeSlots(availabilityList);
-                } else {
-                    availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
+
+            if (availabilityList != null && !availabilityList.isEmpty()) {
+                Availability item = availabilityList.get(0);
+
+                if (item.isAvailable()) {
+                    setSelectedTimes(item.getTimes());
+                    return;
                 }
-            } else {
-                availabilityStatus.postValue(CheckAvailabilityState.NOT_AVAILABLE);
             }
+
+            actionState.postValue(ActionState.NOT_AVAILABLE);
         }
 
         @Override
         public void onCheckAvailabilityError(TravelerError error) {
-            TravelerLog.e("Failed to check availability. Error Code: %d", error.getCode());
-            availabilityStatus.postValue(CheckAvailabilityState.ERROR);
+            actionState.postValue(ActionState.ERROR);
         }
     };
 
-    private void extractPrettyTimeSlots(List<Availability> availabilityList) {
-        if (availabilityList.size() > 0) {
-            availableTimeSlots.postValue(availabilityList.get(0).getTimes());
-        } else {
-            availableTimeSlots.postValue(new ArrayList<>());
-        }
+    private void updateCatalog(CatalogItem catalogItem) {
+        status.setValue(State.LOADING);
+        catalogItemDetailsRepository.fetchDetails(catalogItem, catalogSearchCallback);
+    }
+
+    private void updateAvailability() {
+        actionState.setValue(ActionState.LOADING);
+        catalogItemDetailsRepository.fetchAvailability(bookingContext, checkAvailabilityCallback);
     }
 
     private void setBookingContext(BookingContext bookingContext) {
         this.bookingContext = bookingContext;
     }
 
-    public enum CheckAvailabilityState {
+    private void setSelectedTimes(List<Long> times) {
+        this.timeSlots = times;
+
+        // Transform times for UI
+        List<String> timesTransform = new ArrayList<>();
+
+        for (Long item : this.timeSlots) {
+            timesTransform.add(DateHelper.formatTime(item));
+        }
+
+        timeSlotsTransformed.postValue(timesTransform);
+
+        bookingContext.setTimeRequired(times != null && !times.isEmpty());
+
+        if (!bookingContext.getTimeRequired()) {
+            actionState.postValue(ActionState.AVAILABLE);
+        }
+    }
+
+    public enum ActionState {
         LOADING,
         AVAILABLE,
         NOT_AVAILABLE,
+        TIME_REQUIRED,
         ERROR,
     }
 }

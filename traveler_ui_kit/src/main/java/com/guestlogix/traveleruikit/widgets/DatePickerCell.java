@@ -92,7 +92,9 @@ public class DatePickerCell extends FrameLayout {
     }
 
     private void onClickEventHandler(View v) {
-        if (calendar != null) {
+        if (calendar == null) {
+            calendar = Calendar.getInstance();
+        }
             setError(null);
 
             int year = calendar.get(Calendar.YEAR);
@@ -101,7 +103,7 @@ public class DatePickerCell extends FrameLayout {
             final DatePickerDialog d = new DatePickerDialog(getContext(), this::onDateSetEventHandler, year, month, day);
 
             d.show();
-        }
+
     }
 
     private void onDateSetEventHandler(DatePicker d, int year, int month, int day) {

@@ -44,7 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/actionButton"
-                tools:text="Check Availability"/>
+                tools:text="Check Availability"
+                style="@style/ActionButton"/>
 
         <ProgressBar
                 android:layout_width="wrap_content"
@@ -64,7 +65,7 @@
             app:layout_constraintBottom_toTopOf="@+id/actionValue"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            android:textSize="@dimen/text_view_xxxsmall"/>
+            style="@style/CallOutTextView"/>
 
     <TextView
             android:id="@+id/actionValue"
@@ -73,7 +74,7 @@
             tools:text="0.00$"
             app:layout_constraintTop_toBottomOf="@+id/actionLabel"
             app:layout_constraintLeft_toRightOf="@+id/leftGuideline"
-            android:textSize="@dimen/text_view_large"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/TitleThree"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

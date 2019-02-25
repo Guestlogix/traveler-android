@@ -37,7 +37,7 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Tra
 
             catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
             catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
-            catalogItemDetailsViewModel.getBookingRequestObservable().observe(this, this::onBookingRequest);
+            catalogItemDetailsViewModel.getBookingRequest().observe(this, this::onBookingRequest);
 
             catalogItem = (CatalogItem) extras.getSerializable(ARG_CATALOG_ITEM);
             catalogItemDetailsViewModel.setCatalogItem(catalogItem);
