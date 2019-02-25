@@ -22,22 +22,22 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.adapters.TimeSlotSpinnerAdapter;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
+import com.guestlogix.traveleruikit.widgets.DatePickerCell;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CatalogItemDetailsFragment extends BaseFragment {
+
     private static final String ARG_CATALOG_ITEM = "catalog_item";
 
     private View mView;
@@ -48,14 +48,13 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private TextView titleTextView;
     private TextView descriptionTextView;
     private ImageView imageView;
-    private TextInputEditText dateEditText;
-    private TextInputLayout dateTextInputLayout;
     private TextInputEditText timeEditText;
     private TextInputLayout timeTextInputLayout;
     private Spinner timeSlotsSpinner;
     private RelativeLayout timeRelativeLayout;
 
     private ActionStrip actionStrip;
+    private DatePickerCell datePickerCell;
 
     private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
@@ -72,34 +71,18 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         imageView = mView.findViewById(R.id.imageView);
         catalogItemDetailsPager = mView.findViewById(R.id.catalogItemPager);
         catalogItemDetailsTabs = mView.findViewById(R.id.catalogItemTabs);
-        dateEditText = mView.findViewById(R.id.dateEditText);
-        dateTextInputLayout = mView.findViewById(R.id.dateTextInputLayout);
-        timeEditText = mView.findViewById(R.id.timeEditText);
         timeTextInputLayout = mView.findViewById(R.id.timeTextInputLayout);
         timeSlotsSpinner = mView.findViewById(R.id.timeSlotsSpinner);
         timeRelativeLayout = mView.findViewById(R.id.timeRelativeLayout);
-        actionStrip = mView.findViewById(R.id.action_container);
 
-        timeEditText.setOnClickListener(this::timePickerOnclick);
-        dateEditText.setOnClickListener(this::datePickerOnclick);
-        //checkAvailabilityButton.setOnClickListener(this::checkAvailabilityOnClick);
+        actionStrip = mView.findViewById(R.id.action_container);
+        datePickerCell = mView.findViewById(R.id.datePickerCell);
+
+//        timeEditText.setOnClickListener(this::timePickerOnclick);
+//        checkAvailabilityButton.setOnClickListener(this::checkAvailabilityOnClick);
         timeSlotsSpinner.setOnItemSelectedListener(timeSlotOnItemSelectedListener);
 
         return mView;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle bundle = getArguments();
-
-        if (null != bundle) {
-            catalogItem = (CatalogItem) bundle.getSerializable(ARG_CATALOG_ITEM);
-        } else {
-            //TODO throw runtime exception, fragment needs catalog item to show details
-            TravelerLog.e(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, CatalogItemDetailsFragment.class.getName());
-        }
     }
 
     @Override
@@ -110,7 +93,7 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         catalogItemDetailsViewModel.getCatalogItemDetailsObservable().observe(this, this::setView);
         catalogItemDetailsViewModel.getAvailableTimeSlotsObservable().observe(this, this::onTimeSlotsChanged);
         catalogItemDetailsViewModel.getSelectedDateObservable().observe(this, this::onSelectedDateChanged);
-        catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
+//        catalogItemDetailsViewModel.getSelectedTimeObservable().observe(this, this::onSelectedTimeChanged);
     }
 
     private void setView(CatalogItemDetails catalogItemDetails) {
@@ -161,16 +144,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         catalogItemDetailsViewModel.setSelectedDate(date);
     };
 
-    private void setDateLabel() {
-        String selectedDate = DateHelper.formatDate(catalogItemDetailsViewModel.getSelectedDate().getTime());
-        if (null != selectedDate && !selectedDate.isEmpty()) {
-            dateEditText.setText(selectedDate);
-        } else {
-            dateEditText.setText("");
-            dateEditText.setHint(getString(R.string.hint_select_date));
-        }
-    }
-
     private void setTimeLabel() {
         String selectedTime = DateHelper.formatTime(catalogItemDetailsViewModel.getSelectedTime());
         if (null != selectedTime && !selectedTime.isEmpty()) {
@@ -186,20 +159,12 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         timeSlotsSpinner.performClick();
     }
 
-    private void datePickerOnclick(View view) {
-        dateEditText.setError(null);
-        Calendar myCalendar = catalogItemDetailsViewModel.getSelectedDate();
-        new DatePickerDialog(getActivityContext(), datePickerListener, myCalendar
-                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
     private void checkAvailabilityOnClick(View view) {
         boolean isFormComplete = true;
 
         if (catalogItemDetailsViewModel.getSelectedDate() == null) {
-            dateEditText.setError(getString(R.string.hint_select_time));
-            focusOnView(dateTextInputLayout);
+//            dateEditText.setError(getString(R.string.hint_select_time));
+//            focusOnView(dateTextInputLayout);
             isFormComplete = false;
         }
 
@@ -232,7 +197,7 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     }
 
     private void onSelectedDateChanged(Calendar selectedDate) {
-        setDateLabel();
+        datePickerCell.setDate(selectedDate);
         timeRelativeLayout.setVisibility(View.GONE);
         catalogItemDetailsViewModel.checkAvailability();
     }

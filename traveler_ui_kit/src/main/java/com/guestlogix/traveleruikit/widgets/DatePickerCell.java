@@ -15,7 +15,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class DatePickerCell extends FrameLayout {
 
@@ -40,19 +42,23 @@ public class DatePickerCell extends FrameLayout {
 
     public DatePickerCell(@NonNull Context context) {
         super(context);
+        init(context, null, 0, 0);
     }
 
     public DatePickerCell(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init(context, attrs, 0, 0);
     }
 
     public DatePickerCell(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context, attrs, defStyleAttr, 0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public DatePickerCell(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -111,6 +117,16 @@ public class DatePickerCell extends FrameLayout {
     }
 
     private void updateDateLabel() {
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, getLocale());
+        String label = df.format(calendar.getTime());
+        dateEditText.setText(label);
+    }
 
+    private Locale getLocale() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return getResources().getConfiguration().getLocales().get(0);
+        } else {
+            return getResources().getConfiguration().locale;
+        }
     }
 }
