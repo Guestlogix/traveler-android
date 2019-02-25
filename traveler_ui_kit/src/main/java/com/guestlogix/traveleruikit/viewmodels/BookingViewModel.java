@@ -83,7 +83,6 @@ public class BookingViewModel extends ViewModel {
     }
 
     public void submitPasses() {
-        state.setValue(State.LOADING);
         bookingForm = new BookingForm(flattenMap());
 
         state.setValue(State.QUESTIONS);
