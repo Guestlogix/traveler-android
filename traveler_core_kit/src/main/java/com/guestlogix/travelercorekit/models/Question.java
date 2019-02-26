@@ -1,8 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.error.TravelerError;
-import com.guestlogix.travelercorekit.error.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;

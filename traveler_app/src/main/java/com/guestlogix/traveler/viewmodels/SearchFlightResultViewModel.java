@@ -2,14 +2,11 @@ package com.guestlogix.traveler.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import com.guestlogix.traveler.repositories.FlightSearchRepository;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
-import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
-import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import java.util.List;

@@ -7,9 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.*;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.repositories.BookingRepository;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 

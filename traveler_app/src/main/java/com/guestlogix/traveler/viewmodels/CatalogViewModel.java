@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.guestlogix.traveler.repositories.CatalogSearchRepository;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;

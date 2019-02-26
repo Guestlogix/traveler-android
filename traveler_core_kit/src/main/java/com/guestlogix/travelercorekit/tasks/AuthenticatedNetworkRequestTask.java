@@ -1,8 +1,8 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
-import com.guestlogix.travelercorekit.error.TravelerErrorCode;
+import com.guestlogix.travelercorekit.models.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;

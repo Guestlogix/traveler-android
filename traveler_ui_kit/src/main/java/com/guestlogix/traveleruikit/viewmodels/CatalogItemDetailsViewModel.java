@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Availability;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.models.CatalogItem;
