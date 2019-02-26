@@ -41,7 +41,7 @@ public class PassSelectionFragment extends BaseFragment {
         actionLayout = view.findViewById(R.id.actionLayout);
 
         // Events.
-        actionLayout.setOnClickListener(this::onBookNowClick);
+        actionLayout.setActionOnClickListener(this::onBookNowClick);
         actionLayout.setButtonText(getString(R.string.book_now));
         actionLayout.setLabel(getString(R.string.label_starting_at));
 

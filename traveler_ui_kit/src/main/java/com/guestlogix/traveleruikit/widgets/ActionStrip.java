@@ -26,19 +26,6 @@ public class ActionStrip extends FrameLayout {
     // State of this widget.
     private ActionStripState state;
 
-
-    /**
-     * Listener used to dispatch click events on the button.
-     */
-    private OnClickListener onClickListener;
-
-    /**
-     * Callback interface for click events on the action strip.
-     */
-    public interface OnClickListener {
-        void onClick();
-    }
-
     public enum ActionStripState {
         ENABLED, DISABLED, LOADING
     }
@@ -74,10 +61,6 @@ public class ActionStrip extends FrameLayout {
 
             state = ActionStripState.ENABLED; // Default behaviour.
             onStateChange();
-
-            actionButton.setOnClickListener(v -> {
-                if (onClickListener != null) onClickListener.onClick();
-            });
         }
     }
 
@@ -109,8 +92,8 @@ public class ActionStrip extends FrameLayout {
      *
      * @param onClickListener Interface to propagate callbacks.
      */
-    public void setOnClickListener(@Nullable OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
+    public void setActionOnClickListener(@Nullable OnClickListener onClickListener) {
+        actionButton.setOnClickListener(onClickListener);
     }
 
     private void onStateChange() {
