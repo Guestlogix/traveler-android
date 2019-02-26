@@ -133,7 +133,7 @@ public class CatalogItemProviderInformationFragment extends BaseFragment {
     }
 
     private void openMap(double lat, double lon) {
-        String uri = String.format(Locale.ENGLISH, "geo:%f,%f", lat, lon);
+        String uri = String.format(Locale.getDefault(), "geo:%f,%f", lat, lon);
         Uri gmmIntentUri = Uri.parse(uri);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
         mapIntent.setPackage("com.google.android.apps.maps");

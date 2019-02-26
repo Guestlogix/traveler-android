@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class TravelerLog {
-    public static String TAG = "Traveller";
+    private static String TAG = "Traveler";
 
-    public static boolean DEBUG = Log.isLoggable(TAG, Log.VERBOSE);
+    private static boolean DEBUG = Log.isLoggable(TAG, Log.VERBOSE);
 
     /**
      * {@link Class#getName()} uses reflection and calling it on a potentially hot code path may
@@ -63,7 +63,7 @@ public class TravelerLog {
      * method name.
      */
     private static String buildMessage(String format, Object... args) {
-        String msg = (args == null) ? format : String.format(Locale.US, format, args);
+        String msg = (args == null) ? format : String.format(Locale.getDefault(), format, args);
         StackTraceElement[] trace = new Throwable().fillInStackTrace().getStackTrace();
 
         String caller = "<unknown>";
@@ -80,7 +80,7 @@ public class TravelerLog {
                 break;
             }
         }
-        return String.format(Locale.US, "[%d] %s: %s", Thread.currentThread().getId(), caller, msg);
+        return String.format(Locale.getDefault(), "[%d] %s: %s", Thread.currentThread().getId(), caller, msg);
     }
 
     /** A simple event log with records containing a name, thread ID, and timestamp. */
