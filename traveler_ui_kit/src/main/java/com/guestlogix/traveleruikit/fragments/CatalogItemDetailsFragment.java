@@ -81,7 +81,7 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         catalogItemDetailsViewModel.getObservableSelectedDate().observe(this, this::onDateChanged);
         catalogItemDetailsViewModel.getObservableActionState().observe(this, this::onActionState);
 
-        actionStrip.setOnClickListener(catalogItemDetailsViewModel::onActionSubmit);
+        actionStrip.setActionOnClickListener(catalogItemDetailsViewModel::onActionSubmit);
         datePickerCell.setOnDateChangedListener(catalogItemDetailsViewModel::setBookingDate);
         timePickerCell.setOnItemSelectedListener(catalogItemDetailsViewModel::setBookingTime);
     }

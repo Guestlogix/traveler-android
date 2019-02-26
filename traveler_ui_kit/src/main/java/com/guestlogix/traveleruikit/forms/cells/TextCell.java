@@ -51,11 +51,12 @@ public class TextCell extends BaseCell {
     }
 
     public void setValue(CharSequence value) {
-        editText.setText(value);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            editText.setText( Html.fromHtml(value.toString(), Html.FROM_HTML_MODE_COMPACT).toString());
-        } else {
-            editText.setText(Html.fromHtml(value.toString()).toString());
+        if (null != value) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                editText.setText(Html.fromHtml(value.toString(), Html.FROM_HTML_MODE_COMPACT).toString());
+            } else {
+                editText.setText(Html.fromHtml(value.toString()).toString());
+            }
         }
     }
 

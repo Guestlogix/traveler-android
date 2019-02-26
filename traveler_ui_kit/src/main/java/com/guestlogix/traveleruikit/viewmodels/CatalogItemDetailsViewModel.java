@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.viewmodels;
 
+import android.view.View;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
@@ -81,7 +82,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         actionState.postValue(ActionState.AVAILABLE);
     }
 
-    public void onActionSubmit() {
+    public void onActionSubmit(View view) {
         if (bookingContext.getSelectedDate() == null) {
             actionState.postValue(ActionState.NOT_AVAILABLE);
         } else if (bookingContext.getTimeRequired() && bookingContext.getSelectedTime() == null) {
