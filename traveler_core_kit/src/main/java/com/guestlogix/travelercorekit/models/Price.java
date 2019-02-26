@@ -17,7 +17,9 @@ public class Price implements Serializable {
     private Double value;
     private String currency;
 
-    Price() {
+    public Price() {
+        value = 0.0;
+        currency = "USD"; //default currency
     }
 
     private Price(Double value, String currency) {
@@ -38,12 +40,24 @@ public class Price implements Serializable {
         return currency.getSymbol(Locale.getDefault());
     }
 
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
     public String getFormattedValue() {
+        return getFormattedValue(value);
+    }
+
+    String getFormattedValue(Double price) {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
         symbols.setCurrencySymbol(getCurrencySymbol());
         formatter.setDecimalFormatSymbols(symbols);
-        return formatter.format(value);
+        return formatter.format(price);
     }
 
     public static class PriceObjectMappingFactory implements ObjectMappingFactory<Price> {

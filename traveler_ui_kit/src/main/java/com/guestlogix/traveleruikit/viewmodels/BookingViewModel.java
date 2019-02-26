@@ -22,7 +22,7 @@ public class BookingViewModel extends ViewModel {
     private Map<Pass, Integer> passQuantityMap;
 
     private MutableLiveData<List<Pass>> passesData;
-    private MutableLiveData<Double> priceChange;
+    private MutableLiveData<Price> priceChange;
     private MutableLiveData<State> state;
     private SingleLiveEvent<Event<Pair<Integer, Integer>>> bookingFormError;
     private MutableLiveData<BookingForm> bookingFormData;
@@ -46,7 +46,7 @@ public class BookingViewModel extends ViewModel {
         return passesData;
     }
 
-    public LiveData<Double> getObservablePrice() {
+    public LiveData<Price> getObservablePrice() {
         return priceChange;
     }
 
@@ -147,6 +147,7 @@ public class BookingViewModel extends ViewModel {
 
     private void calculateTotalPrice() {
         double price = 0.0;
+        Price tempPrice = new Price();
 
         for (Map.Entry<Pass, Integer> e : passQuantityMap.entrySet()) {
             Integer quantity = e.getValue();
@@ -158,9 +159,10 @@ public class BookingViewModel extends ViewModel {
             }
 
             price += (quantity * pass.getPrice().getValue());
+            tempPrice.setCurrency(pass.getPrice().getCurrency());
         }
-
-        priceChange.postValue(price);
+        tempPrice.setValue(price);
+        priceChange.postValue(tempPrice);
     }
 
     private FetchPassesCallback fetchPassesCallback = new FetchPassesCallback() {
