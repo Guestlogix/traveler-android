@@ -1,13 +1,10 @@
 package com.guestlogix.traveleruikit.fragments;
 
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,6 +15,7 @@ import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
 import com.guestlogix.traveleruikit.forms.descriptors.QuantityDescriptor;
 import com.guestlogix.traveleruikit.forms.utilities.FormType;
 import com.guestlogix.traveleruikit.viewmodels.BookingViewModel;
+import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.util.List;
 
@@ -27,8 +25,7 @@ import java.util.List;
 public class PassSelectionFragment extends BaseFragment {
 
     private Form form;
-    private TextView priceLbl;
-    private Button bookNowBtn;
+    private ActionStrip actionLayout;
 
     private BookingViewModel viewModel;
 
@@ -41,17 +38,18 @@ public class PassSelectionFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_pass_selection, container, false);
 
         form = view.findViewById(R.id.passForm);
-        priceLbl = view.findViewById(R.id.startingAtValueTextView);
-        bookNowBtn = view.findViewById(R.id.bookNowBtn);
+        actionLayout = view.findViewById(R.id.actionLayout);
 
         // Events.
-        bookNowBtn.setOnClickListener(this::onBookNowClick);
+        actionLayout.setOnClickListener(this::onBookNowClick);
+        actionLayout.setButtonText(getString(R.string.book_now));
+        actionLayout.setLabel(getString(R.string.label_starting_at));
 
         // View Model
         viewModel = ViewModelProviders.of(getActivityContext()).get(BookingViewModel.class);
 
-        viewModel.getPasses().observe(getViewLifecycleOwner(), this::buildPassForm);
-        viewModel.getPrice().observe(getViewLifecycleOwner(), this::onPriceChange);
+        viewModel.getObservablePasses().observe(getViewLifecycleOwner(), this::buildPassForm);
+        viewModel.getObservablePrice().observe(getViewLifecycleOwner(), this::onPriceChange);
 
         return view;
     }
@@ -125,8 +123,7 @@ public class PassSelectionFragment extends BaseFragment {
         }));
     }
 
-    @SuppressLint("DefaultLocale")
     private void onPriceChange(Double price) {
-        priceLbl.setText(String.format("$%.2f", price));
+        actionLayout.setValue(price.toString());
     }
 }

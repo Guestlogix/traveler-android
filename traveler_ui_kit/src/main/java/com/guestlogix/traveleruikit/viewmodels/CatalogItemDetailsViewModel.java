@@ -58,7 +58,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         return actionState;
     }
 
-    public LiveData<BookingContext> getBookingRequest() {
+    public LiveData<BookingContext> getObservableBookingContext() {
         return bookingRequest;
     }
 

@@ -1,6 +1,5 @@
 package com.guestlogix.traveleruikit.viewmodels;
 
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
@@ -17,7 +16,6 @@ import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 import java.util.*;
 
 public class BookingViewModel extends ViewModel {
-    private static final String TAG = "SupplierQuestionsVM";
 
     private BookingContext bookingContext;
     private BookingForm bookingForm;
@@ -45,23 +43,23 @@ public class BookingViewModel extends ViewModel {
         updatePass(this.bookingContext);
     }
 
-    public LiveData<List<Pass>> getPasses() {
+    public LiveData<List<Pass>> getObservablePasses() {
         return passesData;
     }
 
-    public LiveData<Double> getPrice() {
+    public LiveData<Double> getObservablePrice() {
         return priceChange;
     }
 
-    public LiveData<State> getStatus() {
+    public LiveData<State> getObservableStatus() {
         return state;
     }
 
-    public LiveData<Event<Pair<Integer, Integer>>> getBookingFormErrorPosition() {
+    public LiveData<Event<Pair<Integer, Integer>>> getObservableBookingFormErrorPosition() {
         return bookingFormError;
     }
 
-    public LiveData<BookingForm> getBookingForm() {
+    public LiveData<BookingForm> getObservableBookingForm() {
         return bookingFormData;
     }
 
@@ -102,7 +100,6 @@ public class BookingViewModel extends ViewModel {
 
     public void updateValueForPass(Pass pass, Integer newQuantity) {
         if (passQuantityMap == null) {
-            Log.w(TAG, "updateValueForPass - Passes are not initialized yet");
             return;
         }
 
@@ -170,7 +167,6 @@ public class BookingViewModel extends ViewModel {
     private FetchPassesCallback fetchPassesCallback = new FetchPassesCallback() {
         @Override
         public void onSuccess(List<Pass> passes) {
-            TravelerLog.v(String.format(Locale.getDefault(),"Fetched %d passes. Building all mappings", passes.size()));
             passQuantityMap = new HashMap<>();
 
             // Initialize all quantities to 0.
@@ -185,7 +181,6 @@ public class BookingViewModel extends ViewModel {
 
         @Override
         public void onError(TravelerError error) {
-            Log.d(TAG, "Error occurred while fetching passes.");
             state.setValue(State.ERROR);
         }
     };

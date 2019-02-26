@@ -73,6 +73,8 @@
     <style name="ActionButton" parent="Base.Widget.AppCompat.ActionButton">
         <item name="android:background">@color/green</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:minWidth">160dp</item>
     </style>
 
     <style name="MainBody" parent="DefaultTextView">

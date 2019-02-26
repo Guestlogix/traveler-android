@@ -1,7 +1,6 @@
 package com.guestlogix.traveleruikit.activities;
 
 import android.os.Bundle;
-import androidx.core.util.Pair;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -37,7 +36,7 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Tra
 
             catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
             catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
-            catalogItemDetailsViewModel.getBookingRequest().observe(this, this::onBookingRequest);
+            catalogItemDetailsViewModel.getObservableBookingContext().observe(this, this::onBookingRequest);
 
             catalogItem = (CatalogItem) extras.getSerializable(ARG_CATALOG_ITEM);
             catalogItemDetailsViewModel.setCatalogItem(catalogItem);

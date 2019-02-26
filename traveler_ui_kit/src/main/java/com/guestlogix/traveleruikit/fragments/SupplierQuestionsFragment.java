@@ -44,8 +44,8 @@ public class SupplierQuestionsFragment extends BaseFragment {
         form = view.findViewById(R.id.questionsForm);
         viewModel = ViewModelProviders.of(getActivityContext()).get(BookingViewModel.class);
 
-        viewModel.getBookingFormErrorPosition().observe(getViewLifecycleOwner(), this::updateForm);
-        viewModel.getBookingForm().observe(getViewLifecycleOwner(), this::buildSupplierForm);
+        viewModel.getObservableBookingFormErrorPosition().observe(getViewLifecycleOwner(), this::updateForm);
+        viewModel.getObservableBookingForm().observe(getViewLifecycleOwner(), this::buildSupplierForm);
 
         return view;
     }
