@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.models.Pass;
+import com.guestlogix.travelercorekit.models.Price;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
@@ -123,7 +124,7 @@ public class PassSelectionFragment extends BaseFragment {
         }));
     }
 
-    private void onPriceChange(Double price) {
-        actionLayout.setValue(price.toString());
+    private void onPriceChange(Price price) {
+        actionLayout.setValue(price.getFormattedValue());
     }
 }
