@@ -10,13 +10,11 @@ import androidx.lifecycle.ViewModel;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.error.TravelerError;
 import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.repositories.BookingRepository;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BookingViewModel extends ViewModel {
     private static final String TAG = "SupplierQuestionsVM";
@@ -172,7 +170,7 @@ public class BookingViewModel extends ViewModel {
     private FetchPassesCallback fetchPassesCallback = new FetchPassesCallback() {
         @Override
         public void onSuccess(List<Pass> passes) {
-            Log.v(TAG, String.format("Fetched %d passes. Building all mappings", passes.size()));
+            TravelerLog.v(String.format(Locale.getDefault(),"Fetched %d passes. Building all mappings", passes.size()));
             passQuantityMap = new HashMap<>();
 
             // Initialize all quantities to 0.
