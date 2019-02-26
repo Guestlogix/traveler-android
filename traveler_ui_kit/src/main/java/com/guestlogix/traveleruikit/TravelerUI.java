@@ -1,16 +1,15 @@
 package com.guestlogix.traveleruikit;
 
-import android.util.Log;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 public class TravelerUI {
     private static TravelerUI localInstance;
-    private static final String TAG = "Traveler";
 
     private PaymentProvider mPaymentProvider;
 
     public static void initialize(PaymentProvider paymentProvider) {
         if (localInstance != null) {
-            Log.e(TAG, "SDK already initialized");
+            TravelerLog.e("SDK already initialized");
         } else {
             localInstance = new TravelerUI(paymentProvider);
         }
@@ -22,7 +21,7 @@ public class TravelerUI {
 
     static PaymentProvider getPaymentProvider() {
         if (localInstance == null) {
-            Log.e(TAG, "SDK not initialized");
+            TravelerLog.e("SDK not initialized");
             return null;
         }
 

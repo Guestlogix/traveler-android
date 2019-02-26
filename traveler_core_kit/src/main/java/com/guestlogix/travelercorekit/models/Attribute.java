@@ -12,7 +12,7 @@ public class Attribute implements Serializable {
     private String label;
     private String value;
 
-    private Attribute(String label, String value) {
+    public Attribute(String label, String value) {
         this.label = label;
         this.value = value;
     }

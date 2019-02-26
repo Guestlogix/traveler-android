@@ -3,8 +3,6 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 28
 
-
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 28
@@ -12,13 +10,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", stripe_publishable_key_release)
+        }
+        debug {
+            buildConfigField("String", "STRIPE_PUBLISHABLE_KEY", stripe_publishable_key_debug)
         }
     }
 
@@ -33,13 +34,10 @@ dependencies {
 
     implementation project(path: ':traveler_core_kit')
     implementation project(path: ':traveler_ui_kit')
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.stripe:stripe-android:8.3.0'
 
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation "com.stripe:stripe-android:${stripe_sdk_version}"
+    implementation "com.android.support:appcompat-v7:${android_support_version}"
+    implementation "com.android.support.constraint:constraint-layout:${android_support_component_version}"
+
+    testImplementation "junit:junit:${junit_version}"
 }

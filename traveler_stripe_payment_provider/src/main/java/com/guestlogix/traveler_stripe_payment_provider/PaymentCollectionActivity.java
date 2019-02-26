@@ -25,7 +25,7 @@ public class PaymentCollectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        stripe = new Stripe(this, "pk_test_yUnRnhSqk2DvuL6Qlx9TNrfx");
+        stripe = new Stripe(this, BuildConfig.STRIPE_PUBLISHABLE_KEY);
 
         setContentView(R.layout.activity_payment_collection);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -41,8 +41,8 @@ public class PaymentCollectionActivity extends AppCompatActivity {
 
         if (card == null || !card.validateCard() || !card.validateCVC()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Invalid card or CVC");
-            builder.setNeutralButton("Retry", null);
+            builder.setMessage(getString(R.string.invalid_card_or_cvc));
+            builder.setNeutralButton(getString(R.string.retry), null);
             builder.create().show();
 
             return;
@@ -63,7 +63,7 @@ public class PaymentCollectionActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
                 cardInputWidget.setEnabled(true);
 
-                Toast.makeText(getApplicationContext(),"Could not process credit card.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.could_not_process_cc), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -78,7 +78,5 @@ public class PaymentCollectionActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 }

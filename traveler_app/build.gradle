@@ -1,6 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-android'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
@@ -55,10 +53,9 @@ dependencies {
     implementation "com.microsoft.appcenter:appcenter-crashes:$app_center_sdk_version"
 
     //Testing frameworks
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation "junit:junit:${junit_version}"
     androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()
