@@ -40,12 +40,10 @@ public abstract class Task implements TaskObserver {
 
     final void start() {
         if (state == State.FINISHED) {
-            Log.d("TASK", "Task already finished.");
             return;
         }
 
         if (state == State.RUNNING) {
-            Log.d("TASK", "Task already running.");
             return;
         }
 
@@ -82,7 +80,6 @@ public abstract class Task implements TaskObserver {
     }
 
     public final void cancel() {
-        Log.d("Traveler", "Cancelling:" + this.getClass().getSimpleName());
         cancelled = true;
     }
 
