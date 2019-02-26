@@ -1,7 +1,7 @@
 package com.guestlogix.travelercorekit.tasks;
 
-import com.guestlogix.travelercorekit.error.TravelerError;
-import com.guestlogix.travelercorekit.error.TravelerErrorCode;
+import com.guestlogix.travelercorekit.models.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.utilities.InputStreamHelper;
 
 import java.io.IOException;

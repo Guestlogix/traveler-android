@@ -2,7 +2,7 @@ package com.guestlogix.travelercorekit.tasks;
 
 import android.content.Context;
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
-import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
