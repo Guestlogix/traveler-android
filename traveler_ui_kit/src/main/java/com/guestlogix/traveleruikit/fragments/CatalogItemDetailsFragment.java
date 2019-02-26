@@ -29,6 +29,7 @@ import com.guestlogix.traveleruikit.widgets.ListPickerCell;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,8 +46,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private ActionStrip actionStrip;
     private DatePickerCell datePickerCell;
     private ListPickerCell timePickerCell;
-
-    private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
 
     public CatalogItemDetailsFragment() {
     }
@@ -75,7 +74,7 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        catalogItemDetailsViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
+        CatalogItemDetailsViewModel catalogItemDetailsViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
 
         catalogItemDetailsViewModel.getObservableCatalogItemDetails().observe(this, this::setView);
         catalogItemDetailsViewModel.getObservableTimeSlots().observe(this, this::onTimesChanged);
@@ -102,13 +101,12 @@ public class CatalogItemDetailsFragment extends BaseFragment {
 
         String checkAvailability = getString(R.string.button_check_availability);
         String startingAt = getString(R.string.label_starting_at);
-        String price = catalogItemDetails.getPriceStartingAt().getValue().toString();
-        // TODO: change price to be localized string value.
+        String price = String.format(Locale.getDefault(), "%s per person", catalogItemDetails.getPriceStartingAt().getFormattedValue());
 
         actionStrip.setStripValues(checkAvailability, startingAt, price);
 
         ItemInformationTabsPagerAdapter adapter =
-                new ItemInformationTabsPagerAdapter(getActivity().getSupportFragmentManager(), getActivity());
+                new ItemInformationTabsPagerAdapter(getActivityContext().getSupportFragmentManager(), getActivity());
 
         adapter.setContactInfo(catalogItemDetails.getContact());
         adapter.setInformationList(catalogItemDetails.getInformation());

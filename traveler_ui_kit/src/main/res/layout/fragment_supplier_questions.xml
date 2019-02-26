@@ -10,8 +10,7 @@
     <com.guestlogix.traveleruikit.forms.Form
             android:id="@+id/questionsForm"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/userActionLayout"
+            android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

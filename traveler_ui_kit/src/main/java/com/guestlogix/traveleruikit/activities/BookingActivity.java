@@ -43,7 +43,7 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
             navController = Navigation.findNavController(this, R.id.supplierInformationHostFragment);
 
             bookingViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
-            bookingViewModel.getStatus().observe(this, this::onStateChange);
+            bookingViewModel.getObservableStatus().observe(this, this::onStateChange);
 
             bookingContext = (BookingContext) extras.getSerializable(ARG_BOOKING_CONTEXT);
             bookingViewModel.setBookingContext(bookingContext);
