@@ -14,23 +14,23 @@ public class DateHelper {
     private static final Calendar calendar = Calendar.getInstance();
 
     public static String formatDateToISO8601(Date date) {
-        return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.US).format(date);
+        return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).format(date);
     }
 
     public static String formatDate(Date date) {
-        return new SimpleDateFormat(PRETTY_DATE_PATTERN, Locale.US).format(date);
+        return new SimpleDateFormat(PRETTY_DATE_PATTERN, Locale.getDefault()).format(date);
     }
 
     public static Date parseISO8601(String dateString) throws ParseException {
-        return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.US).parse(dateString);
+        return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).parse(dateString);
     }
 
     public static Date parseDate(String dateString) throws ParseException {
-        return new SimpleDateFormat(DATE_PATTERN, Locale.US).parse(dateString);
+        return new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(dateString);
     }
 
     public static String formatTime(Date date) {
-        return new SimpleDateFormat(TIME_PATTERN, Locale.US).format(date);
+        return new SimpleDateFormat(TIME_PATTERN, Locale.getDefault()).format(date);
     }
 
     public static String formatTime(Long rowItem) {
