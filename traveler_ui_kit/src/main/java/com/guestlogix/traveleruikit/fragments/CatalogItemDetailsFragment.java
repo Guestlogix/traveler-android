@@ -31,9 +31,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class CatalogItemDetailsFragment extends BaseFragment {
 
     private NestedScrollView mainNestedScrollView;
