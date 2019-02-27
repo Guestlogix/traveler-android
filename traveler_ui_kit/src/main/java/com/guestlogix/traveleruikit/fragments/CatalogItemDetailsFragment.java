@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
@@ -21,15 +21,12 @@ import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
-import com.guestlogix.traveleruikit.widgets.ActionStrip;
-import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 import com.guestlogix.traveleruikit.widgets.DatePickerCell;
 import com.guestlogix.traveleruikit.widgets.ListPickerCell;
-
+import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class CatalogItemDetailsFragment extends BaseFragment {
 
@@ -40,7 +37,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private TextView descriptionTextView;
     private ImageView imageView;
 
-    private ActionStrip actionStrip;
     private DatePickerCell datePickerCell;
     private ListPickerCell timePickerCell;
 
@@ -49,22 +45,19 @@ public class CatalogItemDetailsFragment extends BaseFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.fragment_catalog_item_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_catalog_item_details, container, false);
 
-        mainNestedScrollView = mView.findViewById(R.id.mainNestedScrollView);
-        titleTextView = mView.findViewById(R.id.titleTextView);
-        descriptionTextView = mView.findViewById(R.id.descriptionTextView);
-        imageView = mView.findViewById(R.id.imageView);
-        catalogItemDetailsPager = mView.findViewById(R.id.catalogItemPager);
-        catalogItemDetailsTabs = mView.findViewById(R.id.catalogItemTabs);
+        mainNestedScrollView = view.findViewById(R.id.mainNestedScrollView);
+        titleTextView = view.findViewById(R.id.titleTextView);
+        descriptionTextView = view.findViewById(R.id.descriptionTextView);
+        imageView = view.findViewById(R.id.imageView);
+        catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
+        catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
 
-        actionStrip = mView.findViewById(R.id.action_container);
-        datePickerCell = mView.findViewById(R.id.datePickerCell);
-        timePickerCell = mView.findViewById(R.id.timePickerCell);
+        datePickerCell = view.findViewById(R.id.datePickerCell);
+        timePickerCell = view.findViewById(R.id.timePickerCell);
 
-        actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
-
-        return mView;
+        return view;
     }
 
     @Override
@@ -78,9 +71,14 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         catalogItemDetailsViewModel.getObservableSelectedDate().observe(this, this::onDateChanged);
         catalogItemDetailsViewModel.getObservableActionState().observe(this, this::onActionState);
 
-        actionStrip.setActionOnClickListener(catalogItemDetailsViewModel::onActionSubmit);
         datePickerCell.setOnDateChangedListener(catalogItemDetailsViewModel::setBookingDate);
         timePickerCell.setOnItemSelectedListener(catalogItemDetailsViewModel::setBookingTime);
+
+        FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
+        ActionStripContainerFragment actionStripContainerFragment = new ActionStripContainerFragment();
+
+        fragmentTransaction.replace(R.id.action_container, actionStripContainerFragment);
+        fragmentTransaction.commit();
     }
 
     private void setView(CatalogItemDetails catalogItemDetails) {
@@ -95,12 +93,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         } else {
             descriptionTextView.setText(Html.fromHtml(catalogItemDetails.getDescription()));
         }
-
-        String checkAvailability = getString(R.string.button_check_availability);
-        String startingAt = getString(R.string.label_starting_at);
-        String price = String.format(Locale.getDefault(), "%s per person", catalogItemDetails.getPriceStartingAt().getFormattedValue());
-
-        actionStrip.setStripValues(checkAvailability, startingAt, price);
 
         ItemInformationTabsPagerAdapter adapter =
                 new ItemInformationTabsPagerAdapter(getActivityContext().getSupportFragmentManager(), getActivity());
@@ -145,24 +137,19 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private void onActionState(CatalogItemDetailsViewModel.ActionState state) {
         switch (state) {
             case LOADING:
-                actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
                 break;
             case NOT_AVAILABLE:
-                actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
                 datePickerCell.setError(getString(R.string.not_available));
                 focusOnView(datePickerCell);
                 break;
             case AVAILABLE:
-                actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
                 break;
             case ERROR:
                 onCheckAvailabilityError();
-                actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
                 break;
             case TIME_REQUIRED:
                 timePickerCell.setError(getString(R.string.required));
                 focusOnView(timePickerCell);
-                actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
         }
     }
 

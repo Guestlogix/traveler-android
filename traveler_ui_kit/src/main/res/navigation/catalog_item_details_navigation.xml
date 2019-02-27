@@ -25,6 +25,7 @@
             tools:layout="@layout/fragment_traveler_error">
     </fragment>
 
+    <!--TODO: Remove this direction as this is being handled by ActionStrip Fragment-->
     <activity
             android:id="@+id/book_now_activity_destination"
             android:name="com.guestlogix.traveleruikit.activities.BookingActivity"
@@ -52,6 +53,7 @@
             app:popUpToInclusive="true"
             app:destination="@+id/error_destination"/>
 
+    <!--TODO: Remove this direction as this is being handled by ActionStrip Fragment-->
     <action
             android:id="@+id/book_now_action"
             app:launchSingleTop="true"

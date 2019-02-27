@@ -50,6 +50,10 @@ public class TravelerLog {
         Log.e(TAG, buildMessage(format, args), tr);
     }
 
+    public static void w(String format, Object... args) {
+        Log.w(TAG, buildMessage(format, args));
+    }
+
     public static void wtf(String format, Object... args) {
         Log.wtf(TAG, buildMessage(format, args));
     }

@@ -24,8 +24,8 @@ import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
  */
 public class BookingActivity extends AppCompatActivity implements TravelerErrorFragment.OnErrorInteractionListener {
 
-    public static final String ARG_BOOKING_CONTEXT = "booking_context";
-    public static final String RESULT_BOOKING_FORM = "booking_form";
+    public static final String EXTRA_BOOKING_CONTEXT = "EXTRA_BOOKING_CONTEXT";
+    public static final String RESULT_BOOKING_FORM = "RESULT_BOOKING_FORM";
     private static final String TAG = "Traveler UI Kit";
 
     private BookingViewModel bookingViewModel;
@@ -39,16 +39,16 @@ public class BookingActivity extends AppCompatActivity implements TravelerErrorF
 
         Bundle extras = getIntent().getExtras();
 
-        if (null != extras && extras.containsKey(ARG_BOOKING_CONTEXT)) {
+        if (null != extras && extras.containsKey(EXTRA_BOOKING_CONTEXT)) {
             navController = Navigation.findNavController(this, R.id.supplierInformationHostFragment);
 
             bookingViewModel = ViewModelProviders.of(this).get(BookingViewModel.class);
             bookingViewModel.getObservableStatus().observe(this, this::onStateChange);
 
-            bookingContext = (BookingContext) extras.getSerializable(ARG_BOOKING_CONTEXT);
+            bookingContext = (BookingContext) extras.getSerializable(EXTRA_BOOKING_CONTEXT);
             bookingViewModel.setBookingContext(bookingContext);
         } else {
-            Log.e(TAG, String.format(getString(R.string.no_argument_exception), ARG_BOOKING_CONTEXT, this.getLocalClassName()));
+            Log.e(TAG, String.format(getString(R.string.no_argument_exception), EXTRA_BOOKING_CONTEXT, this.getLocalClassName()));
             finish();
         }
     }
