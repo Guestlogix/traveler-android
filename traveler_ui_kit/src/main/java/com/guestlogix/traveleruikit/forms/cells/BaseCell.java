@@ -57,6 +57,10 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
         itemView.setVisibility(View.VISIBLE);
     }
 
+    public void setError(String error) {
+
+    }
+
     /**
      * Signals the cell that it needs to be reloaded to a fresh state.
      */

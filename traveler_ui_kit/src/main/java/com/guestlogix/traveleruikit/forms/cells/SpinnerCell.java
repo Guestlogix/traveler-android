@@ -66,6 +66,7 @@ public class SpinnerCell extends BaseCell {
      *
      * @param error String to display as error.
      */
+    @Override
     public void setError(String error) {
         this.autocomplete.setError(error);
     }

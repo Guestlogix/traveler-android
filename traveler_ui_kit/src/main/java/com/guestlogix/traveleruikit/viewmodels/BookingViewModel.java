@@ -2,17 +2,18 @@ package com.guestlogix.traveleruikit.viewmodels;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
-import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.repositories.BookingRepository;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BookingViewModel extends ViewModel {
 
@@ -20,11 +21,12 @@ public class BookingViewModel extends ViewModel {
     private BookingForm bookingForm;
     private BookingRepository bookingRepository;
     private Map<Pass, Integer> passQuantityMap;
+    private BookingForm.BookingFormError currentError;
 
     private MutableLiveData<List<Pass>> passesData;
     private MutableLiveData<Price> priceChange;
     private MutableLiveData<State> state;
-    private SingleLiveEvent<Event<Pair<Integer, Integer>>> bookingFormError;
+    private SingleLiveEvent<BookingForm.BookingFormError> bookingFormError;
     private MutableLiveData<BookingForm> bookingFormData;
 
 
@@ -54,7 +56,7 @@ public class BookingViewModel extends ViewModel {
         return state;
     }
 
-    public LiveData<Event<Pair<Integer, Integer>>> getObservableBookingFormErrorPosition() {
+    public LiveData<BookingForm.BookingFormError> getObservableBookingFormErrorPosition() {
         return bookingFormError;
     }
 
@@ -86,15 +88,22 @@ public class BookingViewModel extends ViewModel {
 
     public void submitQuestions() {
         state.setValue(State.LOADING);
-        Pair<Integer, Integer> firstError = bookingForm.validate();
+        List<BookingForm.BookingFormError> errors = bookingForm.validate();
 
-        if (firstError != null) {
+        if (!errors.isEmpty()) {
             state.setValue(State.QUESTIONS);
-            bookingFormError.setValue(new Event<>(firstError));
+            currentError = errors.get(0);
         } else {
             state.setValue(State.SUCCESS);
         }
 
+    }
+
+    @Nullable
+    public BookingForm.BookingFormError getCurrentError(int sectionId, int questionId) {
+        if (this.currentError != null && this.currentError.groupId == sectionId && this.currentError.questionId == questionId) {
+            return currentError;
+        } else return null;
     }
 
     public void updateValueForPass(Pass pass, Integer newQuantity) {
@@ -188,30 +197,5 @@ public class BookingViewModel extends ViewModel {
 
     public enum State {
         ERROR, LOADING, PASS_SELECTION, QUESTIONS, SUCCESS
-    }
-
-    // Limits the event to one handler.
-    // Can be replaced with live data for this case.
-    public class Event<T> {
-        private boolean hasBeenHandled = false;
-        private final T data;
-
-        public Event(T data) {
-            this.data = data;
-        }
-
-        @Nullable
-        public T getData() {
-            if (hasBeenHandled) {
-                return null;
-            } else {
-                hasBeenHandled = true;
-                return data;
-            }
-        }
-
-        public T peekData() {
-            return data;
-        }
     }
 }
