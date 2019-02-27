@@ -94,7 +94,7 @@ public class SupplierQuestionsFragment extends BaseFragment {
             @Override
             public String getDisclaimer(int sectionId) {
                 if (sectionId != questionGroups.size()) {
-                    return questionGroups.get(sectionId).getTitle();
+                    return questionGroups.get(sectionId).getDisclaimer();
                 }
 
                 return null;
@@ -116,11 +116,10 @@ public class SupplierQuestionsFragment extends BaseFragment {
             @Nullable
             @Override
             public String getError(int sectionId, int fieldId) {
-                if (sectionId != questionGroups.size()) {
-                    Question q = questionGroups.get(sectionId).getQuestions().get(fieldId);
-                    List<BookingForm.BookingFormError> errors = bookingForm.getErrors(q);
+                BookingForm.BookingFormError error = viewModel.getCurrentError(sectionId, fieldId);
 
-                    return errors == null || errors.isEmpty() ? null : translateErrorCodeToString(errors.get(0).error);
+                if (error != null) {
+                    return translateErrorCodeToString(error.error);
                 }
 
                 return null;
@@ -215,9 +214,9 @@ public class SupplierQuestionsFragment extends BaseFragment {
         return s;
     }
 
-    private String translateErrorCodeToString(ValidationError error) {
+    private String translateErrorCodeToString(BookingForm.BookingFormErrorType error) {
         switch (error) {
-            case REGEX_MISMATCH:
+            case INCORRECT_PATTERN:
                 return getString(R.string.regex_mismatch);
             case REQUIRED:
                 return getString(R.string.required);
@@ -245,17 +244,10 @@ public class SupplierQuestionsFragment extends BaseFragment {
         }
     }
 
-    private void updateForm(@NonNull BookingViewModel.Event<Pair<Integer, Integer>> event) {
-        Pair<Integer, Integer> update = event.getData();
+    private void updateForm(BookingForm.BookingFormError error) {
+        int sectionId = error.groupId;
+        int fieldId = error.questionId;
 
-        if (update != null) {
-            Integer sectionId = update.first;
-            Integer fieldId = update.second;
-
-            if (null != sectionId && null != fieldId) {
-                form.updateField(sectionId, fieldId);
-                form.scrollToPosition(sectionId, fieldId);
-            }
-        }
+        form.updateField(sectionId, fieldId);
     }
 }

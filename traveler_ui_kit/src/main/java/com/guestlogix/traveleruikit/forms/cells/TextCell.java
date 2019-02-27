@@ -34,6 +34,7 @@ public class TextCell extends BaseCell {
         editText.setHint(hint);
     }
 
+    @Override
     public void setError(String error) {
         editText.setError(error);
     }
