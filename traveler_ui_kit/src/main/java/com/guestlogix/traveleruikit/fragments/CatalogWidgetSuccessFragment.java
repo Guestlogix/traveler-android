@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.fragment.app.Fragment;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
@@ -32,9 +32,7 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View catalogFragmentView = inflater.inflate(R.layout.fragment_catalog_widget_success, container, false);
         catalogView = catalogFragmentView.findViewById(R.id.catalogView);

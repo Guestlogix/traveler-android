@@ -2,17 +2,14 @@ package com.guestlogix.traveleruikit.fragments;
 
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.CatalogWidgetViewModel;
@@ -21,9 +18,7 @@ import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_ACTION;
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_MESSAGE;
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.ARG_ERROR_TITLE;
+import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
 
 /**
  * A widget to show catalog. Add a fragment tag in layout.
@@ -39,8 +34,7 @@ public class CatalogWidgetFragment extends BaseFragment implements TravelerError
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         catalogFragmentView = inflater.inflate(R.layout.fragment_catalog_widget, container, false);
         return catalogFragmentView;
     }
@@ -48,21 +42,17 @@ public class CatalogWidgetFragment extends BaseFragment implements TravelerError
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         navController = Navigation.findNavController(catalogFragmentView.findViewById(R.id.catalogHostFragment));
+
         catalogWidgetViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogWidgetViewModel.class);
         catalogWidgetViewModel.getStatus().observe(this, this::onStateChange);
-
-        updateCatalog(new ArrayList<>());
     }
 
     public void updateCatalog(List<Flight> flights) {
-        this.flights = flights;
-        fetchCatalog();
-    }
-
-    private void fetchCatalog() {
-        CatalogQuery catalogQuery = new CatalogQuery(flights);
-        catalogWidgetViewModel.updateCatalog(catalogQuery);
+        if (null != catalogWidgetViewModel) {
+            catalogWidgetViewModel.setCurrentFlights(flights);
+        }
     }
 
     private void onStateChange(StatefulViewModel.State state) {
@@ -86,6 +76,8 @@ public class CatalogWidgetFragment extends BaseFragment implements TravelerError
 
     @Override
     public void onRetry() {
-        fetchCatalog();
+        if (null != catalogWidgetViewModel) {
+            catalogWidgetViewModel.updateCatalog();
+        }
     }
 }

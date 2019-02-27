@@ -7,6 +7,7 @@ import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
+import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.repositories.CatalogWidgetRepository;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class CatalogWidgetViewModel extends StatefulViewModel {
     private CatalogWidgetRepository catalogWidgetRepository;
     private MutableLiveData<List<CatalogGroup>> catalogGroupList;
 
+    private CatalogQuery catalogQuery;
+
     public LiveData<List<CatalogGroup>> getGroupsObservable() {
         return catalogGroupList;
     }
@@ -29,9 +32,14 @@ public class CatalogWidgetViewModel extends StatefulViewModel {
         this.catalogGroupList.setValue(new ArrayList<>());
     }
 
-    public void updateCatalog(CatalogQuery catalogQuery) {
+    public void updateCatalog() {
         status.postValue(LOADING);
         catalogWidgetRepository.catalogSearch(catalogQuery, catalogSearchCallback);
+    }
+
+    public void setCurrentFlights(List<Flight> flights) {
+        catalogQuery = new CatalogQuery(flights);
+        updateCatalog();
     }
 
     private CatalogSearchCallback catalogSearchCallback = new CatalogSearchCallback() {
