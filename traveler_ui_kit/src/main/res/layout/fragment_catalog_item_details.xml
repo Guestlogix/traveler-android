@@ -82,10 +82,10 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <com.guestlogix.traveleruikit.widgets.ActionStrip
+    <FrameLayout
             android:id="@+id/action_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            tools:layout="@layout/view_action_strip"/>
+            android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

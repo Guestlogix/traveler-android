@@ -36,7 +36,6 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Tra
 
             catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
             catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
-            catalogItemDetailsViewModel.getObservableBookingContext().observe(this, this::onBookingRequest);
 
             catalogItem = (CatalogItem) extras.getSerializable(ARG_CATALOG_ITEM);
             catalogItemDetailsViewModel.setCatalogItem(catalogItem);
@@ -63,11 +62,6 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Tra
                 navController.navigate(R.id.error_action, arguments);
                 break;
         }
-    }
-
-    private void onBookingRequest(BookingContext bookingContext) {
-        CatalogItemDetailsFragmentDirections.bookNowAction(bookingContext);
-        navController.navigate(CatalogItemDetailsFragmentDirections.bookNowAction(bookingContext));
     }
 
     @Override

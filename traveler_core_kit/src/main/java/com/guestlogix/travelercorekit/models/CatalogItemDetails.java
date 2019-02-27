@@ -21,11 +21,11 @@ public class CatalogItemDetails extends Product {
     private ContactInfo contact;
     private List<Location> locations;
     private Price priceStartingAt;
-    private String purchaseStrategy;
+    private PurchaseStrategy purchaseStrategy;
     private List<Attribute> information;
 
-    public CatalogItemDetails(String id, String title, String description, List<String> imageURL, ContactInfo contact, List<Location> locations, Price priceStartingAt, String purchaseStrategy, List<Attribute> information) {
-        super(id,priceStartingAt);
+    public CatalogItemDetails(String id, String title, String description, List<String> imageURL, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) {
+        super(id, priceStartingAt);
         this.title = title;
         this.description = description;
         this.imageURL = imageURL;
@@ -92,11 +92,11 @@ public class CatalogItemDetails extends Product {
         this.priceStartingAt = priceStartingAt;
     }
 
-    public String getPurchaseStrategy() {
+    public PurchaseStrategy getPurchaseStrategy() {
         return purchaseStrategy;
     }
 
-    public void setPurchaseStrategy(String purchaseStrategy) {
+    public void setPurchaseStrategy(PurchaseStrategy purchaseStrategy) {
         this.purchaseStrategy = purchaseStrategy;
     }
 
@@ -124,7 +124,7 @@ public class CatalogItemDetails extends Product {
             ContactInfo contact = new ContactInfo();
             List<Location> locations = new ArrayList<>();
             Price priceStartingAt = new Price();
-            String purchaseStrategy = "";
+            PurchaseStrategy purchaseStrategy = PurchaseStrategy.Bookable;
             List<Attribute> information = new ArrayList<>();
 
             if (BEGIN_ARRAY == reader.peek()) {
@@ -160,7 +160,7 @@ public class CatalogItemDetails extends Product {
                         priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(reader);
                         break;
                     case "purchaseStrategy":
-                        purchaseStrategy = JsonReaderHelper.readString(reader);
+                        purchaseStrategy = PurchaseStrategy.valueOf(JsonReaderHelper.readString(reader));
                         break;
                     case "information":
                         information.addAll(new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader));

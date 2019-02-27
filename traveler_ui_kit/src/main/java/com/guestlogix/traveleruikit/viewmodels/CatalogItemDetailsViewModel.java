@@ -1,15 +1,10 @@
 package com.guestlogix.traveleruikit.viewmodels;
 
-import android.view.View;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
-import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.models.Availability;
-import com.guestlogix.travelercorekit.models.BookingContext;
-import com.guestlogix.travelercorekit.models.CatalogItem;
-import com.guestlogix.travelercorekit.models.CatalogItemDetails;
+import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.repositories.CatalogItemDetailsRepository;
 import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
@@ -24,8 +19,8 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     private MutableLiveData<CatalogItemDetails> catalogItemDetails;
     private MutableLiveData<List<String>> timeSlotsTransformed;
     private MutableLiveData<Calendar> selectedDate;
-    private SingleLiveEvent<ActionState> actionState;
-    private SingleLiveEvent<BookingContext> bookingRequest;
+    private MutableLiveData<ActionState> actionState;
+    private MutableLiveData<BookingContext> bookingRequest;
 
     private CatalogItemDetailsRepository catalogItemDetailsRepository;
 
@@ -39,7 +34,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         catalogItemDetails = new MutableLiveData<>();
         timeSlotsTransformed = new MutableLiveData<>();
         selectedDate = new MutableLiveData<>();
-        actionState = new SingleLiveEvent<>();
+        actionState = new MutableLiveData<>();
         bookingRequest = new SingleLiveEvent<>();
     }
 
@@ -59,8 +54,16 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         return actionState;
     }
 
+    public void setActionState(ActionState state) {
+        actionState.postValue(state);
+    }
+
     public LiveData<BookingContext> getObservableBookingContext() {
         return bookingRequest;
+    }
+
+    public CatalogItemDetails getCatalogItemDetails() {
+        return catalogItemDetails.getValue();
     }
 
     public void setCatalogItem(CatalogItem catalogItem) {
@@ -79,16 +82,6 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
     public void setBookingTime(int index) {
         bookingContext.setSelectedTime(timeSlots.get(index));
         actionState.postValue(ActionState.AVAILABLE);
-    }
-
-    public void onActionSubmit(View view) {
-        if (bookingContext.getSelectedDate() == null) {
-            actionState.postValue(ActionState.NOT_AVAILABLE);
-        } else if (bookingContext.getTimeRequired() && bookingContext.getSelectedTime() == null) {
-            actionState.postValue(ActionState.TIME_REQUIRED);
-        } else {
-            bookingRequest.setValue(bookingContext);
-        }
     }
 
     public BookingContext getBookingContext() {
