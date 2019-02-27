@@ -154,8 +154,7 @@ public class NetworkTask extends Task {
         int statusCode = urlConnection.getResponseCode();
 
         if (statusCode == 401) {
-            error = new TravelerError(TravelerErrorCode.UNAUTHORIZED,
-                    InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
+            error = new TravelerError(TravelerErrorCode.UNAUTHORIZED, null);
         } else if (statusCode == 403) {
             error = new TravelerError(TravelerErrorCode.FORBIDDEN, null);
         } else if (statusCode >= 500) {
