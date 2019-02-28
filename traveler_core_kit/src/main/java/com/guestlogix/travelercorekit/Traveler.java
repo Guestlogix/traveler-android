@@ -143,7 +143,7 @@ public class Traveler {
             AuthenticatedRequest request = Router.getCatalogItem(localInstance.session, catalogItem, localInstance.session.getContext());
             AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
 
-            BlockTask searchGroupBlockTask = new BlockTask() {
+            BlockTask catalogItemDetailsBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
                     if (null != catalogItemDetailsTask.getError()) {
@@ -154,9 +154,9 @@ public class Traveler {
                 }
             };
 
-            searchGroupBlockTask.addDependency(catalogItemDetailsTask);
+            catalogItemDetailsBlockTask.addDependency(catalogItemDetailsTask);
             localInstance.taskManager.addTask(catalogItemDetailsTask);
-            TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+            TaskManager.getMainTaskManager().addTask(catalogItemDetailsBlockTask);
         }
     }
 

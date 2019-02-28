@@ -1,6 +1,6 @@
 package com.guestlogix.traveleruikit.tools.image;
 
-import com.guestlogix.travelercorekit.task.NetworkTask;
+import com.guestlogix.travelercorekit.tasks.NetworkTask;
 
 import java.io.OutputStream;
 import java.net.URL;
@@ -18,7 +18,7 @@ public class ImageRequest implements NetworkTask.Request {
     }
 
     @Override
-    public Method getMethod() {
+    public NetworkTask.Request.Method getMethod() {
         return Method.GET;
     }
 

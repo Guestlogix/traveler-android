@@ -13,7 +13,7 @@ import com.guestlogix.traveleruikit.widgets.CatalogView;
 
 public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAdapter.CatalogSectionViewHolder> {
 
-    CatalogView.CatalogViewAdapter catalogViewAdapter;
+    private CatalogView.CatalogViewAdapter catalogViewAdapter;
 
     public void setCatalogViewAdapter(CatalogView.CatalogViewAdapter catalogViewAdapter) {
         this.catalogViewAdapter = catalogViewAdapter;

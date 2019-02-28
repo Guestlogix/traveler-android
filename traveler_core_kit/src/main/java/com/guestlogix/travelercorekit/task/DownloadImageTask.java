@@ -2,8 +2,11 @@ package com.guestlogix.travelercorekit.task;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
-import com.guestlogix.travelercorekit.error.TravelerError;
+import com.guestlogix.travelercorekit.models.TravelerError;
+import com.guestlogix.travelercorekit.tasks.BlockTask;
+import com.guestlogix.travelercorekit.tasks.NetworkTask;
+import com.guestlogix.travelercorekit.tasks.Task;
+import com.guestlogix.travelercorekit.tasks.TaskManager;
 
 public class DownloadImageTask extends Task {
 
@@ -19,8 +22,6 @@ public class DownloadImageTask extends Task {
 
     @Override
     public void execute() {
-
-        Log.v("Traveler", "DownloadImageTask execute()");
 
         //Fetch image from backend
         NetworkTask downloadImageNetworkTask = new NetworkTask(imageRequest, stream -> resource = BitmapFactory.decodeStream(stream));
