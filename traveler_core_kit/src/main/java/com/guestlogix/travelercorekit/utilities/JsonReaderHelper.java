@@ -4,6 +4,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +98,7 @@ public class JsonReaderHelper {
             return reader.nextDouble();
         }
     }
+
     /**
      * Performs a String Array read from the reader object.
      *
@@ -149,5 +151,23 @@ public class JsonReaderHelper {
         }
         reader.endArray();
         return longs;
+    }
+
+    /**
+     * Performs a URL Array read from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return URL Array or empty array
+     * @throws IOException If reading cannot be performed.
+     */
+    public static List<URL> readURLArray(JsonReader reader) throws IOException {
+        ArrayList<URL> strings = new ArrayList<>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            strings.add(new URL(reader.nextString()));
+        }
+        reader.endArray();
+        return strings;
     }
 }
