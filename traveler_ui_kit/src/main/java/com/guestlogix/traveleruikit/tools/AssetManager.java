@@ -1,13 +1,12 @@
 package com.guestlogix.traveleruikit.tools;
 
-import android.widget.ImageView;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.tools.image.MemoryImageCache;
 
 import java.net.URL;
 
 /**
- * This class will manage assets for Traveler app.
+ * This class manages assets for Traveler app.
  */
 public class AssetManager {
 
@@ -26,8 +25,8 @@ public class AssetManager {
         return localInstance;
     }
 
-    public void loadImage(URL url, ImageView imageView) {
-        imageLoader.loadImage(url, imageView);
+    public void loadImage(URL url, ImageLoader.ImageLoaderCallback imageLoaderCallback) {
+        imageLoader.loadImage(url, imageLoaderCallback);
     }
 
 }
