@@ -8,6 +8,7 @@ import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,15 +18,16 @@ public class CatalogItemDetails extends Product {
 
     private String title;
     private String description;
-    private List<String> imageURL;
+    private List<URL> imageURL;
     private ContactInfo contact;
     private List<Location> locations;
     private Price priceStartingAt;
     private PurchaseStrategy purchaseStrategy;
     private List<Attribute> information;
 
-    public CatalogItemDetails(String id, String title, String description, List<String> imageURL, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) {
-        super(id, priceStartingAt);
+
+    public CatalogItemDetails(String id, String title, String description, List<URL> imageURL, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) {
+        super(id,priceStartingAt);
         this.title = title;
         this.description = description;
         this.imageURL = imageURL;
@@ -60,11 +62,11 @@ public class CatalogItemDetails extends Product {
         this.description = description;
     }
 
-    public List<String> getImageURL() {
+    public List<URL> getImageURL() {
         return imageURL;
     }
 
-    public void setImageURL(List<String> imageURL) {
+    public void setImageURL(List<URL> imageURL) {
         this.imageURL = imageURL;
     }
 
@@ -120,7 +122,7 @@ public class CatalogItemDetails extends Product {
             String id = "";
             String title = "";
             String description = "";
-            List<String> imageURL = new ArrayList<>();
+            List<URL> imageURL = new ArrayList<>();
             ContactInfo contact = new ContactInfo();
             List<Location> locations = new ArrayList<>();
             Price priceStartingAt = new Price();
@@ -147,7 +149,7 @@ public class CatalogItemDetails extends Product {
                         break;
                     case "imageUrls":
                         if (reader.peek() != JsonToken.NULL) {
-                            imageURL.addAll(JsonReaderHelper.readStringsArray(reader));
+                            imageURL.addAll(JsonReaderHelper.readURLArray(reader));
                         }
                         break;
                     case "contact":
