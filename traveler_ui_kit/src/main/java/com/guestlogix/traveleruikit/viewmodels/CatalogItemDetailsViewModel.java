@@ -84,11 +84,16 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         actionState.postValue(ActionState.AVAILABLE);
     }
 
+    private void updateCatalog(CatalogItem catalogItem) {
+        status.setValue(State.LOADING);
+        catalogItemDetailsRepository.fetchDetails(catalogItem, catalogItemDetailsCallback);
+    }
+
     public BookingContext getBookingContext() {
         return bookingContext;
     }
 
-    private CatalogItemDetailsCallback catalogSearchCallback = new CatalogItemDetailsCallback() {
+    private CatalogItemDetailsCallback catalogItemDetailsCallback = new CatalogItemDetailsCallback() {
         @Override
         public void onCatalogItemDetailsSuccess(CatalogItemDetails catalog) {
             status.setValue(State.SUCCESS);
@@ -122,11 +127,6 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
             actionState.postValue(ActionState.ERROR);
         }
     };
-
-    private void updateCatalog(CatalogItem catalogItem) {
-        status.setValue(State.LOADING);
-        catalogItemDetailsRepository.fetchDetails(catalogItem, catalogSearchCallback);
-    }
 
     private void updateAvailability() {
         actionState.setValue(ActionState.LOADING);

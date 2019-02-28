@@ -46,7 +46,7 @@ public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return CatalogItemInformationFragment.getInstance(informationList);
         }
-        return null;
+        return CatalogItemProviderInformationFragment.getInstance(contactInfo, locationsList);
     }
 
     @Override
