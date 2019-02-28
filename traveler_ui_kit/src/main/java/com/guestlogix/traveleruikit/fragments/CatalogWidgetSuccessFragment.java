@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.fragments;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.tools.AssetManager;
+import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.viewmodels.CatalogWidgetViewModel;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
@@ -52,6 +55,7 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
         @Override
         public void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
             CatalogItem item = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
+            AssetManager.getInstance().loadImage(item.getImageURL(), thumbNailImageView::setImageBitmap);
             titleTextView.setText(item.getTitle());
             subTitleTextView.setText(item.getSubTitle());
         }
