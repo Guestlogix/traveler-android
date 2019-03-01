@@ -8,9 +8,10 @@
 
     <ImageView
             android:id="@+id/thumbnailImageView"
-            android:layout_width="162dp"
+            android:layout_width="@dimen/thumbnail_width"
+            android:scaleType="centerCrop"
             android:src="@color/lightGray"
-            android:layout_height="96dp"/>
+            android:layout_height="@dimen/thumbnail_height"/>
     <TextView
             style="@style/SubHeadTextView"
             android:id="@+id/titleTextView"

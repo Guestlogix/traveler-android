@@ -22,12 +22,7 @@ class MainTaskManager extends TaskManager implements Task.Performer {
 
     @Override
     public void onPerform(final Task task) {
-        mainExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                task.execute();
-            }
-        });
+        mainExecutor.execute(task::execute);
     }
 
     static private class MainThreadExecutor implements Executor {

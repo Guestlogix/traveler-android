@@ -55,7 +55,16 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
         @Override
         public void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
             CatalogItem item = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
-            AssetManager.getInstance().loadImage(item.getImageURL(), thumbNailImageView::setImageBitmap);
+            AssetManager.getInstance().loadImage(item.getImageURL(),
+                    (int) getResources().getDimension(R.dimen.thumbnail_width),
+                    (int) getResources().getDimension(R.dimen.thumbnail_height),
+                    bitmap -> {
+                        if (null != bitmap) {
+                            thumbNailImageView.setImageBitmap(bitmap);
+                        } else {
+                            thumbNailImageView.setImageResource(R.color.colorAccent);
+                        }
+                    });
             titleTextView.setText(item.getTitle());
             subTitleTextView.setText(item.getSubTitle());
         }
@@ -83,7 +92,6 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
             return catalogGroups.get(sectionIndex).getItems().size();
         }
     };
-
 
     private void catalogUpdateHandler(List<CatalogGroup> catalogGroups) {
         this.catalogGroups = catalogGroups;
