@@ -19,10 +19,67 @@ public class BookingForm implements Serializable {
 
     public BookingForm(List<Pass> passes) {
         this.passes = passes;
-        init();
+
+        questionIndex = new HashMap<>();
+        questionGroups = new ArrayList<>();
+        answerGroups = new ArrayList<>();
+
+        // Init validators.
+        ValidationRule required = new RequiredValidationRule();
+        ValidationRule names = new PatternValidationRule("^[a-zA-Z ]*$");
+        ValidationRule email = new PatternValidationRule("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$");
+        ValidationRule phone = new PatternValidationRule("^\\d*$");
+
+
+        List<Choice> choices = new ArrayList<>();
+        choices.add(new Choice("Mr.", "Mr."));
+        choices.add(new Choice("Mrs.", "Mrs."));
+        Question q1 = createQuestion("title", "Title", null, QuestionType.MULTIPLE_CHOICE, null, choices, 0);
+
+        List<ValidationRule> nameRules = new ArrayList<>();
+        nameRules.add(required);
+        nameRules.add(names);
+        Question q2 = createQuestion("firstName", "First Name", null, QuestionType.STRING, nameRules, null, 0);
+        Question q3 = createQuestion("lastName", "Last Name", null, QuestionType.STRING, nameRules, null, 0);
+
+        List<ValidationRule> phoneRules = new ArrayList<>();
+        phoneRules.add(required);
+        phoneRules.add(phone);
+        Question q4 = createQuestion("phone", "Phone number", null, QuestionType.STRING, phoneRules, null, 0);
+
+        List<ValidationRule> emailRules = new ArrayList<>();
+        emailRules.add(required);
+        emailRules.add(email);
+        Question q5 = createQuestion("email", "Email", null, QuestionType.STRING, emailRules, null, 0);
+
+        List<Question> primaryQuestions = new ArrayList<>();
+        primaryQuestions.add(q1);
+        primaryQuestions.add(q2);
+        primaryQuestions.add(q3);
+        primaryQuestions.add(q4);
+        primaryQuestions.add(q5);
+
+        QuestionGroup clientQuestions = new QuestionGroup("Primary Contact", "The primary contact is the person that will receive purchase confirmation and passes. This person does not have to be part of the group", primaryQuestions);
+
+        questionGroups.add(clientQuestions);
+        answerGroups.add(new AnswerGroup("client questions"));
+
+        for (int i = 0; i < passes.size(); i++) {
+            answerGroups.add(new AnswerGroup(passes.get(i).getId()));
+
+            List<Question> questions = new ArrayList<>();
+
+            for (Question q : passes.get(i).getQuestions()) {
+                questions.add(createQuestion(q.getId(), q.getTitle(), q.getDescription(), q.getType(), q.getValidationRules(), q.getOptions(), i));
+            }
+
+            String title = String.format("%s - %s", passes.get(i).getName(), i + 1);
+            QuestionGroup q = new QuestionGroup(title, null, questions);
+            questionGroups.add(q);
+        }
     }
 
-    public void addAnswer(Answer answer, Question question) {
+    public void addAnswer(Answer answer, Question question) throws IllegalArgumentException {
         Integer i = questionIndex.get(question);
 
         if (i == null) {
@@ -33,7 +90,7 @@ public class BookingForm implements Serializable {
     }
 
     @Nullable
-    public Answer getAnswer(Question question) {
+    public Answer getAnswer(Question question) throws IllegalArgumentException {
         Integer i = questionIndex.get(question);
 
         if (i == null) {
@@ -81,7 +138,21 @@ public class BookingForm implements Serializable {
                 if (question.getValidationRules() != null) {
                     for (ValidationRule r : question.getValidationRules()) {
                         if (!r.validate(answer)) {
-                            BookingFormError error = new BookingFormError(i, j, translateValidationErorrTypes(r.error));
+
+                            BookingFormErrorType errorType = null;
+                            switch (r.error) {
+                                case REQUIRED:
+                                    errorType = BookingFormErrorType.REQUIRED;
+                                    break;
+                                case REGEX_MISMATCH:
+                                    errorType = BookingFormErrorType.INCORRECT_PATTERN;
+                                    break;
+                                case BAD_QUANTITY:
+                                    errorType = BookingFormErrorType.INCORRECT_QUANTITY;
+                                    break;
+                            }
+
+                            BookingFormError error = new BookingFormError(i, j, errorType);
                             errors.add(error);
                         }
                     }
@@ -92,92 +163,10 @@ public class BookingForm implements Serializable {
         return errors;
     }
 
-    //---- Private
-
-    private void init() {
-        questionIndex = new HashMap<>();
-        questionGroups = new ArrayList<>();
-        answerGroups = new ArrayList<>();
-
-        QuestionGroup clientQuestions = buildContactInfoQuestions();
-        questionGroups.add(clientQuestions);
-        answerGroups.add(new AnswerGroup("client questions"));
-
-        for (int i = 0; i < passes.size(); i++) {
-            answerGroups.add(new AnswerGroup(passes.get(i).getId()));
-            questionGroups.add(copyQuestions(passes.get(i), i));
-        }
-    }
-
-    private QuestionGroup buildContactInfoQuestions() {
-        // Init validators.
-        ValidationRule required = new RequiredValidationRule();
-        ValidationRule names = new PatternValidationRule("^[a-zA-Z ]*$");
-        ValidationRule email = new PatternValidationRule("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$");
-        ValidationRule phone = new PatternValidationRule("^\\d*$");
-
-
-        List<Choice> choices = new ArrayList<>();
-        choices.add(new Choice("Mr.", "Mr."));
-        choices.add(new Choice("Mrs.", "Mrs."));
-        Question q1 = createQuestion("title", "Title", null, QuestionType.MULTIPLE_CHOICE, null, choices, 0);
-
-        List<ValidationRule> nameRules = new ArrayList<>();
-        nameRules.add(required);
-        nameRules.add(names);
-        Question q2 = createQuestion("firstName", "First Name", null, QuestionType.STRING, nameRules, null, 0);
-        Question q3 = createQuestion("lastName", "Last Name", null, QuestionType.STRING, nameRules, null, 0);
-
-        List<ValidationRule> phoneRules = new ArrayList<>();
-        phoneRules.add(required);
-        phoneRules.add(phone);
-        Question q4 = createQuestion("phone", "Phone number", null, QuestionType.STRING, phoneRules, null, 0);
-
-        List<ValidationRule> emailRules = new ArrayList<>();
-        emailRules.add(required);
-        emailRules.add(email);
-        Question q5 = createQuestion("email", "Email", null, QuestionType.STRING, emailRules, null, 0);
-
-        List<Question> primaryQuestions = new ArrayList<>();
-        primaryQuestions.add(q1);
-        primaryQuestions.add(q2);
-        primaryQuestions.add(q3);
-        primaryQuestions.add(q4);
-        primaryQuestions.add(q5);
-
-        return new QuestionGroup("Primary Contact", "The primary contact is the person that will receive purchase confirmation and passes. This person does not have to be part of the group", primaryQuestions);
-    }
-
-    private QuestionGroup copyQuestions(Pass p, int index) {
-        List<Question> questions = new ArrayList<>();
-
-        for (Question q : p.getQuestions()) {
-            Question question = createQuestion(q.getId(), q.getTitle(), q.getDescription(), q.getType(), q.getValidationRules(), q.getOptions(), index);
-
-            questions.add(question);
-        }
-
-        String title = String.format("%s - %s", p.getName(), index + 1);
-        return new QuestionGroup(title, null, questions);
-    }
-
     private Question createQuestion(String id, String title, String subtitle, QuestionType type, List<ValidationRule> rules, Object options, int i) {
         Question question = new Question(id, title, subtitle, type, rules, options);
         questionIndex.put(question, i);
         return question;
-    }
-
-    private BookingFormErrorType translateValidationErorrTypes(ValidationError type) {
-        switch (type) {
-            case REQUIRED:
-                return BookingFormErrorType.REQUIRED;
-            case REGEX_MISMATCH:
-                return BookingFormErrorType.INCORRECT_PATTERN;
-            case BAD_QUANTITY:
-                return BookingFormErrorType.INCORRECT_QUANTITY;
-        }
-
-        return null;
     }
 
     /**
@@ -203,7 +192,7 @@ public class BookingForm implements Serializable {
         }
     }
 
-    private class AnswerGroup implements Serializable{
+    private class AnswerGroup implements Serializable {
         Map<String, Answer> answers;
         String passId;
 
