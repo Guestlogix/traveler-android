@@ -52,19 +52,10 @@
                         style="@style/BodyMainTextView"
                         tools:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."/>
 
-                <com.guestlogix.traveleruikit.widgets.DatePickerCell
+                <FrameLayout
+                        android:id="@+id/info_container"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/datePickerCell"
-                        tools:layout="@layout/view_date_picker_cell"/>
-
-                <com.guestlogix.traveleruikit.widgets.ListPickerCell
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/timePickerCell"
-                        android:visibility="gone"
-                        tools:layout="@layout/view_list_picker_cell"/>
-
+                        android:layout_height="wrap_content"/>
 
                 <com.google.android.material.tabs.TabLayout
                         android:id="@+id/catalogItemTabs"

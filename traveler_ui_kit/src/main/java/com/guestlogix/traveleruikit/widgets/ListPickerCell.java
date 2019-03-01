@@ -66,6 +66,10 @@ public class ListPickerCell extends FrameLayout {
         valueEditText.setError(error);
     }
 
+    public void setHint(@Nullable String hint) {
+        valueEditText.setHint(hint);
+    }
+
     /**
      * Registers callback for item selected events.
      *

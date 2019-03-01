@@ -82,6 +82,10 @@ public class DatePickerCell extends FrameLayout {
         dateEditText.setError(error);
     }
 
+    public void setHint(@Nullable String hint) {
+        this.dateEditText.setHint(hint);
+    }
+
     /**
      * Registers a callback for date change events.
      *
