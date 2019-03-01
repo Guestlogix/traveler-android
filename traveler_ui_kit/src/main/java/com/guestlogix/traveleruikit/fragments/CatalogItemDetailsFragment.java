@@ -2,6 +2,7 @@ package com.guestlogix.traveleruikit.fragments;
 
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -21,6 +22,7 @@ import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.tools.AssetManager;
+import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.widgets.DatePickerCell;
 import com.guestlogix.traveleruikit.widgets.ListPickerCell;
@@ -89,7 +91,17 @@ public class CatalogItemDetailsFragment extends BaseFragment {
             AssetManager.getInstance().loadImage(catalogItemDetails.getImageURL().get(0),
                     (int) getResources().getDimension(R.dimen.thumbnail_width),
                     (int) getResources().getDimension(R.dimen.thumbnail_height),
-                    imageView::setImageBitmap);
+                    new ImageLoader.ImageLoaderCallback() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap) {
+                            imageView.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onError() {
+                            imageView.setImageResource(R.color.colorPrimary);
+                        }
+                    });
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -58,11 +58,15 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
             AssetManager.getInstance().loadImage(item.getImageURL(),
                     (int) getResources().getDimension(R.dimen.thumbnail_width),
                     (int) getResources().getDimension(R.dimen.thumbnail_height),
-                    bitmap -> {
-                        if (null != bitmap) {
+                    new ImageLoader.ImageLoaderCallback() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap) {
                             thumbNailImageView.setImageBitmap(bitmap);
-                        } else {
-                            thumbNailImageView.setImageResource(R.color.colorAccent);
+                        }
+
+                        @Override
+                        public void onError() {
+                            thumbNailImageView.setImageResource(R.color.colorPrimary);
                         }
                     });
             titleTextView.setText(item.getTitle());

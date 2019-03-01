@@ -34,15 +34,15 @@ public class Router {
         return createURL(path, null);
     }
 
-    public static UnauthenticatedRequest authenticate(String apiKey, Context context) {
+    public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         Method method = Method.GET;
         URL url = createURL("/auth/token");
         Map<String, String> headers = buildHeaders(context);
 
-        return new UnauthenticatedRequest(method, url, apiKey, headers);
+        return new UnauthenticatedUrlRequest(method, url, apiKey, headers);
     }
 
-    public static AuthenticatedRequest searchFlight(Session session, FlightQuery query, Context context) {
+    public static AuthenticatedUrlRequest searchFlight(Session session, FlightQuery query, Context context) {
         final String path = "/flight";
 
         Map<String, String> queryParams = new HashMap<>();
@@ -53,10 +53,10 @@ public class Router {
         URL url = createURL(path, queryParams);
         Map<String, String> headers = buildHeaders(context);
 
-        return new AuthenticatedRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedRequest getCatalog(Session session, CatalogQuery catalogQuery, Context context) {
+    public static AuthenticatedUrlRequest getCatalog(Session session, CatalogQuery catalogQuery, Context context) {
         final String path = "/catalog";
 
         List<String> flightIds = new ArrayList<>();
@@ -74,20 +74,20 @@ public class Router {
         URL url = createURL(path, queryParams);
         Map<String, String> headers = buildHeaders(context);
 
-        return new AuthenticatedRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedRequest getCatalogItem(Session session, CatalogItem catalogItem, Context context) {
+    public static AuthenticatedUrlRequest getCatalogItem(Session session, CatalogItem catalogItem, Context context) {
         final String path = String.format("/product/%s", catalogItem.getId());
 
         Method method = Method.GET;
         URL url = createURL(path);
         Map<String, String> headers = buildHeaders(context);
 
-        return new AuthenticatedRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedRequest productSchedule(Session session, BookingContext bookingContext, Context context) {
+    public static AuthenticatedUrlRequest productSchedule(Session session, BookingContext bookingContext, Context context) {
         final String path = String.format("/product/%s/schedule", bookingContext.getProduct().getId());
 
         Map<String, String> queryParams = new HashMap<>();
@@ -98,10 +98,10 @@ public class Router {
         URL url = createURL(path, queryParams);
         Map<String, String> headers = buildHeaders(context);
 
-        return new AuthenticatedRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedRequest productPass(Session session, BookingContext bookingContext, Context context) {
+    public static AuthenticatedUrlRequest productPass(Session session, BookingContext bookingContext, Context context) {
         final String path = String.format("/product/%s/pass", bookingContext.getProduct().getId());
 
         Map<String, String> queryParams = new HashMap<>();
@@ -115,7 +115,7 @@ public class Router {
         URL url = createURL(path, queryParams);
         Map<String, String> headers = buildHeaders(context);
 
-        return new AuthenticatedRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
     }
 
     /**
