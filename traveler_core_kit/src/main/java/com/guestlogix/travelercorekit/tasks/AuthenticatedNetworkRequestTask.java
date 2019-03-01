@@ -4,7 +4,7 @@ import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.Session;
-import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
+import com.guestlogix.travelercorekit.network.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 
@@ -12,13 +12,13 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
 
     private TaskManager taskManager = new TaskManager();
     private Session session;
-    private AuthenticatedRequest request;
+    private AuthenticatedUrlRequest request;
     private JsonObjectMapper<T> jsonObjectMapper;
     private ObjectMappingFactory<T> objectMappingFactory;
     private TravelerError error;
     private T resource;
 
-    public AuthenticatedNetworkRequestTask(Session session, AuthenticatedRequest request, ObjectMappingFactory<T> objectMappingFactory) {
+    public AuthenticatedNetworkRequestTask(Session session, AuthenticatedUrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
         this.session = session;
         this.request = request;
         this.objectMappingFactory = objectMappingFactory;

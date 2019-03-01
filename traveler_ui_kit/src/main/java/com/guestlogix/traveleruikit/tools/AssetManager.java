@@ -10,7 +10,7 @@ import java.net.URL;
  */
 public class AssetManager {
 
-    private static AssetManager localInstance;
+    private static final AssetManager localInstance = new AssetManager();
     private ImageLoader imageLoader;
 
     private AssetManager() {
@@ -19,9 +19,6 @@ public class AssetManager {
     }
 
     public static AssetManager getInstance() {
-        if (null == localInstance) {
-            localInstance = new AssetManager();
-        }
         return localInstance;
     }
 

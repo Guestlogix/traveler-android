@@ -7,7 +7,7 @@ import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.network.AuthenticatedRequest;
+import com.guestlogix.travelercorekit.network.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.tasks.*;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
@@ -77,7 +77,7 @@ public class Traveler {
         if (null == localInstance) {
             flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.searchFlight(localInstance.session, flightQuery, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.searchFlight(localInstance.session, flightQuery, localInstance.session.getContext());
 
             AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
@@ -109,7 +109,7 @@ public class Traveler {
         if (null == localInstance) {
             catalogSearchCallback.onCatalogSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.getCatalog(localInstance.session, catalogQuery, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.getCatalog(localInstance.session, catalogQuery, localInstance.session.getContext());
 
             AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Catalog.CatalogObjectMappingFactory());
 
@@ -140,7 +140,7 @@ public class Traveler {
         if (null == localInstance) {
             catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedRequest request = Router.getCatalogItem(localInstance.session, catalogItem, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.getCatalogItem(localInstance.session, catalogItem, localInstance.session.getContext());
             AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
 
             BlockTask catalogItemDetailsBlockTask = new BlockTask() {
@@ -178,7 +178,7 @@ public class Traveler {
 
             bookingContext.setReady(false);
 
-            AuthenticatedRequest request = Router.productSchedule(localInstance.session, bookingContext, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, bookingContext, localInstance.session.getContext());
             AuthenticatedNetworkRequestTask<List<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
             BlockTask searchGroupBlockTask = new BlockTask() {
@@ -221,7 +221,7 @@ public class Traveler {
                 return;
             }
 
-            AuthenticatedRequest request = Router.productPass(localInstance.session, bookingContext, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.productPass(localInstance.session, bookingContext, localInstance.session.getContext());
             AuthenticatedNetworkRequestTask<List<Pass>> passFetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
 
             BlockTask fetchPassBlockTask = new BlockTask() {
