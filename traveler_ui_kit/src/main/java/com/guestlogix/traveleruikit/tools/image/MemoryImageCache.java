@@ -2,6 +2,7 @@ package com.guestlogix.traveleruikit.tools.image;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;
+import androidx.annotation.NonNull;
 
 /**
  * Implements AssetCache to handle storage and retrieval of Bitmaps.
@@ -25,7 +26,7 @@ public class MemoryImageCache implements ImageCache {
     }
 
     @Override
-    public boolean put(String key, Bitmap asset) {
+    public boolean put(String key, @NonNull Bitmap asset) {
         bitmapCache.put(key, asset);
         return true;
     }

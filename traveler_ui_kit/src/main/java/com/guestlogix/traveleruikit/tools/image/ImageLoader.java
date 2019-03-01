@@ -22,11 +22,12 @@ public class ImageLoader {
     }
 
     /**
-     *
-     * @param url absolute url to the image to download.
-     * @param imageLoaderCallback to get callback with the downloaded image bitmap
+     * @param url                 absolute url to the image to download.
+     * @param height              requested height of image
+     * @param width               requested width of image
+     * @param imageLoaderCallback to get callback with the downloaded image bitmap.
      */
-    public void loadImage(URL url, ImageLoaderCallback imageLoaderCallback) {
+    public void loadImage(URL url, int width, int height, ImageLoaderCallback imageLoaderCallback) {
 
         //if image found in cache cancel all subsequent tasks and load cached image in imageView otherwise let the party rock n roll
         Bitmap cachedBitmap = imageCache.get(url.toString());
@@ -34,18 +35,18 @@ public class ImageLoader {
         if (null != cachedBitmap) {
             imageLoaderCallback.onBitmapLoaded(cachedBitmap);
         } else {
-            DownloadImageTask imageDownloadTask = new DownloadImageTask(new ImageRequest(url));
+            DownloadImageTask imageDownloadTask = new DownloadImageTask(new ImageRequest(url), width, height);
 
             BlockTask imageDownloadBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
-                    if (imageDownloadTask.getError() == null) {
-                        Bitmap loadedBitmap =  imageDownloadTask.getResource();
+                    if (imageDownloadTask.getError() == null && null != imageDownloadTask.getResource()) {
+                        Bitmap loadedBitmap = imageDownloadTask.getResource();
                         imageLoaderCallback.onBitmapLoaded(loadedBitmap);
                         imageCache.put(url.toString(), loadedBitmap);
                     } else {
-                        //TODO: Failed to load image handle by default image or retry.
                         TravelerLog.e(String.format("Could not load image for url %s", url));
+                        imageLoaderCallback.onBitmapLoaded(null);
                     }
                 }
             };

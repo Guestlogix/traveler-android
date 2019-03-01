@@ -20,4 +20,6 @@
     <dimen name="padding_small">4dp</dimen>
     <dimen name="padding_normal">8dp</dimen>
     <dimen name="padding_large">12dp</dimen>
+    <dimen name="thumbnail_width">162dp</dimen>
+    <dimen name="thumbnail_height">96dp</dimen>
 </resources>

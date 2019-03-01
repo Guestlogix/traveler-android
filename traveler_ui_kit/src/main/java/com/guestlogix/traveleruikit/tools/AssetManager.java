@@ -25,8 +25,8 @@ public class AssetManager {
         return localInstance;
     }
 
-    public void loadImage(URL url, ImageLoader.ImageLoaderCallback imageLoaderCallback) {
-        imageLoader.loadImage(url, imageLoaderCallback);
+    public void loadImage(URL url, int width, int height, ImageLoader.ImageLoaderCallback imageLoaderCallback) {
+        imageLoader.loadImage(url, width, height, imageLoaderCallback);
     }
 
 }
