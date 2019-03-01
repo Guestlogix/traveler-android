@@ -24,12 +24,7 @@ import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
-import com.guestlogix.traveleruikit.widgets.DatePickerCell;
-import com.guestlogix.traveleruikit.widgets.ListPickerCell;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
-
-import java.util.Calendar;
-import java.util.List;
 
 public class CatalogItemDetailsFragment extends BaseFragment {
 
@@ -39,9 +34,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private TextView titleTextView;
     private TextView descriptionTextView;
     private ImageView imageView;
-
-    private DatePickerCell datePickerCell;
-    private ListPickerCell timePickerCell;
 
     public CatalogItemDetailsFragment() {
     }
@@ -57,9 +49,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
 
-        datePickerCell = view.findViewById(R.id.datePickerCell);
-        timePickerCell = view.findViewById(R.id.timePickerCell);
-
         return view;
     }
 
@@ -68,19 +57,15 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         CatalogItemDetailsViewModel catalogItemDetailsViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
-
         catalogItemDetailsViewModel.getObservableCatalogItemDetails().observe(this, this::setView);
-        catalogItemDetailsViewModel.getObservableTimeSlots().observe(this, this::onTimesChanged);
-        catalogItemDetailsViewModel.getObservableSelectedDate().observe(this, this::onDateChanged);
-        catalogItemDetailsViewModel.getObservableActionState().observe(this, this::onActionState);
-
-        datePickerCell.setOnDateChangedListener(catalogItemDetailsViewModel::setBookingDate);
-        timePickerCell.setOnItemSelectedListener(catalogItemDetailsViewModel::setBookingTime);
 
         FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
         ActionStripContainerFragment actionStripContainerFragment = new ActionStripContainerFragment();
+        InformationSelectionContainerFragment infoSelectContainer = new InformationSelectionContainerFragment();
 
         fragmentTransaction.replace(R.id.action_container, actionStripContainerFragment);
+        fragmentTransaction.replace(R.id.info_container, infoSelectContainer);
+
         fragmentTransaction.commit();
     }
 
@@ -135,48 +120,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         adapter.notifyDataSetChanged();
 
         catalogItemDetailsTabs.setupWithViewPager(catalogItemDetailsPager);
-    }
-
-    private void onDateChanged(Calendar selectedDate) {
-        datePickerCell.setDate(selectedDate);
-    }
-
-    private void onTimesChanged(List<String> times) {
-        if (times == null || times.isEmpty()) {
-            timePickerCell.setVisibility(View.GONE);
-        } else {
-            timePickerCell.setVisibility(View.VISIBLE);
-            timePickerCell.setValueList(times);
-        }
-    }
-
-    // Translates VM state to strip state.
-    private void onActionState(CatalogItemDetailsViewModel.ActionState state) {
-        switch (state) {
-            case LOADING:
-                break;
-            case NOT_AVAILABLE:
-                datePickerCell.setError(getString(R.string.not_available));
-                focusOnView(datePickerCell);
-                break;
-            case AVAILABLE:
-                break;
-            case ERROR:
-                onCheckAvailabilityError();
-                break;
-            case TIME_REQUIRED:
-                timePickerCell.setError(getString(R.string.required));
-                focusOnView(timePickerCell);
-        }
-    }
-
-    private void onCheckAvailabilityError() {
-        final AlertDialog dialog = new AlertDialog.Builder(getActivityContext())
-                .setTitle(getString(R.string.unexpected_error))
-                .setMessage(getString(R.string.unknown_error_message))
-                .create();
-
-        dialog.show();
     }
 
     private void focusOnView(View view) {

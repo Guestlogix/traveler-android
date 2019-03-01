@@ -165,11 +165,11 @@ public class Traveler {
      */
     public static void checkAvailability(BookingContext bookingContext, CheckAvailabilityCallback checkAvailabilityCallback) {
         if (null == localInstance) {
-            checkAvailabilityCallback.onCheckAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+            checkAvailabilityCallback.onAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
 
             if (bookingContext.getSelectedDate() == null) {
-                checkAvailabilityCallback.onCheckAvailabilityError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
+                checkAvailabilityCallback.onAvailabilityError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
                 return;
             }
 
@@ -182,9 +182,10 @@ public class Traveler {
                 @Override
                 protected void main() {
                     if (null != checkAvailabilityTask.getError()) {
-                        checkAvailabilityCallback.onCheckAvailabilityError(checkAvailabilityTask.getError());
+                        checkAvailabilityCallback.onAvailabilityError(checkAvailabilityTask.getError());
+                        TravelerLog.e(checkAvailabilityTask.getError().toString());
                     } else {
-                        checkAvailabilityCallback.onCheckAvailabilitySuccess(checkAvailabilityTask.getResource());
+                        checkAvailabilityCallback.onAvailabilitySuccess(checkAvailabilityTask.getResource());
                     }
                     bookingContext.setReady(true);
                 }

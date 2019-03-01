@@ -5,6 +5,6 @@ import com.guestlogix.travelercorekit.models.Availability;
 import java.util.List;
 
 public interface CheckAvailabilityCallback {
-    void onCheckAvailabilitySuccess(List<Availability> availability);
-    void onCheckAvailabilityError(Error error);
+    void onAvailabilitySuccess(List<Availability> availability);
+    void onAvailabilityError(Error error);
 }
