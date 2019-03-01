@@ -134,18 +134,6 @@ public class Form extends FrameLayout {
         }
     }
 
-    public void setError(int sectionId, int fieldId, String error) {
-        Integer pos = pairToPos.get(new Pair<>(sectionId, fieldId));
-
-        if (null != pos) {
-            BaseCell cell = (BaseCell) cellsRecyclerView.findViewHolderForLayoutPosition(pos);
-
-            if (cell != null) {
-                cell.setError(error);
-            }
-        }
-    }
-
     public void setDataSource(@NonNull DataSource dataSource, RecyclerView.LayoutManager layoutManager) {
         this.dataSource = dataSource;
         this.layoutManager = layoutManager;
