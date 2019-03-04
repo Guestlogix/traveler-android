@@ -91,6 +91,7 @@ public class CatalogItemDetailsFragment extends BaseFragment {
             AssetManager.getInstance().loadImage(catalogItemDetails.getImageURL().get(0),
                     (int) getResources().getDimension(R.dimen.thumbnail_width),
                     (int) getResources().getDimension(R.dimen.thumbnail_height),
+                    imageView.getId(),
                     new ImageLoader.ImageLoaderCallback() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap) {

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.travelercorekit.tasks.Task;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.CatalogSectionAdapter;
 
@@ -63,7 +64,7 @@ public class CatalogView extends FrameLayout {
     public interface CatalogViewAdapter {
         void onBindSection(int sectionPosition, TextView titleTextView);
 
-        void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView);
+        void onBindItem(int sectionPosition, int itemIndex, int holderId, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView);
 
         void onSeeAllClick(int sectionPosition);
 

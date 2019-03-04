@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogItem;
+import com.guestlogix.travelercorekit.tasks.Task;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
@@ -53,15 +54,19 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindItem(int sectionPosition, int itemIndex, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
+        public void onBindItem(int sectionPosition, int itemIndex, int holderId, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
             CatalogItem item = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
+
+            //TODO: Set some default image
+            thumbNailImageView.setImageResource(R.color.colorPrimary);
             AssetManager.getInstance().loadImage(item.getImageURL(),
                     (int) getResources().getDimension(R.dimen.thumbnail_width),
                     (int) getResources().getDimension(R.dimen.thumbnail_height),
+                    holderId,
                     new ImageLoader.ImageLoaderCallback() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap) {
-                            thumbNailImageView.setImageBitmap(bitmap);
+
                         }
 
                         @Override
