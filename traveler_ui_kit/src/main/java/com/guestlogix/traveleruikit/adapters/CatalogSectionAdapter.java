@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.travelercorekit.tasks.Task;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
@@ -84,7 +86,7 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
 
         @Override
         public void onBindViewHolder(@NonNull CatalogSectionAdapter.CatalogItemViewHolder holder, int position) {
-            catalogViewAdapter.onBindItem(sectionPosition, position, holder.thumbnailImageView, holder.titleTextView, holder.subTitleTextView);
+            catalogViewAdapter.onBindItem(sectionPosition, position, holder.hashCode(), holder.thumbnailImageView, holder.titleTextView, holder.subTitleTextView);
 
             holder.mView.setTag(position);
             holder.mView.setOnClickListener(onItemClickListener);
