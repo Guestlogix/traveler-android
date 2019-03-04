@@ -6,11 +6,8 @@ import com.guestlogix.travelercorekit.callbacks.*;
 import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.*;
-import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.network.AuthenticatedUrlRequest;
-import com.guestlogix.travelercorekit.network.Router;
 import com.guestlogix.travelercorekit.tasks.*;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.util.List;
 

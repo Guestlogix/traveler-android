@@ -1,6 +1,6 @@
-package com.guestlogix.travelercorekit.tasks;
+package com.guestlogix.travelercorekit.utilities;
 
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.TravelerLog;
 
 import java.util.concurrent.Semaphore;
 

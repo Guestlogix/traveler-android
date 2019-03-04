@@ -3,7 +3,9 @@ package com.guestlogix.travelercorekit.tasks;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.utilities.Task;
+import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -13,7 +15,7 @@ public class DownloadImageTask extends Task {
 
     private TaskManager mTaskManager = new TaskManager();
     private NetworkTask.Request imageRequest;
-    private TravelerError mError;
+    private Error mError;
     private Bitmap resource;
     private int height;
     private int width;
@@ -94,7 +96,7 @@ public class DownloadImageTask extends Task {
         return inSampleSize;
     }
 
-    public TravelerError getError() {
+    public Error getError() {
         return mError;
     }
 

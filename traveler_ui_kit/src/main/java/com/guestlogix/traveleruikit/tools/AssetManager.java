@@ -1,7 +1,7 @@
 package com.guestlogix.traveleruikit.tools;
 
 import android.util.SparseArray;
-import com.guestlogix.travelercorekit.tasks.Task;
+import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.tools.image.MemoryImageCache;
 

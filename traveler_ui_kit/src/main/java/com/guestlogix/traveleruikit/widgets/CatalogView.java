@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.guestlogix.travelercorekit.tasks.Task;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.CatalogSectionAdapter;
 

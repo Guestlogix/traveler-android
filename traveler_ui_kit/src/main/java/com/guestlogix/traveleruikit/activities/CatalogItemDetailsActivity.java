@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.CatalogItem;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;

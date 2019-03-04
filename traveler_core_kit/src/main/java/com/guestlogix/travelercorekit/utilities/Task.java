@@ -1,6 +1,6 @@
-package com.guestlogix.travelercorekit.tasks;
+package com.guestlogix.travelercorekit.utilities;
 
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.TravelerLog;
 
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
@@ -81,6 +81,8 @@ public abstract class Task implements TaskObserver {
     public final void cancel() {
         cancelled = true;
     }
+
+    public final boolean isCancelled() { return cancelled; }
 
     protected void addObserver(TaskObserver observer) {
         observers.add(observer);

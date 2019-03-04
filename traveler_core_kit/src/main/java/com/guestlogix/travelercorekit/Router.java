@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.network;
+package com.guestlogix.travelercorekit;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
 import com.guestlogix.travelercorekit.tasks.NetworkTask.Request.Method;
 
 import java.net.MalformedURLException;

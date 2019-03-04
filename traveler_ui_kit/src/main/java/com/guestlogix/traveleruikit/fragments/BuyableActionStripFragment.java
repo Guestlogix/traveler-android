@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.ViewModelProviders;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.BookingActivity;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;

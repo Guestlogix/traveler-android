@@ -1,10 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.network.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.network.ObjectMappingException;
-import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+import androidx.annotation.NonNull;
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -67,11 +69,7 @@ public class Pass implements Serializable {
          */
         @Override
         public Pass instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-            return readPass(reader);
-        }
-
-        private static Pass readPass(JsonReader reader) throws IOException, ObjectMappingException {
-            String id = "";
+            String id;
             String name = "";
             String description = "";
             Integer maxQuantity = 0;
@@ -85,7 +83,7 @@ public class Pass implements Serializable {
 
                 switch (key) {
                     case "id":
-                        id = JsonReaderHelper.readString(reader);
+                        id = reader.nextString();
                         break;
                     case "name":
                         name = JsonReaderHelper.readString(reader);
@@ -112,7 +110,7 @@ public class Pass implements Serializable {
 
             reader.endObject();
 
-            return new Pass(id, name, description, maxQuantity, price, questions);
+            return new Pass(null, name, description, maxQuantity, price, questions);
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.utilities.Task;
+import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 public class SessionBeginTask extends Task {
 

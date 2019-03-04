@@ -101,7 +101,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         }
 
         @Override
-        public void onCatalogItemDetailsError(TravelerError error) {
+        public void onCatalogItemDetailsError(Error error) {
             status.setValue(State.ERROR);
         }
     };
@@ -123,7 +123,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         }
 
         @Override
-        public void onCheckAvailabilityError(TravelerError error) {
+        public void onCheckAvailabilityError(Error error) {
             actionState.postValue(ActionState.ERROR);
         }
     };

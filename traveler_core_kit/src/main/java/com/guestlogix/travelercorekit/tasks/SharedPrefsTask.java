@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.tasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.guestlogix.travelercorekit.utilities.Task;
 
 import static android.content.Context.MODE_PRIVATE;
 

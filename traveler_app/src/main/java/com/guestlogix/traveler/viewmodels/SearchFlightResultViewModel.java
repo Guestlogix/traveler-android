@@ -42,7 +42,7 @@ public class SearchFlightResultViewModel extends StatefulViewModel {
         }
 
         @Override
-        public void onFlightSearchError(TravelerError error) {
+        public void onFlightSearchError(Error error) {
             status.setValue(ERROR);
         }
     };

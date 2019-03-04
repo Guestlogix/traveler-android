@@ -1,12 +1,12 @@
 package com.guestlogix.travelercorekit.tasks;
 
-import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
-import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.models.TravelerErrorCode;
+import com.guestlogix.travelercorekit.utilities.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.models.Session;
-import com.guestlogix.travelercorekit.network.AuthenticatedUrlRequest;
-import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
+import com.guestlogix.travelercorekit.utilities.Task;
+import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 public class AuthenticatedNetworkRequestTask<T> extends Task {
 
@@ -15,7 +15,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
     private AuthenticatedUrlRequest request;
     private JsonObjectMapper<T> jsonObjectMapper;
     private ObjectMappingFactory<T> objectMappingFactory;
-    private TravelerError error;
+    private Error error;
     private T resource;
 
     public AuthenticatedNetworkRequestTask(Session session, AuthenticatedUrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
@@ -30,7 +30,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
             }
 
             @Override
-            public void onError(TravelerError error) {
+            public void onError(Error error) {
                 AuthenticatedNetworkRequestTask.this.error = error;
             }
         });
@@ -72,9 +72,9 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         BlockTask networkBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                TravelerError error = networkTask.getError();
+                NetworkTaskError error = networkTask.getError();
 
-                if (error == null || TravelerErrorCode.UNAUTHORIZED != error.getCode()) {
+                if (error == null || NetworkTaskError.Code.UNAUTHORIZED != error.getCode()) {
                     authTokenFetchTask.cancel();
                     authTokenFetchBlockTask.cancel();
                     retryNetworkTask.cancel();
@@ -109,7 +109,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         taskManager.addTask(finishTask);
     }
 
-    public TravelerError getError() {
+    public Error getError() {
         return error;
     }
 

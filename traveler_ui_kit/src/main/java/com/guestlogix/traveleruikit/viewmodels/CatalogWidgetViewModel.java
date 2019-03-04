@@ -50,7 +50,7 @@ public class CatalogWidgetViewModel extends StatefulViewModel {
         }
 
         @Override
-        public void onCatalogSearchError(TravelerError error) {
+        public void onCatalogSearchError(Error error) {
             status.postValue(ERROR);
         }
     };

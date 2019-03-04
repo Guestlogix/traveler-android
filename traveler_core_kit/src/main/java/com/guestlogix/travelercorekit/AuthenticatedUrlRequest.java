@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.network;
+package com.guestlogix.travelercorekit;
 
 import org.json.JSONObject;
 

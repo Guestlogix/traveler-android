@@ -3,6 +3,7 @@ package com.guestlogix.travelercorekit.tasks;
 import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
+import com.guestlogix.travelercorekit.utilities.Task;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;

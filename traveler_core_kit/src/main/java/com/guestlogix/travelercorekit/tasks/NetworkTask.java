@@ -1,8 +1,7 @@
 package com.guestlogix.travelercorekit.tasks;
 
-import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.utilities.InputStreamHelper;
+import com.guestlogix.travelercorekit.utilities.Task;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +14,7 @@ import java.util.Map;
 public class NetworkTask extends Task {
 
     private Request request;
-    private TravelerError error;
+    private NetworkTaskError error;
     private ResponseHandler responseHandler;
 
     public interface Request {
@@ -45,7 +44,7 @@ public class NetworkTask extends Task {
         this.responseHandler = responseHandler;
     }
 
-    public TravelerError getError() {
+    public NetworkTaskError getError() {
         return error;
     }
 
@@ -53,7 +52,7 @@ public class NetworkTask extends Task {
     public void execute() {
         // Some initial error handling
         if (request == null) {
-            error = new TravelerError(TravelerErrorCode.NO_REQUEST, null);
+            error = new NetworkTaskError(NetworkTaskError.Code.NO_REQUEST);
             finish();
             return;
         }
@@ -66,14 +65,14 @@ public class NetworkTask extends Task {
         }
 
         if (url == null) {
-            error = new TravelerError(TravelerErrorCode.BAD_URL, null);
+            error = new NetworkTaskError(NetworkTaskError.Code.BAD_URL);
             finish();
             return;
         }
 
         String protocol = url.getProtocol();
         if (protocol == null || !(protocol.equalsIgnoreCase("http") || protocol.equalsIgnoreCase("https"))) {
-            error = new TravelerError(TravelerErrorCode.BAD_URL, null);
+            error = new NetworkTaskError(NetworkTaskError.Code.BAD_URL);
             finish();
             return;
         }
@@ -81,15 +80,79 @@ public class NetworkTask extends Task {
         HttpURLConnection urlConnection = null;
 
         try {
-            // Configure the connection
             urlConnection = (HttpURLConnection) url.openConnection();
-            setupConnection(urlConnection);
 
-            // Open connection
+            // Headers
+
+            Map<String, String> headers = request.getHeaders();
+
+            if (headers != null) {
+                for (Map.Entry<String, String> header :
+                        headers.entrySet()) {
+
+                    urlConnection.setRequestProperty(header.getKey(), header.getValue());
+                }
+            }
+
+            urlConnection.setDoInput(true);
+
+            // HTTP Method
+
+            switch (request.getMethod()) {
+                case GET:
+                    urlConnection.setRequestMethod("GET");
+                    urlConnection.setDoOutput(false);
+                    break;
+                case PUT:
+                    urlConnection.setRequestMethod("PUT");
+                    urlConnection.setDoOutput(true);
+                    request.onProvidePayload(urlConnection.getOutputStream());
+                    break;
+                case POST:
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setDoOutput(true);
+                    request.onProvidePayload(urlConnection.getOutputStream());
+                    break;
+                case PATCH:
+                    urlConnection.setRequestMethod("PATCH");
+                    urlConnection.setDoOutput(true);
+                    request.onProvidePayload(urlConnection.getOutputStream());
+                    break;
+                case DELETE:
+                    urlConnection.setRequestMethod("DELETE");
+                    urlConnection.setDoOutput(false);
+                    break;
+            }
+
             urlConnection.connect();
 
-            // Process connection
-            processConnection(urlConnection);
+            // Cancellation check
+
+            if (isCancelled()) {
+                finish();
+                return;
+            }
+
+            // Response
+
+            int statusCode = urlConnection.getResponseCode();
+
+            if (statusCode == 401) {
+                error = new NetworkTaskError(NetworkTaskError.Code.UNAUTHORIZED);
+            } else if (statusCode == 403) {
+                error = new NetworkTaskError(NetworkTaskError.Code.FORBIDDEN);
+            } else if (statusCode >= 500) {
+                error = new NetworkTaskError(NetworkTaskError.Code.SERVER_ERROR,
+                        InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
+            } else {
+                InputStream is = urlConnection.getInputStream();
+
+                if (responseHandler != null) {
+                    responseHandler.onHandleResponse(is);
+                }
+
+                is.close();
+            }
         } catch (IOException e) {
 
             String errorMessage = null;
@@ -98,75 +161,13 @@ public class NetworkTask extends Task {
                 errorMessage = InputStreamHelper.getStringFromInputStream(urlConnection.getErrorStream());
             }
 
-            error = new TravelerError(TravelerErrorCode.CONNECTION_ERROR, errorMessage);
+            error = new NetworkTaskError(NetworkTaskError.Code.CONNECTION_ERROR, errorMessage);
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
+
         finish();
-    }
-
-    private void setupConnection(HttpURLConnection conn) throws IOException {
-        setHeaders(conn);
-        setMethod(conn);
-    }
-
-    private void setHeaders(HttpURLConnection urlConnection) {
-        Map<String, String> headers = request.getHeaders();
-
-        if (headers != null) {
-            for (Map.Entry<String, String> header :
-                    headers.entrySet()) {
-
-                urlConnection.setRequestProperty(header.getKey(), header.getValue());
-            }
-        }
-        urlConnection.setDoInput(true);
-        urlConnection.setDoOutput(true);
-    }
-
-    private void setMethod(HttpURLConnection urlConnection) throws IOException {
-        switch (request.getMethod()) {
-            case GET:
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(false);
-                break;
-            case PUT:
-                urlConnection.setRequestMethod("PUT");
-                urlConnection.setDoOutput(true);
-                request.onProvidePayload(urlConnection.getOutputStream());
-                break;
-            case POST:
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setDoOutput(true);
-                request.onProvidePayload(urlConnection.getOutputStream());
-                break;
-            case PATCH:
-                urlConnection.setRequestMethod("PATCH");
-                urlConnection.setDoOutput(true);
-                request.onProvidePayload(urlConnection.getOutputStream());
-                break;
-            case DELETE:
-                urlConnection.setRequestMethod("DELETE");
-                urlConnection.setDoOutput(false);
-                break;
-        }
-    }
-
-    private void processConnection(HttpURLConnection urlConnection) throws IOException {
-        int statusCode = urlConnection.getResponseCode();
-
-        if (statusCode == 401) {
-            error = new TravelerError(TravelerErrorCode.UNAUTHORIZED, null);
-        } else if (statusCode == 403) {
-            error = new TravelerError(TravelerErrorCode.FORBIDDEN, null);
-        } else if (statusCode >= 500) {
-            error = new TravelerError(TravelerErrorCode.SERVER_ERROR,
-                    InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
-        } else {
-            InputStream is = urlConnection.getInputStream();
-
-            if (responseHandler != null) {
-                responseHandler.onHandleResponse(is);
-            }
-            is.close();
-        }
     }
 }
