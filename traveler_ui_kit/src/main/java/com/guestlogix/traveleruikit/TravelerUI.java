@@ -1,6 +1,6 @@
 package com.guestlogix.traveleruikit;
 
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
+import com.guestlogix.travelercorekit.TravelerLog;
 
 public class TravelerUI {
     private static TravelerUI localInstance;

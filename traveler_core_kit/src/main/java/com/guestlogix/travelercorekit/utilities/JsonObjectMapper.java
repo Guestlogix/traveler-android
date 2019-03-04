@@ -1,11 +1,8 @@
 package com.guestlogix.travelercorekit.utilities;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.TravelerErrorCode;
-import com.guestlogix.travelercorekit.network.ObjectMappingException;
-import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 
 import java.io.IOException;

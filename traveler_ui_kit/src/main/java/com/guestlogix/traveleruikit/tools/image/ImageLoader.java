@@ -1,12 +1,12 @@
 package com.guestlogix.traveleruikit.tools.image;
 
 import android.graphics.Bitmap;
-import com.guestlogix.travelercorekit.network.UrlRequest;
+import com.guestlogix.travelercorekit.UrlRequest;
 import com.guestlogix.travelercorekit.tasks.DownloadImageTask;
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
-import com.guestlogix.travelercorekit.tasks.Task;
-import com.guestlogix.travelercorekit.tasks.TaskManager;
+import com.guestlogix.travelercorekit.utilities.Task;
+import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.net.URL;
 

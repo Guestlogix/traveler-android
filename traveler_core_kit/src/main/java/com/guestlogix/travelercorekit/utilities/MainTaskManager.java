@@ -1,7 +1,9 @@
-package com.guestlogix.travelercorekit.tasks;
+package com.guestlogix.travelercorekit.utilities;
 
 import android.os.Handler;
 import android.os.Looper;
+import com.guestlogix.travelercorekit.utilities.Task;
+import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.concurrent.Executor;
 

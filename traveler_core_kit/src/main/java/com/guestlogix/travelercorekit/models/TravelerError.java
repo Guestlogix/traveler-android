@@ -2,13 +2,12 @@ package com.guestlogix.travelercorekit.models;
 
 import java.util.Locale;
 
-public class TravelerError {
+public class TravelerError extends Error {
     private TravelerErrorCode code;
-    private String message;
 
     public TravelerError(TravelerErrorCode code, String message) {
+        super(message);
         this.code = code;
-        this.message = message;
     }
 
     public TravelerErrorCode getCode() {
@@ -16,7 +15,7 @@ public class TravelerError {
     }
 
     public String toString() {
-        return String.format(Locale.getDefault(), "%s %s", code, message);
+        return String.format(Locale.getDefault(), "%s %s", code, this.getMessage());
     }
 
     @Override

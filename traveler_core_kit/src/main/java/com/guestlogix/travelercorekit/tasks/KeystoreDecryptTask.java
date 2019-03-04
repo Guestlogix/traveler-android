@@ -1,5 +1,7 @@
 package com.guestlogix.travelercorekit.tasks;
 
+import com.guestlogix.travelercorekit.utilities.Task;
+
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import java.io.IOException;

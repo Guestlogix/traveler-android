@@ -181,7 +181,7 @@ public class BookingViewModel extends ViewModel {
         }
 
         @Override
-        public void onError(TravelerError error) {
+        public void onError(Error error) {
             state.setValue(State.ERROR);
         }
     };

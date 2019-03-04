@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit.tasks;
+package com.guestlogix.travelercorekit.utilities;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -10,7 +10,7 @@ public class TaskManager implements TaskObserver {
 
     private static TaskManager mainTaskManager = new MainTaskManager();
     public static TaskManager getMainTaskManager() {
-        return  mainTaskManager;
+        return mainTaskManager;
     }
 
     public TaskManager() {
@@ -22,6 +22,12 @@ public class TaskManager implements TaskObserver {
         task.addObserver(this);
         tasks.add(task);
         executor.execute(new TaskWrapper(task));
+    }
+
+    public void cancelAllTasks() {
+        for (Task task : tasks) {
+            task.cancel();
+        }
     }
 
     // TASK OBSERVER
