@@ -2,15 +2,14 @@ package com.guestlogix.traveleruikit.fragments;
 
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.models.*;
-import com.guestlogix.travelercorekit.models.ValidationError;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.descriptors.ButtonDescriptor;
@@ -36,7 +35,7 @@ public class SupplierQuestionsFragment extends BaseFragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_supplier_questions, container, false);
@@ -44,8 +43,10 @@ public class SupplierQuestionsFragment extends BaseFragment {
         form = view.findViewById(R.id.questionsForm);
         viewModel = ViewModelProviders.of(getActivityContext()).get(BookingViewModel.class);
 
-        viewModel.getObservableBookingFormErrorPosition().observe(getViewLifecycleOwner(), this::updateForm);
         viewModel.getObservableBookingForm().observe(getViewLifecycleOwner(), this::buildSupplierForm);
+        viewModel.getObservableBookingFormErrorPosition().observe(getViewLifecycleOwner(), pair -> {
+            form.reload();
+        });
 
         return view;
     }
@@ -100,8 +101,21 @@ public class SupplierQuestionsFragment extends BaseFragment {
                 return null;
             }
 
+            @Nullable
             @Override
-            public InputDescriptor getDescriptor(int sectionId, int fieldId, int type) {
+            public Pair<String, Form.FormMessage> getMessage(int sectionId, int fieldId) {
+                BookingForm.BookingFormError error = viewModel.getCurrentError(sectionId, fieldId);
+
+                if (error != null) {
+                    return new Pair<>(descriptionForError(error.error), Form.FormMessage.ALERT);
+                }
+
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public InputDescriptor getInputDescriptor(int sectionId, int fieldId, int type) {
                 if (sectionId != questionGroups.size()) {
                     Question q = questionGroups.get(sectionId).getQuestions().get(fieldId);
                     return buildInputDescriptors(q);
@@ -111,18 +125,6 @@ public class SupplierQuestionsFragment extends BaseFragment {
                 b.text = getString(R.string.checkout);
 
                 return b;
-            }
-
-            @Nullable
-            @Override
-            public String getError(int sectionId, int fieldId) {
-                BookingForm.BookingFormError error = viewModel.getCurrentError(sectionId, fieldId);
-
-                if (error != null) {
-                    return translateErrorCodeToString(error.error);
-                }
-
-                return null;
             }
 
             @Nullable
@@ -145,8 +147,6 @@ public class SupplierQuestionsFragment extends BaseFragment {
             if (sectionId == bookingForm.getQuestionGroups().size()) {
                 // Submit button pressed.
                 viewModel.submitQuestions();
-            } else {
-                // Some other field was pressed.
             }
         });
 
@@ -214,7 +214,7 @@ public class SupplierQuestionsFragment extends BaseFragment {
         return s;
     }
 
-    private String translateErrorCodeToString(BookingForm.BookingFormErrorType error) {
+    private String descriptionForError(BookingForm.BookingFormErrorType error) {
         switch (error) {
             case INCORRECT_PATTERN:
                 return getString(R.string.regex_mismatch);
@@ -242,12 +242,5 @@ public class SupplierQuestionsFragment extends BaseFragment {
         } else {
             return null;
         }
-    }
-
-    private void updateForm(BookingForm.BookingFormError error) {
-        int sectionId = error.groupId;
-        int fieldId = error.questionId;
-
-        form.updateField(sectionId, fieldId);
     }
 }

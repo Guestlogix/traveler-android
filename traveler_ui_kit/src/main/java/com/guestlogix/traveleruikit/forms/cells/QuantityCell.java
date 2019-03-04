@@ -42,12 +42,14 @@ public class QuantityCell extends BaseCell {
     }
 
     public void setSubtitle(String subTitle) {
-        this.subTitle.setText(subTitle);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            this.subTitle.setText(Html.fromHtml(subTitle, Html.FROM_HTML_MODE_COMPACT).toString());
+        if (subTitle != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                this.subTitle.setText(Html.fromHtml(subTitle, Html.FROM_HTML_MODE_COMPACT).toString());
+            } else {
+                this.subTitle.setText(Html.fromHtml(subTitle).toString());
+            }
         } else {
-            this.subTitle.setText(Html.fromHtml(subTitle).toString());
+            this.subTitle.setText(null);
         }
     }
 
