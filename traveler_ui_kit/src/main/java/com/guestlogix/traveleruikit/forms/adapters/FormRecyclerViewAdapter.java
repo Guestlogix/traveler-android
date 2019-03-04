@@ -18,15 +18,23 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
     @NonNull
     @Override
     public BaseCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        BaseCell cell = formMapper.createViewHolder(parent, viewType);
-        subscribeToCellEvents(cell);
-        return cell;
+        return formMapper.createViewHolder(parent, viewType);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BaseCell holder, int position) {
+        holder.setOnCellClickListener(null);
+        holder.setOnCellFocusChangeListener(null);
+        holder.setOnCellValueChangedListener(null);
+        holder.setContextRequestListener(null);
+
         formMapper.bindView(holder, position);
         holder.setIndex(position);
+
+        holder.setOnCellClickListener(this::onCellClick);
+        holder.setOnCellFocusChangeListener(this::onCellFocusChange);
+        holder.setOnCellValueChangedListener(this::onCellValueChanged);
+        holder.setContextRequestListener(contextRequestHandler);
     }
 
     @Override
@@ -62,13 +70,6 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
 
     public interface OnFormContextRequestListener {
         Context onFormContextRequest();
-    }
-
-    private void subscribeToCellEvents(BaseCell cell) {
-        cell.setOnCellClickListener(this::onCellClick);
-        cell.setOnCellFocusChangeListener(this::onCellFocusChange);
-        cell.setOnCellValueChangedListener(this::onCellValueChanged);
-        cell.setContextRequestListener(contextRequestHandler);
     }
 
     private void onCellClick(BaseCell cell) {

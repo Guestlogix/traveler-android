@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.viewmodels;
 
+import android.util.Pair;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -26,7 +27,7 @@ public class BookingViewModel extends ViewModel {
     private MutableLiveData<List<Pass>> passesData;
     private MutableLiveData<Price> priceChange;
     private MutableLiveData<State> state;
-    private SingleLiveEvent<BookingForm.BookingFormError> bookingFormError;
+    private SingleLiveEvent<Pair<Integer, Integer>> formFocus;
     private MutableLiveData<BookingForm> bookingFormData;
 
 
@@ -35,7 +36,7 @@ public class BookingViewModel extends ViewModel {
         passesData = new MutableLiveData<>();
         state = new MutableLiveData<>();
         priceChange = new MutableLiveData<>();
-        bookingFormError = new SingleLiveEvent<>();
+        formFocus = new SingleLiveEvent<>();
         bookingFormData = new MutableLiveData<>();
     }
 
@@ -56,8 +57,8 @@ public class BookingViewModel extends ViewModel {
         return state;
     }
 
-    public LiveData<BookingForm.BookingFormError> getObservableBookingFormErrorPosition() {
-        return bookingFormError;
+    public LiveData<Pair<Integer, Integer>> getObservableBookingFormErrorPosition() {
+        return formFocus;
     }
 
     public LiveData<BookingForm> getObservableBookingForm() {
@@ -82,6 +83,7 @@ public class BookingViewModel extends ViewModel {
     public void submitPasses() {
         bookingForm = new BookingForm(flattenMap());
 
+        currentError = null;
         state.setValue(State.QUESTIONS);
         bookingFormData.setValue(bookingForm);
     }
@@ -93,6 +95,7 @@ public class BookingViewModel extends ViewModel {
         if (!errors.isEmpty()) {
             state.setValue(State.QUESTIONS);
             currentError = errors.get(0);
+            formFocus.setValue(new Pair<>(currentError.groupId, currentError.questionId));
         } else {
             state.setValue(State.SUCCESS);
         }
@@ -103,7 +106,9 @@ public class BookingViewModel extends ViewModel {
     public BookingForm.BookingFormError getCurrentError(int sectionId, int questionId) {
         if (this.currentError != null && this.currentError.groupId == sectionId && this.currentError.questionId == questionId) {
             return currentError;
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     public void updateValueForPass(Pass pass, Integer newQuantity) {

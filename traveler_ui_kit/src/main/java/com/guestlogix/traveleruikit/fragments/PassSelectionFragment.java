@@ -2,6 +2,7 @@ package com.guestlogix.traveleruikit.fragments;
 
 
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class PassSelectionFragment extends BaseFragment {
 
             @Override
             public int getType(int sectionId, int fieldId) {
-                return form.getType(FormType.QUANTITY); // Only dealing with quantities for passes.
+                return Form.FormType.QUANTITY.getValue(); // Only dealing with quantities for passes.
             }
 
             @Override
@@ -91,8 +92,15 @@ public class PassSelectionFragment extends BaseFragment {
                 return null;
             }
 
+            @Nullable
             @Override
-            public InputDescriptor getDescriptor(int sectionId, int fieldId, int type) {
+            public Pair<String, Form.FormMessage> getMessage(int sectionId, int fieldId) {
+                return null;
+            }
+
+            @NonNull
+            @Override
+            public InputDescriptor getInputDescriptor(int sectionId, int fieldId, int type) {
                 Pass p = passes.get(fieldId);
                 QuantityDescriptor q = new QuantityDescriptor();
 
@@ -103,13 +111,6 @@ public class PassSelectionFragment extends BaseFragment {
                 return q;
             }
 
-            @Nullable
-            @Override
-            public String getError(int sectionId, int fieldId) {
-                return null;
-            }
-
-            @Nullable
             @Override
             public Object getValue(int sectionId, int fieldId) {
                 return viewModel.getPassQuantity(passes.get(fieldId));
