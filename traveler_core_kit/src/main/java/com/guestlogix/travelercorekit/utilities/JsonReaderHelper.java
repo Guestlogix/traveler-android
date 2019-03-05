@@ -161,13 +161,13 @@ public class JsonReaderHelper {
      * @throws IOException If reading cannot be performed.
      */
     public static List<URL> readURLArray(JsonReader reader) throws IOException {
-        ArrayList<URL> strings = new ArrayList<>();
+        ArrayList<URL> urls = new ArrayList<>();
 
         reader.beginArray();
         while (reader.hasNext()) {
-            strings.add(new URL(reader.nextString()));
+            urls.add(new URL(reader.nextString()));
         }
         reader.endArray();
-        return strings;
+        return urls;
     }
 }

@@ -11,6 +11,7 @@ public class AuthenticatedUrlRequest extends UrlRequest {
 
     AuthenticatedUrlRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers, JSONObject payload) {
         super(method, URL);
+
         this.mToken = token;
         this.apiKey = apiKey;
         this.payload = payload;

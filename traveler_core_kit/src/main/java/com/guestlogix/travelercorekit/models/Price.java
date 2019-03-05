@@ -52,7 +52,7 @@ public class Price implements Serializable {
         return getFormattedValue(value);
     }
 
-    String getFormattedValue(Double price) {
+    private String getFormattedValue(Double price) {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
         symbols.setCurrencySymbol(getCurrencySymbol());

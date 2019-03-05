@@ -33,32 +33,16 @@ public class ContactInfo implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getWebsite() {
         return website;
     }
 
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
     public List<String> getPhones() {
         return phones;
-    }
-
-    public void setPhones(List<String> phones) {
-        this.phones = phones;
     }
 
     public static class ContactInfoObjectMappingFactory implements ObjectMappingFactory<ContactInfo> {

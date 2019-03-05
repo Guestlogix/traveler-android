@@ -2,6 +2,9 @@ package com.guestlogix.travelercorekit.models;
 
 import android.content.Context;
 
+/**
+ * Session holds the api key, context and token.
+ */
 public class Session {
     private String apiKey;
     private Context context;

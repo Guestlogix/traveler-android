@@ -18,7 +18,7 @@ public class CatalogItemDetails extends Product {
 
     private String title;
     private String description;
-    private List<URL> imageURL;
+    private List<URL> imageURLs;
     private ContactInfo contact;
     private List<Location> locations;
     private Price priceStartingAt;
@@ -26,11 +26,11 @@ public class CatalogItemDetails extends Product {
     private List<Attribute> information;
 
 
-    public CatalogItemDetails(String id, String title, String description, List<URL> imageURL, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) {
+    public CatalogItemDetails(String id, String title, String description, List<URL> imageURLs, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) {
         super(id,priceStartingAt);
         this.title = title;
         this.description = description;
-        this.imageURL = imageURL;
+        this.imageURLs = imageURLs;
         this.contact = contact;
         this.locations = locations;
         this.priceStartingAt = priceStartingAt;
@@ -42,74 +42,37 @@ public class CatalogItemDetails extends Product {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<URL> getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(List<URL> imageURL) {
-        this.imageURL = imageURL;
+    public List<URL> getImageURLs() {
+        return imageURLs;
     }
 
     public ContactInfo getContact() {
         return contact;
     }
 
-    public void setContact(ContactInfo contact) {
-        this.contact = contact;
-    }
-
     public List<Location> getLocations() {
         return locations;
-    }
-
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
     }
 
     public Price getPriceStartingAt() {
         return priceStartingAt;
     }
 
-    public void setPriceStartingAt(Price priceStartingAt) {
-        this.priceStartingAt = priceStartingAt;
-    }
-
     public PurchaseStrategy getPurchaseStrategy() {
         return purchaseStrategy;
-    }
-
-    public void setPurchaseStrategy(PurchaseStrategy purchaseStrategy) {
-        this.purchaseStrategy = purchaseStrategy;
     }
 
     public List<Attribute> getInformation() {
         return information;
     }
-
-    public void setInformation(List<Attribute> information) {
-        this.information = information;
-    }
-
 
     public static class CatalogItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
 

@@ -28,10 +28,6 @@ public class Availability {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public List<Long> getTimes() {
         return times;
     }

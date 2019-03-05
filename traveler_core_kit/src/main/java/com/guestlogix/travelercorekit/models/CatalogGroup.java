@@ -17,7 +17,7 @@ public class CatalogGroup {
     private Boolean isFeatured;
     private List<CatalogItem> items;
 
-    public CatalogGroup(String title, String subTitle, String description, Boolean isFeatured, List<CatalogItem> items) {
+    private CatalogGroup(String title, String subTitle, String description, Boolean isFeatured, List<CatalogItem> items) {
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
@@ -29,40 +29,20 @@ public class CatalogGroup {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getSubTitle() {
         return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Boolean isFeatured() {
         return isFeatured;
     }
 
-    public void setIsFeatured(Boolean isFeatured) {
-        this.isFeatured = isFeatured;
-    }
-
     public List<CatalogItem> getItems() {
         return items;
-    }
-
-    public void setItems(List<CatalogItem> items) {
-        this.items = items;
     }
 
     public static class GroupObjectMappingFactory implements ObjectMappingFactory<CatalogGroup> {
