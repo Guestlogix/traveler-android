@@ -15,12 +15,12 @@ public class AssetManager {
 
     private static final AssetManager localInstance = new AssetManager();
     private ImageLoader imageLoader;
-    private SparseArray<WeakReference<Task>> taskHashMap;
+    private SparseArray<WeakReference<Task>> tasksMap;
 
     private AssetManager() {
         MemoryImageCache imageCache = new MemoryImageCache();
         imageLoader = new ImageLoader(imageCache);
-        taskHashMap = new SparseArray<>();
+        tasksMap = new SparseArray<>();
     }
 
     public static AssetManager getInstance() {
@@ -29,7 +29,7 @@ public class AssetManager {
 
     public void loadImage(URL url, int width, int height, int viewId, ImageLoader.ImageLoaderCallback imageLoaderCallback) {
 
-        WeakReference<Task> weakTasks = taskHashMap.get(viewId);
+        WeakReference<Task> weakTasks = tasksMap.get(viewId);
         if (null != weakTasks) {
             Task previousTask = weakTasks.get();
             if (null != previousTask) {
@@ -38,7 +38,7 @@ public class AssetManager {
         }
 
         Task imageLoadingTask = imageLoader.loadImage(url, width, height, imageLoaderCallback);
-        taskHashMap.put(viewId, new WeakReference<>(imageLoadingTask));
+        tasksMap.put(viewId, new WeakReference<>(imageLoadingTask));
     }
 }
 

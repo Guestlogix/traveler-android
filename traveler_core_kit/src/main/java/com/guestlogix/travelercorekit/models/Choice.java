@@ -11,7 +11,7 @@ public class Choice implements Serializable {
     private String id;
     private String value;
 
-    public Choice(String id, String value) {
+    Choice(String id, String value) {
         this.id = id;
         this.value = value;
     }

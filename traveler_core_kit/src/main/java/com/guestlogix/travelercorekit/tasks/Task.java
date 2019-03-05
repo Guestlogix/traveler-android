@@ -1,6 +1,5 @@
 package com.guestlogix.travelercorekit.tasks;
 
-import android.util.Log;
 import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.util.ArrayList;

@@ -11,16 +11,12 @@ import java.util.List;
 public class Catalog {
     private List<CatalogGroup> groups;
 
-    public Catalog(List<CatalogGroup> groups) {
+    private Catalog(List<CatalogGroup> groups) {
         this.groups = groups;
     }
 
     public List<CatalogGroup> getGroups() {
         return groups;
-    }
-
-    public void setGroups(List<CatalogGroup> groups) {
-        this.groups = groups;
     }
 
     public static class CatalogObjectMappingFactory implements ObjectMappingFactory<Catalog> {

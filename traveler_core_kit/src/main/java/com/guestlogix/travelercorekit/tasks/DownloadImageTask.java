@@ -1,14 +1,9 @@
-package com.guestlogix.travelercorekit.task;
+package com.guestlogix.travelercorekit.tasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.util.Log;
 import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.tasks.BlockTask;
-import com.guestlogix.travelercorekit.tasks.NetworkTask;
-import com.guestlogix.travelercorekit.tasks.Task;
-import com.guestlogix.travelercorekit.tasks.TaskManager;
+import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -33,7 +28,6 @@ public class DownloadImageTask extends Task {
     @Override
     public void execute() {
 
-        //Fetch image from backend
         NetworkTask downloadImageNetworkTask = new NetworkTask(imageRequest, stream -> resource = decodeImageStream(stream));
 
         BlockTask finishTask = new BlockTask() {
@@ -61,22 +55,24 @@ public class DownloadImageTask extends Task {
                 bufferedInputStream.mark(bufferedInputStream.available());
                 BitmapFactory.decodeStream(bufferedInputStream, null, options);
 
-//             Calculate inSampleSize
+                // Calculate inSampleSize
                 options.inSampleSize = calculateInSampleSize(options, width, height);
                 bufferedInputStream.reset();
             }
-//             Decode bitmap with inSampleSize set
+
+            // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
             return BitmapFactory.decodeStream(bufferedInputStream, null, options);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            TravelerLog.e("Could not decode stream to bitmap %s", e.getMessage());
             return null;
         }
     }
 
     private static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
+
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;

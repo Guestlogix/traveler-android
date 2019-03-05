@@ -66,7 +66,7 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
                     new ImageLoader.ImageLoaderCallback() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap) {
-
+                            thumbNailImageView.setImageBitmap(bitmap);
                         }
 
                         @Override

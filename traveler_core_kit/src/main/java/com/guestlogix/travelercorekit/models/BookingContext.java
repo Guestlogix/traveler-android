@@ -8,7 +8,7 @@ public class BookingContext implements Serializable {
     private Product product;
     private Date selectedDate;
     private Long selectedTime;
-    private Date endDateTime;//TODO
+    private Date endDateTime;
     private Boolean isTimeRequired;
     private Boolean isReady;
 
@@ -18,10 +18,6 @@ public class BookingContext implements Serializable {
 
     public Product getProduct() {
         return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public Date getSelectedDate() {

@@ -186,7 +186,6 @@ public class Traveler {
                 protected void main() {
                     if (null != checkAvailabilityTask.getError()) {
                         checkAvailabilityCallback.onCheckAvailabilityError(checkAvailabilityTask.getError());
-                        TravelerLog.e(checkAvailabilityTask.getError().toString());
                     } else {
                         checkAvailabilityCallback.onCheckAvailabilitySuccess(checkAvailabilityTask.getResource());
                     }

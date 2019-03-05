@@ -18,7 +18,7 @@ public class Pass implements Serializable {
     private Price price;
     private List<Question> questions;
 
-    public Pass(String id, String name, String description, Integer maxQuantity, Price price, List<Question> questions) {
+    private Pass(String id, String name, String description, Integer maxQuantity, Price price, List<Question> questions) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,16 +31,8 @@ public class Pass implements Serializable {
         return maxQuantity;
     }
 
-    public void setMaxQuantity(int maxQuantity) {
-        this.maxQuantity = maxQuantity;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getName() {
@@ -55,24 +47,12 @@ public class Pass implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public Price getPrice() {
         return price;
     }
 
-    public void setPrice(Price price) {
-        this.price = price;
-    }
-
     public List<Question> getQuestions() {
         return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
     }
 
     public static class PassObjectMappingFactory implements ObjectMappingFactory<Pass> {

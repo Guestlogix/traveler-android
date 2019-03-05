@@ -87,8 +87,8 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private void setView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
 
-        if (null != catalogItemDetails.getImageURL() && catalogItemDetails.getImageURL().size() > 0) {
-            AssetManager.getInstance().loadImage(catalogItemDetails.getImageURL().get(0),
+        if (null != catalogItemDetails.getImageURLs() && catalogItemDetails.getImageURLs().size() > 0) {
+            AssetManager.getInstance().loadImage(catalogItemDetails.getImageURLs().get(0),
                     (int) getResources().getDimension(R.dimen.thumbnail_width),
                     (int) getResources().getDimension(R.dimen.thumbnail_height),
                     imageView.getId(),
