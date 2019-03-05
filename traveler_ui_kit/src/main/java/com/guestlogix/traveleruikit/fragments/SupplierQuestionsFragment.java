@@ -16,7 +16,6 @@ import com.guestlogix.traveleruikit.forms.descriptors.ButtonDescriptor;
 import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
 import com.guestlogix.traveleruikit.forms.descriptors.SpinnerDescriptor;
 import com.guestlogix.traveleruikit.forms.descriptors.TextDescriptor;
-import com.guestlogix.traveleruikit.forms.utilities.FormType;
 import com.guestlogix.traveleruikit.viewmodels.BookingViewModel;
 
 import java.util.ArrayList;
@@ -44,9 +43,7 @@ public class SupplierQuestionsFragment extends BaseFragment {
         viewModel = ViewModelProviders.of(getActivityContext()).get(BookingViewModel.class);
 
         viewModel.getObservableBookingForm().observe(getViewLifecycleOwner(), this::buildSupplierForm);
-        viewModel.getObservableBookingFormErrorPosition().observe(getViewLifecycleOwner(), pair -> {
-            form.reload();
-        });
+        viewModel.getObservableReloadRequest().observe(getViewLifecycleOwner(), pair -> form.reload(pair.first, pair.second));
 
         return view;
     }
@@ -80,7 +77,7 @@ public class SupplierQuestionsFragment extends BaseFragment {
                     return determineQuestionType(q);
                 }
 
-                return FormType.BUTTON.getValue();
+                return Form.FormType.BUTTON.getValue();
             }
 
             @Override
@@ -162,9 +159,9 @@ public class SupplierQuestionsFragment extends BaseFragment {
 
         switch (type) {
             case MULTIPLE_CHOICE:
-                return FormType.SPINNER.getValue();
+                return Form.FormType.SPINNER.getValue();
             case STRING:
-                return FormType.TEXT.getValue();
+                return Form.FormType.TEXT.getValue();
             default:
                 return 0;
         }

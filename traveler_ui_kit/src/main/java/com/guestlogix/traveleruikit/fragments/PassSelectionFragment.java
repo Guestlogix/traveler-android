@@ -15,7 +15,6 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
 import com.guestlogix.traveleruikit.forms.descriptors.QuantityDescriptor;
-import com.guestlogix.traveleruikit.forms.utilities.FormType;
 import com.guestlogix.traveleruikit.viewmodels.BookingViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
