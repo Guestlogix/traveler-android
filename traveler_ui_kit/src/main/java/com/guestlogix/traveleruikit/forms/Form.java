@@ -20,19 +20,16 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.adapters.FormRecyclerViewAdapter;
 import com.guestlogix.traveleruikit.forms.cells.*;
 import com.guestlogix.traveleruikit.forms.descriptors.*;
-import com.guestlogix.traveleruikit.forms.utilities.FormBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A form layout used to render and display a flat form. The implementing class has to provide a FormBuilder object
- * which hosts the underlying structure of the form.
- * <p>
- * Since the form takes a flat object structure, the implementing activity/fragment must have a flattening strategy.
- * <p>
- * All form events are not guaranteed to be invoked. It is up-to individual {@link BaseCell}s to implement event listeners
- * and dispatch the appropriate events.
+ * Form layout used to translate a double indexed section and field data type into a single index recycler view.
+ *
+ * Use {@link FormBuilder} to create custom views or use {@link FormType} base fields.
+ * This form must be given a {@link DataSource} to start rendering.
  */
 @SuppressLint("UseSparseArrays")
 public class Form extends FrameLayout {
@@ -41,11 +38,9 @@ public class Form extends FrameLayout {
     private RecyclerView.LayoutManager layoutManager;
     private FormRecyclerViewAdapter rvAdapter;
     private DataSource dataSource;
-    private Builder builder;
-    private Map<Integer, Pair<Integer, Integer>> posToPair;
-    private Map<Integer, Integer> posToType;
-    private Map<Pair<Integer, Integer>, Boolean> hasMessage;
-    private int count;
+    private FormBuilder formBuilder;
+    private ArrayList<LinkedFormNode> nodes;
+    private Map<Pair<Integer, Integer>, Integer> sectionToPos;
 
     /**
      * Callback interface used to notify any subscriber whenever a click was performed on an TextCell in the form.
@@ -82,142 +77,95 @@ public class Form extends FrameLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(context, attrs, defStyleAttr, defStyleRes);
     }
+
+    private FormRecyclerViewAdapter.CellEventsListener cellEventsListener = new FormRecyclerViewAdapter.CellEventsListener() {
+        @Override
+        public void onValueChanged(int pos, Object value) {
+            if (onFormValueChangedListener != null) {
+                LinkedFormNode node = nodes.get(pos);
+                onFormValueChangedListener.onFormValueChanged(node.sectionId, node.fieldId, value);
+            }
+        }
+
+        @Override
+        public void onFocusChanged(int pos, boolean hasFocus) {
+            if (onFormFocusChangedListener != null) {
+                LinkedFormNode node = nodes.get(pos);
+                onFormFocusChangedListener.onFormFocusChanged(node.sectionId, node.fieldId, hasFocus);
+            }
+        }
+
+        @Override
+        public void onClick(int pos) {
+            if (onFormClickListener != null) {
+                LinkedFormNode node = nodes.get(pos);
+                onFormClickListener.onFormClick(node.sectionId, node.fieldId);
+            }
+        }
+    };
     private FormRecyclerViewAdapter.FormMapper formMapper = new FormRecyclerViewAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
-            return count;
+            return nodes.size();
         }
 
         @Override
         public int getViewType(int position) {
-            if (!posToType.containsKey(position)) {
-                return 0;
-            }
-
-            Integer type = posToType.get(position);
-            if (type == null) {
-                type = 0;
-            }
-            return type;
+            return nodes.get(position).type;
         }
 
         @Override
         public BaseCell createViewHolder(ViewGroup parent, int type) {
-            return builder.inflateBaseCell(parent, type);
+            return formBuilder.inflateBaseCell(parent, type);
         }
 
         @Override
         public void bindView(BaseCell cell, int position) {
-            Integer type = posToType.get(position);
-            Pair<Integer, Integer> pos = posToPair.get(position);
+            LinkedFormNode node = nodes.get(position);
 
-            if (type == null || pos == null) {
-                throw new RuntimeException("Out of bounds position has been found by the form.");
+            // Checks if a message needs to be displayed or removed.
+            if (node.type != FormType.MESSAGE.value && node.type != FormType.HEADER.value) {
+                Pair<String, FormMessage> msg = dataSource.getMessage(node.sectionId, node.fieldId);
+
+                if (msg != null && !node.hasChild) {
+                    node.hasChild = true;
+                    LinkedFormNode msgNode = new LinkedFormNode(node.sectionId, node.fieldId, FormType.MESSAGE.value);
+                    nodes.add(position + 1, msgNode);
+                    rvAdapter.notifyItemInserted(position + 1);
+                } else if (msg == null && node.hasChild) {
+                    node.hasChild = false;
+                    nodes.remove(position + 1);
+                    rvAdapter.notifyItemRemoved(position + 1);
+                }
             }
 
-            switch (FormType.valueOf(type)) {
-                case HEADER:
-                    HeaderCell headerCell = (HeaderCell) cell;
-                    headerCell.setTitle(dataSource.getTitle(pos.first));
-                    headerCell.setSubtitle(dataSource.getDisclaimer(pos.first));
-                    break;
-                case TEXT:
-                    TextCell textCell = (TextCell) cell;
-                    TextDescriptor textDescriptor = (TextDescriptor) dataSource.getInputDescriptor(pos.first, pos.second, type);
-                    textCell.setValue((String) dataSource.getValue(pos.first, pos.second));
-                    textCell.setHint(textDescriptor.hint);
-                    break;
-                case QUANTITY:
-                    QuantityCell quantityCell = (QuantityCell) cell;
-                    QuantityDescriptor quantityDescriptor = (QuantityDescriptor) dataSource.getInputDescriptor(pos.first, pos.second, type);
-                    quantityCell.setQuantity(quantityDescriptor.value == null ? "0" : quantityDescriptor.value.toString());
-                    quantityCell.setTitle(quantityDescriptor.title);
-                    quantityCell.setSubtitle(quantityDescriptor.subtitle);
-                    quantityCell.setAdapter(new QuantityCell.QuantityCellAdapter() {
-                        @Override
-                        public String getTitle() {
-                            return quantityDescriptor.title;
-                        }
-
-                        @Nullable
-                        @Override
-                        public Integer getMaxQuantity() {
-                            return quantityDescriptor.maxQuantity;
-                        }
-
-                        @NonNull
-                        @Override
-                        public Integer getMinQuantity() {
-                            return quantityDescriptor.minQuantity;
-                        }
-
-                        @NonNull
-                        @Override
-                        public Integer getValue() {
-                            Integer value = (Integer) dataSource.getValue(pos.first, pos.second);
-                            if (value == null) {
-                                value = quantityDescriptor.minQuantity;
-                            }
-                            return value;
-                        }
-                    });
-                    break;
-                case BUTTON:
-                    ButtonCell buttonCell = (ButtonCell) cell;
-                    ButtonDescriptor buttonDescriptor = (ButtonDescriptor) dataSource.getInputDescriptor(pos.first, pos.second, type);
-                    buttonCell.setText(buttonDescriptor.text);
-                    break;
-                case SPINNER:
-                    SpinnerCell spinnerCell = (SpinnerCell) cell;
-                    SpinnerDescriptor spinnerDescriptor = (SpinnerDescriptor) dataSource.getInputDescriptor(pos.first, pos.second, type);
-                    spinnerCell.setHint(spinnerDescriptor.title);
-                    spinnerCell.setOptions(spinnerDescriptor.options, spinnerDescriptor.value);
-                    break;
-                case MESSAGE:
-                    MessageCell messageCell = (MessageCell) cell;
-                    Pair<String, FormMessage> msg = dataSource.getMessage(pos.first, pos.second);
-
-                    if (msg != null) {
-                        messageCell.setMessage(msg.first, msg.second);
-                    } else {
-                        messageCell.reload();
-                    }
-                    break;
-                default:
-                    builder.bindBaseCell(cell, type);
-
-            }
+            formBuilder.bindBaseCell(cell, node.sectionId, node.fieldId, node.type);
         }
     };
 
     /**
-     * Reloads all elements in the form.
+     * Hard reload of all elements in the form.
      */
     public void reload() {
-        count = 0;
-        posToPair = new HashMap<>();
-        posToType = new HashMap<>();
+        nodes = new ArrayList<>();
+        sectionToPos = new HashMap<>();
 
         for (int i = 0; i < dataSource.getSectionCount(); i++) {
             String title = dataSource.getTitle(i);
             String disclaimer = dataSource.getDisclaimer(i);
 
             if (title != null || disclaimer != null) {
-                // Register Header.
-                posToPair.put(count, new Pair<>(i, -1));
-                posToType.put(count++, FormType.HEADER.value);
+                // Section has a header.
+                LinkedFormNode node = new LinkedFormNode(i, -1, FormType.HEADER.value);
+                sectionToPos.put(new Pair<>(i, -1), nodes.size());
+                nodes.add(node);
             }
 
+            // Field in this section
             for (int j = 0; j < dataSource.getFieldCount(i); j++) {
-                // Add input field.
-                posToPair.put(count, new Pair<>(i, j));
-                posToType.put(count++, dataSource.getType(i, j));
-
-                // Check if it has a message.
-                if (dataSource.getMessage(i, j) != null) {
-                    posToPair.put(count, new Pair<>(i, j));
-                    posToType.put(count++, FormType.MESSAGE.value);
-                }
+                LinkedFormNode node = new LinkedFormNode(i, j, dataSource.getType(i, j));
+                sectionToPos.put(new Pair<>(i, -1), nodes.size());
+                nodes.add(node);
             }
         }
 
@@ -226,17 +174,90 @@ public class Form extends FrameLayout {
         }
     }
 
+    /**
+     * Reloads a specific cell in the form.
+     *
+     * @param sectionId Section where an item was reloaded.
+     * @param fieldId   Optional field which was reloaded.
+     */
+    public void reload(@NonNull Integer sectionId, @Nullable Integer fieldId) {
+        if (fieldId == null) {
+            fieldId = -1;
+        }
+
+        Integer pos = sectionToPos.get(new Pair<>(sectionId, fieldId));
+
+        if (pos != null && rvAdapter != null) {
+            rvAdapter.notifyItemChanged(pos);
+        }
+    }
+
+    /**
+     * Scrolls to a specific field int the form. If fieldId is left null, will scroll to the header
+     *
+     * @param sectionId section index.
+     * @param fieldId   field index.
+     */
+    public void smoothScrollToPosition(@NonNull Integer sectionId, @Nullable Integer fieldId) {
+        if (fieldId == null) {
+            fieldId = -1;
+        }
+
+        Integer pos = sectionToPos.get(new Pair<>(sectionId, fieldId));
+
+        if (pos != null && rvAdapter != null) {
+            cellsRecyclerView.smoothScrollToPosition(pos);
+        }
+    }
+
+    /**
+     * Sets the data source and starts building the form.
+     * Equivalent to calling {@link #setDataSource(DataSource, RecyclerView.LayoutManager)} with a linear layout.
+     *
+     * @param dataSource Callback for information required by the form.
+     */
     public void setDataSource(@NonNull DataSource dataSource) {
         setDataSource(dataSource, new LinearLayoutManager(getContext()));
     }
 
+    /**
+     * Sets the data source and begins rendering the form.
+     *
+     * @param dataSource Callback for information required by the form.
+     * @param layoutManager Layout Manager
+     */
     public void setDataSource(@NonNull DataSource dataSource, RecyclerView.LayoutManager layoutManager) {
         this.dataSource = dataSource;
         this.layoutManager = layoutManager;
         reload();
 
-        if (null == builder) {
-            builder = new BaseBuilder(getContext());
+        if (null == formBuilder) {
+            formBuilder = new BaseFormBuilder(getContext(), new BaseFormBuilder.BuilderDataSource() {
+                @Override
+                public Pair<String, FormMessage> getMessage(int sectionId, int fieldId) {
+                    return dataSource.getMessage(sectionId, fieldId);
+                }
+
+                @Override
+                public InputDescriptor getInputDescriptor(int sectionId, int fieldId, int type) {
+                    return dataSource.getInputDescriptor(sectionId, fieldId, type);
+                }
+
+                @Override
+                public String getTitle(int sectionId) {
+                    return dataSource.getTitle(sectionId);
+                }
+
+                @Override
+                public String getSubtitle(int sectionId) {
+                    return dataSource.getDisclaimer(sectionId);
+                }
+
+                @Override
+                public Object getValue(int sectionId, int fieldId) {
+                    return dataSource.getValue(sectionId, fieldId);
+                }
+            });
         }
 
         rvAdapter = new FormRecyclerViewAdapter(formMapper);
@@ -248,10 +269,6 @@ public class Form extends FrameLayout {
         cellsRecyclerView.setItemAnimator(animator);
     }
 
-    public Builder getBuilder() {
-        return builder;
-    }
-
     private void initView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (!isInEditMode()) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_form, this, true);
@@ -259,48 +276,15 @@ public class Form extends FrameLayout {
         }
     }
 
-    public void setBuilder(Builder builder) {
-        this.builder = builder;
-
-        if (dataSource != null) {
-            rvAdapter.notifyDataSetChanged();
-        }
+    /**
+     * Gets current {@link FormBuilder} class in the form.
+     * <p>By default it contains a {@link BaseFormBuilder} where you can register custom cell types.</p>
+     *
+     * @return Current formBuilder for the form.
+     */
+    public FormBuilder getFormBuilder() {
+        return formBuilder;
     }
-
-    private FormRecyclerViewAdapter.CellEventsListener cellEventsListener = new FormRecyclerViewAdapter.CellEventsListener() {
-        @Override
-        public void onValueChanged(int pos, Object value) {
-            if (onFormValueChangedListener != null) {
-                Pair<Integer, Integer> p = posToPair.get(pos);
-
-                if (p != null) {
-                    onFormValueChangedListener.onFormValueChanged(p.first, p.second, value);
-                }
-            }
-        }
-
-        @Override
-        public void onFocusChanged(int pos, boolean hasFocus) {
-            if (onFormFocusChangedListener != null) {
-                Pair<Integer, Integer> p = posToPair.get(pos);
-
-                if (p != null) {
-                    onFormFocusChangedListener.onFormFocusChanged(p.first, p.second, hasFocus);
-                }
-            }
-        }
-
-        @Override
-        public void onClick(int pos) {
-            if (onFormClickListener != null) {
-                Pair<Integer, Integer> p = posToPair.get(pos);
-
-                if (p != null) {
-                    onFormClickListener.onFormClick(p.first, p.second);
-                }
-            }
-        }
-    };
 
     /**
      * Subscribes to value changed events.
@@ -416,67 +400,131 @@ public class Form extends FrameLayout {
         INFO, ALERT
     }
 
+    public void setFormBuilder(FormBuilder formBuilder) {
+        this.formBuilder = formBuilder;
+
+        if (dataSource != null) {
+            rvAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * Callback interface for fetching information for the Form.
+     */
     public interface DataSource {
+        /**
+         * Amount of sections in the form.
+         *
+         * @return section count.
+         */
         int getSectionCount();
 
+        /**
+         * Amount of fields in a specific section.
+         * @param sectionId Section index.
+         * @return amount of fields for the section index.
+         */
         int getFieldCount(int sectionId);
 
+        /**
+         * Type of a specific field as dictated by a {@link FormBuilder} class.
+         *
+         * @param sectionId section where the field is.
+         * @param fieldId field in the section.
+         * @return type of the specific field.
+         */
         int getType(int sectionId, int fieldId);
 
+        /**
+         * Input descriptor for a specific cell.
+         *
+         * @param sectionId section index where the field is.
+         * @param fieldId field index where the field is.
+         * @param type type of the field.
+         * @return InputDescriptor for a given type.
+         */
         @NonNull
         InputDescriptor getInputDescriptor(int sectionId, int fieldId, int type);
 
+        /**
+         * Title of a section.
+         * @param sectionId Section index.
+         * @return Optional title for the section.
+         */
         @Nullable
         String getTitle(int sectionId);
 
+        /**
+         * Disclaimer of a section.
+         * @param sectionId Section index.
+         * @return Optional disclaimer for the section.
+         */
         @Nullable
         String getDisclaimer(int sectionId);
 
+        /**
+         * Message for a specific field. See {@link FormMessage} for supported message types.
+         * @param sectionId section index.
+         * @param fieldId field index.
+         * @return pair of message and type.
+         */
         @Nullable
         Pair<String, FormMessage> getMessage(int sectionId, int fieldId);
 
+        /**
+         * Get the value for a field. If null will treat as if there was never a value set in the field.
+         * @param sectionId section index.
+         * @param fieldId field index.
+         * @return value for the field. Assumes it can be cast to correct type when binding.
+         */
         @Nullable
         Object getValue(int sectionId, int fieldId);
     }
 
     /**
-     * Class which handles all information regarding inflating the layouts and binding the views.
+     * Base FormBuilder class.
+     * A FormBuilder handles inflation and bindings of custom view types which are not handled by the form. It is
+     * responsible for assigning correct ids to every element.
+     *
      * <p>
-     * See {@link BaseBuilder} for default implementation of form components.
+     * See {@link BaseFormBuilder} for default implementation of form components.
+     * </p>
      */
-    public static abstract class Builder {
+    public static abstract class FormBuilder {
         Context context;
 
-        public Builder(@NonNull Context context) {
+        FormBuilder(@NonNull Context context) {
             this.context = context;
         }
 
-        public abstract BaseCell inflateBaseCell(ViewGroup parent, int type);
+        abstract BaseCell inflateBaseCell(ViewGroup parent, int type);
 
-        public abstract void bindBaseCell(BaseCell baseCell, int type);
+        abstract void bindBaseCell(BaseCell baseCell, int sectionId, int fieldId, int type);
     }
 
     /**
      * <p>
-     * Default implementation for the {@link Builder} class.
+     * Default implementation for the {@link FormBuilder} class.
      * Contains code to implement all cells present in the {@link FormType} enum.
      * </p>
      * <p>
-     * You can also include your own layout by calling the {@link #registerCustomCell(FormBuilder.CustomCellAdapter)} method.</p>
+     * You can also include your own layout by calling the {@link #registerCustomCell(CustomCellAdapter)} method.</p>
      */
-    public static class BaseBuilder extends Builder {
+    public static class BaseFormBuilder extends FormBuilder {
         private static int FORM_TYPE_COUNT;
 
         static {
             FORM_TYPE_COUNT = FormType.getTypeCount();
         }
 
-        private Map<Integer, FormBuilder.CustomCellAdapter> customComponentMap = new HashMap<>();
+        private Map<Integer, CustomCellAdapter> customComponentMap = new HashMap<>();
         private int customCellCount;
+        private BuilderDataSource dataSource;
 
-        BaseBuilder(@NonNull Context context) {
+        BaseFormBuilder(@NonNull Context context, BuilderDataSource dataSource) {
             super(context);
             customCellCount = 0;
+            this.dataSource = dataSource;
         }
 
         /**
@@ -486,7 +534,7 @@ public class Form extends FrameLayout {
          * @param strategy Methods to instantiate custom elements.
          * @return Type of the current custom cell.
          */
-        public int registerCustomCell(@NonNull FormBuilder.CustomCellAdapter strategy) {
+        public int registerCustomCell(@NonNull CustomCellAdapter strategy) {
             int type = FORM_TYPE_COUNT + customCellCount;
             customComponentMap.put(type, strategy);
             customCellCount++;
@@ -501,7 +549,7 @@ public class Form extends FrameLayout {
          * @return Cell of the given type.
          */
         @Override
-        public BaseCell inflateBaseCell(ViewGroup parent, int elementType) {
+        BaseCell inflateBaseCell(ViewGroup parent, int elementType) {
             View view;
             switch (FormType.valueOf(elementType)) {
                 case HEADER:
@@ -523,54 +571,153 @@ public class Form extends FrameLayout {
                     view = LayoutInflater.from(context).inflate(FormLayout.MESSAGE_LAYOUT, parent, false);
                     return new MessageCell(view);
                 default:
-                    return createCustomCell(parent, elementType);
+                    CustomCellAdapter adapter = customComponentMap.get(elementType);
+
+                    if (null != adapter) {
+                        return adapter.inflateCustomCell(context, parent);
+                    }
+
+                    throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
             }
         }
 
+        /**
+         * Binds the default cells with values or tries to find an adapter to bind other cells.
+         *
+         * @param cell Cell to be populated.
+         * @param sectionId Section where this cell is.
+         * @param fieldId Field where this cell is.
+         * @param type Type of cell as defined by the adapter.
+         */
         @Override
-        public void bindBaseCell(BaseCell cell, int type) {
-            if (type > FORM_TYPE_COUNT) {
-                bindCustomCell(cell, null, type);
-            } else {
+        void bindBaseCell(BaseCell cell, int sectionId, int fieldId, int type) {
+            switch (FormType.valueOf(type)) {
+                case HEADER:
+                    HeaderCell headerCell = (HeaderCell) cell;
+                    headerCell.setTitle(dataSource.getTitle(sectionId));
+                    headerCell.setSubtitle(dataSource.getSubtitle(sectionId));
+                    break;
+                case TEXT:
+                    TextCell textCell = (TextCell) cell;
+                    TextDescriptor textDescriptor = (TextDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    textCell.setValue((String) dataSource.getValue(sectionId, fieldId));
+                    textCell.setHint(textDescriptor.hint);
+                    break;
+                case QUANTITY:
+                    QuantityCell quantityCell = (QuantityCell) cell;
+                    QuantityDescriptor quantityDescriptor = (QuantityDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    quantityCell.setQuantity(quantityDescriptor.value == null ? "0" : quantityDescriptor.value.toString());
+                    quantityCell.setTitle(quantityDescriptor.title);
+                    quantityCell.setSubtitle(quantityDescriptor.subtitle);
+                    quantityCell.setAdapter(new QuantityCell.QuantityCellAdapter() {
+                        @Override
+                        public String getTitle() {
+                            return quantityDescriptor.title;
+                        }
 
+                        @Nullable
+                        @Override
+                        public Integer getMaxQuantity() {
+                            return quantityDescriptor.maxQuantity;
+                        }
+
+                        @NonNull
+                        @Override
+                        public Integer getMinQuantity() {
+                            return quantityDescriptor.minQuantity;
+                        }
+
+                        @NonNull
+                        @Override
+                        public Integer getValue() {
+                            Integer value = (Integer) dataSource.getValue(sectionId, fieldId);
+                            if (value == null) {
+                                value = quantityDescriptor.minQuantity;
+                            }
+                            return value;
+                        }
+                    });
+                    break;
+                case BUTTON:
+                    ButtonCell buttonCell = (ButtonCell) cell;
+                    ButtonDescriptor buttonDescriptor = (ButtonDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    buttonCell.setText(buttonDescriptor.text);
+                    break;
+                case SPINNER:
+                    SpinnerCell spinnerCell = (SpinnerCell) cell;
+                    SpinnerDescriptor spinnerDescriptor = (SpinnerDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    spinnerCell.setHint(spinnerDescriptor.title);
+                    spinnerCell.setOptions(spinnerDescriptor.options, spinnerDescriptor.value);
+                    break;
+                case MESSAGE:
+                    MessageCell messageCell = (MessageCell) cell;
+                    Pair<String, FormMessage> msg = dataSource.getMessage(sectionId, fieldId);
+
+                    if (msg != null) {
+                        messageCell.setMessage(msg.first, msg.second);
+                    } else {
+                        messageCell.reload();
+                    }
+                    break;
+                default:
+                    if (customComponentMap.containsKey(type)) {
+                        CustomCellAdapter adapter = customComponentMap.get(type);
+
+                        if (null != adapter) {
+                            adapter.bindCell(cell, sectionId, fieldId, type);
+                            return;
+                        }
+                    }
+                    throw new RuntimeException("Adapter not found. Register adapter with registerCustomCell()");
             }
         }
 
-        void bindCustomCell(BaseCell cell, InputDescriptor descriptor, int type) {
-            if (customComponentMap.containsKey(type)) {
-                FormBuilder.CustomCellAdapter adapter = customComponentMap.get(type);
+        public interface CustomCellAdapter {
+            BaseCell inflateCustomCell(Context context, ViewGroup parent);
 
-                if (null != adapter) {
-                    adapter.bindCell(cell, descriptor, type);
-                    return;
-                }
-            }
-            throw new RuntimeException("Adapter not found. Register adapter with registerCustomCell()");
+            void bindCell(BaseCell cell, int sectionId, int fieldId, int type);
         }
 
-        private BaseCell createCustomCell(ViewGroup parent, int type) {
-            FormBuilder.CustomCellAdapter adapter = customComponentMap.get(type);
+        interface BuilderDataSource {
+            Pair<String, Form.FormMessage> getMessage(int sectionId, int fieldId);
 
-            if (null != adapter) {
-                return adapter.inflateCustomCell(context, parent);
-            }
+            InputDescriptor getInputDescriptor(int sectionId, int fieldId, int type);
 
-            throw new RuntimeException("Invalid cell type. Please make sure any custom types have been registered with the FormBuilder");
+            String getTitle(int sectionId);
+
+            String getSubtitle(int sectionId);
+
+            Object getValue(int sectionId, int fieldId);
+        }
+
+        static class FormLayout {
+            @LayoutRes
+            static final int TEXT_LAYOUT = R.layout.form_text_input;
+            @LayoutRes
+            static final int BUTTON_LAYOUT = R.layout.form_button;
+            @LayoutRes
+            static final int HEADER_LAYOUT = R.layout.form_header;
+            @LayoutRes
+            static final int QUANTITY_LAYOUT = R.layout.form_quantity;
+            @LayoutRes
+            static final int SPINNER_LAYOUT = R.layout.form_spinner;
+            @LayoutRes
+            static final int MESSAGE_LAYOUT = R.layout.form_message_cell;
         }
     }
 
-    protected static class FormLayout {
-        @LayoutRes
-        static final int TEXT_LAYOUT = R.layout.form_text_input;
-        @LayoutRes
-        static final int BUTTON_LAYOUT = R.layout.form_button;
-        @LayoutRes
-        static final int HEADER_LAYOUT = R.layout.form_header;
-        @LayoutRes
-        static final int QUANTITY_LAYOUT = R.layout.form_quantity;
-        @LayoutRes
-        static final int SPINNER_LAYOUT = R.layout.form_spinner;
-        @LayoutRes
-        static final int MESSAGE_LAYOUT = R.layout.form_message_cell;
+    // Node which holds all the information necessary to display nodes.
+    private class LinkedFormNode {
+        int sectionId;
+        int fieldId;
+        int type;
+        boolean hasChild;
+
+        LinkedFormNode(int sectionId, int fieldId, int type) {
+            this.sectionId = sectionId;
+            this.fieldId = fieldId;
+            this.type = type;
+            this.hasChild = false;
+        }
     }
 }

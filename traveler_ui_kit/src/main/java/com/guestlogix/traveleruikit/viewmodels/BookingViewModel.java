@@ -57,7 +57,7 @@ public class BookingViewModel extends ViewModel {
         return state;
     }
 
-    public LiveData<Pair<Integer, Integer>> getObservableBookingFormErrorPosition() {
+    public LiveData<Pair<Integer, Integer>> getObservableReloadRequest() {
         return formFocus;
     }
 
