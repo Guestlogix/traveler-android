@@ -1,10 +1,8 @@
 package com.guestlogix.travelercorekit.callbacks;
 
-import com.guestlogix.travelercorekit.models.Availability;
-
-import java.util.List;
+import com.guestlogix.travelercorekit.models.BookingContext;
 
 public interface CheckAvailabilityCallback {
-    void onAvailabilitySuccess(List<Availability> availability);
+    void onAvailabilitySuccess(BookingContext bookingContext);
     void onAvailabilityError(Error error);
 }

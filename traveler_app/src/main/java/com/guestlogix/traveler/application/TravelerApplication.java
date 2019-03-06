@@ -3,7 +3,7 @@ package com.guestlogix.traveler.application;
 import android.app.Application;
 import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler_stripe_payment_provider.StripePaymentProvider;
-import com.guestlogix.travelercorekit.Traveler;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.TravelerUI;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;

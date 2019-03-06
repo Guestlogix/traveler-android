@@ -1,6 +1,6 @@
 package com.guestlogix.traveleruikit.repositories;
 
-import com.guestlogix.travelercorekit.Traveler;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.models.BookingContext;
 

@@ -1,6 +1,6 @@
 package com.guestlogix.traveleruikit.repositories;
 
-import com.guestlogix.travelercorekit.Traveler;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 
