@@ -91,7 +91,7 @@ public class Router {
 
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("from", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
-        queryParams.put("to", DateHelper.formatDateToISO8601(bookingContext.getEndDateTime()));
+        queryParams.put("to", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
 
         Method method = Method.GET;
         URL url = createURL(path, queryParams);
@@ -106,7 +106,7 @@ public class Router {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("date", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
 
-        if (bookingContext.getTimeRequired()) {
+        if (bookingContext.requiresTime()) {
             queryParams.put("time-in-minutes", bookingContext.getSelectedTime().toString());
         }
 

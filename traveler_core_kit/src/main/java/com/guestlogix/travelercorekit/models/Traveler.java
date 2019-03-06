@@ -1,7 +1,10 @@
-package com.guestlogix.travelercorekit;
+package com.guestlogix.travelercorekit.models;
 
 import android.content.Context;
 import android.text.TextUtils;
+import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
+import com.guestlogix.travelercorekit.Router;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.*;
 import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.TravelerErrorCode;
@@ -173,8 +176,6 @@ public class Traveler {
                 return;
             }
 
-            bookingContext.setReady(false);
-
             AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, bookingContext, localInstance.session.getContext());
             AuthenticatedNetworkRequestTask<List<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
@@ -185,9 +186,16 @@ public class Traveler {
                         checkAvailabilityCallback.onAvailabilityError(checkAvailabilityTask.getError());
                         TravelerLog.e(checkAvailabilityTask.getError().toString());
                     } else {
-                        checkAvailabilityCallback.onAvailabilitySuccess(checkAvailabilityTask.getResource());
+                        List<Availability> fetchedAvailabilities = checkAvailabilityTask.getResource();
+
+                        if (fetchedAvailabilities == null || fetchedAvailabilities.isEmpty()) {
+                            bookingContext.setAvailability(null);
+                        } else {
+                            bookingContext.setAvailability(fetchedAvailabilities.get(0));
+                        }
+
+                        checkAvailabilityCallback.onAvailabilitySuccess(bookingContext);
                     }
-                    bookingContext.setReady(true);
                 }
             };
 
@@ -213,7 +221,7 @@ public class Traveler {
                 return;
             }
 
-            if (null != bookingContext.getTimeRequired() && bookingContext.getTimeRequired() && bookingContext.getSelectedTime() == null) {
+            if (bookingContext.requiresTime() && bookingContext.getSelectedTime() == null) {
                 fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.NO_TIME, "Booking time is required"));
                 return;
             }

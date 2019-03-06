@@ -13,26 +13,26 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Availability {
+class Availability {
     private Date date;
     private List<Long> times;
     private Boolean isAvailable;
 
-    private Availability(Date date, List<Long> times, Boolean isAvailable) {
+    Availability(Date date, List<Long> times, Boolean isAvailable) {
         this.date = date;
         this.times = times;
         this.isAvailable = isAvailable;
     }
 
-    public Date getDate() {
+    Date getDate() {
         return date;
     }
 
-    public List<Long> getTimes() {
+    List<Long> getTimes() {
         return times;
     }
 
-    public boolean isAvailable() {
+    boolean isAvailable() {
         return isAvailable;
     }
 

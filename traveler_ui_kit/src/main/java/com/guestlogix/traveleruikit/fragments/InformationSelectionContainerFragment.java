@@ -59,7 +59,6 @@ public class InformationSelectionContainerFragment extends BaseFragment {
                 fragment = new BookableInformationSelectionFragment();
                 productVM = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
                 productVM.setup(product);
-                ((BookableProductViewModel) productVM).setPrice(price);
                 break;
         }
 

@@ -2,7 +2,6 @@ package com.guestlogix.traveleruikit.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.guestlogix.travelercorekit.Traveler;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -19,34 +18,28 @@ public class BookableProductViewModel extends ProductViewModel {
     private MutableLiveData<List<String>> timeSlots;
     private MutableLiveData<Price> price;
 
-    private Availability availability;
+    private List<Long> times;
+
     private CheckAvailabilityCallback checkAvailabilityCallback = new CheckAvailabilityCallback() {
         @Override
-        public void onAvailabilitySuccess(List<Availability> availabilityList) {
+        public void onAvailabilitySuccess(BookingContext bookingContext) {
+            if (bookingContext.isReady()) {
+                actionState.postValue(State.AVAILABLE);
+            } else if (!bookingContext.hasAvailability()) {
+                actionState.postValue(State.NOT_AVAILABLE);
+            } else {
+                // Has avail, but not ready == time required.
+                times = bookingContext.getAvailableTimes();
 
-            if (availabilityList != null && !availabilityList.isEmpty()) {
-                Availability item = availabilityList.get(0);
-
-                if (item.isAvailable()) {
-                    availability = item;
-                    bookingContext.setTimeRequired(item.getTimes() != null && !item.getTimes().isEmpty());
-
-                    // Build times.
-                    if (bookingContext.getTimeRequired()) {
-                        List<String> transformedTimes = new ArrayList<>();
-                        for (Long time : availability.getTimes()) {
-                            transformedTimes.add(DateHelper.formatTime(time));
-                        }
-
-                        timeSlots.postValue(transformedTimes);
-                        actionState.postValue(State.TIME_REQUIRED);
-                    } else {
-                        actionState.postValue(State.AVAILABLE);
-                    }
-                    return;
+                // Build pretty time for UI
+                List<String> stringTimes = new ArrayList<>();
+                for (Long l : times) {
+                    stringTimes.add(DateHelper.formatTime(l));
                 }
+                timeSlots.postValue(stringTimes);
+
+                actionState.postValue(State.TIME_REQUIRED);
             }
-            actionState.postValue(State.NOT_AVAILABLE);
         }
 
         @Override
@@ -75,13 +68,10 @@ public class BookableProductViewModel extends ProductViewModel {
         return price;
     }
 
-    public void setPrice(Price price) {
-        this.price.setValue(price);
-    }
-
     @Override
     public void setup(Product product) {
         bookingContext = new BookingContext(product);
+        price.setValue(product.getPrice());
     }
 
     public BookingContext getBookingContext() {
@@ -96,7 +86,6 @@ public class BookableProductViewModel extends ProductViewModel {
         actionState.setValue(State.LOADING);
 
         bookingContext.setSelectedDate(calendar.getTime());
-        bookingContext.setEndDateTime(calendar.getTime());
         Traveler.checkAvailability(bookingContext, checkAvailabilityCallback);
     }
 
@@ -106,7 +95,7 @@ public class BookableProductViewModel extends ProductViewModel {
             return;
         }
 
-        Long selectedTime = availability.getTimes().get(relPosition);
+        Long selectedTime = times.get(relPosition);
         bookingContext.setSelectedTime(selectedTime);
         actionState.setValue(State.AVAILABLE);
     }
