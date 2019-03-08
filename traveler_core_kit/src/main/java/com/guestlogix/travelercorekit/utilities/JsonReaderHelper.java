@@ -2,6 +2,9 @@ package com.guestlogix.travelercorekit.utilities;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import com.guestlogix.travelercorekit.models.ObjectMappingError;
+import com.guestlogix.travelercorekit.models.TravelerErrorCode;
+import com.guestlogix.travelercorekit.network.ObjectMappingException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +27,29 @@ public class JsonReaderHelper {
             return null;
         } else {
             return reader.nextString();
+        }
+    }
+
+    /**
+     * Performs a String read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return String
+     * @throws IOException If reading cannot be performed.
+     * @throws ObjectMappingException If value is null
+     */
+    public static String readNonNullString(JsonReader reader) throws IOException, ObjectMappingException {
+        JsonToken token = reader.peek();
+
+        if (JsonToken.NULL == token) {
+            reader.skipValue();
+            return null;
+        } else {
+            String value = reader.nextString();
+            if (null == value || value.isEmpty()) {
+                throw new ObjectMappingException(new ObjectMappingError(TravelerErrorCode.FIELD_EMPTY, String.format("%s cannot be empty", "x")));
+            }
+            return value;
         }
     }
 

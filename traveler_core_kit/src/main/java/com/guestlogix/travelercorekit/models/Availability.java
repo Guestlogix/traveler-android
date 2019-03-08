@@ -59,7 +59,7 @@ public class Availability {
                         try {
                             date = DateHelper.parseDate(JsonReaderHelper.readString(reader));
                         } catch (ParseException e) {
-                            throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, e.getMessage()));
+                            throw new ObjectMappingException(new ObjectMappingError(TravelerErrorCode.INVALID_DATA, "IOException has occurred"));
                         }
                         break;
                     case "timesInMinutes":

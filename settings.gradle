@@ -1,1 +1,1 @@
-include ':traveler_app', ':traveler_ui_kit', ':traveler_core_kit', ':traveler_stripe_payment_provider'
+include ':traveler_app', ':traveler_ui_kit', ':traveler_core_kit', ':traveler_stripe_payment_provider', ':traveler_annotations', ':traveler_annotations_compiler'

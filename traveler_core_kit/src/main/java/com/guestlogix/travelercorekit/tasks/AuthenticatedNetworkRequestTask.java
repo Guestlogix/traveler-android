@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
+import com.guestlogix.travelercorekit.models.ObjectMappingError;
 import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.models.Session;
@@ -30,8 +31,8 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
             }
 
             @Override
-            public void onError(TravelerError error) {
-                AuthenticatedNetworkRequestTask.this.error = error;
+            public void onError(ObjectMappingError error) {
+                AuthenticatedNetworkRequestTask.this.error = new TravelerError(error.getCode(), error.getMessage());
             }
         });
     }

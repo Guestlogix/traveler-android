@@ -1,15 +1,15 @@
 package com.guestlogix.travelercorekit.network;
 
-import com.guestlogix.travelercorekit.models.TravelerError;
+import com.guestlogix.travelercorekit.models.ObjectMappingError;
 
 public class ObjectMappingException extends Exception {
-    private TravelerError mError;
+    private ObjectMappingError mError;
 
-    public ObjectMappingException(TravelerError error) {
+    public ObjectMappingException(ObjectMappingError error) {
         this.mError = error;
     }
 
-    public TravelerError getError() {
+    public ObjectMappingError getError() {
         return mError;
     }
 

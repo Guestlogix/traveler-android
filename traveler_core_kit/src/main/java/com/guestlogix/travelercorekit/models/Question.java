@@ -144,7 +144,7 @@ public class Question implements Serializable {
                 }
             }
 
-            throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid json. Unsupported question type."));
+            throw new ObjectMappingException(new ObjectMappingError(TravelerErrorCode.PARSING_ERROR, "Invalid json. Unsupported question type."));
         }
 
         /**

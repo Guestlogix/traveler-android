@@ -60,9 +60,9 @@ public class Flight implements Serializable {
             try {
                 return readFlight(reader);
             } catch (ParseException e) {
-                throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Could not convert date"));
+                throw new ObjectMappingException(new ObjectMappingError(TravelerErrorCode.INVALID_DATA, "IOException has occurred"));
             } catch (IOException e) {
-                throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
+                throw new ObjectMappingException(new ObjectMappingError(TravelerErrorCode.INVALID_DATA, "IOException has occurred"));
             }
         }
     }
@@ -88,10 +88,10 @@ public class Flight implements Serializable {
                     number = JsonReaderHelper.readString(reader);
                     break;
                 case "origin":
-                    origin = new Airport.AirportObjectMappingFactory().instantiate(reader);
+                    origin = new Airport$AirportObjectMappingFactory().instantiate(reader);
                     break;
                 case "destination":
-                    destination = new Airport.AirportObjectMappingFactory().instantiate(reader);
+                    destination = new  Airport$AirportObjectMappingFactory().instantiate(reader);
                     break;
                 case "departureTime":
                     departure = DateHelper.parseISO8601(JsonReaderHelper.readString(reader));

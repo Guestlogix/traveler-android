@@ -27,7 +27,6 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
-
 }
 
 
@@ -39,6 +38,10 @@ dependencies {
     //Testing frameworks
     testImplementation "junit:junit:${junit_version}"
     androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
+
+    //annotations processor
+    api project(path: ':traveler_annotations')
+    annotationProcessor project(path: ':traveler_annotations_compiler')
 
 }
 repositories {

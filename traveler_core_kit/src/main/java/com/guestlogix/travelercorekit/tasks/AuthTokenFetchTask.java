@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.tasks;
 
 import android.content.Context;
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
+import com.guestlogix.travelercorekit.models.ObjectMappingError;
 import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.network.Router;
@@ -46,8 +47,8 @@ public class AuthTokenFetchTask extends Task {
             }
 
             @Override
-            public void onError(TravelerError error) {
-                AuthTokenFetchTask.this.error = error;
+            public void onError(ObjectMappingError error) {
+                AuthTokenFetchTask.this.error = new TravelerError(error.getCode(), error.getMessage());
             }
         }));
 

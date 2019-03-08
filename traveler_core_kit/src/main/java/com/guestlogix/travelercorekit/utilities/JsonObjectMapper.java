@@ -2,7 +2,7 @@ package com.guestlogix.travelercorekit.utilities;
 
 import android.util.JsonReader;
 import com.guestlogix.travelercorekit.callbacks.JsonObjectMapperCallback;
-import com.guestlogix.travelercorekit.models.TravelerError;
+import com.guestlogix.travelercorekit.models.ObjectMappingError;
 import com.guestlogix.travelercorekit.models.TravelerErrorCode;
 import com.guestlogix.travelercorekit.network.ObjectMappingException;
 import com.guestlogix.travelercorekit.network.ObjectMappingFactory;
@@ -28,7 +28,7 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
             callback.onSuccess(model);
         } catch (IOException e) {
-            callback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid JSON stream"));
+            callback.onError(new ObjectMappingError(TravelerErrorCode.INVALID_DATA, "Invalid JSON stream"));
         } catch (ObjectMappingException e) {
             callback.onError(e.getError());
         }

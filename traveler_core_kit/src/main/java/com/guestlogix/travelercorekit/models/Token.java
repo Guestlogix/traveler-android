@@ -30,7 +30,7 @@ public class Token {
             try {
                 return readAuthToken(reader);
             } catch (IOException e) {
-                throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "IOException has occurred"));
+                throw new ObjectMappingException(new ObjectMappingError(TravelerErrorCode.INVALID_DATA, "IOException has occurred"));
             }
         }
 
