@@ -4,7 +4,7 @@ import shutil
 import boto3
 from botocore.exceptions import ClientError
 
-S3_BUCKET = os.environ['S3_BUCKET_MC'] # sys.argv[1] # The bucket that hosts the front end
+S3_BUCKET = os.environ['S3_BUCKET_ANDROID'] # sys.argv[1] # The bucket that hosts the front end
 AWS_REGION = os.environ['REGION'] # The AWS region
 ACCESS_KEY = os.environ['AWS_ACCESS_KEY'] # AWS Key
 SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY'] # AWS Secret
@@ -28,7 +28,7 @@ def deploy_to_s3(src_dir, bucket_name):
         if not os.path.isfile(file):
             break
 
-        mimetype = 'aaplication/json'
+        mimetype = 'application/json'
         os.rename(file, file_without_gz)
         s3_resource.Object(bucket_name, os.path.relpath(file_without_gz, src_dir)).put(Body=open(file_without_gz, 'rb'), ACL='public-read', ContentType=mimetype, ContentEncoding='gzip')
 
