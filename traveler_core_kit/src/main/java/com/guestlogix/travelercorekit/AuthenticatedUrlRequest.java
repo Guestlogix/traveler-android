@@ -9,17 +9,16 @@ import java.util.Map;
 
 public class AuthenticatedUrlRequest extends UrlRequest {
 
-    AuthenticatedUrlRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers, JSONObject payload) {
+    AuthenticatedUrlRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers) {
         super(method, URL);
 
         this.mToken = token;
         this.apiKey = apiKey;
-        this.payload = payload;
         this.headers = headers;
     }
 
     AuthenticatedUrlRequest(Method method, URL url, String apiKey, Map<String, String> headers, String token) {
-        this(method, url, apiKey, token, headers, null);
+        this(method, url, apiKey, token, headers);
     }
 
     @Override

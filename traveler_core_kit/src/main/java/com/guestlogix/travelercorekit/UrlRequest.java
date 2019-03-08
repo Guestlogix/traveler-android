@@ -17,7 +17,6 @@ public class UrlRequest implements NetworkTask.Request {
     protected URL url;
     protected String mToken;
     protected String apiKey;
-    protected JSONObject payload;
     protected Map<String, String> headers;
 
     public UrlRequest(Method method, URL url) {
@@ -42,6 +41,8 @@ public class UrlRequest implements NetworkTask.Request {
 
     @Override
     public void onProvidePayload(OutputStream stream) {
+        JSONObject payload = getJSONPayload();
+
         if (payload == null) {
             return;
         }
@@ -51,5 +52,9 @@ public class UrlRequest implements NetworkTask.Request {
         } catch (IOException e) {
             // TODO: Handle error
         }
+    }
+
+    public JSONObject getJSONPayload() {
+        return null;
     }
 }
