@@ -14,9 +14,10 @@ cp -r traveler_core_kit/src/main/java/com/guestlogix/travelercorekit/callbacks .
 
 echo "Copying traveleruikit packages..."
 cp -r traveler_ui_kit/src/main/java/com/guestlogix/traveleruikit/forms ./JavaDocDir
-cp -r traveler_ui_kit/src/main/java/com/guestlogix/traveleruikit/widgets ./JavaDocDir
+cp -r traveler_ui_kit/src/main/java/com/guestlogix/travelercorekit/activities ./JavaDocDir
+cp -r traveler_ui_kit/src/main/java/com/guestlogix/travelercorekit/fragments ./JavaDocDir
 
 echo "Done copying Packages! Generating JavaDocs"
 # For some reason the Javadoc command does not recursively look for package names. Add folders you want to see manually.
-javadoc -d JavaDoc JavaDocDir/models/*.java JavaDocDir/callbacks/*.java JavaDocDir/forms/*.java JavaDocDir/forms/cells/*.java JavaDocDir/forms/descriptors/*.java JavaDocDir/widgets/*.java
+javadoc -d JavaDoc JavaDocDir/models/*.java JavaDocDir/callbacks/*.java JavaDocDir/forms/*.java JavaDocDir/forms/cells/*.java JavaDocDir/forms/descriptors/*.java JavaDocDir/activities/*.java JavaDocDir/fragments/*.java
 rm -r JavaDocDir
