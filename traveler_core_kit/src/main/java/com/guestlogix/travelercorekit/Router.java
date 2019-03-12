@@ -21,7 +21,21 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 
 public class Router {
+
     private static final String BASE_URL = BuildConfig.TRAVELER_BASE_URL;
+
+    private static URL createURL(String path, Map<?, ?> queryParams) {
+        try {
+            return new URL(BASE_URL + path + "?" + urlEncodeUTF8(queryParams));
+        } catch (MalformedURLException e) {
+            TravelerLog.e("Bad URL: %s", BASE_URL + path);
+            return null;
+        }
+    }
+
+    private static URL createURL(String path) {
+        return createURL(path, null);
+    }
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return RequestBuilder.Builder()
