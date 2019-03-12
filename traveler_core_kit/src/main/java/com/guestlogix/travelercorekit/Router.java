@@ -18,7 +18,7 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 
 public class Router {
-    private static final String BASE_URL = "https://guest-traveler-api-develop.guestlogix.io";
+    private static final String BASE_URL = BuildConfig.TRAVELER_BASE_URL;
 
     private static URL createURL(String path, Map<?, ?> queryParams) {
         try {

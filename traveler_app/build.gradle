@@ -17,16 +17,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "TRAVELER_API_KEY", traveler_key_release
         }
-
         debug {
             buildConfigField "String", "TRAVELER_API_KEY", traveler_key_debug
         }
+        mock {
+            buildConfigField "String", "TRAVELER_API_KEY", traveler_key_mock
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
     }
-
     buildTypes.each {
         it.buildConfigField 'String', 'AppCenterKey', appcenter_key
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -34,12 +36,10 @@ android {
 }
 
 dependencies {
-
     //Traveler SDK
     implementation project(path: ':traveler_core_kit')
     implementation project(path: ':traveler_ui_kit')
     implementation project(path: ':traveler_stripe_payment_provider')
-
     //Android support dependencies
     implementation "com.android.support:appcompat-v7:${android_support_version}"
     implementation "com.android.support:recyclerview-v7:${android_support_version}"
@@ -47,11 +47,9 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:${android_support_component_version}"
     implementation "android.arch.navigation:navigation-fragment:${android_navigation_controller_version}"
     implementation "android.arch.navigation:navigation-ui:${android_navigation_controller_version}"
-
     //AppCenter integration
     implementation "com.microsoft.appcenter:appcenter-analytics:$app_center_sdk_version"
     implementation "com.microsoft.appcenter:appcenter-crashes:$app_center_sdk_version"
-
     //Testing frameworks
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation "junit:junit:${junit_version}"

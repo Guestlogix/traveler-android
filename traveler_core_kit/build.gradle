@@ -21,7 +21,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "TRAVELER_BASE_URL", traveler_base_url_release
         }
+        debug{
+            buildConfigField "String", "TRAVELER_BASE_URL", traveler_base_url_debug
+        }
+        mock {
+            buildConfigField "String", "TRAVELER_BASE_URL", traveler_base_url_mock
+        }
+
     }
     compileOptions {
         sourceCompatibility = '1.8'
@@ -32,14 +40,11 @@ android {
 
 
 dependencies {
-
     //AndroidX dependencies
     implementation "androidx.appcompat:appcompat:${androidx_version}"
-
     //Testing frameworks
     testImplementation "junit:junit:${junit_version}"
     androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
-
 }
 repositories {
     mavenCentral()
