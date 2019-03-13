@@ -9,6 +9,7 @@ import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.tasks.NetworkTask.Request.Method;
+import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,44 +21,32 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 public class Router {
     private static final String BASE_URL = BuildConfig.TRAVELER_BASE_URL;
 
-    private static URL createURL(String path, Map<?, ?> queryParams) {
-        try {
-            return new URL(BASE_URL + path + "?" + urlEncodeUTF8(queryParams));
-        } catch (MalformedURLException e) {
-            TravelerLog.e("Bad URL: %s", BASE_URL + path);
-            return null;
-        }
-    }
-
-    private static URL createURL(String path) {
-        return createURL(path, null);
-    }
-
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
-        Method method = Method.GET;
-        URL url = createURL("/auth/token");
-        Map<String, String> headers = buildHeaders(context);
-
-        return new UnauthenticatedUrlRequest(method, url, apiKey, headers);
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/auth/token")
+                .headers(buildHeaders(context))
+                .apiKey(apiKey)
+                .build();
     }
 
     public static AuthenticatedUrlRequest searchFlight(Session session, FlightQuery query, Context context) {
-        final String path = "/flight";
-
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("flight-number", query.getNumber());
         queryParams.put("departure-date", DateHelper.formatDateToISO8601(query.getDate()));
 
-        Method method = Method.GET;
-        URL url = createURL(path, queryParams);
-        Map<String, String> headers = buildHeaders(context);
-
-        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("flight")
+                .headers(buildHeaders(context))
+                .params(queryParams)
+                .apiKey(session.getApiKey())
+                .build(session.getAuthToken().getValue());
     }
 
     public static AuthenticatedUrlRequest getCatalog(Session session, CatalogQuery catalogQuery, Context context) {
-        final String path = "/catalog";
-
         List<String> flightIds = new ArrayList<>();
 
         if (null != catalogQuery) {
@@ -69,40 +58,42 @@ public class Router {
         Map<String, List<String>> queryParams = new HashMap<>();
         queryParams.put("flight-ids", flightIds);
 
-        Method method = Method.GET;
-        URL url = createURL(path, queryParams);
-        Map<String, String> headers = buildHeaders(context);
-
-        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/catalog")
+                .headers(buildHeaders(context))
+                .params(queryParams)
+                .apiKey(session.getApiKey())
+                .build(session.getAuthToken().getValue());
     }
 
     public static AuthenticatedUrlRequest getCatalogItem(Session session, CatalogItem catalogItem, Context context) {
-        final String path = String.format("/product/%s", catalogItem.getId());
-
-        Method method = Method.GET;
-        URL url = createURL(path);
-        Map<String, String> headers = buildHeaders(context);
-
-        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/product/" + catalogItem.getId())
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey())
+                .build(session.getAuthToken().getValue());
     }
 
     public static AuthenticatedUrlRequest productSchedule(Session session, BookingContext bookingContext, Context context) {
-        final String path = String.format("/product/%s/schedule", bookingContext.getProduct().getId());
-
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("from", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
         queryParams.put("to", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
 
-        Method method = Method.GET;
-        URL url = createURL(path, queryParams);
-        Map<String, String> headers = buildHeaders(context);
-
-        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/product/" + bookingContext.getProduct().getId() + "/schedule")
+                .headers(buildHeaders(context))
+                .params(queryParams)
+                .apiKey(session.getApiKey())
+                .build(session.getAuthToken().getValue());
     }
 
     public static AuthenticatedUrlRequest productPass(Session session, BookingContext bookingContext, Context context) {
-        final String path = String.format("/product/%s/pass", bookingContext.getProduct().getId());
-
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("date", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
 
@@ -110,11 +101,23 @@ public class Router {
             queryParams.put("time-in-minutes", bookingContext.getSelectedTime().toString());
         }
 
-        Method method = Method.GET;
-        URL url = createURL(path, queryParams);
-        Map<String, String> headers = buildHeaders(context);
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/product/" + bookingContext.getProduct().getId() + "/pass")
+                .headers(buildHeaders(context))
+                .params(queryParams)
+                .apiKey(session.getApiKey())
+                .build(session.getAuthToken().getValue());
+    }
 
-        return new AuthenticatedUrlRequest(method, url, session.getApiKey(), headers, session.getAuthToken().getValue());
+    public static AuthenticatedUrlRequest options(Session session, CatalogItem item, Context context) {
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .path("/product/" + item.getId() + "/option")
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey())
+                .build(session.getAuthToken().getValue());
     }
 
     /**
@@ -152,6 +155,115 @@ public class Router {
             return context.getResources().getConfiguration().getLocales().get(0);
         } else {
             return context.getResources().getConfiguration().locale;
+        }
+    }
+
+    private static class RequestBuilder {
+        private Method method;
+        private String path;
+        private String url;
+        private Map<String, ?> params;
+        private JsonPayload payload = null;
+        private String apiKey;
+        private Map<String, String> headers;
+
+        private RequestBuilder() {
+        }
+
+        private static RequestBuilder Builder() {
+            return new RequestBuilder();
+        }
+
+        public RequestBuilder method(Method method) {
+            this.method = method;
+            return this;
+        }
+
+        public RequestBuilder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public RequestBuilder url(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public RequestBuilder params(Map<String, ?> params) {
+            this.params = params;
+            return this;
+        }
+
+        public RequestBuilder headers(Map<String, String> headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        public RequestBuilder payload(JsonPayload payload) {
+            this.payload = payload;
+            return this;
+        }
+
+        public RequestBuilder apiKey(String key) {
+            this.apiKey = key;
+            return this;
+        }
+
+        public AuthenticatedUrlRequest build(String token) {
+            URL url;
+            if (params == null) {
+                url = createURL(this.url, path);
+            } else {
+                url = createURL(this.url, path, params);
+            }
+
+            if (payload == null) {
+                return new AuthenticatedUrlRequest(method, url, apiKey, token, headers);
+            }
+
+            return new AuthenticatedUrlRequest(method, url, apiKey, token, headers) {
+                @Override
+                public JSONObject getJSONPayload() {
+                    return payload.getJsonPayload();
+                }
+            };
+        }
+
+        public UnauthenticatedUrlRequest build() {
+            URL url;
+            if (params == null) {
+                url = createURL(this.url, path);
+            } else {
+                url = createURL(this.url, path, params);
+            }
+
+            if (payload == null) {
+                return new UnauthenticatedUrlRequest(method, url, apiKey, headers);
+            }
+
+            return new UnauthenticatedUrlRequest(method, url, apiKey, headers) {
+                @Override
+                public JSONObject getJSONPayload() {
+                    return payload.getJsonPayload();
+                }
+            };
+        }
+
+        public static URL createURL(String url, String path, Map<?, ?> queryParams) {
+            try {
+                return new URL(url + path + "?" + urlEncodeUTF8(queryParams));
+            } catch (MalformedURLException e) {
+                TravelerLog.e("Bad URL: %s", url + path);
+                return null;
+            }
+        }
+
+        public static URL createURL(String url, String path) {
+            return createURL(url, path, null);
+        }
+
+        interface JsonPayload {
+            JSONObject getJsonPayload();
         }
     }
 }
