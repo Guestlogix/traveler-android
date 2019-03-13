@@ -36,7 +36,7 @@ public class UrlRequest implements NetworkTask.Request {
 
     @Override
     public Map<String, String> getHeaders() {
-        return new HashMap<>();
+        return headers;
     }
 
     @Override
