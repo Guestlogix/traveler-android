@@ -2,6 +2,8 @@ package com.guestlogix.travelercorekit.utilities;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import com.guestlogix.travelercorekit.models.ObjectMappingError;
+import com.guestlogix.travelercorekit.models.ObjectMappingErrorCode;
 
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +30,23 @@ public class JsonReaderHelper {
     }
 
     /**
+     * Performs a String read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return String
+     * @throws IOException            If reading cannot be performed.
+     * @throws ObjectMappingException If value is null
+     */
+    public static String readNonNullString(JsonReader reader) throws IOException, ObjectMappingException {
+
+        String value = readString(reader);
+        if (null == value || value.isEmpty()) {
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+        }
+        return value;
+    }
+
+    /**
      * Performs a Boolean read with null check from the reader object.
      *
      * @param reader Reader object to read from
@@ -46,6 +65,23 @@ public class JsonReaderHelper {
     }
 
     /**
+     * Performs a Boolean read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return Boolean
+     * @throws IOException            If reading cannot be performed.
+     * @throws ObjectMappingException If value is null
+     */
+    public static Boolean readNonNullBoolean(JsonReader reader) throws IOException, ObjectMappingException {
+
+        Boolean value = readBoolean(reader);
+        if (null == value) {
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+        }
+        return value;
+    }
+
+    /**
      * Performs a Integer read with null check from the reader object.
      *
      * @param reader Reader object to read from
@@ -61,6 +97,22 @@ public class JsonReaderHelper {
         } else {
             return reader.nextInt();
         }
+    }
+
+    /**
+     * Performs a Integer read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return Integer
+     * @throws IOException            If reading cannot be performed.
+     * @throws ObjectMappingException If value is null
+     */
+    public static Integer readNonNullInteger(JsonReader reader) throws IOException, ObjectMappingException {
+        Integer value = readInteger(reader);
+        if (null == value) {
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+        }
+        return value;
     }
 
     /**
@@ -97,6 +149,22 @@ public class JsonReaderHelper {
         } else {
             return reader.nextDouble();
         }
+    }
+
+    /**
+     * Performs a Double read with null check from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return Double
+     * @throws IOException            If reading cannot be performed.
+     * @throws ObjectMappingException If value is null.
+     */
+    public static Double readNonNullDouble(JsonReader reader) throws IOException, ObjectMappingException {
+        Double value = readDouble(reader);
+        if (null == value) {
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+        }
+        return value;
     }
 
     /**

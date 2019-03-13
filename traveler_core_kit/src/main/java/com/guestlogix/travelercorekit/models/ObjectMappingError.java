@@ -19,6 +19,7 @@ public class ObjectMappingError extends Error {
         return message;
     }
 
+    @Override
     public String toString() {
         return String.format(Locale.getDefault(), "%s %s", code, message);
     }

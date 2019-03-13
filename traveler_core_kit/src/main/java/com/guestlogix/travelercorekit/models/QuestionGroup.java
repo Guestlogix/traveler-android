@@ -8,7 +8,7 @@ public class QuestionGroup implements Serializable {
     private String disclaimer;
     private List<Question> questions;
 
-    public QuestionGroup(String title, String disclaimer, List<Question> questions) {
+    QuestionGroup(String title, String disclaimer, List<Question> questions) {
         this.title = title;
         this.disclaimer = disclaimer;
         this.questions = questions;

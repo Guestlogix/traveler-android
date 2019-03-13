@@ -15,7 +15,6 @@ import java.util.List;
 import static android.util.JsonToken.BEGIN_ARRAY;
 
 public class CatalogItemDetails extends Product {
-
     private String title;
     private String description;
     private List<URL> imageURLs;
@@ -25,12 +24,15 @@ public class CatalogItemDetails extends Product {
     private PurchaseStrategy purchaseStrategy;
     private List<Attribute> information;
 
-
-    public CatalogItemDetails(String id, String title, String description, List<URL> imageURLs, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) {
-        super(id,priceStartingAt);
+    private CatalogItemDetails(String id, String title, String description, List<URL> imageURLs, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) throws IllegalArgumentException {
+        super(id, priceStartingAt);
         this.title = title;
         this.description = description;
-        this.imageURLs = imageURLs;
+        if (imageURLs == null) {
+            throw new IllegalArgumentException("imageURLs can not be null");
+        } else {
+            this.imageURLs = imageURLs;
+        }
         this.contact = contact;
         this.locations = locations;
         this.priceStartingAt = priceStartingAt;
@@ -74,70 +76,83 @@ public class CatalogItemDetails extends Product {
         return information;
     }
 
-    public static class CatalogItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
+    /**
+     * Factory class to construct CatalogItemDetails model from {@code JsonReader}.
+     */
+    static class CatalogItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
 
+        /**
+         * Parses a reader object into CatalogItemDetails model.
+         *
+         * @param reader Object to parse from.
+         * @return CatalogItemDetails model object from the reader.
+         * @throws ObjectMappingException if mapping fails or missing any required field.
+         */
         @Override
-        public CatalogItemDetails instantiate(JsonReader reader) throws IOException, ObjectMappingException {
-            return readItem(reader);
-        }
+        public CatalogItemDetails instantiate(JsonReader reader) throws ObjectMappingException {
+            try {
+                String id = "";
+                String title = "";
+                String description = "";
+                List<URL> imageURL = new ArrayList<>();
+                ContactInfo contact = new ContactInfo();
+                List<Location> locations = new ArrayList<>();
+                Price priceStartingAt = new Price();
+                PurchaseStrategy purchaseStrategy = PurchaseStrategy.Bookable;
+                List<Attribute> information = new ArrayList<>();
 
-        private CatalogItemDetails readItem(JsonReader reader) throws IOException, ObjectMappingException {
-            String id = "";
-            String title = "";
-            String description = "";
-            List<URL> imageURL = new ArrayList<>();
-            ContactInfo contact = new ContactInfo();
-            List<Location> locations = new ArrayList<>();
-            Price priceStartingAt = new Price();
-            PurchaseStrategy purchaseStrategy = PurchaseStrategy.Bookable;
-            List<Attribute> information = new ArrayList<>();
-
-            if (BEGIN_ARRAY == reader.peek()) {
-                reader.beginArray();
-            } else {
-                reader.beginObject();
-            }
-
-            while (reader.hasNext()) {
-                String name = reader.nextName();
-                switch (name) {
-                    case "id":
-                        id = JsonReaderHelper.readString(reader);
-                        break;
-                    case "title":
-                        title = JsonReaderHelper.readString(reader);
-                        break;
-                    case "description":
-                        description = JsonReaderHelper.readString(reader);
-                        break;
-                    case "imageUrls":
-                        if (reader.peek() != JsonToken.NULL) {
-                            imageURL.addAll(JsonReaderHelper.readURLArray(reader));
-                        }
-                        break;
-                    case "contact":
-                        contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "locations":
-                        locations.addAll(new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader));
-                        break;
-                    case "priceStartingAt":
-                        priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "purchaseStrategy":
-                        purchaseStrategy = PurchaseStrategy.valueOf(JsonReaderHelper.readString(reader));
-                        break;
-                    case "information":
-                        information.addAll(new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader));
-                        break;
-                    default:
-                        reader.skipValue();
+                if (BEGIN_ARRAY == reader.peek()) {
+                    reader.beginArray();
+                } else {
+                    reader.beginObject();
                 }
+
+                while (reader.hasNext()) {
+                    String name = reader.nextName();
+                    switch (name) {
+                        case "id":
+                            id = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "title":
+                            title = JsonReaderHelper.readString(reader);
+                            break;
+                        case "description":
+                            description = JsonReaderHelper.readString(reader);
+                            break;
+                        case "imageUrls":
+                            if (reader.peek() != JsonToken.NULL) {
+                                imageURL.addAll(JsonReaderHelper.readURLArray(reader));
+                            }
+                            break;
+                        case "contact":
+                            contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
+                            break;
+                        case "locations":
+                            locations.addAll(new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader));
+                            break;
+                        case "priceStartingAt":
+                            priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(reader);
+                            break;
+                        case "purchaseStrategy":
+                            purchaseStrategy = PurchaseStrategy.valueOf(JsonReaderHelper.readString(reader));
+                            break;
+                        case "information":
+                            information.addAll(new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader));
+                            break;
+                        default:
+                            reader.skipValue();
+                    }
+                }
+
+                reader.endObject();
+
+                return new CatalogItemDetails(id, title, description, imageURL, contact, locations, priceStartingAt, purchaseStrategy, information);
+
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
-
-            reader.endObject();
-
-            return new CatalogItemDetails(id, title, description, imageURL, contact, locations, priceStartingAt, purchaseStrategy, information);
         }
     }
 }

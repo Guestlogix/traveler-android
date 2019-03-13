@@ -12,7 +12,7 @@ public class PatternValidationRule extends ValidationRule {
      *
      * @param pattern that will be used for all validations.
      */
-    public PatternValidationRule(String pattern) {
+    PatternValidationRule(String pattern) {
         REGEX = Pattern.compile(pattern);
     }
 
