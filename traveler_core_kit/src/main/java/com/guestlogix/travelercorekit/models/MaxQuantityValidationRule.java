@@ -3,7 +3,7 @@ package com.guestlogix.travelercorekit.models;
 public class MaxQuantityValidationRule extends ValidationRule {
     private final int maxQuantity;
 
-    public MaxQuantityValidationRule(int max) {
+    MaxQuantityValidationRule(int max) {
         this.maxQuantity = max;
     }
 
@@ -30,7 +30,7 @@ public class MaxQuantityValidationRule extends ValidationRule {
      * @param toValidate string to validate.
      * @return true if the validation passes
      */
-    public boolean validate(int toValidate) {
+    private boolean validate(int toValidate) {
         boolean isValid = toValidate <= maxQuantity;
 
         if (!isValid) {

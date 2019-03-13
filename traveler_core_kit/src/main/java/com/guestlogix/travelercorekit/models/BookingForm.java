@@ -12,7 +12,6 @@ import java.util.Map;
 
 public class BookingForm implements Serializable {
     private List<Pass> passes;
-
     private List<QuestionGroup> questionGroups;
     private List<AnswerGroup> answerGroups;
     private Map<Question, Integer> questionIndex;

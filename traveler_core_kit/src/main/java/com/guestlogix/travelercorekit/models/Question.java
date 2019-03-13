@@ -19,7 +19,7 @@ public class Question implements Serializable {
     private List<ValidationRule> validationRules;
     private Object options;
 
-    public Question(String id, String title, String description, QuestionType type, List<ValidationRule> rules, Object options) {
+    Question(String id, String title, String description, QuestionType type, List<ValidationRule> rules, Object options) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -48,11 +48,11 @@ public class Question implements Serializable {
         return type;
     }
 
-    public List<ValidationRule> getValidationRules() {
+    List<ValidationRule> getValidationRules() {
         return validationRules;
     }
 
-    public static class QuestionObjectMappingFactory implements ObjectMappingFactory<Question> {
+    static class QuestionObjectMappingFactory implements ObjectMappingFactory<Question> {
 
         /**
          * Parses a json reader into a Question model. Does not guarantee correctness of the values when parsing the json.
@@ -144,7 +144,7 @@ public class Question implements Serializable {
                 }
             }
 
-            throw new ObjectMappingException(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid json. Unsupported question type."));
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "Invalid json. Unsupported question type."));
         }
 
         /**

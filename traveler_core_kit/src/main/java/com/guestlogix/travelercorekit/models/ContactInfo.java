@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
@@ -11,19 +12,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactInfo implements Serializable {
-
     private String name;
     private String email;
     private String website;
     private String address;
     private List<String> phones;
 
-    public ContactInfo() {
+    ContactInfo() {
     }
 
-    public ContactInfo(String name, String email, String website, String address, List<String> phones) {
-        this.name = name;
-        this.email = email;
+    private ContactInfo(String name, String email, String website, String address, List<String> phones) throws IllegalArgumentException {
+        if (name == null) {
+            throw new IllegalArgumentException("name can not be empty");
+        } else {
+            this.name = name;
+        }
+        if (email == null) {
+            throw new IllegalArgumentException("email can not be empty");
+        } else {
+            this.email = email;
+        }
         this.website = website;
         this.address = address;
         this.phones = phones;
@@ -45,51 +53,63 @@ public class ContactInfo implements Serializable {
         return phones;
     }
 
-    public static class ContactInfoObjectMappingFactory implements ObjectMappingFactory<ContactInfo> {
+    /**
+     * Factory class to construct ContactInfo model from {@code JsonReader}.
+     */
+    static class ContactInfoObjectMappingFactory implements ObjectMappingFactory<ContactInfo> {
 
+        /**
+         * Parses a reader object into ContactInfo model.
+         *
+         * @param reader Object to parse from.
+         * @return ContactInfo model object from the reader.
+         * @throws ObjectMappingException if mapping fails or missing any required field.
+         */
         @Override
-        public ContactInfo instantiate(JsonReader reader) throws IOException {
-            return readContactInfo(reader);
-        }
+        public ContactInfo instantiate(JsonReader reader) throws ObjectMappingException {
+            try {
+                String name = "";
+                String email = "";
+                String website = "";
+                String address = "";
+                List<String> phones = new ArrayList<>();
 
-        private ContactInfo readContactInfo(JsonReader reader) throws IOException {
-            String name = "";
-            String email = "";
-            String website = "";
-            String address = "";
-            List<String> phones = new ArrayList<>();
+                reader.beginObject();
 
-            reader.beginObject();
+                while (reader.hasNext()) {
+                    String key = reader.nextName();
 
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "name":
-                        name = JsonReaderHelper.readString(reader);
-                        break;
-                    case "email":
-                        email = JsonReaderHelper.readString(reader);
-                        break;
-                    case "website":
-                        website = JsonReaderHelper.readString(reader);
-                        break;
-                    case "address":
-                        address = JsonReaderHelper.readString(reader);
-                        break;
-                    case "phones":
-                        if(reader.peek() != JsonToken.NULL) {
-                            phones.addAll(JsonReaderHelper.readStringsArray(reader));
-                        }
-                        break;
-                    default:
-                        reader.skipValue();
+                    switch (key) {
+                        case "name":
+                            name = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "email":
+                            email = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "website":
+                            website = JsonReaderHelper.readString(reader);
+                            break;
+                        case "address":
+                            address = JsonReaderHelper.readString(reader);
+                            break;
+                        case "phones":
+                            if (reader.peek() != JsonToken.NULL) {
+                                phones.addAll(JsonReaderHelper.readStringsArray(reader));
+                            }
+                            break;
+                        default:
+                            reader.skipValue();
+                    }
                 }
+
+                reader.endObject();
+
+                return new ContactInfo(name, email, website, address, phones);
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
             }
-
-            reader.endObject();
-
-            return new ContactInfo(name, email, website, address, phones);
         }
     }
 }

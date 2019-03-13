@@ -1,8 +1,8 @@
 package com.guestlogix.traveler_stripe_payment_provider;
 
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.Attribute;
 import com.guestlogix.travelercorekit.models.Payment;
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.stripe.android.model.Token;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +16,13 @@ public class StripePayment implements Payment {
     private String expirationMonth;
     private String expirationYear;
 
-    public StripePayment(Token token) {
+    StripePayment(Token token) throws IllegalArgumentException {
         tokenID = token.getId();
-        expirationMonth = token.getCard().getExpMonth().toString();
+        if (token.getCard().getExpMonth() == null) {
+            throw new IllegalArgumentException();
+        } else {
+            expirationMonth = token.getCard().getExpMonth().toString();
+        }
         expirationYear = token.getCard().getExpYear().toString();
         lastFourDigits = token.getCard().getLast4();
     }

@@ -10,11 +10,11 @@ public class Session {
     private Context context;
     private Token token;
 
-    public Session(String apiKey, Context context) {
+    Session(String apiKey, Context context) {
         this(apiKey, context, new Token(""));
     }
 
-    public Session(String apiKey, Context context, Token token) {
+    private Session(String apiKey, Context context, Token token) {
         this.token = token;
         this.context = context;
         this.apiKey = apiKey;

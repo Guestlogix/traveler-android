@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
@@ -13,7 +14,6 @@ import java.util.Currency;
 import java.util.Locale;
 
 public class Price implements Serializable {
-
     private Double value;
     private String currency;
 
@@ -23,8 +23,17 @@ public class Price implements Serializable {
     }
 
     private Price(Double value, String currency) {
-        this.value = value;
-        this.currency = currency;
+        if (value == null) {
+            throw new IllegalArgumentException("value can not be null");
+        } else {
+            this.value = value;
+        }
+
+        if (currency == null || currency.trim().isEmpty()) {
+            throw new IllegalArgumentException("currency can not be empty");
+        } else {
+            this.currency = currency;
+        }
     }
 
     public Double getValue() {
@@ -60,36 +69,49 @@ public class Price implements Serializable {
         return formatter.format(price);
     }
 
-    public static class PriceObjectMappingFactory implements ObjectMappingFactory<Price> {
+    /**
+     * Factory class to construct Price model from {@code JsonReader}.
+     */
+    static class PriceObjectMappingFactory implements ObjectMappingFactory<Price> {
 
+        /**
+         * Parses a reader object into Price model.
+         *
+         * @param reader Object to parse from.
+         * @return Price model object from the reader.
+         * @throws ObjectMappingException if mapping fails or missing any required field.
+         */
         @Override
-        public Price instantiate(JsonReader reader) throws IOException {
-            return readItem(reader);
-        }
+        public Price instantiate(JsonReader reader) throws ObjectMappingException {
+            try {
+                Double value = 0.0;
+                String currency = "";
 
-        private Price readItem(JsonReader reader) throws IOException {
-            Double value = 0.0;
-            String currency = "";
+                reader.beginObject();
 
-            reader.beginObject();
+                while (reader.hasNext()) {
+                    String name = reader.nextName();
 
-            while (reader.hasNext()) {
-                String name = reader.nextName();
-
-                switch (name) {
-                    case "value":
-                        value = JsonReaderHelper.readDouble(reader);
-                        break;
-                    case "currency":
-                        currency = JsonReaderHelper.readString(reader);
-                        break;
-                    default:
-                        reader.skipValue();
+                    switch (name) {
+                        case "value":
+                            value = JsonReaderHelper.readNonNullDouble(reader);
+                            break;
+                        case "currency":
+                            currency = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        default:
+                            reader.skipValue();
+                    }
                 }
-            }
-            reader.endObject();
+                reader.endObject();
 
-            return new Price(value, currency);
+                return new Price(value, currency);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+            }
         }
+
     }
 }

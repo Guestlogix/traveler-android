@@ -6,8 +6,12 @@ public class Product implements Serializable {
     protected String id;
     protected Price price;
 
-    protected Product(String id, Price price) {
-        this.id = id;
+    Product(String id, Price price) throws IllegalArgumentException {
+        if (null == id) {
+            throw new IllegalArgumentException("id can not be null");
+        } else {
+            this.id = id;
+        }
         this.price = price;
     }
 

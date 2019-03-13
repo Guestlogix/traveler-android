@@ -2,10 +2,13 @@ package com.guestlogix.traveleruikit.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
-import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.BookingContext;
+import com.guestlogix.travelercorekit.models.Price;
+import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.travelercorekit.utilities.TravelerLog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,7 +46,7 @@ public class BookableProductViewModel extends ProductViewModel {
         }
 
         @Override
-        public void onAvailabilityError(TravelerError error) {
+        public void onAvailabilityError(Error error) {
             actionState.postValue(State.ERROR);
         }
     };

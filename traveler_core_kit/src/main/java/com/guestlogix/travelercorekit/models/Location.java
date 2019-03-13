@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
@@ -9,13 +10,21 @@ import java.io.Serializable;
 
 public class Location implements Serializable {
     private String address;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
-    public Location(String address, double latitude, double longitude) {
+    private Location(String address, Double latitude, Double longitude) throws ObjectMappingException {
         this.address = address;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        if (null == latitude) {
+            throw new IllegalArgumentException("latitude can not be empty");
+        } else {
+            this.latitude = latitude;
+        }
+        if (longitude == null) {
+            throw new IllegalArgumentException("longitude can not be empty");
+        } else {
+            this.longitude = longitude;
+        }
     }
 
     public String getAddress() {
@@ -30,41 +39,45 @@ public class Location implements Serializable {
         return longitude;
     }
 
-    public static class LocationObjectMappingFactory implements ObjectMappingFactory<Location> {
+    static class LocationObjectMappingFactory implements ObjectMappingFactory<Location> {
 
         @Override
-        public Location instantiate(JsonReader reader) throws IOException {
-            return readItem(reader);
-        }
+        public Location instantiate(JsonReader reader) throws ObjectMappingException {
+            try {
+                String address = "";
+                Double latitude = null;
+                Double longitude = null;
 
-        private Location readItem(JsonReader reader) throws IOException {
-            String address = "";
-            double latitude = 0.0;
-            double longitude = 0.0;
+                reader.beginObject();
 
-            reader.beginObject();
+                while (reader.hasNext()) {
+                    String name = reader.nextName();
 
-            while (reader.hasNext()) {
-                String name = reader.nextName();
-
-                switch (name) {
-                    case "address":
-                        address = JsonReaderHelper.readString(reader);
-                        break;
-                    case "latitude":
-                        latitude = JsonReaderHelper.readDouble(reader);
-                        break;
-                    case "longitude":
-                        longitude = JsonReaderHelper.readDouble(reader);
-                        break;
-                    default:
-                        reader.skipValue();
+                    switch (name) {
+                        case "address":
+                            address = JsonReaderHelper.readString(reader);
+                            break;
+                        case "latitude":
+                            latitude = JsonReaderHelper.readNonNullDouble(reader);
+                            break;
+                        case "longitude":
+                            longitude = JsonReaderHelper.readNonNullDouble(reader);
+                            break;
+                        default:
+                            reader.skipValue();
+                    }
                 }
+
+                reader.endObject();
+
+                return new Location(address, latitude, longitude);
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
             }
-
-            reader.endObject();
-
-            return new Location(address, latitude, longitude);
         }
     }
+
 }
+
