@@ -54,7 +54,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
             @Override
             protected void main() {
                 if (null == authTokenFetchTask.getError()) {
-                    //TODO: decouple headers from NetworkTask.Request and make it NetworkTask property to update it only in Network Task
+                    //TODO: decouple headers from NetworkTask.Request and build it NetworkTask property to update it only in Network Task
                     //TODO: rewrite header new token
                     session.setAuthToken(authTokenFetchTask.getAuthToken());
                     request.setToken(session.getAuthToken().getValue());
