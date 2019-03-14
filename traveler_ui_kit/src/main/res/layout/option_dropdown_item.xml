@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_normal">
+
+    <TextView
+            android:id="@+id/textView_optionDropdown_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingRight="@dimen/padding_small"
+            tools:text="Some option we can take, this is a long information to"
+            android:paddingEnd="@dimen/padding_small"/>
+
+    <TextView
+            android:id="@+id/textView_optionDropdown_value"
+            android:layout_width="0dp"
+            android:maxLines="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="11:00am"/>
+</LinearLayout>

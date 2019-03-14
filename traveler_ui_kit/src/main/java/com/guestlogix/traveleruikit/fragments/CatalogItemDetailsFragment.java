@@ -1,7 +1,5 @@
 package com.guestlogix.traveleruikit.fragments;
 
-
-import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;

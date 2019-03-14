@@ -25,15 +25,6 @@
             tools:layout="@layout/fragment_traveler_error">
     </fragment>
 
-    <!--TODO: Remove this direction as this is being handled by ActionStrip Fragment-->
-    <activity
-            android:id="@+id/book_now_activity_destination"
-            android:name="com.guestlogix.traveleruikit.activities.BookingActivity"
-            android:label="PassItemDetailsActivity">
-        <argument android:name="booking_context" app:argType="com.guestlogix.travelercorekit.models.BookingContext"/>
-
-    </activity>
-
     <action
             android:id="@+id/loading_action"
             app:launchSingleTop="true"
@@ -52,12 +43,4 @@
             app:popUpTo="@id/loading_destination"
             app:popUpToInclusive="true"
             app:destination="@+id/error_destination"/>
-
-    <!--TODO: Remove this direction as this is being handled by ActionStrip Fragment-->
-    <action
-            android:id="@+id/book_now_action"
-            app:launchSingleTop="true"
-            app:popUpTo="@id/loading_destination"
-            app:popUpToInclusive="true"
-            app:destination="@id/book_now_activity_destination"/>
 </navigation>

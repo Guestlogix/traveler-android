@@ -11,13 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.BookingActivity;
+import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.viewmodels.BookableProductViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.util.Locale;
-
-import static com.guestlogix.traveleruikit.activities.BookingActivity.EXTRA_BOOKING_CONTEXT;
 
 /**
  * TODO: This fragment is not yet implemented! It is an exact copy of Bookable Fragment.
@@ -48,7 +46,7 @@ public class BuyableActionStripFragment extends BaseFragment {
                     actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
                 case AVAILABLE:
                     actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-                case TIME_REQUIRED:
+                case OPTION_NEEDED:
                 case NOT_AVAILABLE:
                 case DEFAULT:
                     actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
@@ -71,8 +69,9 @@ public class BuyableActionStripFragment extends BaseFragment {
 
         actionStrip.setActionOnClickListener((v) -> {
             // Launch the next activity.
-            Intent intent = new Intent(getActivityContext(), BookingActivity.class);
-            intent.putExtra(EXTRA_BOOKING_CONTEXT, sharedViewModel.getBookingContext());
+            Intent intent = new Intent(getActivityContext(), PassSelectionActivity.class);
+            intent.putExtra(PassSelectionActivity.EXTRA_PASSES, "TODO");
+            intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, "TODO");
             startActivity(intent);
         });
     }

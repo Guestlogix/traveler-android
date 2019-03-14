@@ -1,25 +1,21 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class Pass implements Serializable {
     private String id;
     private String name;
     private String description;
-    private Integer maxQuantity;
     private Price price;
-    private List<Question> questions;
 
-    private Pass(String id, String name, String description, Integer maxQuantity, Price price, List<Question> questions) {
+    private Pass(String id, String name, String description, Price price) {
         if (id == null) {
             throw new IllegalArgumentException("id can not be empty");
         } else {
@@ -32,16 +28,6 @@ public class Pass implements Serializable {
         }
         this.name = name;
         this.description = description;
-        this.maxQuantity = maxQuantity;
-        if (questions == null) {
-            this.questions = new ArrayList<>();
-        } else {
-            this.questions = questions;
-        }
-    }
-
-    public Integer getMaxQuantity() {
-        return maxQuantity;
     }
 
     public String getDescription() {
@@ -64,14 +50,9 @@ public class Pass implements Serializable {
         return price;
     }
 
-    List<Question> getQuestions() {
-        return questions;
-    }
-
     /**
      * Factory class to construct Pass model from {@code JsonReader}.
      */
-
     static class PassObjectMappingFactory implements ObjectMappingFactory<Pass> {
 
         /**
@@ -87,9 +68,7 @@ public class Pass implements Serializable {
                 String id = "";
                 String name = "";
                 String description = "";
-                Integer maxQuantity = 0;
                 Price price = null;
-                List<Question> questions = null;
 
                 reader.beginObject();
 
@@ -110,13 +89,6 @@ public class Pass implements Serializable {
                             ObjectMappingFactory<Price> p = new Price.PriceObjectMappingFactory();
                             price = p.instantiate(reader);
                             break;
-                        case "maximumQuantity":
-                            maxQuantity = JsonReaderHelper.readInteger(reader);
-                            break;
-                        case "questions":
-                            ArrayMappingFactory<Question> factory = new ArrayMappingFactory<>(new Question.QuestionObjectMappingFactory());
-                            questions = factory.instantiate(reader);
-                            break;
                         default:
                             reader.skipValue();
                             break;
@@ -124,13 +96,11 @@ public class Pass implements Serializable {
                 }
 
                 reader.endObject();
-
-                return new Pass(id, name, description, maxQuantity, price, questions);
+                return new Pass(id, name, description, price);
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             } catch (IllegalArgumentException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
-
             }
         }
     }

@@ -4,16 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.traveler.repositories.FlightSearchRepository;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
-import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import java.util.List;
 
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.ERROR;
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.LOADING;
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.SUCCESS;
+import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.*;
 
 public class SearchFlightResultViewModel extends StatefulViewModel {
     private MutableLiveData<List<Flight>> flightsList;

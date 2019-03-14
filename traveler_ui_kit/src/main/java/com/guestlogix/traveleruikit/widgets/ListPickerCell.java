@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,10 +53,9 @@ public class ListPickerCell extends FrameLayout {
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setValueList(List<String> cellValues) {
-        if (cellValues != null && !cellValues.isEmpty()) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item,
-                    cellValues);
+    public void setValueList(List<String> cellLabels) {
+        if (cellLabels != null && !cellLabels.isEmpty()) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.option_dropdown_item, R.id.textView_optionDropdown_label, cellLabels);
 
             slotSpinner.setAdapter(adapter);
             slotSpinner.setOnItemSelectedListener(onSpinnerItemSelectedListener);

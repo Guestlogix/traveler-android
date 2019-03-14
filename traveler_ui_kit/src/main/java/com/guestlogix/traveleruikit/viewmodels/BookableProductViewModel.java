@@ -2,59 +2,31 @@ package com.guestlogix.traveleruikit.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
-import com.guestlogix.travelercorekit.models.BookingContext;
-import com.guestlogix.travelercorekit.models.Price;
-import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.models.Traveler;
-import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.callbacks.FetchAvailabilitiesCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
+import com.guestlogix.travelercorekit.models.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class BookableProductViewModel extends ProductViewModel {
-    private BookingContext bookingContext;
+    private Product product;
 
     private MutableLiveData<State> actionState;
-    private MutableLiveData<List<String>> timeSlots;
     private MutableLiveData<Price> price;
 
-    private List<Long> times;
+    private MutableLiveData<List<Pass>> passes;
+    private MutableLiveData<List<String>> options;
 
-    private CheckAvailabilityCallback checkAvailabilityCallback = new CheckAvailabilityCallback() {
-        @Override
-        public void onAvailabilitySuccess(BookingContext bookingContext) {
-            if (bookingContext.isReady()) {
-                actionState.postValue(State.AVAILABLE);
-            } else if (!bookingContext.hasAvailability()) {
-                actionState.postValue(State.NOT_AVAILABLE);
-            } else {
-                // Has avail, but not ready == time required.
-                times = bookingContext.getAvailableTimes();
-
-                // Build pretty time for UI
-                List<String> stringTimes = new ArrayList<>();
-                for (Long l : times) {
-                    stringTimes.add(DateHelper.formatTime(l));
-                }
-                timeSlots.postValue(stringTimes);
-
-                actionState.postValue(State.TIME_REQUIRED);
-            }
-        }
-
-        @Override
-        public void onAvailabilityError(Error error) {
-            actionState.postValue(State.ERROR);
-        }
-    };
+    private Availability currentAvailability;
+    private BookingOption currentOption;
 
     public BookableProductViewModel() {
         actionState = new MutableLiveData<>();
-        timeSlots = new MutableLiveData<>();
         price = new MutableLiveData<>();
+        passes = new MutableLiveData<>();
+        options = new MutableLiveData<>();
 
         actionState.postValue(State.DEFAULT);
     }
@@ -63,47 +35,99 @@ public class BookableProductViewModel extends ProductViewModel {
         return actionState;
     }
 
-    public LiveData<List<String>> getBookingTimes() {
-        return timeSlots;
-    }
-
     public LiveData<Price> getPrice() {
         return price;
     }
 
+    public LiveData<List<Pass>> getPasses() {
+        return passes;
+    }
+
+    public LiveData<List<String>> getOptions() {
+        return options;
+    }
+
     @Override
     public void setup(Product product) {
-        bookingContext = new BookingContext(product);
+        this.product = product;
         price.setValue(product.getPrice());
     }
 
-    public BookingContext getBookingContext() {
-        return bookingContext;
+    public Product getProduct() {
+        return product;
     }
 
     public void onDateChanged(Calendar calendar) {
-        if (bookingContext == null) {
-            TravelerLog.e("No product was set. Call setup() on BookableProductViewModel with the product for correct functionality.");
-            return;
-        }
         actionState.setValue(State.LOADING);
 
-        bookingContext.setSelectedDate(calendar.getTime());
-        Traveler.checkAvailability(bookingContext, checkAvailabilityCallback);
+        // TODO: Don't re-fetch if its the same date.
+        Traveler.fetchAvailabilities(product, calendar.getTime(), calendar.getTime(), new FetchAvailabilitiesCallback() {
+            @Override
+            public void onAvailabilitySuccess(List<Availability> availabilities) {
+                // Expecting a single availability.
+
+                if (availabilities == null || availabilities.isEmpty()) {
+                    actionState.postValue(State.NOT_AVAILABLE);
+                    return;
+                }
+
+                currentAvailability = availabilities.get(0);
+                currentOption = null;
+
+                if (currentAvailability.getBookingOptionSet().getOptions() == null || currentAvailability.getBookingOptionSet().getOptions().isEmpty()) {
+                    actionState.postValue(State.AVAILABLE);
+                    return;
+                }
+
+                List<String> optionValues = new ArrayList<>();
+                for (BookingOption o : currentAvailability.getBookingOptionSet().getOptions()) {
+                    optionValues.add(o.getValue());
+                }
+
+                options.postValue(optionValues);
+                actionState.postValue(State.OPTION_NEEDED);
+            }
+
+            @Override
+            public void onAvailabilityError(Error error) {
+                actionState.postValue(State.ERROR);
+            }
+        });
     }
 
-    public void onTimeChanged(int relPosition) {
-        if (bookingContext == null) {
-            TravelerLog.e("No product was set. Call setup() on BookableProductViewModel with the product for correct functionality.");
-            return;
-        }
-
-        Long selectedTime = times.get(relPosition);
-        bookingContext.setSelectedTime(selectedTime);
+    public void onOptionChanged(int pos) {
+        currentOption = currentAvailability.getBookingOptionSet().getOptions().get(pos);
         actionState.setValue(State.AVAILABLE);
     }
 
+    public void submit() {
+        // Verify I have an availability and that I have an option if it is required.
+        if (currentAvailability == null) {
+            return;
+        }
+
+        if (currentAvailability.getBookingOptionSet().getOptions() != null &&
+                !currentAvailability.getBookingOptionSet().getOptions().isEmpty() && currentOption == null) {
+            return;
+        }
+
+        actionState.setValue(State.LOADING);
+
+        Traveler.fetchPasses(product, currentAvailability, currentOption, new FetchPassesCallback() {
+            @Override
+            public void onSuccess(List<Pass> pass) {
+                passes.postValue(pass);
+                actionState.postValue(State.AVAILABLE);
+            }
+
+            @Override
+            public void onError(Error error) {
+                actionState.postValue(State.ERROR);
+            }
+        });
+    }
+
     public enum State {
-        DEFAULT, TIME_REQUIRED, LOADING, AVAILABLE, NOT_AVAILABLE, ERROR
+        DEFAULT, OPTION_NEEDED, LOADING, AVAILABLE, NOT_AVAILABLE, ERROR
     }
 }
