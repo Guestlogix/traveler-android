@@ -3,8 +3,9 @@
           package="com.guestlogix.traveleruikit">
 
     <application android:theme="@style/AppTheme">
-        <activity android:name=".activities.BookingActivity"
-                  android:windowSoftInputMode="adjustResize">
+        <activity android:name=".activities.QuestionsActivity">
+        </activity>
+        <activity android:name=".activities.PassSelectionActivity">
         </activity>
         <activity android:name=".activities.CatalogItemDetailsActivity">
         </activity>

@@ -14,10 +14,11 @@
             android:name="com.guestlogix.traveler.activities.FlightSearchResultsFragment"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="53dp"
+            android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <fragment
+
             app:layout_constraintTop_toBottomOf="@+id/flightResultRecyclerView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

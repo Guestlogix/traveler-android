@@ -5,10 +5,10 @@ import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.models.*;
-import com.guestlogix.travelercorekit.models.BookingContext;
-import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.tasks.NetworkTask.Request.Method;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
@@ -19,7 +19,7 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 
 public class Router {
-    private static final String BASE_URL = "https://guest-traveler-api-develop.guestlogix.io";
+    private static final String BASE_URL = "https://guest-traveler-api-livn.guestlogix.io";
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return RequestBuilder.Builder()
@@ -31,22 +31,21 @@ public class Router {
                 .build();
     }
 
+    // /flight?flight-number=xxx&departure-date=xxx
     public static AuthenticatedUrlRequest searchFlight(Session session, FlightQuery query, Context context) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("flight-number", query.getNumber());
-        queryParams.put("departure-date", DateHelper.formatDateToISO8601(query.getDate()));
-
         return RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("flight")
+                .path("/flight")
+                .param("flight-number", query.getNumber())
+                .param("departure-date", DateHelper.formatDateToISO8601(query.getDate()))
                 .headers(buildHeaders(context))
-                .params(queryParams)
                 .apiKey(session.getApiKey())
                 .build(session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedUrlRequest getCatalog(Session session, CatalogQuery catalogQuery, Context context) {
+    // /catalog?flight-ids=xxx&flight-ids=yyy...
+    public static AuthenticatedUrlRequest catalog(Session session, CatalogQuery catalogQuery, Context context) {
         List<String> flightIds = new ArrayList<>();
 
         if (null != catalogQuery) {
@@ -55,20 +54,18 @@ public class Router {
             }
         }
 
-        Map<String, List<String>> queryParams = new HashMap<>();
-        queryParams.put("flight-ids", flightIds);
-
         return RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
                 .path("/catalog")
+                .paramArray("flight-ids", flightIds) // catalogQuery.getFlights().stream().map(item -> item.getId()).collect(Collectors.toList());
                 .headers(buildHeaders(context))
-                .params(queryParams)
                 .apiKey(session.getApiKey())
                 .build(session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedUrlRequest getCatalogItem(Session session, CatalogItem catalogItem, Context context) {
+    // /product/{id}
+    public static AuthenticatedUrlRequest product(Session session, CatalogItem catalogItem, Context context) {
         return RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
@@ -78,47 +75,54 @@ public class Router {
                 .build(session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedUrlRequest productSchedule(Session session, BookingContext bookingContext, Context context) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("from", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
-        queryParams.put("to", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
-
+    // /product/{id}/schedule
+    public static AuthenticatedUrlRequest productSchedule(Session session, Product product, Date from, Date to, Context context) {
         return RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("/product/" + bookingContext.getProduct().getId() + "/schedule")
+                .path("/product/" + product.getId() + "/schedule")
+                .param("from", DateHelper.formatDateToISO8601(from))
+                .param("to", DateHelper.formatDateToISO8601(to))
                 .headers(buildHeaders(context))
-                .params(queryParams)
                 .apiKey(session.getApiKey())
                 .build(session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedUrlRequest productPass(Session session, BookingContext bookingContext, Context context) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put("date", DateHelper.formatDateToISO8601(bookingContext.getSelectedDate()));
+    // /product/{id}/pass
+    public static AuthenticatedUrlRequest productPass(Session session, Product product, Availability availability, @Nullable BookingOption option, Context context) {
+        RequestBuilder rb = RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/product/" + product.getId() + "/pass")
+                .param("availability-id", availability.getId())
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey());
 
-        if (bookingContext.requiresTime()) {
-            queryParams.put("time-in-minutes", bookingContext.getSelectedTime().toString());
+        if (option != null) {
+            rb.param("option-id", option.getId());
+        }
+
+        return rb.build(session.getAuthToken().getValue());
+    }
+
+    // /product/{id}/question?&passes=xxx&passes=yyy&passes=zzz...
+    public static AuthenticatedUrlRequest productQuestion(Session session, Product product, List<Pass> passes, Context context) {
+        List<String> passIds = new ArrayList<>();
+
+        for (Pass p : passes) {
+            passIds.add(p.getId());
         }
 
         return RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("/product/" + bookingContext.getProduct().getId() + "/pass")
+                .path("product/" + product.getId() + "/question")
+                .paramArray("pass-ids", passIds)
                 .headers(buildHeaders(context))
-                .params(queryParams)
                 .apiKey(session.getApiKey())
                 .build(session.getAuthToken().getValue());
     }
 
-    public static AuthenticatedUrlRequest options(Session session, CatalogItem item, Context context) {
-        return RequestBuilder.Builder()
-                .method(Method.GET)
-                .path("/product/" + item.getId() + "/option")
-                .headers(buildHeaders(context))
-                .apiKey(session.getApiKey())
-                .build(session.getAuthToken().getValue());
-    }
 
     /**
      * Extracts the device information and adds it to the headers.
@@ -158,58 +162,105 @@ public class Router {
         }
     }
 
+    // This class only build AuthenticatedUrlRequest or UnauthenticatedUrlRequest classes
     private static class RequestBuilder {
         private Method method;
         private String path;
         private String url;
-        private Map<String, ?> params;
-        private JsonPayload payload = null;
+        private JSONPayloadProvider payload = null;
         private String apiKey;
         private Map<String, String> headers;
+        private List<String> params;
 
-        private RequestBuilder() {
-        }
+        private RequestBuilder() { }
 
         private static RequestBuilder Builder() {
             return new RequestBuilder();
         }
 
-        public RequestBuilder method(Method method) {
+        static URL createURL(String url, String path, List<String> queryParams) {
+            try {
+                StringBuilder sb = new StringBuilder();
+
+                sb.append(url);
+                sb.append(path);
+
+                if (queryParams != null) {
+                    sb.append("?");
+
+                    Iterator<String> paramIterator = queryParams.listIterator();
+
+                    while (paramIterator.hasNext()) {
+                        sb.append(paramIterator.next());
+
+                        if (paramIterator.hasNext()) {
+                            sb.append("&");
+                        }
+                    }
+                }
+
+                return new URL(sb.toString());
+            } catch (MalformedURLException e) {
+                TravelerLog.e("Bad URL: %s", url + path);
+                return null;
+            }
+        }
+
+        static URL createURL(String url, String path) {
+            return createURL(url, path, null);
+        }
+
+        RequestBuilder method(Method method) {
             this.method = method;
             return this;
         }
 
-        public RequestBuilder path(String path) {
+        RequestBuilder path(String path) {
             this.path = path;
             return this;
         }
 
-        public RequestBuilder url(String url) {
+        RequestBuilder url(String url) {
             this.url = url;
             return this;
         }
 
-        public RequestBuilder params(Map<String, ?> params) {
-            this.params = params;
+        RequestBuilder param(String key, String value) {
+            if (params == null) {
+                params = new ArrayList<>();
+            }
+
+            params.add(String.format("%s=%s", urlEncodeUTF8(key), urlEncodeUTF8(value)));
             return this;
         }
 
-        public RequestBuilder headers(Map<String, String> headers) {
-            this.headers = headers;
-            return this;
-        }
-
-        public RequestBuilder payload(JsonPayload payload) {
+        public RequestBuilder payload(JSONPayloadProvider payload) {
             this.payload = payload;
             return this;
         }
 
-        public RequestBuilder apiKey(String key) {
+        RequestBuilder paramArray(String key, List<String> values) {
+            if (params == null) {
+                params = new ArrayList<>();
+            }
+
+            for (String value : values) {
+                params.add(String.format("%s=%s", urlEncodeUTF8(key), urlEncodeUTF8(value)));
+            }
+            return this;
+        }
+
+        RequestBuilder headers(Map<String, String> headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        RequestBuilder apiKey(String key) {
             this.apiKey = key;
             return this;
         }
 
-        public AuthenticatedUrlRequest build(String token) {
+        AuthenticatedUrlRequest build(String token) {
             URL url;
             if (params == null) {
                 url = createURL(this.url, path);
@@ -229,7 +280,7 @@ public class Router {
             };
         }
 
-        public UnauthenticatedUrlRequest build() {
+        UnauthenticatedUrlRequest build() {
             URL url;
             if (params == null) {
                 url = createURL(this.url, path);
@@ -249,20 +300,7 @@ public class Router {
             };
         }
 
-        public static URL createURL(String url, String path, Map<?, ?> queryParams) {
-            try {
-                return new URL(url + path + "?" + urlEncodeUTF8(queryParams));
-            } catch (MalformedURLException e) {
-                TravelerLog.e("Bad URL: %s", url + path);
-                return null;
-            }
-        }
-
-        public static URL createURL(String url, String path) {
-            return createURL(url, path, null);
-        }
-
-        interface JsonPayload {
+        interface JSONPayloadProvider {
             JSONObject getJsonPayload();
         }
     }

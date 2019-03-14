@@ -3,15 +3,8 @@ package com.guestlogix.traveleruikit.viewmodels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
-import com.guestlogix.travelercorekit.callbacks.CheckAvailabilityCallback;
 import com.guestlogix.travelercorekit.models.*;
-import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.repositories.CatalogItemDetailsRepository;
-import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 public class CatalogItemDetailsViewModel extends StatefulViewModel {
 

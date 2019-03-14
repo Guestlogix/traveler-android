@@ -3,6 +3,7 @@ package com.guestlogix.traveleruikit.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.models.Pass;
+import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.BookingActivity;
+import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.viewmodels.BookableProductViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Locale;
-
-import static com.guestlogix.traveleruikit.activities.BookingActivity.EXTRA_BOOKING_CONTEXT;
 
 /**
  * Fragment to handle Bookable item actions
@@ -50,7 +53,7 @@ public class BookableActionStripFragment extends BaseFragment {
                 case AVAILABLE:
                     actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
                     break;
-                case TIME_REQUIRED:
+                case OPTION_NEEDED:
                 case NOT_AVAILABLE:
                 case ERROR:
                 case DEFAULT:
@@ -61,6 +64,15 @@ public class BookableActionStripFragment extends BaseFragment {
                     break;
             }
         }));
+
+        sharedViewModel.getPasses().observe(this, passes -> {
+            Product p = sharedViewModel.getProduct();
+
+            Intent i = new Intent(getActivityContext(), PassSelectionActivity.class);
+            i.putExtra(PassSelectionActivity.EXTRA_PRODUCT, p);
+            i.putExtra(PassSelectionActivity.EXTRA_PASSES, (Serializable) passes);
+            startActivity(i);
+        });
 
         actionStrip = view.findViewById(R.id.action_container);
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
@@ -73,11 +85,6 @@ public class BookableActionStripFragment extends BaseFragment {
             actionStrip.setStripValues(checkAvailability, startingAt, localizedPrice);
         }));
 
-        actionStrip.setActionOnClickListener((v) -> {
-            // Launch the next activity.
-            Intent intent = new Intent(getActivityContext(), BookingActivity.class);
-            intent.putExtra(EXTRA_BOOKING_CONTEXT, sharedViewModel.getBookingContext());
-            startActivity(intent);
-        });
+        actionStrip.setActionOnClickListener(v -> sharedViewModel.submit());
     }
 }
