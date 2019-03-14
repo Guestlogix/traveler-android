@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.ViewModelProviders;
-import com.guestlogix.travelercorekit.models.BookingContext;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.BookableProductViewModel;
 import com.guestlogix.traveleruikit.widgets.DatePickerCell;
@@ -40,7 +39,7 @@ public class BuyableInformationSelectionFragment extends BaseFragment {
         timePickerCell.setHint(getString(R.string.hint_select_time));
 
         BookableProductViewModel sharedViewModel = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
-        sharedViewModel.getBookingTimes().observe(this, timePickerCell::setValueList);
+//        sharedViewModel.getBookingTimes().observe(this, timePickerCell::setValueList);
         sharedViewModel.getAvailabilityState().observe(this, (state -> {
             switch (state) {
                 case DEFAULT:
@@ -50,7 +49,7 @@ public class BuyableInformationSelectionFragment extends BaseFragment {
                     timePickerCell.setVisibility(View.GONE);
                     datePickerCell.setError(getString(R.string.not_available));
                     break;
-                case TIME_REQUIRED:
+                case OPTION_NEEDED:
                     timePickerCell.setVisibility(View.VISIBLE);
                     //datePickerCell.setError(null);
                     break;
@@ -64,7 +63,7 @@ public class BuyableInformationSelectionFragment extends BaseFragment {
         }));
 
         datePickerCell.setOnDateChangedListener(sharedViewModel::onDateChanged);
-        timePickerCell.setOnItemSelectedListener(sharedViewModel::onTimeChanged);
+        timePickerCell.setOnItemSelectedListener(sharedViewModel::onOptionChanged);
     }
 
     private void onCheckAvailabilityError() {

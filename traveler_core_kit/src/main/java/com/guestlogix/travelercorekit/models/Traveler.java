@@ -2,16 +2,15 @@ package com.guestlogix.travelercorekit.models;
 
 import android.content.Context;
 import android.text.TextUtils;
+import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.*;
-import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.models.TravelerErrorCode;
-import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.tasks.*;
 import com.guestlogix.travelercorekit.utilities.*;
 
+import java.util.Date;
 import java.util.List;
 
 public class Traveler {
@@ -109,7 +108,7 @@ public class Traveler {
         if (null == localInstance) {
             catalogSearchCallback.onCatalogSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedUrlRequest request = Router.getCatalog(localInstance.session, catalogQuery, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.catalog(localInstance.session, catalogQuery, localInstance.session.getContext());
 
             AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Catalog.CatalogObjectMappingFactory());
 
@@ -140,7 +139,7 @@ public class Traveler {
         if (null == localInstance) {
             catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedUrlRequest request = Router.getCatalogItem(localInstance.session, catalogItem, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.product(localInstance.session, catalogItem, localInstance.session.getContext());
             AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
 
             BlockTask catalogItemDetailsBlockTask = new BlockTask() {
@@ -161,72 +160,51 @@ public class Traveler {
     }
 
     /**
-     * Fetches groups of catalog items.
+     * Fetches all availabilities in the given date range.
      *
-     * @param bookingContext            Ids of the flights for which to fetch the groups.
-     * @param checkAvailabilityCallback Callback methods which will be executed after the data is fetched.
+     * @param product                   Product to fetch availabilities for.
+     * @param startDate                 Start of the date range inclusive.
+     * @param endDate                   End of date Range inclusive.
+     * @param checkAvailabilityCallback Methods that will be executed after the availabilities are fetched.
      */
-    public static void checkAvailability(BookingContext bookingContext, CheckAvailabilityCallback checkAvailabilityCallback) {
+    public static void fetchAvailabilities(Product product, Date startDate, Date endDate, FetchAvailabilitiesCallback checkAvailabilityCallback) {
         if (null == localInstance) {
             checkAvailabilityCallback.onAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
+            AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, product, startDate, endDate, localInstance.session.getContext());
+            AuthenticatedNetworkRequestTask<List<Availability>> fetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
-            if (bookingContext.getSelectedDate() == null) {
-                checkAvailabilityCallback.onAvailabilityError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
-                return;
-            }
-
-            AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, bookingContext, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<List<Availability>> checkAvailabilityTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
-
-            BlockTask searchGroupBlockTask = new BlockTask() {
+            BlockTask fetchBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
-                    if (null != checkAvailabilityTask.getError()) {
-                        checkAvailabilityCallback.onAvailabilityError(checkAvailabilityTask.getError());
-                        TravelerLog.e(checkAvailabilityTask.getError().toString());
+                    if (null != fetchTask.getError()) {
+                        checkAvailabilityCallback.onAvailabilityError(fetchTask.getError());
                     } else {
-                        List<Availability> fetchedAvailabilities = checkAvailabilityTask.getResource();
-
-                        if (fetchedAvailabilities == null || fetchedAvailabilities.isEmpty()) {
-                            bookingContext.setAvailability(null);
-                        } else {
-                            bookingContext.setAvailability(fetchedAvailabilities.get(0));
-                        }
-
-                        checkAvailabilityCallback.onAvailabilitySuccess(bookingContext);
+                        checkAvailabilityCallback.onAvailabilitySuccess(fetchTask.getResource());
                     }
                 }
             };
 
-            searchGroupBlockTask.addDependency(checkAvailabilityTask);
-            localInstance.taskManager.addTask(checkAvailabilityTask);
-            TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+            fetchBlockTask.addDependency(fetchTask);
+            localInstance.taskManager.addTask(fetchTask);
+            TaskManager.getMainTaskManager().addTask(fetchBlockTask);
         }
     }
 
     /**
-     * Fetches all the passes for a given booking context.
+     * Fetches passes for a product given an availability and an optional booking option.
      *
-     * @param bookingContext      context for which to fetch.
-     * @param fetchPassesCallback Callback methods which will be executed after the data is fetched.
+     * @param product             Product to fetch passes for.
+     * @param availability        Specific availability in the product
+     * @param option              Optional BookingOption
+     * @param fetchPassesCallback callback methods which will be executed after the data is fetched.
      */
-    public static void fetchPasses(BookingContext bookingContext, FetchPassesCallback fetchPassesCallback) {
+    public static void fetchPasses(Product product, Availability availability, @Nullable BookingOption option, FetchPassesCallback fetchPassesCallback) {
         if (null == localInstance) {
-
             fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            if (bookingContext.getSelectedDate() == null) {
-                fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.NO_DATE, "Booking date must not be null"));
-                return;
-            }
 
-            if (bookingContext.requiresTime() && bookingContext.getSelectedTime() == null) {
-                fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.NO_TIME, "Booking time is required"));
-                return;
-            }
-
-            AuthenticatedUrlRequest request = Router.productPass(localInstance.session, bookingContext, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.productPass(localInstance.session, product, availability, option, localInstance.session.getContext());
             AuthenticatedNetworkRequestTask<List<Pass>> passFetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
 
             BlockTask fetchPassBlockTask = new BlockTask() {
@@ -243,6 +221,31 @@ public class Traveler {
             fetchPassBlockTask.addDependency(passFetchTask);
             localInstance.taskManager.addTask(passFetchTask);
             TaskManager.getMainTaskManager().addTask(fetchPassBlockTask);
+        }
+    }
+
+    public static void fetchBookingForm(Product product, List<Pass> passes, FetchBookingFormCallback fetchBookingFormCallback) {
+        if (null == localInstance) {
+            fetchBookingFormCallback.onBookingFormFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+
+            AuthenticatedUrlRequest request = Router.productQuestion(localInstance.session, product, passes, localInstance.session.getContext());
+            AuthenticatedNetworkRequestTask<List<QuestionGroup>> fetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
+
+            BlockTask fetchBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != fetchTask.getError()) {
+                        fetchBookingFormCallback.onBookingFormFetchError(fetchTask.getError());
+                    } else {
+                        fetchBookingFormCallback.onBookingFormFetchSuccess(new BookingForm(product, passes, fetchTask.getResource()));
+                    }
+                }
+            };
+
+            fetchBlockTask.addDependency(fetchTask);
+            localInstance.taskManager.addTask(fetchTask);
+            TaskManager.getMainTaskManager().addTask(fetchBlockTask);
         }
     }
 }

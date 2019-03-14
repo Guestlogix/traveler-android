@@ -1,51 +1,49 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-class Availability {
+public class Availability implements Serializable {
+    private String id;
     private Date date;
-    private List<Long> times;
-    private Boolean isAvailable;
+    private BookingOptionSet bookingOptionSet;
 
-    private Availability(Date date, List<Long> times, Boolean isAvailable) {
-        if (null == date) {
+    private Availability(String id, Date date, BookingOptionSet bookingOptionSet) {
+        if (id == null) {
+            throw new IllegalArgumentException("id can not be null");
+        }
+
+        if (date == null) {
             throw new IllegalArgumentException("date can not be null");
-        } else {
-            this.date = date;
         }
-        if (null == times) {
-            throw new IllegalArgumentException("times can not be null");
-        } else {
-            this.times = times;
+
+        if (bookingOptionSet == null) {
+            throw new IllegalArgumentException("bookingOptionSet can not be null");
         }
-        if (null == isAvailable) {
-            throw new IllegalArgumentException("isAvailable can not be empty");
-        } else {
-            this.isAvailable = isAvailable;
-        }
+
+        this.id = id;
+        this.date = date;
+        this.bookingOptionSet = bookingOptionSet;
     }
 
     Date getDate() {
         return date;
     }
 
-    List<Long> getTimes() {
-        return times;
+    public String getId() {
+        return id;
     }
 
-    boolean isAvailable() {
-        return isAvailable;
+    public BookingOptionSet getBookingOptionSet() {
+        return bookingOptionSet;
     }
 
     /**
@@ -62,9 +60,9 @@ class Availability {
         @Override
         public Availability instantiate(JsonReader reader) throws ObjectMappingException {
             try {
-                Date date = new Date();
-                List<Long> timeList = new ArrayList<>();
-                Boolean available = false;
+                Date date = null;
+                String id = null;
+                BookingOptionSet bookingOptionSet = null;
 
                 reader.beginObject();
 
@@ -73,24 +71,24 @@ class Availability {
 
                     switch (name) {
                         case "date":
+
                             date = DateHelper.parseDate(JsonReaderHelper.readString(reader));
                             break;
-                        case "timesInMinutes":
-                            if (reader.peek() != JsonToken.NULL) {
-                                timeList.addAll(JsonReaderHelper.readLongArray(reader));
-                            }
+                        case "id":
+                            id = JsonReaderHelper.readString(reader);
                             break;
-                        case "available":
-                            available = JsonReaderHelper.readBoolean(reader);
+                        case "optionSet":
+                            bookingOptionSet = new BookingOptionSet.BookingOptionSetObjectMappingFactory().instantiate(reader);
                             break;
                         default:
                             reader.skipValue();
+
                     }
                 }
 
                 reader.endObject();
 
-                return new Availability(date, timeList, available);
+                return new Availability(id, date, bookingOptionSet);
             } catch (IllegalArgumentException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
             } catch (IOException e) {
