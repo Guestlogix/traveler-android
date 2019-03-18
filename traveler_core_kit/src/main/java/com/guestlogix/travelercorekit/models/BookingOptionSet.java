@@ -50,7 +50,7 @@ public class BookingOptionSet implements Serializable {
                 String name = reader.nextName();
 
                 switch (name) {
-                    case "optionSetlabel":
+                    case "optionSetLabel":
                         label = JsonReaderHelper.readString(reader);
                         break;
                     case "options":

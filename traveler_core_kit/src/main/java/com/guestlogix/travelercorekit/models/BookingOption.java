@@ -51,7 +51,7 @@ public class BookingOption implements Serializable {
                     case "id":
                         id = JsonReaderHelper.readString(reader);
                         break;
-                    case "optionlabel":
+                    case "optionLabel":
                         value = JsonReaderHelper.readString(reader);
                         break;
                     default:

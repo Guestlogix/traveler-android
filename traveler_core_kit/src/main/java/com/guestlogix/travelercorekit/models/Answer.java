@@ -8,6 +8,10 @@ public abstract class Answer implements Serializable {
 
     public abstract String getCodedValue();
 
+    public String getQuestionId() {
+        return questionId;
+    }
+
     class AnswerError extends Error {
 
     }

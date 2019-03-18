@@ -56,6 +56,10 @@ public class BookingForm implements Serializable {
         return product;
     }
 
+    public List<Answer> getAnswers() {
+        return new ArrayList<>(answers.values());
+    }
+
     @NonNull
     public List<QuestionGroup> getQuestionGroups() {
         return this.questionGroups;

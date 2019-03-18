@@ -21,10 +21,6 @@ public class CatalogItem extends Product implements Serializable {
         this.imageURL = imageURL;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public String getTitle() {
         return title;
     }

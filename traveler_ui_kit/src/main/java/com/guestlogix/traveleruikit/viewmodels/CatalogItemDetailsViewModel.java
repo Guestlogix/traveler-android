@@ -24,10 +24,6 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         return catalogItemDetails;
     }
 
-    public CatalogItemDetails getCatalogItemDetails() {
-        return catalogItemDetails.getValue();
-    }
-
     public Product getProduct() {
         return product;
     }
