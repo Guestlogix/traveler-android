@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="DefaultTextView" parent="TextAppearance.AppCompat">
+    <style name="DefaultTextView" parent="AppTheme">
         <item name="android:textColor">@color/black</item>
     </style>
 

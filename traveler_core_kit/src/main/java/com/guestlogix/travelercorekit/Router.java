@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.tasks.NetworkTask.Request.Method;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
@@ -116,10 +118,58 @@ public class Router {
         return RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("product/" + product.getId() + "/question")
+                .path("/product/" + product.getId() + "/question")
                 .paramArray("pass-ids", passIds)
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
+                .build(session.getAuthToken().getValue());
+    }
+
+    public static AuthenticatedUrlRequest orderCreate(Session session, List<BookingForm> forms, Context context) {
+        return RequestBuilder.Builder()
+                .method(Method.POST)
+                .url(BASE_URL)
+                .path("/order")
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey())
+                .payload(() -> {
+                    try {
+                        JSONObject payload = new JSONObject();
+                        JSONArray products = new JSONArray();
+
+                        for (BookingForm form : forms) {
+                            JSONObject product = new JSONObject();
+                            JSONArray passes = new JSONArray();
+                            JSONArray answers = new JSONArray();
+
+                            for (Pass p : form.getPasses()) {
+                                passes.put(p.getId());
+                            }
+
+                            for (Answer a : form.getAnswers()) {
+                                JSONObject answer = new JSONObject();
+                                answer.put("questionId", a.getQuestionId());
+                                answer.put("value", a.getCodedValue());
+
+                                answers.put(answer);
+                            }
+
+                            product.put("id", form.getProduct().getId());
+                            product.put("passes", passes);
+                            product.put("answers", answers);
+
+                            products.put(product);
+                        }
+
+                        payload.put("products", products);
+
+                        return payload;
+                    } catch (JSONException e) {
+                        TravelerLog.e("Router.orderCreate() could not create JSONPayloadProvider");
+                    }
+
+                    return null;
+                })
                 .build(session.getAuthToken().getValue());
     }
 
@@ -172,7 +222,8 @@ public class Router {
         private Map<String, String> headers;
         private List<String> params;
 
-        private RequestBuilder() { }
+        private RequestBuilder() {
+        }
 
         private static RequestBuilder Builder() {
             return new RequestBuilder();

@@ -39,30 +39,32 @@ public class InformationSelectionContainerFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         CatalogItemDetailsViewModel vm = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
-        ProductViewModel productVM;
 
-        FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
-        Fragment fragment;
+        vm.getObservableCatalogItemDetails().observe(this, catalogItemDetails -> {
+            PurchaseStrategy strategy = catalogItemDetails.getPurchaseStrategy();
+            Product product = vm.getProduct();
 
-        PurchaseStrategy strategy = vm.getCatalogItemDetails().getPurchaseStrategy();
-        Product product = vm.getProduct();
-        Price price = vm.getCatalogItemDetails().getPriceStartingAt();
+            FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
+            Fragment fragment;
+            ProductViewModel productVM;
 
-        switch (strategy) {
-            case Buyable:
-                fragment = new BuyableInformationSelectionFragment();
-                // TODO: add custom repo
-                break;
+            switch (strategy) {
+                case Buyable:
+                    fragment = new BuyableInformationSelectionFragment();
+                    // TODO: add custom repo
+                    break;
 
-            case Bookable:
-            default:
-                fragment = new BookableInformationSelectionFragment();
-                productVM = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
-                productVM.setup(product);
-                break;
-        }
+                case Bookable:
+                default:
+                    fragment = new BookableInformationSelectionFragment();
+                    productVM = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
+                    productVM.setup(product);
+                    break;
+            }
 
-        fragmentTransaction.replace(R.id.information_selection_container, fragment);
-        fragmentTransaction.commit();
+            fragmentTransaction.replace(R.id.information_selection_container, fragment);
+            fragmentTransaction.commit();
+        });
+
     }
 }
