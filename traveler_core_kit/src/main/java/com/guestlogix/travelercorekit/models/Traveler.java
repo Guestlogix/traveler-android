@@ -10,6 +10,7 @@ import com.guestlogix.travelercorekit.callbacks.*;
 import com.guestlogix.travelercorekit.tasks.*;
 import com.guestlogix.travelercorekit.utilities.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -246,6 +247,18 @@ public class Traveler {
             fetchBlockTask.addDependency(fetchTask);
             localInstance.taskManager.addTask(fetchTask);
             TaskManager.getMainTaskManager().addTask(fetchBlockTask);
+        }
+    }
+
+    public static void createOrder(BookingForm bookingForm, OrderCreateCallback orderCreateCallback) {
+        if (null == localInstance) {
+            orderCreateCallback.onOrderCreateFailure(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+            ArrayList<BookingForm> forms = new ArrayList<>();
+            forms.add(bookingForm);
+            AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.session.getContext());
+
+            // TODO;
         }
     }
 }

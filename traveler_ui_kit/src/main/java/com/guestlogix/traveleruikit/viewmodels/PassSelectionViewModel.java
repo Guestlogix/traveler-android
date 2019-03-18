@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
-import com.guestlogix.travelercorekit.models.BookingForm;
-import com.guestlogix.travelercorekit.models.Pass;
-import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.travelercorekit.models.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,16 +12,28 @@ import java.util.List;
 import java.util.Map;
 
 public class PassSelectionViewModel extends ViewModel {
+    private Product product;
+
     private Map<Pass, Integer> passQuantities;
-    private MutableLiveData<Double> price;
-    private MutableLiveData<String> currency;
+    private MutableLiveData<Price> price;
     private MutableLiveData<BookingForm> bookingForm;
+    private MutableLiveData<List<Pass>> passes;
+    private MutableLiveData<PassSelectionState> state;
 
     public PassSelectionViewModel() {
         passQuantities = new HashMap<>();
         price = new MutableLiveData<>();
-        currency = new MutableLiveData<>();
         bookingForm = new MutableLiveData<>();
+        passes = new MutableLiveData<>();
+        state = new MutableLiveData<>();
+    }
+
+    public void setup(Product product, List<Pass> passes) {
+        this.product = product;
+
+        calculatePrice();
+        this.passes.setValue(passes);
+        this.state.setValue(PassSelectionState.DEFAULT);
     }
 
     public int getValue(Pass p) {
@@ -37,44 +46,29 @@ public class PassSelectionViewModel extends ViewModel {
         return value;
     }
 
-    public LiveData<Double> getPrice() {
+    public LiveData<Price> getPrice() {
         return price;
     }
 
-    public LiveData<String> getCurrency() {
-        return currency;
+    public LiveData<BookingForm> getBookingForm() {
+        return bookingForm;
     }
 
-    public MutableLiveData<BookingForm> getBookingForm() {
-        return bookingForm;
+    public LiveData<List<Pass>> getPasses() {
+        return passes;
+    }
+
+    public LiveData<PassSelectionState> getState() {
+        return state;
     }
 
     public void updatePassQuantity(Pass p, int quantity) {
         passQuantities.put(p, quantity);
-
-        // Calculate new price.
-        double price = 0.0;
-        String currency = null;
-        for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
-            if (entry.getValue() != null && entry.getValue() > 0) {
-                price += entry.getKey().getPrice().getValue() * entry.getValue();
-
-                if (null == currency){
-                    currency = entry.getKey().getPrice().getCurrency();
-                } else {
-                    if (!currency.equalsIgnoreCase(entry.getKey().getPrice().getCurrency())) {
-                        // TODO: handle adding different currencies.
-                        return;
-                    }
-                }
-            }
-        }
-
-        this.price.setValue(price);
-        this.currency.setValue(currency);
+        calculatePrice();
     }
 
-    public void fetchBookingForm(Product product) {
+    public void fetchBookingForm() {
+        state.setValue(PassSelectionState.LOADING);
         List<Pass> flatPasses = new ArrayList<>();
 
         for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
@@ -89,13 +83,44 @@ public class PassSelectionViewModel extends ViewModel {
             @Override
             public void onBookingFormFetchSuccess(BookingForm bookingForm) {
                 PassSelectionViewModel.this.bookingForm.postValue(bookingForm);
+                state.postValue(PassSelectionState.DEFAULT);
             }
 
             @Override
             public void onBookingFormFetchError(Error error) {
-                // TODO
-                int x = 0;
+                state.postValue(PassSelectionState.ERROR);
             }
         });
+    }
+
+    private void calculatePrice() {
+        double sum = 0.0;
+        String currency = null;
+
+        for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
+            if (entry.getValue() != null && entry.getValue() > 0) {
+                sum += entry.getKey().getPrice().getValue() * entry.getValue();
+
+                if (null == currency) {
+                    currency = entry.getKey().getPrice().getCurrency();
+                } else {
+                    if (!currency.equalsIgnoreCase(entry.getKey().getPrice().getCurrency())) {
+                        // TODO: handle adding different currencies.
+                        return;
+                    }
+                }
+            }
+        }
+
+        // If currency is still null use the currency of the product
+        if (currency == null) {
+            currency = product.getPrice().getCurrency();
+        }
+
+        price.postValue(new Price(sum, currency));
+    }
+
+    public enum PassSelectionState {
+        DEFAULT, LOADING, ERROR
     }
 }

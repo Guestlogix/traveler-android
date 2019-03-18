@@ -22,7 +22,7 @@ public class Price implements Serializable {
         currency = "USD"; //default currency
     }
 
-    private Price(Double value, String currency) {
+    public Price(Double value, String currency) {
         if (value == null) {
             throw new IllegalArgumentException("value can not be null");
         } else {
@@ -40,17 +40,9 @@ public class Price implements Serializable {
         return value;
     }
 
-    public void setValue(Double value) {
-        this.value = value;
-    }
-
     private String getCurrencySymbol() {
         Currency currency = Currency.getInstance(this.currency);
         return currency.getSymbol(Locale.getDefault());
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
     }
 
     public String getCurrency() {
@@ -58,15 +50,11 @@ public class Price implements Serializable {
     }
 
     public String getFormattedValue() {
-        return getFormattedValue(value);
-    }
-
-    private String getFormattedValue(Double price) {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.getDefault());
         DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
         symbols.setCurrencySymbol(getCurrencySymbol());
         formatter.setDecimalFormatSymbols(symbols);
-        return formatter.format(price);
+        return formatter.format(value);
     }
 
     /**
