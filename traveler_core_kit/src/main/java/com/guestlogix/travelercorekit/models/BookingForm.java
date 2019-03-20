@@ -13,7 +13,7 @@ public class BookingForm implements Serializable {
     private Product product;
     private Map<String, Answer> answers;
 
-    private transient HashSet<String> questionIds;
+    private HashSet<String> questionIds;
 
     BookingForm(Product product, List<Pass> passes, List<QuestionGroup> questionGroups) {
         this.passes = passes;

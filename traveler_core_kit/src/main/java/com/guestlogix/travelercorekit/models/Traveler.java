@@ -257,8 +257,31 @@ public class Traveler {
             ArrayList<BookingForm> forms = new ArrayList<>();
             forms.add(bookingForm);
             AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.session.getContext());
+            AuthenticatedNetworkRequestTask<Order> fetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
 
-            // TODO;
+            BlockTask fetchBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != fetchTask.getError()) {
+                        orderCreateCallback.onOrderCreateFailure(fetchTask.getError());
+                    } else {
+                        orderCreateCallback.onOrderCreateSuccess(fetchTask.getResource());
+                    }
+                }
+            };
+
+            fetchBlockTask.addDependency(fetchTask);
+            localInstance.taskManager.addTask(fetchTask);
+            TaskManager.getMainTaskManager().addTask(fetchBlockTask);
+        }
+    }
+
+    public static void processOrder(Order order, Payment payment, ProcessOrderCallback processOrderCallback) {
+        if (null == localInstance) {
+            processOrderCallback.onOrderProcessError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else {
+            AuthenticatedUrlRequest request = Router.orderProcess(localInstance.session, order, payment, localInstance.session.getContext());
+
         }
     }
 }

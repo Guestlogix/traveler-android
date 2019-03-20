@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import androidx.annotation.NonNull;
@@ -10,10 +11,7 @@ import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.Form;
-import com.guestlogix.traveleruikit.forms.descriptors.ButtonDescriptor;
-import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
-import com.guestlogix.traveleruikit.forms.descriptors.SpinnerDescriptor;
-import com.guestlogix.traveleruikit.forms.descriptors.TextDescriptor;
+import com.guestlogix.traveleruikit.forms.descriptors.*;
 import com.guestlogix.traveleruikit.viewmodels.BookingQuestionsViewModel;
 
 import java.util.ArrayList;
@@ -43,7 +41,13 @@ public class QuestionsActivity extends AppCompatActivity {
                 form = findViewById(R.id.form_questionsActivity);
 
                 viewModel.getBookingForm().observe(this, this::onBookingForm);
-                viewModel.getError().observe(this, error -> form.reload(error.getGroupId(), error.getQuestionId()));
+                viewModel.getError().observe(this, error -> form.reload());
+
+                viewModel.getOrder().observe(this, order -> {
+                    Intent intent = new Intent(QuestionsActivity.this, OrderSummaryActivity.class);
+                    intent.putExtra(OrderSummaryActivity.EXTRA_ORDER, order);
+                    startActivity(intent);
+                });
 
                 return;
             }
@@ -84,6 +88,8 @@ public class QuestionsActivity extends AppCompatActivity {
                         return Form.FormType.SPINNER.getValue();
                     case STRING:
                         return Form.FormType.TEXT.getValue();
+                    case QUANTITY:
+                        return Form.FormType.QUANTITY.getValue();
                     default:
                         return 0;
                 }
@@ -126,6 +132,12 @@ public class QuestionsActivity extends AppCompatActivity {
                         s.subtitle = question.getDescription();
                         return s;
 
+                    case QUANTITY:
+                        QuantityDescriptor q = new QuantityDescriptor();
+                        q.title = question.getTitle();
+                        q.minQuantity = 0;
+                        q.subtitle = question.getDescription();
+                        return q;
                     default:
                         return null;
                 }
@@ -134,13 +146,21 @@ public class QuestionsActivity extends AppCompatActivity {
             @Nullable
             @Override
             public String getTitle(int sectionId) {
-                return bookingForm.getQuestionGroups().get(sectionId).getTitle();
+                if (sectionId < bookingForm.getQuestionGroups().size()) {
+                    return bookingForm.getQuestionGroups().get(sectionId).getTitle();
+                }
+
+                return null;
             }
 
             @Nullable
             @Override
             public String getDisclaimer(int sectionId) {
-                return bookingForm.getQuestionGroups().get(sectionId).getDisclaimer();
+                if (sectionId < bookingForm.getQuestionGroups().size()) {
+                    return bookingForm.getQuestionGroups().get(sectionId).getDisclaimer();
+                }
+
+                return null;
             }
 
             @Nullable
@@ -199,7 +219,7 @@ public class QuestionsActivity extends AppCompatActivity {
                     answer = new MultipleChoiceSelection((Integer) value, question);
                     break;
                 case STRING:
-                    answer = new TextualAnswer((String) value, question);
+                    answer = new TextualAnswer(value.toString(), question);
                     break;
             }
 

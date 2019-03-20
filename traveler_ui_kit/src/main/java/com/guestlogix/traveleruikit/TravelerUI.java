@@ -19,7 +19,7 @@ public class TravelerUI {
         mPaymentProvider = paymentProvider;
     }
 
-    static PaymentProvider getPaymentProvider() {
+    public static PaymentProvider getPaymentProvider() {
         if (localInstance == null) {
             TravelerLog.e("SDK not initialized");
             return null;

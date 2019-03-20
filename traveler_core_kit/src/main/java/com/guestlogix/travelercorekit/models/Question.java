@@ -2,9 +2,9 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -99,7 +99,7 @@ public class Question implements Serializable {
                     case "id":
                         id = JsonReaderHelper.readString(reader);
                         break;
-                    case "name":
+                    case "title":
                         title = JsonReaderHelper.readString(reader);
                         break;
                     case "description":
@@ -112,11 +112,20 @@ public class Question implements Serializable {
                         ArrayMappingFactory<Choice> factory = new ArrayMappingFactory<>(new Choice.ChoiceObjectMappingFactory());
                         choices = factory.instantiate(reader);
                         break;
-                    default:
-                        ValidationRule rule = readValidationRule(name, reader);
-                        if (null != rule) {
-                            rules.add(rule);
+                    case "required":
+                        Boolean required = JsonReaderHelper.readBoolean(reader);
+                        if (required != null && required) {
+                            rules.add(new RequiredValidationRule());
                         }
+                        break;
+//                    case "maximumQuantity":
+//                        Integer max = JsonReaderHelper.readInteger(reader);
+//                        if (max != null) {
+//                            rules.add(new MaxQuantityValidationRule(max));
+//                        }
+//                        break;
+                    default:
+                        reader.skipValue();
                         break;
                 }
             }
@@ -144,42 +153,7 @@ public class Question implements Serializable {
                 }
             }
 
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "Invalid json. Unsupported question type."));
-        }
-
-        /**
-         * Determines which validation rules to create.
-         * <p>
-         * Thoughts:
-         * For now, the validation rule mapping is trivial so this method can be placed here. However, if the validation
-         * becomes more complicated, it would be better to extract this logic into a standalone class.
-         *
-         * @param name   JSON field.
-         * @param reader reader object.
-         * @return A validation rule.
-         * @throws IOException if there was a problem reading the validation rule.
-         */
-        private ValidationRule readValidationRule(String name, JsonReader reader) throws IOException {
-            if (name.equals("required")) {
-                Boolean required = JsonReaderHelper.readBoolean(reader);
-
-                if (null != required && required) {
-                    return new RequiredValidationRule();
-                }
-            } else if (name.equals("maximumQuantity")) {
-                Integer max = JsonReaderHelper.readInteger(reader);
-
-                if (null != max && max >= 0) {
-                    return new MaxQuantityValidationRule(max);
-                }
-            } else {
-                String pattern = JsonReaderHelper.readString(reader);
-
-                if (null != pattern) {
-                    return new PatternValidationRule(pattern);
-                }
-            }
-            return null;
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.TYPE_NOT_SUPPORTED, "Payload type '" + type + "' is not yet supported"));
         }
     }
 }
