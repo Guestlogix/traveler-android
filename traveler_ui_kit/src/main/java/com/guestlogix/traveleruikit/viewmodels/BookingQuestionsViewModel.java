@@ -2,20 +2,24 @@ package com.guestlogix.traveleruikit.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.models.BookingForm;
+import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.Traveler;
 
 import java.util.List;
 
-public class BookingQuestionsViewModel extends ViewModel {
+public class BookingQuestionsViewModel extends StatefulViewModel {
     private MutableLiveData<BookingForm> bookingForm;
     private MutableLiveData<BookingForm.BookingFormError> error;
+    private MutableLiveData<Order> order;
 
     private BookingForm.BookingFormError currentError;
 
     public BookingQuestionsViewModel() {
         bookingForm = new MutableLiveData<>();
         error = new MutableLiveData<>();
+        order = new MutableLiveData<>();
     }
 
     public void setup(BookingForm bookingForm) {
@@ -30,9 +34,13 @@ public class BookingQuestionsViewModel extends ViewModel {
         return error;
     }
 
+    public LiveData<Order> getOrder() {
+        return order;
+    }
+
     // Add a better way to send messages. Maybe a specific model.
     public BookingForm.BookingFormError getMessage(int questionGroupId, int questionId) {
-        if (questionGroupId == currentError.getGroupId() && questionId == currentError.getQuestionId()) {
+        if (currentError != null && questionGroupId == currentError.getGroupId() && questionId == currentError.getQuestionId()) {
             return currentError;
         }
 
@@ -48,8 +56,19 @@ public class BookingQuestionsViewModel extends ViewModel {
                 currentError = errors.get(0);
                 error.setValue(currentError);
             } else {
-                // Create Order
-                //TODO
+                status.setValue(State.LOADING);
+                Traveler.createOrder(bookingForm.getValue(), new OrderCreateCallback() {
+                    @Override
+                    public void onOrderCreateSuccess(Order order) {
+                        status.postValue(State.SUCCESS);
+                        BookingQuestionsViewModel.this.order.postValue(order);
+                    }
+
+                    @Override
+                    public void onOrderCreateFailure(Error error) {
+                        status.postValue(State.ERROR);
+                    }
+                });
             }
         }
     }

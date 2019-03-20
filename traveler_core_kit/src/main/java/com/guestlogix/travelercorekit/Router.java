@@ -173,6 +173,17 @@ public class Router {
                 .build(session.getAuthToken().getValue());
     }
 
+    public static AuthenticatedUrlRequest orderProcess(Session session, Order order, Payment payment, Context context) {
+        return RequestBuilder.Builder()
+                .method(Method.PATCH)
+                .url(BASE_URL)
+                .path("/order/" + order.getId())
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey())
+                .payload(payment::getSecurePayload)
+                .build(session.getAuthToken().getValue());
+    }
+
 
     /**
      * Extracts the device information and adds it to the headers.

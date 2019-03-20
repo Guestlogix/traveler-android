@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:paddingTop="@dimen/padding_normal"
+            android:paddingBottom="@dimen/padding_normal">
+        <TextView
+                android:id="@+id/textView_passSummaryItem_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                style="@style/TitleThree"
+                tools:text="Pass type name adult x1"/>
+
+        <TextView
+                android:id="@+id/textView_passSummaryItem_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                style="@style/CallOutTextView"
+                tools:text="$200.00 each"/>
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/textView_passSummaryItem_value"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            style="@style/TitleThree"
+            tools:text="$200.00"/>
+
+</LinearLayout>

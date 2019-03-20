@@ -53,7 +53,7 @@ public class QuestionGroup implements Serializable {
                     case "title":
                         title = JsonReaderHelper.readString(reader);
                         break;
-                    case "disclaimer":
+                    case "description":
                         disclaimer = JsonReaderHelper.readString(reader);
                         break;
                     case "questions":

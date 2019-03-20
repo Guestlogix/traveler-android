@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <!-- Title -->
+    <TextView
+            android:id="@+id/textView_orderSummaryItem_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Experience Tour Name"
+            style="@style/TitleThree"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_orderSummaryItem_subtitle"
+            style="@style/Subhead"
+            tools:text="Dec 08, 2019 11am"
+            android:paddingBottom="@dimen/padding_large"/>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/lightGray"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_orderSummaryItem_passesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+</LinearLayout>

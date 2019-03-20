@@ -35,7 +35,6 @@ import java.util.Map;
 public class Form extends FrameLayout {
 
     private RecyclerView cellsRecyclerView;
-    private RecyclerView.LayoutManager layoutManager;
     private FormRecyclerViewAdapter rvAdapter;
     private DataSource dataSource;
     private FormBuilder formBuilder;
@@ -103,6 +102,7 @@ public class Form extends FrameLayout {
             }
         }
     };
+
     private FormRecyclerViewAdapter.FormMapper formMapper = new FormRecyclerViewAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
@@ -131,11 +131,11 @@ public class Form extends FrameLayout {
                     node.hasChild = true;
                     LinkedFormNode msgNode = new LinkedFormNode(node.sectionId, node.fieldId, FormType.MESSAGE.value);
                     nodes.add(position + 1, msgNode);
-                    rvAdapter.notifyItemInserted(position + 1);
+                    cellsRecyclerView.post(() -> rvAdapter.notifyItemInserted(position + 1));
                 } else if (msg == null && node.hasChild) {
                     node.hasChild = false;
                     nodes.remove(position + 1);
-                    rvAdapter.notifyItemRemoved(position + 1);
+                    cellsRecyclerView.post(() -> rvAdapter.notifyItemRemoved(position + 1));
                 }
             }
 
@@ -150,7 +150,9 @@ public class Form extends FrameLayout {
         nodes = new ArrayList<>();
         sectionToPos = new HashMap<>();
 
-        for (int i = 0; i < dataSource.getSectionCount(); i++) {
+        int sectionsCount = dataSource.getSectionCount();
+
+        for (int i = 0; i < sectionsCount; i++) {
             String title = dataSource.getTitle(i);
             String disclaimer = dataSource.getDisclaimer(i);
 
@@ -164,7 +166,7 @@ public class Form extends FrameLayout {
             // Field in this section
             for (int j = 0; j < dataSource.getFieldCount(i); j++) {
                 LinkedFormNode node = new LinkedFormNode(i, j, dataSource.getType(i, j));
-                sectionToPos.put(new Pair<>(i, -1), nodes.size());
+                sectionToPos.put(new Pair<>(i, j), nodes.size());
                 nodes.add(node);
             }
         }
@@ -228,7 +230,6 @@ public class Form extends FrameLayout {
      */
     public void setDataSource(@NonNull DataSource dataSource, RecyclerView.LayoutManager layoutManager) {
         this.dataSource = dataSource;
-        this.layoutManager = layoutManager;
         reload();
 
         if (null == formBuilder) {
@@ -264,7 +265,7 @@ public class Form extends FrameLayout {
         rvAdapter.setContextRequestListener(contextRequestListener);
         rvAdapter.setCellEventsListener(cellEventsListener);
 
-        cellsRecyclerView.setLayoutManager(this.layoutManager);
+        cellsRecyclerView.setLayoutManager(layoutManager);
         cellsRecyclerView.setAdapter(rvAdapter);
         cellsRecyclerView.setItemAnimator(animator);
     }
@@ -400,6 +401,10 @@ public class Form extends FrameLayout {
         INFO, ALERT
     }
 
+    /**
+     * Sets a custom FormBuilder for this form.
+     * @param formBuilder
+     */
     public void setFormBuilder(FormBuilder formBuilder) {
         this.formBuilder = formBuilder;
 

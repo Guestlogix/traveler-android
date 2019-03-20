@@ -18,25 +18,16 @@ public class MaxQuantityValidationRule extends ValidationRule {
         try {
             int value = Integer.parseInt(answer.getCodedValue());
 
-            return validate(value);
+            boolean isValid = value <= maxQuantity;
+
+            if (!isValid) {
+                error = ValidationError.BAD_QUANTITY;
+            }
+
+            return isValid;
         } catch (Exception e) {
+            error = ValidationError.BAD_QUANTITY;
             return false;
         }
-    }
-
-    /**
-     * Valdiates whether the given integer is less than or equal to max amount.
-     *
-     * @param toValidate string to validate.
-     * @return true if the validation passes
-     */
-    private boolean validate(int toValidate) {
-        boolean isValid = toValidate <= maxQuantity;
-
-        if (!isValid) {
-            error = ValidationError.BAD_QUANTITY;
-        }
-
-        return isValid;
     }
 }

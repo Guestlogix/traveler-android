@@ -28,4 +28,10 @@
     <string name="required">This field is required.</string>
     <string name="regex_mismatch">Incorrect pattern</string>
     <string name="label_price_per_person">%s per person</string>
+    <string name="add_credit_card">Add Credit Card</string>
+    <string name="billing_information">Billing Information</string>
+    <string name="review_order">Review your order</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
