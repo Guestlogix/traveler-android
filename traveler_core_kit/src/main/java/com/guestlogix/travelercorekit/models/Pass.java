@@ -79,7 +79,7 @@ public class Pass implements Serializable {
                         case "id":
                             id = JsonReaderHelper.readNonNullString(reader);
                             break;
-                        case "name":
+                        case "title":
                             name = JsonReaderHelper.readString(reader);
                             break;
                         case "description":

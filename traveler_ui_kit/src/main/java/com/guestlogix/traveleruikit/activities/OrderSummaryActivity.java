@@ -5,24 +5,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Payment;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.TravelerUI;
-import com.guestlogix.traveleruikit.fragments.ProductSummaryFragment;
 import com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 public class OrderSummaryActivity extends AppCompatActivity {
 
     public static final String EXTRA_ORDER = "ORDER_SUMMARY_ACTIVITY_EXTRA_ORDER";
-    private static final int CARD_REQUEST = 233;
+    public static final int CARD_REQUEST = 233;
 
     private OrderSummaryViewModel viewModel;
     private ActionStrip actionStrip;
@@ -50,16 +46,40 @@ public class OrderSummaryActivity extends AppCompatActivity {
                 viewModel.getDisplayPrice().observe(this, price -> {
                     actionStrip.setValue(price.getFormattedValue());
                     actionStrip.setLabel(getString(R.string.label_price));
-                    actionStrip.setButtonText("Next");
+                    actionStrip.setButtonText(getString(R.string.next));
                 });
+
+                viewModel.getState().observe(this, state -> {
+                    switch (state) {
+                        case LOADING:
+                            actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
+                            break;
+                        case DEFAULT:
+                            actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
+                            break;
+                        case READY:
+                            actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+                            break;
+                        case ERROR:
+                            actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+                            new AlertDialog.Builder(OrderSummaryActivity.this)
+                                    .setMessage(R.string.unknown_error_message)
+                                    .show();
+                    }
+                });
+
+                actionStrip.setActionOnClickListener(v -> viewModel.submit());
+
+                viewModel.getReceipt().observe(this, receipt -> {
+                    // TODO: Launch next activity
+                });
+
+                return;
             }
         }
 
-        Button button = findViewById(R.id.button_orderSummary_addCard);
-        button.setOnClickListener(v -> {
-            Intent i = TravelerUI.getPaymentProvider().getPaymentActivityIntent(OrderSummaryActivity.this);
-            startActivityForResult(i, CARD_REQUEST);
-        });
+        TravelerLog.e("OrderSummaryActivity requires an Order object to operate.");
+        finish();
     }
 
     @Override
@@ -73,8 +93,11 @@ public class OrderSummaryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menuItem_cancel) {
             new AlertDialog.Builder(this)
-                    .setMessage("Discard this order?")
-                    .show(); //TODO
+                    .setMessage(R.string.discard_order)
+                    .setPositiveButton(R.string.discard, (x, y) -> OrderSummaryActivity.this.finish())
+                    .setNegativeButton(R.string.cancel, (x, y) -> {
+                    })
+                    .show();
         } else if (item.getItemId() == android.R.id.home) {
             finish();
         }

@@ -1,12 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,48 +29,49 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         String purchaseStrategy = null;
         String title = null;
         List<Pass> passes = null;
+        Date createdAt = null;
 
         reader.beginObject();
-
-        while (reader.hasNext()) {
-            String key = reader.nextName();
-
-            switch (key) {
-                case "id":
-                    id = JsonReaderHelper.readNonNullString(reader);
-                    break;
-                case "price":
-                    price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                    break;
-                case "title":
-                    title = JsonReaderHelper.readString(reader);
-                    break;
-                case "purchaseStrategy":
-                    purchaseStrategy = JsonReaderHelper.readNonNullString(reader);
-                    break;
-                case "passes":
-                    passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(reader);
-                    break;
-                default:
-                    reader.skipValue();
-            }
-        }
-
-        reader.endObject();
-
-        if (purchaseStrategy == null) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload must include a non-null non-undefined 'purchaseStrategy' field"));
-        }
-
         try {
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "id":
+                        id = JsonReaderHelper.readNonNullString(reader);
+                        break;
+                    case "price":
+                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "title":
+                        title = JsonReaderHelper.readString(reader);
+                        break;
+                    case "purchaseStrategy":
+                        purchaseStrategy = JsonReaderHelper.readNonNullString(reader);
+                        break;
+                    case "passes":
+                        passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(reader);
+                        break;
+                    default:
+                        reader.skipValue();
+                }
+            }
+
+            reader.endObject();
+
+            if (purchaseStrategy == null) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload must include a non-null non-undefined 'purchaseStrategy' field"));
+            }
+
             // Add extra types here.
-//            if (purchaseStrategy.equalsIgnoreCase("bookable")) {
+            if (purchaseStrategy.equalsIgnoreCase("bookable")) {
                 return new BookableProduct(id, price, passes, title);
-//            }
+            }
         } catch (IllegalArgumentException e) {
             throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
         }
 
-        // throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.TYPE_NOT_SUPPORTED, purchaseStrategy + " type is not yet supported"));
+        throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.TYPE_NOT_SUPPORTED, purchaseStrategy + " type is not yet supported"));
     }
 }

@@ -41,12 +41,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="@dimen/margin_default">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/actionButton"
                 tools:text="Check Availability"
-                style="@style/ActionButton"/>
+                android:minWidth="160dp"
+                style="@style/Button"/>
 
         <ProgressBar
                 android:layout_width="wrap_content"
