@@ -33,22 +33,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/numberPicker"
-            style="@style/DialogActionButton"
             android:text="@string/ok"
             app:layout_constraintTop_toBottomOf="@id/numberPicker"
             android:layout_marginTop="@dimen/margin_default"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/Button.TextButton.Primary"/>
 
     <Button
             android:id="@+id/cancelButton"
             android:layout_width="wrap_content"
-            android:layout_height="44dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/numberPicker"
-            style="@style/DialogActionButton"
             android:text="@string/cancel"
             app:layout_constraintTop_toBottomOf="@id/numberPicker"
             app:layout_constraintBaseline_toBaselineOf="@id/okButton"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintEnd_toStartOf="@id/okButton"/>
+            app:layout_constraintEnd_toStartOf="@id/okButton"
+            style="@style/Button.TextButton.Primary"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

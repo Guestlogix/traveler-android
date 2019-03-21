@@ -1,6 +1,5 @@
 package com.guestlogix.traveleruikit.fragments;
 
-
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.BookableProduct;
@@ -23,6 +24,7 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel;
 import org.w3c.dom.Text;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -78,9 +80,12 @@ public class ProductSummaryFragment extends BaseFragment {
             BookableProduct product = (BookableProduct) products.get(position);
 
             holder.title.setText(product.getTitle());
-            holder.subtitle.setText("TODO");
+            holder.subtitle.setVisibility(View.GONE); // TODO: We can't display the date for this product since we do have it in the model nor the payload.
             holder.recyclerView.setAdapter(new PassAdapter(product.getPasses()));
-            holder.recyclerView.setLayoutManager(new LinearLayoutManager(ProductSummaryFragment.this.getActivityContext()));
+            LinearLayoutManager lm = new LinearLayoutManager(ProductSummaryFragment.this.getActivityContext());
+            holder.recyclerView.setLayoutManager(lm);
+            DividerItemDecoration decoration = new DividerItemDecoration(recyclerView.getContext(), lm.getOrientation());
+            holder.recyclerView.addItemDecoration(decoration);
         }
 
         @Override
@@ -103,7 +108,7 @@ public class ProductSummaryFragment extends BaseFragment {
     }
 
     private class PassAdapter extends  RecyclerView.Adapter<PassAdapter.ViewHolder> {
-        public List<Pass> passes;
+        List<Pass> passes;
 
         PassAdapter(List<Pass> passes) {
             this.passes = passes;
@@ -121,7 +126,11 @@ public class ProductSummaryFragment extends BaseFragment {
             Pass pass = passes.get(position);
 
             holder.title.setText(pass.getName());
-            holder.subtitle.setText(pass.getDescription());
+            if (pass.getDescription() == null || pass.getDescription().isEmpty()) {
+                holder.subtitle.setText(pass.getDescription());
+            } else {
+                holder.subtitle.setVisibility(View.GONE);
+            }
             holder.value.setText(pass.getPrice().getFormattedValue());
         }
 
@@ -135,7 +144,7 @@ public class ProductSummaryFragment extends BaseFragment {
             TextView subtitle;
             TextView value;
 
-            public ViewHolder(@NonNull View itemView) {
+            ViewHolder(@NonNull View itemView) {
                 super(itemView);
 
                 title = itemView.findViewById(R.id.textView_passSummaryItem_title);
