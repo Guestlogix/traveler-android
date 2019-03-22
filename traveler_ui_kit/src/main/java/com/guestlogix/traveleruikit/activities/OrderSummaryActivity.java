@@ -105,17 +105,5 @@ public class OrderSummaryActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CARD_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Bundle extras = data.getExtras();
 
-                if (extras != null && extras.containsKey("RESULT_INTENT_EXTRA_PAYMENT_KEY")) {
-                    Payment payment = (Payment) extras.getSerializable("RESULT_INTENT_EXTRA_PAYMENT_KEY");
-                    viewModel.setPayment(payment);
-                }
-            }
-        }
-    }
 }

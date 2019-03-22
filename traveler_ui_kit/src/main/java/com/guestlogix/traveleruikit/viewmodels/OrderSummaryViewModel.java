@@ -47,7 +47,7 @@ public class OrderSummaryViewModel extends ViewModel {
             }
 
             payments.add(payment);
-            availablePayments.setValue(payments);
+            availablePayments.postValue(payments);
         }
 
         if (payment != null) {
