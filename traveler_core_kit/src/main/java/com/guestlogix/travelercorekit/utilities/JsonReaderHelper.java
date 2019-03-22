@@ -2,8 +2,6 @@ package com.guestlogix.travelercorekit.utilities;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.models.ObjectMappingError;
-import com.guestlogix.travelercorekit.models.ObjectMappingErrorCode;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,11 +35,11 @@ public class JsonReaderHelper {
      * @throws IOException            If reading cannot be performed.
      * @throws ObjectMappingException If value is null
      */
-    public static String readNonNullString(JsonReader reader) throws IOException, ObjectMappingException {
+    public static String readNonNullString(JsonReader reader) throws IOException, IllegalArgumentException {
 
         String value = readString(reader);
         if (null == value || value.isEmpty()) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+            throw new IllegalArgumentException("%s cannot be empty");
         }
         return value;
     }
@@ -72,11 +70,11 @@ public class JsonReaderHelper {
      * @throws IOException            If reading cannot be performed.
      * @throws ObjectMappingException If value is null
      */
-    public static Boolean readNonNullBoolean(JsonReader reader) throws IOException, ObjectMappingException {
+    public static Boolean readNonNullBoolean(JsonReader reader) throws IOException, IllegalArgumentException {
 
         Boolean value = readBoolean(reader);
         if (null == value) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+            throw new IllegalArgumentException("%s cannot be empty");
         }
         return value;
     }
@@ -107,10 +105,10 @@ public class JsonReaderHelper {
      * @throws IOException            If reading cannot be performed.
      * @throws ObjectMappingException If value is null
      */
-    public static Integer readNonNullInteger(JsonReader reader) throws IOException, ObjectMappingException {
+    public static Integer readNonNullInteger(JsonReader reader) throws IOException, IllegalArgumentException {
         Integer value = readInteger(reader);
         if (null == value) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+            throw new IllegalArgumentException("%s cannot be empty");
         }
         return value;
     }
@@ -159,10 +157,10 @@ public class JsonReaderHelper {
      * @throws IOException            If reading cannot be performed.
      * @throws ObjectMappingException If value is null.
      */
-    public static Double readNonNullDouble(JsonReader reader) throws IOException, ObjectMappingException {
+    public static Double readNonNullDouble(JsonReader reader) throws IOException, IllegalArgumentException {
         Double value = readDouble(reader);
         if (null == value) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format("%s cannot be empty", "x")));
+            throw new IllegalArgumentException("%s cannot be empty");
         }
         return value;
     }

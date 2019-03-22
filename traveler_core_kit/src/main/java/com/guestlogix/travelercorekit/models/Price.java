@@ -71,6 +71,7 @@ public class Price implements Serializable {
          */
         @Override
         public Price instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "Price";
             try {
                 Double value = 0.0;
                 String currency = "";
@@ -78,9 +79,9 @@ public class Price implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    switch (name) {
+                    switch (key) {
                         case "value":
                             value = JsonReaderHelper.readNonNullDouble(reader);
                             break;
@@ -95,7 +96,7 @@ public class Price implements Serializable {
 
                 return new Price(value, currency);
             } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }

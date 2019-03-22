@@ -64,6 +64,7 @@ public class Pass implements Serializable {
          */
         @Override
         public Pass instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "Pass";
             try {
                 String id = "";
                 String name = "";
@@ -73,7 +74,7 @@ public class Pass implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String key = reader.nextName();
+                    key = reader.nextName();
 
                     switch (key) {
                         case "id":
@@ -97,10 +98,10 @@ public class Pass implements Serializable {
 
                 reader.endObject();
                 return new Pass(id, name, description, price);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
             }
         }
     }

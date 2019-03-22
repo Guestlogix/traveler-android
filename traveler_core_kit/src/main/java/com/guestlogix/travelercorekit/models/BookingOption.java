@@ -14,7 +14,7 @@ public class BookingOption implements Serializable {
     private String value;
 
     @SuppressWarnings("ConstantConditions")
-    private BookingOption(@NonNull String id, @NonNull String value) {
+    private BookingOption(String id, String value) {
         if (id == null) {
             throw new IllegalArgumentException("id can not be null");
         }
@@ -38,38 +38,37 @@ public class BookingOption implements Serializable {
     static class BookingOptionObjectMappingFactory implements ObjectMappingFactory<BookingOption> {
 
         @Override
-        public BookingOption instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-            String id = null;
-            String value = null;
+        public BookingOption instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "BookingOption";
 
-            reader.beginObject();
+            try {
+                String id = null;
+                String value = null;
+                reader.beginObject();
 
-            while (reader.hasNext()) {
-                String name = reader.nextName();
+                while (reader.hasNext()) {
+                    key = reader.nextName();
 
-                switch (name) {
-                    case "id":
-                        id = JsonReaderHelper.readString(reader);
-                        break;
-                    case "optionLabel":
-                        value = JsonReaderHelper.readString(reader);
-                        break;
-                    default:
-                        reader.skipValue();
+                    switch (key) {
+                        case "id":
+                            id = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "optionLabel":
+                            value = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        default:
+                            reader.skipValue();
+                    }
                 }
+
+                reader.endObject();
+
+                return new BookingOption(id, value);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
-
-            reader.endObject();
-
-            if (id == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "BookingOption 'id' is a required json field"));
-            }
-
-            if (value == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "BookingOption 'label' is a required json field"));
-            }
-
-            return new BookingOption(id, value);
         }
     }
 }

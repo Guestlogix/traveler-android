@@ -70,65 +70,52 @@ public class Order implements Serializable {
 
         @Override
         public Order instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-            String id = null;
-            Price price = null;
-            String orderNumber = null;
-            List<Product> products = null;
-            Date createdDate = null;
+            String key = "Order";
+            try {
+                String id = null;
+                Price price = null;
+                String orderNumber = null;
+                List<Product> products = null;
+                Date createdDate = null;
 
-            reader.beginObject();
+                reader.beginObject();
 
-            while (reader.hasNext()) {
-                String name = reader.nextName();
+                while (reader.hasNext()) {
+                    key = reader.nextName();
 
-                switch (name) {
-                    case "id":
-                        id = JsonReaderHelper.readNonNullString(reader);
-                        break;
-                    case "amount":
-                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "orderNumber":
-                        orderNumber = JsonReaderHelper.readNonNullString(reader);
-                        break;
-                    case "createdAt":
-                        try {
-                            createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
-                        } catch (ParseException e) {
-                            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_FORMAT, "createdAt has invalid format"));
-                        }
-                        break;
-                    case "products":
-                        products = new ArrayMappingFactory<>(new AnyProductMappingFactory()).instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
+                    switch (key) {
+                        case "id":
+                            id = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "amount":
+                            price = new Price.PriceObjectMappingFactory().instantiate(reader);
+                            break;
+                        case "orderNumber":
+                            orderNumber = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "createdAt":
+                            try {
+                                createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
+                            } catch (ParseException e) {
+                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_FORMAT, "createdAt has invalid format"));
+                            }
+                            break;
+                        case "products":
+                            products = new ArrayMappingFactory<>(new AnyProductMappingFactory()).instantiate(reader);
+                            break;
+                        default:
+                            reader.skipValue();
+                    }
                 }
+
+                reader.endObject();
+
+                return new Order(id, price, orderNumber, products, createdDate);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
-
-            reader.endObject();
-
-            if (id == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "payload must have a non-null 'id' field"));
-            }
-
-            if (price == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "payload must have a non-null 'price' field"));
-            }
-
-            if (orderNumber == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "payload must have a non-null 'orderNumber' field"));
-            }
-
-            if (products == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "payload must have a non-null 'products' field"));
-            }
-
-            if (createdDate == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "payload must have a non-null 'createdAt' field"));
-            }
-
-            return new Order(id, price, orderNumber, products, createdDate);
         }
     }
 }

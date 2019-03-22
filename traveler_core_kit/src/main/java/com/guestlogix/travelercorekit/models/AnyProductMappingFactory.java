@@ -23,7 +23,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
             When adding new types, just add the extra fields as temporary variables and read the whole object. Then manually
             instantiate your product.
         */
-
+        String key = "Product";
         String id = null;
         Price price = null;
         String purchaseStrategy = null;
@@ -35,7 +35,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         try {
 
             while (reader.hasNext()) {
-                String key = reader.nextName();
+                key = reader.nextName();
 
                 switch (key) {
                     case "id":
@@ -69,7 +69,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
                 return new BookableProduct(id, price, passes, title);
             }
         } catch (IllegalArgumentException e) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
         }
 
         throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.TYPE_NOT_SUPPORTED, purchaseStrategy + " type is not yet supported"));

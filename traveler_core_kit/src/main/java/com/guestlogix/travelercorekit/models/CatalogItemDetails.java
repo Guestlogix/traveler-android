@@ -90,6 +90,7 @@ public class CatalogItemDetails extends Product {
          */
         @Override
         public CatalogItemDetails instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "CatalogItemDetails";
             try {
                 String id = "";
                 String title = "";
@@ -108,8 +109,8 @@ public class CatalogItemDetails extends Product {
                 }
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
-                    switch (name) {
+                    key = reader.nextName();
+                    switch (key) {
                         case "id":
                             id = JsonReaderHelper.readNonNullString(reader);
                             break;
@@ -122,6 +123,8 @@ public class CatalogItemDetails extends Product {
                         case "imageUrls":
                             if (reader.peek() != JsonToken.NULL) {
                                 imageURL.addAll(JsonReaderHelper.readURLArray(reader));
+                            } else {
+                                reader.skipValue();
                             }
                             break;
                         case "contact":
@@ -149,7 +152,7 @@ public class CatalogItemDetails extends Product {
                 return new CatalogItemDetails(id, title, description, imageURL, contact, locations, priceStartingAt, purchaseStrategy, information);
 
             } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }

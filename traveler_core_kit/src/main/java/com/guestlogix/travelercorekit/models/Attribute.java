@@ -48,6 +48,7 @@ public class Attribute implements Serializable {
          */
         @Override
         public Attribute instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "Attribute";
             try {
                 String label = "";
                 String value = "";
@@ -55,14 +56,14 @@ public class Attribute implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    switch (name) {
+                    switch (key) {
                         case "label":
-                            label = JsonReaderHelper.readNonNullString(reader);
+                            label = JsonReaderHelper.readString(reader);
                             break;
                         case "value":
-                            value = JsonReaderHelper.readNonNullString(reader);
+                            value = JsonReaderHelper.readString(reader);
                             break;
                         default:
                             reader.skipValue();
@@ -73,7 +74,7 @@ public class Attribute implements Serializable {
 
                 return new Attribute(label, value);
             } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }

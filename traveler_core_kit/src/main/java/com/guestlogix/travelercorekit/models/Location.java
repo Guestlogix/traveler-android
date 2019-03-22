@@ -43,6 +43,7 @@ public class Location implements Serializable {
 
         @Override
         public Location instantiate(JsonReader reader) throws ObjectMappingException {
+            String key="Location";
             try {
                 String address = "";
                 Double latitude = null;
@@ -51,9 +52,9 @@ public class Location implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    switch (name) {
+                    switch (key) {
                         case "address":
                             address = JsonReaderHelper.readString(reader);
                             break;
@@ -71,10 +72,10 @@ public class Location implements Serializable {
                 reader.endObject();
 
                 return new Location(address, latitude, longitude);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
             }
         }
     }

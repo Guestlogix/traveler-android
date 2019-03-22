@@ -22,16 +22,8 @@ public class ContactInfo implements Serializable {
     }
 
     private ContactInfo(String name, String email, String website, String address, List<String> phones) throws IllegalArgumentException {
-        if (name == null) {
-            throw new IllegalArgumentException("name can not be empty");
-        } else {
-            this.name = name;
-        }
-        if (email == null) {
-            throw new IllegalArgumentException("email can not be empty");
-        } else {
-            this.email = email;
-        }
+        this.name = name;
+        this.email = email;
         this.website = website;
         this.address = address;
         this.phones = phones;
@@ -67,6 +59,7 @@ public class ContactInfo implements Serializable {
          */
         @Override
         public ContactInfo instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "ContactInfo";
             try {
                 String name = "";
                 String email = "";
@@ -77,14 +70,14 @@ public class ContactInfo implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String key = reader.nextName();
+                    key = reader.nextName();
 
                     switch (key) {
                         case "name":
-                            name = JsonReaderHelper.readNonNullString(reader);
+                            name = JsonReaderHelper.readString(reader);
                             break;
                         case "email":
-                            email = JsonReaderHelper.readNonNullString(reader);
+                            email = JsonReaderHelper.readString(reader);
                             break;
                         case "website":
                             website = JsonReaderHelper.readString(reader);
@@ -95,6 +88,8 @@ public class ContactInfo implements Serializable {
                         case "phones":
                             if (reader.peek() != JsonToken.NULL) {
                                 phones.addAll(JsonReaderHelper.readStringsArray(reader));
+                            } else {
+                                reader.skipValue();
                             }
                             break;
                         default:
@@ -105,10 +100,10 @@ public class ContactInfo implements Serializable {
                 reader.endObject();
 
                 return new ContactInfo(name, email, website, address, phones);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
             }
         }
     }
