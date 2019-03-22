@@ -21,11 +21,10 @@ public class CatalogItemDetails extends Product {
     private ContactInfo contact;
     private List<Location> locations;
     private Price priceStartingAt;
-    private PurchaseStrategy purchaseStrategy;
     private List<Attribute> information;
 
     private CatalogItemDetails(String id, String title, String description, List<URL> imageURLs, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) throws IllegalArgumentException {
-        super(id, priceStartingAt);
+        super(id, priceStartingAt, purchaseStrategy);
         this.title = title;
         this.description = description;
         if (imageURLs == null) {

@@ -124,6 +124,20 @@
         <item name="iconPadding">@dimen/margin_xlarge</item>
     </style>
 
+    <style name="Button.Secondary">
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="strokeColor">@color/colorSecondary</item>
+        <item name="android:textSize">@dimen/text_view_default</item>
+        <item name="iconPadding">@dimen/margin_xlarge</item>
+    </style>
+
+    <style name="Button.Accent">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="strokeColor">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/text_view_default</item>
+        <item name="iconPadding">@dimen/margin_xlarge</item>
+    </style>
+
     <style name="Button.Warn">
         <item name="strokeColor">@color/colorWarn</item>
         <item name="backgroundTint">@color/colorWarn</item>
@@ -157,7 +171,21 @@
         <item name="strokeColor">@color/colorPrimary</item>
     </style>
 
-    <style name="Button.OutlinedButton.Warn">
+    <style name="OutlinedButton.Secondary">
+        <item name="rippleColor">@color/colorSecondary</item>
+        <item name="iconTint">@color/colorSecondary</item>
+        <item name="android:textColor">@color/colorSecondary</item>
+        <item name="strokeColor">@color/colorSecondary</item>
+    </style>
+
+    <style name="OutlinedButton.Accent">
+        <item name="rippleColor">@color/colorAccent</item>
+        <item name="iconTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="strokeColor">@color/colorAccent</item>
+    </style>
+
+    <style name="OutlinedButton.Warn">
         <item name="rippleColor">@color/colorWarn</item>
         <item name="iconTint">@color/colorWarn</item>
         <item name="android:textColor">@color/colorWarn</item>
