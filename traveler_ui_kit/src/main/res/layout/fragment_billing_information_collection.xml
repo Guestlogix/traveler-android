@@ -18,6 +18,13 @@
             android:paddingBottom="@dimen/padding_large"
             style="@style/Heading.Text.Title"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_billingCollection_availableItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"/>
+
     <com.google.android.material.button.MaterialButton
             android:id="@+id/button_orderSummary_addCard"
             android:layout_width="match_parent"
