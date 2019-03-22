@@ -6,7 +6,6 @@ public class NetworkTaskError extends Error {
     }
 
     private Code code;
-    private String message;
 
     NetworkTaskError(Code code) {
         super();
@@ -22,25 +21,34 @@ public class NetworkTaskError extends Error {
 
     @Override
     public String toString() {
-        switch (code) {
-            case BAD_URL:
-                return "Malformed URL";
-            case FORBIDDEN:
-                return "Access denied";
-            case NO_REQUEST:
-                return "No request";
-            case SERVER_ERROR:
-                return "Server Error";
-            case UNAUTHORIZED:
-                return "Not authorized";
-            case CONNECTION_ERROR:
-                return "Connection failed";
-        }
+        return String.format("%s %s", getCodeValue(), super.toString());
+    }
 
-        return "Unknown error";
+    @Override
+    public String getMessage() {
+        return String.format("%s %s", getCodeValue(), super.getMessage());
     }
 
     public Code getCode() {
         return code;
+    }
+
+    private String getCodeValue() {
+
+        switch (code) {
+            case BAD_URL:
+                return "Malformed URL";
+            case FORBIDDEN:
+                return "Access Denied";
+            case NO_REQUEST:
+                return "No Request";
+            case SERVER_ERROR:
+                return "Server Error";
+            case UNAUTHORIZED:
+                return "Not Authorized";
+            case CONNECTION_ERROR:
+                return "Connection Failed";
+        }
+        return "Unknown Error";
     }
 }

@@ -47,7 +47,7 @@ public class Airport implements Serializable {
     /**
      * Factory class to construct Airport model from {@code JsonReader}.
      */
-     static class AirportObjectMappingFactory implements ObjectMappingFactory<Airport> {
+    static class AirportObjectMappingFactory implements ObjectMappingFactory<Airport> {
 
         /**
          * Parses a reader object into Airport model.
@@ -58,6 +58,7 @@ public class Airport implements Serializable {
          */
         @Override
         public Airport instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "Airport";
             try {
                 String name = "";
                 String code = "";
@@ -66,7 +67,7 @@ public class Airport implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String key = reader.nextName();
+                    key = reader.nextName();
 
                     switch (key) {
                         case "name":
@@ -86,8 +87,8 @@ public class Airport implements Serializable {
 
                 reader.endObject();
                 return new Airport(name, code, city);
-            }catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }

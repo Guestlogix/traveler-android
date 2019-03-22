@@ -64,79 +64,63 @@ public class Question implements Serializable {
          */
         @Override
         public Question instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-            return readQuestion(reader);
-        }
+            String key = "Question";
+            try {
+                String id = "";
+                String title = "";
+                String description = "";
+                QuestionType type = null;
+                List<ValidationRule> rules = new ArrayList<>();
+                Object options = null;
 
-        /**
-         * Parses a reader into a Question object.
-         * <p>
-         * Future considerations:
-         * This method assumes that all extra fields are validation rules where the type is the name and the value is
-         * whatever validation rule you need. For now it assumes that the value is a regex pattern. If later changed to
-         * a more complicated object, this method will have to be changed.
-         *
-         * @param reader Object to read from
-         * @return Question object
-         * @throws IOException            If mapping cannot be done.
-         * @throws ObjectMappingException If choice mapping fails.
-         */
-        private Question readQuestion(JsonReader reader) throws IOException, ObjectMappingException {
-            String id = "";
-            String title = "";
-            String description = "";
-            QuestionType type = null;
-            List<ValidationRule> rules = new ArrayList<>();
-            Object options = null;
+                List<Choice> choices = null;
 
-            List<Choice> choices = null;
+                reader.beginObject();
 
-            reader.beginObject();
+                while (reader.hasNext()) {
+                    key = reader.nextName();
 
-            while (reader.hasNext()) {
-                String name = reader.nextName();
-
-                switch (name) {
-                    case "id":
-                        id = JsonReaderHelper.readString(reader);
-                        break;
-                    case "title":
-                        title = JsonReaderHelper.readString(reader);
-                        break;
-                    case "description":
-                        description = JsonReaderHelper.readString(reader);
-                        break;
-                    case "type":
-                        type = determineQuestionType(JsonReaderHelper.readString(reader));
-                        break;
-                    case "choices":
-                        ArrayMappingFactory<Choice> factory = new ArrayMappingFactory<>(new Choice.ChoiceObjectMappingFactory());
-                        choices = factory.instantiate(reader);
-                        break;
-                    case "required":
-                        Boolean required = JsonReaderHelper.readBoolean(reader);
-                        if (required != null && required) {
-                            rules.add(new RequiredValidationRule());
-                        }
-                        break;
-//                    case "maximumQuantity":
-//                        Integer max = JsonReaderHelper.readInteger(reader);
-//                        if (max != null) {
-//                            rules.add(new MaxQuantityValidationRule(max));
-//                        }
-//                        break;
-                    default:
-                        reader.skipValue();
-                        break;
+                    switch (key) {
+                        case "id":
+                            id = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "title":
+                            title = JsonReaderHelper.readString(reader);
+                            break;
+                        case "description":
+                            description = JsonReaderHelper.readString(reader);
+                            break;
+                        case "type":
+                            type = determineQuestionType(JsonReaderHelper.readString(reader));
+                            break;
+                        case "choices":
+                            ArrayMappingFactory<Choice> factory = new ArrayMappingFactory<>(new Choice.ChoiceObjectMappingFactory());
+                            choices = factory.instantiate(reader);
+                            break;
+                        case "required":
+                            Boolean required = JsonReaderHelper.readBoolean(reader);
+                            if (required != null && required) {
+                                rules.add(new RequiredValidationRule());
+                            }
+                            break;
+                        default:
+                            reader.skipValue();
+                            break;
+                    }
                 }
-            }
-            reader.endObject();
+                reader.endObject();
 
-            // Add choices if it's a multiple choice question type.
-            if (type == QuestionType.MULTIPLE_CHOICE) {
-                options = choices;
-            }
+                // Add choices if it's a multiple choice question type.
+                if (type == QuestionType.MULTIPLE_CHOICE) {
+                    options = choices;
+                }
 
-            return new Question(id, title, description, type, rules, options);
+                return new Question(id, title, description, type, rules, options);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+            }
         }
 
         private QuestionType determineQuestionType(String type) throws ObjectMappingException {

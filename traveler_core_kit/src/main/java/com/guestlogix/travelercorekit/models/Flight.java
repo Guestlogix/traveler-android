@@ -86,6 +86,7 @@ public class Flight implements Serializable {
          */
         @Override
         public Flight instantiate(JsonReader reader) throws ObjectMappingException {
+            String key="Flight";
             try {
                 String id = "";
                 String number = "";
@@ -97,9 +98,9 @@ public class Flight implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    switch (name) {
+                    switch (key) {
                         case "id":
                             id = JsonReaderHelper.readNonNullString(reader);
                             break;
@@ -129,7 +130,7 @@ public class Flight implements Serializable {
                 return new Flight(id, number, origin, destination, departure, arrival);
 
             } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (ParseException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, e.getMessage()));
             } catch (IOException e) {

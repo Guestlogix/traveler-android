@@ -17,7 +17,7 @@ public class BookingOptionSet implements Serializable {
     private List<BookingOption> options;
 
     @SuppressWarnings("ConstantConditions")
-    private BookingOptionSet(@NonNull String label, @NonNull List<BookingOption> options) {
+    private BookingOptionSet(String label, List<BookingOption> options) {
         if (label == null || label.isEmpty()) {
             throw new IllegalArgumentException("label can not be null or empty");
         }
@@ -40,38 +40,37 @@ public class BookingOptionSet implements Serializable {
     static class BookingOptionSetObjectMappingFactory implements ObjectMappingFactory<BookingOptionSet> {
 
         @Override
-        public BookingOptionSet instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-            String label = null;
-            List<BookingOption> options = null;
+        public BookingOptionSet instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "BookingOptionSet";
+            try {
+                String label = null;
+                List<BookingOption> options = null;
 
-            reader.beginObject();
+                reader.beginObject();
 
-            while (reader.hasNext()) {
-                String name = reader.nextName();
+                while (reader.hasNext()) {
+                    key = reader.nextName();
 
-                switch (name) {
-                    case "optionSetLabel":
-                        label = JsonReaderHelper.readString(reader);
-                        break;
-                    case "options":
-                        options = new ArrayMappingFactory<>(new BookingOption.BookingOptionObjectMappingFactory()).instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
+                    switch (key) {
+                        case "optionSetLabel":
+                            label = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "options":
+                            options = new ArrayMappingFactory<>(new BookingOption.BookingOptionObjectMappingFactory()).instantiate(reader);
+                            break;
+                        default:
+                            reader.skipValue();
+                    }
                 }
+
+                reader.endObject();
+
+                return new BookingOptionSet(label, options);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IOException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
-
-            reader.endObject();
-
-            if (label == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "BookingOptionSet 'label' is a required json field"));
-            }
-
-            if (options == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "BookingOptionSet 'options' is a required json field"));
-            }
-
-            return new BookingOptionSet(label, options);
         }
     }
 }

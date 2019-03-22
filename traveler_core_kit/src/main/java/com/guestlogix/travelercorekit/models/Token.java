@@ -40,14 +40,15 @@ public class Token {
 
         @Override
         public Token instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "Token";
             try {
                 String value = "";
 
                 reader.beginObject();
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    if (name.equals("token")) {
+                    if (key.equals("token")) {
                         value = JsonReaderHelper.readNonNullString(reader);
                     } else {
                         reader.skipValue();
@@ -56,11 +57,10 @@ public class Token {
 
                 reader.endObject();
                 return new Token(value);
+            } catch (IllegalArgumentException e) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
-
             }
         }
     }

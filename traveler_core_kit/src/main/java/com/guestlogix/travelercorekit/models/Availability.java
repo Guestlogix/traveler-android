@@ -59,6 +59,7 @@ public class Availability implements Serializable {
          */
         @Override
         public Availability instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "Availability";
             try {
                 Date date = null;
                 String id = null;
@@ -67,9 +68,9 @@ public class Availability implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    switch (name) {
+                    switch (key) {
                         case "date":
 
                             date = DateHelper.parseDate(JsonReaderHelper.readString(reader));
@@ -82,7 +83,6 @@ public class Availability implements Serializable {
                             break;
                         default:
                             reader.skipValue();
-
                     }
                 }
 
@@ -90,7 +90,7 @@ public class Availability implements Serializable {
 
                 return new Availability(id, date, bookingOptionSet);
             } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             } catch (ParseException e) {

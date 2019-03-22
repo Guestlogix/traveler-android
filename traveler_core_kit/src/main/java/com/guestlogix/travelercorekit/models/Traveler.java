@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
+import com.guestlogix.travelercorekit.BuildConfig;
 import com.guestlogix.travelercorekit.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.*;
@@ -86,6 +87,7 @@ public class Traveler {
                 protected void main() {
                     if (null != searchFlightTask.getError()) {
                         flightSearchCallback.onFlightSearchError(searchFlightTask.getError());
+                        TravelerLog.e(searchFlightTask.getError().getMessage());
                     } else {
                         flightSearchCallback.onFlightSearchSuccess(searchFlightTask.getResource());
                     }
@@ -118,6 +120,7 @@ public class Traveler {
                 protected void main() {
                     if (null != searchGroupTask.getError()) {
                         catalogSearchCallback.onCatalogSearchError(searchGroupTask.getError());
+                        TravelerLog.e(searchGroupTask.getError().getMessage());
                     } else {
                         catalogSearchCallback.onCatalogSearchSuccess(searchGroupTask.getResource());
                     }
@@ -148,6 +151,7 @@ public class Traveler {
                 protected void main() {
                     if (null != catalogItemDetailsTask.getError()) {
                         catalogItemDetailsCallback.onCatalogItemDetailsError(catalogItemDetailsTask.getError());
+                        TravelerLog.e(catalogItemDetailsTask.getError().getMessage());
                     } else {
                         catalogItemDetailsCallback.onCatalogItemDetailsSuccess(catalogItemDetailsTask.getResource());
                     }
@@ -173,21 +177,22 @@ public class Traveler {
             checkAvailabilityCallback.onAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, product, startDate, endDate, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<List<Availability>> fetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<List<Availability>> fetchAvailabilitiesTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
-                    if (null != fetchTask.getError()) {
-                        checkAvailabilityCallback.onAvailabilityError(fetchTask.getError());
+                    if (null != fetchAvailabilitiesTask.getError()) {
+                        checkAvailabilityCallback.onAvailabilityError(fetchAvailabilitiesTask.getError());
+                        TravelerLog.e(fetchAvailabilitiesTask.getError().getMessage());
                     } else {
-                        checkAvailabilityCallback.onAvailabilitySuccess(fetchTask.getResource());
+                        checkAvailabilityCallback.onAvailabilitySuccess(fetchAvailabilitiesTask.getResource());
                     }
                 }
             };
 
-            fetchBlockTask.addDependency(fetchTask);
-            localInstance.taskManager.addTask(fetchTask);
+            fetchBlockTask.addDependency(fetchAvailabilitiesTask);
+            localInstance.taskManager.addTask(fetchAvailabilitiesTask);
             TaskManager.getMainTaskManager().addTask(fetchBlockTask);
         }
     }
@@ -206,21 +211,22 @@ public class Traveler {
         } else {
 
             AuthenticatedUrlRequest request = Router.productPass(localInstance.session, product, availability, option, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<List<Pass>> passFetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<List<Pass>> fetchPassesTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
 
             BlockTask fetchPassBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
-                    if (null != passFetchTask.getError()) {
-                        fetchPassesCallback.onError(passFetchTask.getError());
+                    if (null != fetchPassesTask.getError()) {
+                        fetchPassesCallback.onError(fetchPassesTask.getError());
+                        TravelerLog.e(fetchPassesTask.getError().getMessage());
                     } else {
-                        fetchPassesCallback.onSuccess(passFetchTask.getResource());
+                        fetchPassesCallback.onSuccess(fetchPassesTask.getResource());
                     }
                 }
             };
 
-            fetchPassBlockTask.addDependency(passFetchTask);
-            localInstance.taskManager.addTask(passFetchTask);
+            fetchPassBlockTask.addDependency(fetchPassesTask);
+            localInstance.taskManager.addTask(fetchPassesTask);
             TaskManager.getMainTaskManager().addTask(fetchPassBlockTask);
         }
     }
@@ -231,21 +237,22 @@ public class Traveler {
         } else {
 
             AuthenticatedUrlRequest request = Router.productQuestion(localInstance.session, product, passes, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<List<QuestionGroup>> fetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
+            AuthenticatedNetworkRequestTask<List<QuestionGroup>> fetchBookingFormTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
-                    if (null != fetchTask.getError()) {
-                        fetchBookingFormCallback.onBookingFormFetchError(fetchTask.getError());
+                    if (null != fetchBookingFormTask.getError()) {
+                        fetchBookingFormCallback.onBookingFormFetchError(fetchBookingFormTask.getError());
+                        TravelerLog.e(fetchBookingFormTask.getError().getMessage());
                     } else {
-                        fetchBookingFormCallback.onBookingFormFetchSuccess(new BookingForm(product, passes, fetchTask.getResource()));
+                        fetchBookingFormCallback.onBookingFormFetchSuccess(new BookingForm(product, passes, fetchBookingFormTask.getResource()));
                     }
                 }
             };
 
-            fetchBlockTask.addDependency(fetchTask);
-            localInstance.taskManager.addTask(fetchTask);
+            fetchBlockTask.addDependency(fetchBookingFormTask);
+            localInstance.taskManager.addTask(fetchBookingFormTask);
             TaskManager.getMainTaskManager().addTask(fetchBlockTask);
         }
     }
@@ -257,21 +264,22 @@ public class Traveler {
             ArrayList<BookingForm> forms = new ArrayList<>();
             forms.add(bookingForm);
             AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<Order> fetchTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
+            AuthenticatedNetworkRequestTask<Order> createOrderTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
-                    if (null != fetchTask.getError()) {
-                        orderCreateCallback.onOrderCreateFailure(fetchTask.getError());
+                    if (null != createOrderTask.getError()) {
+                        orderCreateCallback.onOrderCreateFailure(createOrderTask.getError());
+                        TravelerLog.e(createOrderTask.getError().getMessage());
                     } else {
-                        orderCreateCallback.onOrderCreateSuccess(fetchTask.getResource());
+                        orderCreateCallback.onOrderCreateSuccess(createOrderTask.getResource());
                     }
                 }
             };
 
-            fetchBlockTask.addDependency(fetchTask);
-            localInstance.taskManager.addTask(fetchTask);
+            fetchBlockTask.addDependency(createOrderTask);
+            localInstance.taskManager.addTask(createOrderTask);
             TaskManager.getMainTaskManager().addTask(fetchBlockTask);
         }
     }
@@ -281,6 +289,24 @@ public class Traveler {
             processOrderCallback.onOrderProcessError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             AuthenticatedUrlRequest request = Router.orderProcess(localInstance.session, order, payment, localInstance.session.getContext());
+
+            AuthenticatedNetworkRequestTask<Receipt> processOrderTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Receipt.ReceiptMappingFactory());
+
+            BlockTask fetchBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != processOrderTask.getError()) {
+                        processOrderCallback.onOrderProcessError(processOrderTask.getError());
+                        TravelerLog.e(processOrderTask.getError().getMessage());
+                    } else {
+                        processOrderCallback.onOrderProcessSuccess(processOrderTask.getResource());
+                    }
+                }
+            };
+
+            fetchBlockTask.addDependency(processOrderTask);
+            localInstance.taskManager.addTask(processOrderTask);
+            TaskManager.getMainTaskManager().addTask(fetchBlockTask);
 
         }
     }

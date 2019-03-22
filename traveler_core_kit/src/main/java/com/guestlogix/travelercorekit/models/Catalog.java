@@ -37,15 +37,16 @@ public class Catalog {
          */
         @Override
         public Catalog instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "Catalog";
             try {
                 List<CatalogGroup> catalogGroups = null;
 
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    if (name.equals("groups")) {
+                    if (key.equals("groups")) {
                         catalogGroups = new ArrayMappingFactory<>(new CatalogGroup.GroupObjectMappingFactory()).instantiate(reader);
                     } else {
                         reader.skipValue();
@@ -55,7 +56,7 @@ public class Catalog {
                 reader.endObject();
                 return new Catalog(catalogGroups);
             } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }

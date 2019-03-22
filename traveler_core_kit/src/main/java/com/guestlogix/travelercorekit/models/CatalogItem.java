@@ -47,6 +47,7 @@ public class CatalogItem extends Product implements Serializable {
          */
         @Override
         public CatalogItem instantiate(JsonReader reader) throws ObjectMappingException {
+            String key = "CatalogItem";
             try {
                 String id = "";
                 String title = "";
@@ -56,9 +57,9 @@ public class CatalogItem extends Product implements Serializable {
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    String name = reader.nextName();
+                    key = reader.nextName();
 
-                    switch (name) {
+                    switch (key) {
                         case "id":
                             id = JsonReaderHelper.readNonNullString(reader);
                             break;
@@ -80,7 +81,7 @@ public class CatalogItem extends Product implements Serializable {
 
                 return new CatalogItem(id, title, subTitle, thumbnail);
             } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, e.getMessage()));
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
