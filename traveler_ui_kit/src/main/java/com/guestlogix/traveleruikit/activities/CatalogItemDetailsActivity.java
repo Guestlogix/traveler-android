@@ -16,7 +16,7 @@ import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
 
 public class CatalogItemDetailsActivity extends AppCompatActivity implements TravelerErrorFragment.OnErrorInteractionListener {
 
-    public static final String ARG_CATALOG_ITEM = "catalog_item";
+    public static final String ARG_CATALOG_ITEM = "CATALOG_ITEM";
 
     private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
     private NavController navController;
