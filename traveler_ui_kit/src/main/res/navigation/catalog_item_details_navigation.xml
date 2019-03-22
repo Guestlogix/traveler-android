@@ -15,7 +15,7 @@
             android:name="com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment"
             android:label="@string/app_name"
             tools:layout="@layout/fragment_catalog_item_details">
-        <argument android:name="catalog_item" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>
+        <argument android:name="CATALOG_ITEM" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>
     </fragment>
 
     <fragment

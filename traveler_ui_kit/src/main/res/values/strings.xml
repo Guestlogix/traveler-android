@@ -35,6 +35,8 @@
     <string name="discard">discard</string>
     <string name="next">next</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="view_tickets">View Tickets</string>
+    <string name="confirmation_number">Confirmation number:</string>
+    <string name="confirmation_email">Confirmation email:</string>
+    <string name="home">Home</string>
 </resources>

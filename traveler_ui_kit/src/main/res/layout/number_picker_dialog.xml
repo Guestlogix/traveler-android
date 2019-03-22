@@ -37,7 +37,7 @@
             app:layout_constraintTop_toBottomOf="@id/numberPicker"
             android:layout_marginTop="@dimen/margin_default"
             app:layout_constraintEnd_toEndOf="parent"
-            style="@style/Button.TextButton.Primary"/>
+            style="@style/TextButton.Primary"/>
 
     <Button
             android:id="@+id/cancelButton"
@@ -49,6 +49,6 @@
             app:layout_constraintBaseline_toBaselineOf="@id/okButton"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintEnd_toStartOf="@id/okButton"
-            style="@style/Button.TextButton.Primary"/>
+            style="@style/TextButton.Primary"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

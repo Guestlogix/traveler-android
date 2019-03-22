@@ -9,7 +9,7 @@
     <ImageView
             android:id="@+id/thumbnailImageView"
             android:layout_width="162dp"
-            android:src="@color/green"
+            android:src="@color/colorAccent"
             android:layout_height="96dp"/>
     <TextView
             style="@style/SubHeadTextView"
