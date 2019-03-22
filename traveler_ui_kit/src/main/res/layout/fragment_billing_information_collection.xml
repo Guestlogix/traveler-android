@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_default"
-            style="@style/Button.OutlinedButton.Primary"
+            style="@style/OutlinedButton.Primary"
             android:text="@string/add_credit_card"
             app:icon="@android:drawable/ic_input_add"
             app:iconGravity="textStart"
