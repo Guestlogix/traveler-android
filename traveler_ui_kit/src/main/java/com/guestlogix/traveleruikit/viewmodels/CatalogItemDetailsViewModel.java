@@ -37,7 +37,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
         @Override
         public void onCatalogItemDetailsSuccess(CatalogItemDetails catalog) {
             status.setValue(State.SUCCESS);
-            catalogItemDetails.postValue(catalog);
+            catalogItemDetails.setValue(catalog);
         }
 
         @Override
@@ -48,6 +48,7 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     private void updateCatalog(CatalogItem catalogItem) {
         status.setValue(State.LOADING);
+        //TODO: Signatures can be changed to take Product
         catalogItemDetailsRepository.fetchDetails(catalogItem, catalogSearchCallback);
     }
 }

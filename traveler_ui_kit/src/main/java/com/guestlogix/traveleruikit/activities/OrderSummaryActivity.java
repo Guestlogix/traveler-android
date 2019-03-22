@@ -15,6 +15,8 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.ARG_RECEIPT;
+
 public class OrderSummaryActivity extends AppCompatActivity {
 
     public static final String EXTRA_ORDER = "ORDER_SUMMARY_ACTIVITY_EXTRA_ORDER";
@@ -72,6 +74,9 @@ public class OrderSummaryActivity extends AppCompatActivity {
 
                 viewModel.getReceipt().observe(this, receipt -> {
                     // TODO: Launch next activity
+                    Intent orderConfirmationIntent = new Intent(OrderSummaryActivity.this, OrderConfirmationActivity.class);
+                    orderConfirmationIntent.putExtra(ARG_RECEIPT, receipt);
+                    startActivity(orderConfirmationIntent);
                 });
 
                 return;
@@ -104,6 +109,5 @@ public class OrderSummaryActivity extends AppCompatActivity {
 
         return true;
     }
-
 
 }

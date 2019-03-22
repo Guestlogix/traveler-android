@@ -52,7 +52,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
         Button button = view.findViewById(R.id.button_orderSummary_addCard);
         button.setOnClickListener(v -> {
-            Intent i = TravelerUI.getPaymentProvider().getPaymentActivityIntent(getActivityContext());
+            Intent i = TravelerUI.getPaymentProvider().getPaymentActivityIntent(getActivity());
             startActivityForResult(i, OrderSummaryActivity.CARD_REQUEST);
         });
 

@@ -66,7 +66,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
 
             // Add extra types here.
             if (purchaseStrategy.equalsIgnoreCase("bookable")) {
-                return new BookableProduct(id, price, passes, title);
+                return new BookableProduct(id, price, passes, title, PurchaseStrategy.Bookable);
             }
         } catch (IllegalArgumentException e) {
             throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));

@@ -8,8 +8,8 @@ public class BookableProduct extends Product {
     private List<Pass> passes;
     private String title;
 
-    BookableProduct(String id, Price price, List<Pass> passes, String title) throws IllegalArgumentException {
-        super(id, price);
+    BookableProduct(String id, Price price, List<Pass> passes, String title, PurchaseStrategy purchaseStrategy) throws IllegalArgumentException {
+        super(id, price, purchaseStrategy);
 
         if (passes == null) {
             throw new IllegalArgumentException("passes can not be null");
