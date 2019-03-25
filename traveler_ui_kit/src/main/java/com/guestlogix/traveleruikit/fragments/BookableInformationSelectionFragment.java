@@ -16,9 +16,11 @@ import com.guestlogix.traveleruikit.widgets.DatePickerCell;
 import com.guestlogix.traveleruikit.widgets.ListPickerCell;
 
 public class BookableInformationSelectionFragment extends BaseFragment {
+    private ListPickerCell timePickerCell;
+    private DatePickerCell datePickerCell;
 
     public BookableInformationSelectionFragment() {
-        // Required empty public constructor
+        // Do nothing
     }
 
     @Override
@@ -30,34 +32,14 @@ public class BookableInformationSelectionFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        DatePickerCell datePickerCell = view.findViewById(R.id.datePickerCell);
+        datePickerCell = view.findViewById(R.id.datePickerCell);
         datePickerCell.setHint(getString(R.string.hint_select_date));
-        ListPickerCell timePickerCell = view.findViewById(R.id.timePickerCell);
+        timePickerCell = view.findViewById(R.id.timePickerCell);
         timePickerCell.setHint(getString(R.string.hint_select_time));
 
         BookableProductViewModel sharedViewModel = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
-        sharedViewModel.getOptions().observe(getActivityContext(), timePickerCell::setValueList);
-        sharedViewModel.getAvailabilityState().observe(this, (state -> {
-            switch (state) {
-                case DEFAULT:
-                    timePickerCell.setVisibility(View.GONE);
-                    break;
-                case NOT_AVAILABLE:
-                    timePickerCell.setVisibility(View.GONE);
-                    datePickerCell.setError(getString(R.string.not_available));
-                    break;
-                case OPTION_NEEDED:
-                    timePickerCell.setVisibility(View.VISIBLE);
-                    //datePickerCell.setError(null);
-                    break;
-                case AVAILABLE:
-                    datePickerCell.setError(null);
-                    break;
-                case ERROR:
-                    onCheckAvailabilityError();
-                    break;
-            }
-        }));
+        sharedViewModel.getObservableOptions().observe(getActivityContext(), timePickerCell::setValueList);
+        sharedViewModel.getAvailabilityState().observe(this, this::onStateChanged);
 
         datePickerCell.setOnDateChangedListener(sharedViewModel::onDateChanged);
         timePickerCell.setOnItemSelectedListener(sharedViewModel::onOptionChanged);
@@ -70,6 +52,27 @@ public class BookableInformationSelectionFragment extends BaseFragment {
                 .create();
 
         dialog.show();
+    }
+
+    private void onStateChanged(BookableProductViewModel.State state) {
+        switch (state) {
+            case DEFAULT:
+                timePickerCell.setVisibility(View.GONE);
+                break;
+            case NOT_AVAILABLE:
+                timePickerCell.setVisibility(View.GONE);
+                datePickerCell.setError(getString(R.string.not_available));
+                break;
+            case OPTION_NEEDED:
+                timePickerCell.setVisibility(View.VISIBLE);
+                break;
+            case AVAILABLE:
+                datePickerCell.setError(null);
+                break;
+            case ERROR:
+                onCheckAvailabilityError();
+                break;
+        }
     }
 
 }

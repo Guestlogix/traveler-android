@@ -3,7 +3,6 @@ package com.guestlogix.traveleruikit.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
@@ -19,7 +17,6 @@ import com.guestlogix.traveleruikit.viewmodels.BookableProductViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -65,7 +62,7 @@ public class BookableActionStripFragment extends BaseFragment {
             }
         }));
 
-        sharedViewModel.getPasses().observe(this, passes -> {
+        sharedViewModel.getObservablePasses().observe(this, passes -> {
             Product p = sharedViewModel.getProduct();
 
             Intent i = new Intent(getActivityContext(), PassSelectionActivity.class);
@@ -77,7 +74,7 @@ public class BookableActionStripFragment extends BaseFragment {
         actionStrip = view.findViewById(R.id.action_container);
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
-        sharedViewModel.getPrice().observe(this, (price -> {
+        sharedViewModel.getObservablePrice().observe(this, (price -> {
             String checkAvailability = getString(R.string.button_check_availability);
             String startingAt = getString(R.string.label_starting_at);
             String localizedPrice = String.format(Locale.getDefault(), getString(R.string.label_price_per_person), price.getFormattedValue());

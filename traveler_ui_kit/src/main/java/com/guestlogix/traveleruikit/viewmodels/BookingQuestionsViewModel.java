@@ -9,7 +9,7 @@ import com.guestlogix.travelercorekit.models.Traveler;
 
 import java.util.List;
 
-public class BookingQuestionsViewModel extends StatefulViewModel {
+public class BookingQuestionsViewModel extends StatefulViewModel implements OrderCreateCallback {
     private MutableLiveData<BookingForm> bookingForm;
     private MutableLiveData<BookingForm.BookingFormError> error;
     private MutableLiveData<Order> order;
@@ -26,15 +26,15 @@ public class BookingQuestionsViewModel extends StatefulViewModel {
         this.bookingForm.setValue(bookingForm);
     }
 
-    public LiveData<BookingForm> getBookingForm() {
+    public LiveData<BookingForm> getObservableBookingForm() {
         return bookingForm;
     }
 
-    public LiveData<BookingForm.BookingFormError> getError() {
+    public LiveData<BookingForm.BookingFormError> getObservableCurrentError() {
         return error;
     }
 
-    public LiveData<Order> getOrder() {
+    public LiveData<Order> getObservableOrder() {
         return order;
     }
 
@@ -57,19 +57,19 @@ public class BookingQuestionsViewModel extends StatefulViewModel {
                 error.setValue(currentError);
             } else {
                 status.setValue(State.LOADING);
-                Traveler.createOrder(bookingForm.getValue(), new OrderCreateCallback() {
-                    @Override
-                    public void onOrderCreateSuccess(Order order) {
-                        status.postValue(State.SUCCESS);
-                        BookingQuestionsViewModel.this.order.postValue(order);
-                    }
-
-                    @Override
-                    public void onOrderCreateFailure(Error error) {
-                        status.postValue(State.ERROR);
-                    }
-                });
+                Traveler.createOrder(bookingForm.getValue(), this);
             }
         }
+    }
+
+    @Override
+    public void onOrderCreateSuccess(Order order) {
+        status.postValue(State.SUCCESS);
+        BookingQuestionsViewModel.this.order.postValue(order);
+    }
+
+    @Override
+    public void onOrderCreateFailure(Error error) {
+        status.postValue(State.ERROR);
     }
 }

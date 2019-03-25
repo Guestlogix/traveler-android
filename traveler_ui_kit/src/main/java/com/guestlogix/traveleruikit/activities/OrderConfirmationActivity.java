@@ -1,12 +1,11 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Product;
@@ -51,7 +50,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
             homeButton.setOnClickListener(homeOnClickListener);
 
             orderConfirmationViewModel = ViewModelProviders.of(this).get(OrderConfirmationViewModel.class);
-            orderConfirmationViewModel.getObservableReceipt().observe(this, receiptObserver);
+            orderConfirmationViewModel.getObservableReceipt().observe(this, this::onReceiptUpdate);
 
             orderConfirmationViewModel.setReceipt((Receipt) extras.getSerializable(ARG_RECEIPT));
 
@@ -62,7 +61,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
     View.OnClickListener homeOnClickListener = v -> finish();
 
-    Observer receiptObserver = (Observer<Receipt>) receipt -> {
+    private void onReceiptUpdate(Receipt receipt) {
         //update UI
 
         if (receipt.getProducts().size() > 0) {
@@ -72,15 +71,9 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 BookableProduct bookableProduct = (BookableProduct) product;
                 titleTextView.setText(bookableProduct.getTitle());
             }
-
-            if (product.getPurchaseStrategy().equals("bookable")) {
-                BookableProduct bookableProduct = (BookableProduct) product;
-                titleTextView.setText(bookableProduct.getTitle());
-            }
         }
         subTitleTextView.setText(receipt.getOrderNumber());
         emailValueTextView.setText(receipt.getEmail());
         confirmationNumberValueTextView.setText(receipt.getOrderNumber());
-
-    };
+    }
 }

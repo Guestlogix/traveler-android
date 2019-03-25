@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class BookableProductViewModel extends ProductViewModel {
+public class BookableProductViewModel extends ProductViewModel implements FetchAvailabilitiesCallback, FetchPassesCallback {
     private Product product;
 
     private MutableLiveData<State> actionState;
@@ -35,15 +35,15 @@ public class BookableProductViewModel extends ProductViewModel {
         return actionState;
     }
 
-    public LiveData<Price> getPrice() {
+    public LiveData<Price> getObservablePrice() {
         return price;
     }
 
-    public LiveData<List<Pass>> getPasses() {
+    public LiveData<List<Pass>> getObservablePasses() {
         return passes;
     }
 
-    public LiveData<List<String>> getOptions() {
+    public LiveData<List<String>> getObservableOptions() {
         return options;
     }
 
@@ -61,38 +61,7 @@ public class BookableProductViewModel extends ProductViewModel {
         actionState.setValue(State.LOADING);
 
         // TODO: Don't re-fetch if its the same date.
-        Traveler.fetchAvailabilities(product, calendar.getTime(), calendar.getTime(), new FetchAvailabilitiesCallback() {
-            @Override
-            public void onAvailabilitySuccess(List<Availability> availabilities) {
-                // Expecting a single availability.
-
-                if (availabilities == null || availabilities.isEmpty()) {
-                    actionState.postValue(State.NOT_AVAILABLE);
-                    return;
-                }
-
-                currentAvailability = availabilities.get(0);
-                currentOption = null;
-
-                if (currentAvailability.getBookingOptionSet().getOptions() == null || currentAvailability.getBookingOptionSet().getOptions().isEmpty()) {
-                    actionState.postValue(State.AVAILABLE);
-                    return;
-                }
-
-                List<String> optionValues = new ArrayList<>();
-                for (BookingOption o : currentAvailability.getBookingOptionSet().getOptions()) {
-                    optionValues.add(o.getValue());
-                }
-
-                options.postValue(optionValues);
-                actionState.postValue(State.OPTION_NEEDED);
-            }
-
-            @Override
-            public void onAvailabilityError(Error error) {
-                actionState.postValue(State.ERROR);
-            }
-        });
+        Traveler.fetchAvailabilities(product, calendar.getTime(), calendar.getTime(), this);
     }
 
     public void onOptionChanged(int pos) {
@@ -112,19 +81,49 @@ public class BookableProductViewModel extends ProductViewModel {
         }
 
         actionState.setValue(State.LOADING);
+        Traveler.fetchPasses(product, currentAvailability, currentOption, this);
+    }
 
-        Traveler.fetchPasses(product, currentAvailability, currentOption, new FetchPassesCallback() {
-            @Override
-            public void onSuccess(List<Pass> pass) {
-                passes.postValue(pass);
-                actionState.postValue(State.AVAILABLE);
-            }
+    @Override
+    public void onAvailabilitySuccess(List<Availability> availabilities) {
+        // Expecting a single availability.
 
-            @Override
-            public void onError(Error error) {
-                actionState.postValue(State.ERROR);
-            }
-        });
+        if (availabilities == null || availabilities.isEmpty()) {
+            actionState.postValue(State.NOT_AVAILABLE);
+            return;
+        }
+
+        currentAvailability = availabilities.get(0);
+        currentOption = null;
+
+        if (currentAvailability.getBookingOptionSet().getOptions() == null || currentAvailability.getBookingOptionSet().getOptions().isEmpty()) {
+            actionState.postValue(State.AVAILABLE);
+            return;
+        }
+
+        List<String> optionValues = new ArrayList<>();
+        for (BookingOption o : currentAvailability.getBookingOptionSet().getOptions()) {
+            optionValues.add(o.getValue());
+        }
+
+        options.postValue(optionValues);
+        actionState.postValue(State.OPTION_NEEDED);
+    }
+
+    @Override
+    public void onAvailabilityError(Error error) {
+        actionState.postValue(State.ERROR);
+    }
+
+    @Override
+    public void onSuccess(List<Pass> pass) {
+        passes.postValue(pass);
+        actionState.postValue(State.AVAILABLE);
+    }
+
+    @Override
+    public void onError(Error error) {
+        actionState.postValue(State.ERROR);
     }
 
     public enum State {

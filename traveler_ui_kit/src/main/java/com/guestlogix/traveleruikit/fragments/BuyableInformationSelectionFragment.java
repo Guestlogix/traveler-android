@@ -21,7 +21,7 @@ import com.guestlogix.traveleruikit.widgets.ListPickerCell;
 public class BuyableInformationSelectionFragment extends BaseFragment {
 
     public BuyableInformationSelectionFragment() {
-        // Required empty public constructor
+        // Do nothing.
     }
 
     @Override
@@ -33,37 +33,7 @@ public class BuyableInformationSelectionFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        DatePickerCell datePickerCell = view.findViewById(R.id.datePickerCell);
-        datePickerCell.setHint(getString(R.string.hint_select_date));
-        ListPickerCell timePickerCell = view.findViewById(R.id.timePickerCell);
-        timePickerCell.setHint(getString(R.string.hint_select_time));
-
-        BookableProductViewModel sharedViewModel = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
-//        sharedViewModel.getBookingTimes().observe(this, timePickerCell::setValueList);
-        sharedViewModel.getAvailabilityState().observe(this, (state -> {
-            switch (state) {
-                case DEFAULT:
-                    timePickerCell.setVisibility(View.GONE);
-                    break;
-                case NOT_AVAILABLE:
-                    timePickerCell.setVisibility(View.GONE);
-                    datePickerCell.setError(getString(R.string.not_available));
-                    break;
-                case OPTION_NEEDED:
-                    timePickerCell.setVisibility(View.VISIBLE);
-                    //datePickerCell.setError(null);
-                    break;
-                case AVAILABLE:
-                    datePickerCell.setError(null);
-                    break;
-                case ERROR:
-                    onCheckAvailabilityError();
-                    break;
-            }
-        }));
-
-        datePickerCell.setOnDateChangedListener(sharedViewModel::onDateChanged);
-        timePickerCell.setOnItemSelectedListener(sharedViewModel::onOptionChanged);
+        // TODO
     }
 
     private void onCheckAvailabilityError() {

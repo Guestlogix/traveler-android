@@ -1,14 +1,10 @@
 package com.guestlogix.traveleruikit.fragments;
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,17 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel;
-import org.w3c.dom.Text;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * A fragment which displays the general information for a list of products.
- * Observes {@link com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel} for products to display.
+ * Observes {@link OrderSummaryViewModel} for products to display.
  */
 public class ProductSummaryFragment extends BaseFragment {
     private OrderSummaryViewModel viewModel;
@@ -38,12 +31,11 @@ public class ProductSummaryFragment extends BaseFragment {
     private ProductsAdapter productsAdapter;
 
     public ProductSummaryFragment() {
+        // Do nothing
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_product_summary, container, false);
     }
 
@@ -51,22 +43,29 @@ public class ProductSummaryFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        recyclerView = view.findViewById(R.id.recyclerView_orderSummary_productsContainer);
-        viewModel = ViewModelProviders.of(getActivity()).get(OrderSummaryViewModel.class);
 
-        viewModel.getProducts().observe(this, products -> {
-            productsAdapter = new ProductsAdapter(products);
+        recyclerView = view.findViewById(R.id.recyclerView_orderSummary_productsContainer);
+        viewModel = ViewModelProviders.of(getActivityContext()).get(OrderSummaryViewModel.class);
+        viewModel.getObservableProducts().observe(this, this::onProductsChanged);
+    }
+
+    private void onProductsChanged(List<Product> products) {
+        if (productsAdapter == null) {
+            productsAdapter = new ProductsAdapter();
             recyclerView.setAdapter(productsAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(ProductSummaryFragment.this.getActivityContext()));
-        });
+        }
+
+        productsAdapter.products = products;
+
+        if (recyclerView.getLayoutManager() == null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
+        }
+
+        productsAdapter.notifyDataSetChanged();
     }
 
     private class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
         private List<Product> products;
-
-        ProductsAdapter(List<Product> p) {
-            this.products = p;
-        }
 
         @NonNull
         @Override

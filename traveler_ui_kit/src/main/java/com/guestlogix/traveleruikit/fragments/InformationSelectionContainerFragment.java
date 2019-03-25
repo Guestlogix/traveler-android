@@ -11,26 +11,22 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
-import com.guestlogix.travelercorekit.models.Price;
-import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.models.PurchaseStrategy;
+import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.BookableProductViewModel;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.viewmodels.ProductViewModel;
 
 public class InformationSelectionContainerFragment extends BaseFragment {
-
+    private CatalogItemDetailsViewModel viewModel;
 
     public InformationSelectionContainerFragment() {
-        // Required empty public constructor
+        // Do nothing.
     }
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_information_selection_container, container, false);
     }
 
@@ -38,33 +34,33 @@ public class InformationSelectionContainerFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        CatalogItemDetailsViewModel vm = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
+        viewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
+        viewModel.getObservableCatalogItemDetails().observe(this, this::onCatalogItemDetailsChanged);
+    }
 
-        vm.getObservableCatalogItemDetails().observe(this, catalogItemDetails -> {
-            PurchaseStrategy strategy = catalogItemDetails.getPurchaseStrategy();
-            Product product = vm.getProduct();
+    private void onCatalogItemDetailsChanged(CatalogItemDetails catalogItemDetails) {
+        PurchaseStrategy strategy = catalogItemDetails.getPurchaseStrategy();
+        Product product = viewModel.getProduct();
 
-            FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
-            Fragment fragment;
-            ProductViewModel productVM;
+        FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
+        Fragment fragment;
+        ProductViewModel productVM;
 
-            switch (strategy) {
-                case Buyable:
-                    fragment = new BuyableInformationSelectionFragment();
-                    // TODO: add custom repo
-                    break;
+        switch (strategy) {
+            case Buyable:
+                fragment = new BuyableInformationSelectionFragment();
+                // TODO: add custom repo
+                break;
 
-                case Bookable:
-                default:
-                    fragment = new BookableInformationSelectionFragment();
-                    productVM = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
-                    productVM.setup(product);
-                    break;
-            }
+            case Bookable:
+            default:
+                fragment = new BookableInformationSelectionFragment();
+                productVM = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
+                productVM.setup(product);
+                break;
+        }
 
-            fragmentTransaction.replace(R.id.information_selection_container, fragment);
-            fragmentTransaction.commit();
-        });
-
+        fragmentTransaction.replace(R.id.information_selection_container, fragment);
+        fragmentTransaction.commit();
     }
 }

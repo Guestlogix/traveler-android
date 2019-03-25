@@ -14,17 +14,19 @@ import java.util.List;
 
 import static android.util.JsonToken.BEGIN_ARRAY;
 
-public class CatalogItemDetails extends Product {
+public class CatalogItemDetails implements Product {
+    private String id;
+    private Price price;
     private String title;
     private String description;
     private List<URL> imageURLs;
     private ContactInfo contact;
     private List<Location> locations;
+    private PurchaseStrategy purchaseStrategy;
     private Price priceStartingAt;
     private List<Attribute> information;
 
     private CatalogItemDetails(String id, String title, String description, List<URL> imageURLs, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) throws IllegalArgumentException {
-        super(id, priceStartingAt, purchaseStrategy);
         this.title = title;
         this.description = description;
         if (imageURLs == null) {
@@ -32,6 +34,8 @@ public class CatalogItemDetails extends Product {
         } else {
             this.imageURLs = imageURLs;
         }
+        this.id = id;
+        this.price = priceStartingAt;
         this.contact = contact;
         this.locations = locations;
         this.priceStartingAt = priceStartingAt;
@@ -39,8 +43,14 @@ public class CatalogItemDetails extends Product {
         this.information = information;
     }
 
+    @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public Price getPrice() {
+        return price;
     }
 
     public String getTitle() {

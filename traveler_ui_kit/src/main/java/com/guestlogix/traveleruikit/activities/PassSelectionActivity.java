@@ -61,16 +61,16 @@ public class PassSelectionActivity extends AppCompatActivity {
                 viewModel = ViewModelProviders.of(this).get(PassSelectionViewModel.class);
                 viewModel.setup(product, passes);
 
-                viewModel.getPrice().observe(this, price -> actionStrip.setValue(price.getFormattedValue()));
-                viewModel.getBookingForm().observe(this, bookingForm -> {
+                viewModel.getObservablePrice().observe(this, price -> actionStrip.setValue(price.getFormattedValue()));
+                viewModel.getObservableBookingForm().observe(this, bookingForm -> {
                     Intent intent = new Intent(this, QuestionsActivity.class);
                     intent.putExtra(QuestionsActivity.EXTRA_BOOKING_FORM, bookingForm);
                     startActivity(intent);
                 });
 
-                viewModel.getPasses().observe(this, this::onPasses);
+                viewModel.getObservablePasses().observe(this, this::onPasses);
 
-                viewModel.getState().observe(this, state -> {
+                viewModel.getObservableState().observe(this, state -> {
                     switch (state) {
                         case DEFAULT:
                             actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
