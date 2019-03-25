@@ -231,6 +231,13 @@ public class Traveler {
         }
     }
 
+    /**
+     * Fetches a BookingForm containing all questions for a given product and selected passes.
+     *
+     * @param product                  Product for which to create a booking form.
+     * @param passes                   Passes for the product. Passes can be repeated.
+     * @param fetchBookingFormCallback callback methods which will be executed after fetch runs.
+     */
     public static void fetchBookingForm(Product product, List<Pass> passes, FetchBookingFormCallback fetchBookingFormCallback) {
         if (null == localInstance) {
             fetchBookingFormCallback.onBookingFormFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
@@ -257,6 +264,12 @@ public class Traveler {
         }
     }
 
+    /**
+     * Creates an order for a given product.
+     *
+     * @param bookingForm         A completed booking form.
+     * @param orderCreateCallback callback methods which will be executed after the code runs.
+     */
     public static void createOrder(BookingForm bookingForm, OrderCreateCallback orderCreateCallback) {
         if (null == localInstance) {
             orderCreateCallback.onOrderCreateFailure(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
@@ -284,6 +297,13 @@ public class Traveler {
         }
     }
 
+    /**
+     * Process an existing order given the parameters.
+     *
+     * @param order                Order to process.
+     * @param payment              Payment method
+     * @param processOrderCallback callback methods to be executed after the order is processed.
+     */
     public static void processOrder(Order order, Payment payment, ProcessOrderCallback processOrderCallback) {
         if (null == localInstance) {
             processOrderCallback.onOrderProcessError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));

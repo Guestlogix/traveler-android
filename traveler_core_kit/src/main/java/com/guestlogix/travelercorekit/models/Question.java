@@ -137,7 +137,7 @@ public class Question implements Serializable {
                 }
             }
 
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.TYPE_NOT_SUPPORTED, "Payload type '" + type + "' is not yet supported"));
+            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "Payload type '" + type + "' is not yet supported"));
         }
     }
 }

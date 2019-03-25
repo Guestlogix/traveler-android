@@ -3,7 +3,6 @@ package com.guestlogix.traveleruikit.viewmodels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
-import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogQuery;

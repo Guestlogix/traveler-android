@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PassSelectionViewModel extends ViewModel {
+public class PassSelectionViewModel extends ViewModel implements FetchBookingFormCallback {
     private Product product;
 
     private Map<Pass, Integer> passQuantities;
@@ -46,19 +46,19 @@ public class PassSelectionViewModel extends ViewModel {
         return value;
     }
 
-    public LiveData<Price> getPrice() {
+    public LiveData<Price> getObservablePrice() {
         return price;
     }
 
-    public LiveData<BookingForm> getBookingForm() {
+    public LiveData<BookingForm> getObservableBookingForm() {
         return bookingForm;
     }
 
-    public LiveData<List<Pass>> getPasses() {
+    public LiveData<List<Pass>> getObservablePasses() {
         return passes;
     }
 
-    public LiveData<PassSelectionState> getState() {
+    public LiveData<PassSelectionState> getObservableState() {
         return state;
     }
 
@@ -73,24 +73,13 @@ public class PassSelectionViewModel extends ViewModel {
 
         for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
             if (entry.getValue() != null && entry.getValue() > 0) {
-                for (int i = 0; i < entry.getValue() ; i++) {
+                for (int i = 0; i < entry.getValue(); i++) {
                     flatPasses.add(entry.getKey());
                 }
             }
         }
 
-        Traveler.fetchBookingForm(product, flatPasses, new FetchBookingFormCallback() {
-            @Override
-            public void onBookingFormFetchSuccess(BookingForm bookingForm) {
-                PassSelectionViewModel.this.bookingForm.postValue(bookingForm);
-                state.postValue(PassSelectionState.DEFAULT);
-            }
-
-            @Override
-            public void onBookingFormFetchError(Error error) {
-                state.postValue(PassSelectionState.ERROR);
-            }
-        });
+        Traveler.fetchBookingForm(product, flatPasses, this);
     }
 
     private void calculatePrice() {
@@ -118,6 +107,17 @@ public class PassSelectionViewModel extends ViewModel {
         }
 
         price.postValue(new Price(sum, currency));
+    }
+
+    @Override
+    public void onBookingFormFetchSuccess(BookingForm bookingForm) {
+        PassSelectionViewModel.this.bookingForm.postValue(bookingForm);
+        state.postValue(PassSelectionState.DEFAULT);
+    }
+
+    @Override
+    public void onBookingFormFetchError(Error error) {
+        state.postValue(PassSelectionState.ERROR);
     }
 
     public enum PassSelectionState {

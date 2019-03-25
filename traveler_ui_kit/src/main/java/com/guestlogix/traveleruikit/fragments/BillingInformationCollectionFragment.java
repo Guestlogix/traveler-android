@@ -24,6 +24,9 @@ import java.util.List;
 
 /**
  * A fragment which displays all available payment options and a way too add more.
+ * Observes {@link OrderSummaryViewModel} to display the models.
+ *
+ * <p>Starts a payment collection activity with the registered payment provider.</p>
  */
 public class BillingInformationCollectionFragment extends BaseFragment {
     private OrderSummaryViewModel viewModel;
@@ -31,14 +34,12 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     private PaymentsAdapter adapter;
 
     public BillingInformationCollectionFragment() {
-        // Required empty public constructor
+        // Do nothing
     }
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_billing_information_collection, container, false);
     }
 
@@ -48,37 +49,43 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
         recyclerView = view.findViewById(R.id.recyclerView_billingCollection_availableItems);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(OrderSummaryViewModel.class);
+        viewModel = ViewModelProviders.of(getActivityContext()).get(OrderSummaryViewModel.class);
+        viewModel.getObservableAvailablePayments().observe(this, this::onPaymentsChanged);
+
 
         Button button = view.findViewById(R.id.button_orderSummary_addCard);
-        button.setOnClickListener(v -> {
+        button.setOnClickListener(this::onAddPaymentButtonClick);
+    }
+
+    private void onPaymentsChanged(List<Payment> payments) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
+
+        if (adapter == null) {
+            adapter = new PaymentsAdapter();
+            recyclerView.setAdapter(adapter);
+        }
+
+        adapter.payments = payments;
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private void onAddPaymentButtonClick(View _button) {
+        if (TravelerUI.getPaymentProvider() != null) {
             Intent i = TravelerUI.getPaymentProvider().getPaymentActivityIntent(getActivity());
             startActivityForResult(i, OrderSummaryActivity.CARD_REQUEST);
-        });
-
-        viewModel.getAvailablePayments().observe(this, payments -> {
-            recyclerView.setLayoutManager(new LinearLayoutManager(BillingInformationCollectionFragment.this.getActivityContext()));
-            if (adapter == null) {
-                adapter = new PaymentsAdapter();
-            }
-
-            adapter.payments = payments;
-
-            adapter.notifyDataSetChanged();
-            recyclerView.setAdapter(adapter);
-        });
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == OrderSummaryActivity.CARD_REQUEST) {
-            if (resultCode == OrderSummaryActivity.RESULT_OK) {
-                Bundle extras = data.getExtras();
+        if (requestCode == OrderSummaryActivity.CARD_REQUEST && resultCode == OrderSummaryActivity.RESULT_OK) {
+            Bundle extras = data.getExtras();
 
-                if (extras != null && extras.containsKey("RESULT_INTENT_EXTRA_PAYMENT_KEY")) {
-                    Payment payment = (Payment) extras.getSerializable("RESULT_INTENT_EXTRA_PAYMENT_KEY");
-                    viewModel.setPayment(payment);
-                }
+            // TODO find a better way of getting the key.
+            if (extras != null && extras.containsKey("RESULT_INTENT_EXTRA_PAYMENT_KEY")) {
+                Payment payment = (Payment) extras.getSerializable("RESULT_INTENT_EXTRA_PAYMENT_KEY");
+                viewModel.setPayment(payment);
             }
         }
     }

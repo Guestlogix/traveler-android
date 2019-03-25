@@ -38,41 +38,6 @@ public class BuyableActionStripFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        sharedViewModel = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
-        sharedViewModel.getAvailabilityState().observe(this, (state -> {
-            switch (state) {
-                case LOADING:
-                    actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
-                case AVAILABLE:
-                    actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-                case OPTION_NEEDED:
-                case NOT_AVAILABLE:
-                case DEFAULT:
-                    actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
-                    break;
-                default:
-                    TravelerLog.w("State not Handled: %s", state.toString());
-                    break;
-            }
-        }));
-
-        actionStrip = view.findViewById(R.id.action_container);
-
-        sharedViewModel.getPrice().observe(this, (price -> {
-            String checkAvailability = getString(R.string.button_check_availability);
-            String startingAt = getString(R.string.label_starting_at);
-            String localizedPrice = String.format(Locale.getDefault(), getString(R.string.label_price_per_person), price.getFormattedValue());
-
-            actionStrip.setStripValues(checkAvailability, startingAt, localizedPrice);
-        }));
-
-        actionStrip.setActionOnClickListener((v) -> {
-            // Launch the next activity.
-            Intent intent = new Intent(getActivityContext(), PassSelectionActivity.class);
-            intent.putExtra(PassSelectionActivity.EXTRA_PASSES, "TODO");
-            intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, "TODO");
-            startActivity(intent);
-        });
+        // TODO
     }
 }

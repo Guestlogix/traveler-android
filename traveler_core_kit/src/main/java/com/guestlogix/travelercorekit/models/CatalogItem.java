@@ -9,16 +9,29 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 
-public class CatalogItem extends Product implements Serializable {
+public class CatalogItem implements Product {
+    private String id;
     private String title;
     private String subTitle;
     private URL imageURL;
+    private Price price;
 
     private CatalogItem(String id, String title, String subTitle, URL imageURL) throws IllegalArgumentException {
-        super(id, new Price());
+        this.id = id;
         this.title = title;
         this.subTitle = subTitle;
         this.imageURL = imageURL;
+        price = new Price();
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public Price getPrice() {
+        return price;
     }
 
     public String getTitle() {

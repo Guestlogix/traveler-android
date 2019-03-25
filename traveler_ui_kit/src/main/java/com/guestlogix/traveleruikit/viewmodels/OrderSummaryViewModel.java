@@ -9,7 +9,7 @@ import com.guestlogix.travelercorekit.models.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderSummaryViewModel extends ViewModel {
+public class OrderSummaryViewModel extends ViewModel implements ProcessOrderCallback {
     private Order order;
     private Payment payment;
 
@@ -58,39 +58,39 @@ public class OrderSummaryViewModel extends ViewModel {
     public void submit() {
         state.setValue(State.LOADING);
         if (payment != null) {
-            Traveler.processOrder(order, payment, new ProcessOrderCallback() {
-                @Override
-                public void onOrderProcessSuccess(Receipt receipt) {
-                    state.postValue(State.READY);
-                    OrderSummaryViewModel.this.receipt.postValue(receipt);
-                }
-
-                @Override
-                public void onOrderProcessError(Error error) {
-                    state.postValue(State.READY);
-                }
-            });
+            Traveler.processOrder(order, payment, this);
         }
     }
 
-    public LiveData<Price> getDisplayPrice() {
+    public LiveData<Price> getObservableDisplayPrice() {
         return displayPrice;
     }
 
-    public LiveData<List<Product>> getProducts() {
+    public LiveData<List<Product>> getObservableProducts() {
         return products;
     }
 
-    public LiveData<State> getState() {
+    public LiveData<State> getObservableState() {
         return state;
     }
 
-    public LiveData<List<Payment>> getAvailablePayments() {
+    public LiveData<List<Payment>> getObservableAvailablePayments() {
         return availablePayments;
     }
 
-    public LiveData<Receipt> getReceipt() {
+    public LiveData<Receipt> getObservableReceipt() {
         return receipt;
+    }
+
+    @Override
+    public void onOrderProcessSuccess(Receipt receipt) {
+        state.postValue(State.READY);
+        OrderSummaryViewModel.this.receipt.postValue(receipt);
+    }
+
+    @Override
+    public void onOrderProcessError(Error error) {
+        state.postValue(State.READY);
     }
 
     public enum State {

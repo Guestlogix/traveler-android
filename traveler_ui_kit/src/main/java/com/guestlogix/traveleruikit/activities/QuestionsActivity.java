@@ -32,30 +32,35 @@ public class QuestionsActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        if (extras != null && extras.containsKey(EXTRA_BOOKING_FORM)) {
-            BookingForm bookingForm = (BookingForm) extras.getSerializable(EXTRA_BOOKING_FORM);
-
-            if (bookingForm != null) {
-                viewModel = ViewModelProviders.of(this).get(BookingQuestionsViewModel.class);
-                viewModel.setup(bookingForm);
-                form = findViewById(R.id.form_questionsActivity);
-
-                viewModel.getBookingForm().observe(this, this::onBookingForm);
-                viewModel.getError().observe(this, error -> form.reload());
-
-                viewModel.getOrder().observe(this, order -> {
-                    Intent intent = new Intent(QuestionsActivity.this, OrderSummaryActivity.class);
-                    intent.putExtra(OrderSummaryActivity.EXTRA_ORDER, order);
-                    startActivity(intent);
-                });
-
-                return;
-            }
+        if (extras == null || !extras.containsKey(EXTRA_BOOKING_FORM)) {
+            TravelerLog.e("QuestionsActivity requires a BookingForm to operate.");
+            finish();
+            return;
         }
 
-        TravelerLog.e("QuestionsActivity requires a BookingForm to operate.");
-        finish();
+        BookingForm bookingForm = (BookingForm) extras.getSerializable(EXTRA_BOOKING_FORM);
+
+        if (bookingForm == null) {
+            TravelerLog.e("QuestionsActivity requires a BookingForm to operate.");
+            finish();
+            return;
+        }
+
+        form = findViewById(R.id.form_questionsActivity);
+
+        viewModel = ViewModelProviders.of(this).get(BookingQuestionsViewModel.class);
+        viewModel.setup(bookingForm);
+        viewModel.getObservableBookingForm().observe(this, this::onBookingForm);
+        viewModel.getObservableCurrentError().observe(this, error -> form.reload());
+        viewModel.getObservableOrder().observe(this, this::onOrderUpdate);
     }
+
+    private void onOrderUpdate(Order order) {
+        Intent intent = new Intent(this, OrderSummaryActivity.class);
+        intent.putExtra(OrderSummaryActivity.EXTRA_ORDER, order);
+        startActivity(intent);
+    }
+
 
     // So we don't crowd on create
     private void onBookingForm(BookingForm bookingForm) {

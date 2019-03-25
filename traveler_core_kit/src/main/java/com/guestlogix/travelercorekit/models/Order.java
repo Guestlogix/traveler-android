@@ -97,7 +97,7 @@ public class Order implements Serializable {
                             try {
                                 createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
                             } catch (ParseException e) {
-                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_FORMAT, "createdAt has invalid format"));
+                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "createdAt has invalid format"));
                             }
                             break;
                         case "products":

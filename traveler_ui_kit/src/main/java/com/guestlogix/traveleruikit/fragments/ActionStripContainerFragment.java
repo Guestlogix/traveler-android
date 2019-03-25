@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.PurchaseStrategy;
 import com.guestlogix.traveleruikit.R;
@@ -36,28 +37,29 @@ public class ActionStripContainerFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         CatalogItemDetailsViewModel vm = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
+        vm.getObservableCatalogItemDetails().observe(this, this::onCatalogItemDetailsChanged);
+    }
 
-        vm.getObservableCatalogItemDetails().observe(this, catalogItemDetails -> {
-            FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
-            Fragment fragment;
+    private void onCatalogItemDetailsChanged(CatalogItemDetails catalogItemDetails) {
+        FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
+        Fragment fragment;
 
-            PurchaseStrategy strategy = catalogItemDetails.getPurchaseStrategy();
+        PurchaseStrategy strategy = catalogItemDetails.getPurchaseStrategy();
 
-            switch (strategy) {
-                case Bookable:
-                    fragment = new BookableActionStripFragment();
-                    break;
+        switch (strategy) {
+            case Bookable:
+                fragment = new BookableActionStripFragment();
+                break;
 
-                case Buyable:
-                    fragment = new BuyableActionStripFragment();
-                    break;
+            case Buyable:
+                fragment = new BuyableActionStripFragment();
+                break;
 
-                default:
-                    fragment = new BookableActionStripFragment();
-                    break;
-            }
-            fragmentTransaction.replace(R.id.actionStripContainerFrameLayout, fragment);
-            fragmentTransaction.commit();
-        });
+            default:
+                fragment = new BookableActionStripFragment();
+                break;
+        }
+        fragmentTransaction.replace(R.id.actionStripContainerFrameLayout, fragment);
+        fragmentTransaction.commit();
     }
 }
