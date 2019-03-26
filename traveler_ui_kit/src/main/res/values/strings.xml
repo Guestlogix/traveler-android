@@ -34,7 +34,7 @@
     <string name="discard_order">Discard this order?</string>
     <string name="discard">discard</string>
     <string name="next">next</string>
-
+    <string name="bad_quantity">Bad quantity</string>
     <string name="view_tickets">View Tickets</string>
     <string name="confirmation_number">Confirmation number:</string>
     <string name="confirmation_email">Confirmation email:</string>
