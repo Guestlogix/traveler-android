@@ -18,6 +18,7 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
 
     private MutableLiveData<List<Pass>> passes;
     private MutableLiveData<List<String>> options;
+    private MutableLiveData<String> optionsTitle;
 
     private Availability currentAvailability;
     private BookingOption currentOption;
@@ -27,6 +28,7 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
         price = new MutableLiveData<>();
         passes = new MutableLiveData<>();
         options = new MutableLiveData<>();
+        optionsTitle = new MutableLiveData<>();
 
         actionState.postValue(State.DEFAULT);
     }
@@ -45,6 +47,10 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
 
     public LiveData<List<String>> getObservableOptions() {
         return options;
+    }
+
+    public LiveData<String> getObservableOptionsTitle() {
+        return optionsTitle;
     }
 
     @Override
@@ -74,12 +80,13 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
         if (currentAvailability == null) {
             return;
         }
-
-        if (currentAvailability.getBookingOptionSet().getOptions() != null &&
-                !currentAvailability.getBookingOptionSet().getOptions().isEmpty() && currentOption == null) {
-            return;
+        //Verify if user has selected an option if there were any return otherwise.
+        if (currentAvailability.getBookingOptionSet() != null) {
+            if (currentAvailability.getBookingOptionSet().getOptions() != null &&
+                    !currentAvailability.getBookingOptionSet().getOptions().isEmpty() && currentOption == null) {
+                return;
+            }
         }
-
         actionState.setValue(State.LOADING);
         Traveler.fetchPasses(product, currentAvailability, currentOption, this);
     }
@@ -96,7 +103,7 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
         currentAvailability = availabilities.get(0);
         currentOption = null;
 
-        if (currentAvailability.getBookingOptionSet().getOptions() == null || currentAvailability.getBookingOptionSet().getOptions().isEmpty()) {
+        if (currentAvailability.getBookingOptionSet() == null || currentAvailability.getBookingOptionSet().getOptions() == null || currentAvailability.getBookingOptionSet().getOptions().isEmpty()) {
             actionState.postValue(State.AVAILABLE);
             return;
         }
@@ -106,6 +113,7 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
             optionValues.add(o.getValue());
         }
 
+        optionsTitle.postValue(currentAvailability.getBookingOptionSet().getLabel());
         options.postValue(optionValues);
         actionState.postValue(State.OPTION_NEEDED);
     }

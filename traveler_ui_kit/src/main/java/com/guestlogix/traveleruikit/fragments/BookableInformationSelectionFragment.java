@@ -39,6 +39,7 @@ public class BookableInformationSelectionFragment extends BaseFragment {
 
         BookableProductViewModel sharedViewModel = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
         sharedViewModel.getObservableOptions().observe(getActivityContext(), timePickerCell::setValueList);
+        sharedViewModel.getObservableOptionsTitle().observe(getActivityContext(), timePickerCell::setHint);
         sharedViewModel.getAvailabilityState().observe(this, this::onStateChanged);
 
         datePickerCell.setOnDateChangedListener(sharedViewModel::onDateChanged);
