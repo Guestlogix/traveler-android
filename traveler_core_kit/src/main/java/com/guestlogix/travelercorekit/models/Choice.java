@@ -57,7 +57,8 @@ public class Choice implements Serializable {
                         case "id":
                             id = JsonReaderHelper.readNonNullString(reader);
                             break;
-                        case "name":
+                            //key changed in api for product questions: optionLabel -> label
+                        case "label":
                             value = JsonReaderHelper.readString(reader);
                             break;
                         default:

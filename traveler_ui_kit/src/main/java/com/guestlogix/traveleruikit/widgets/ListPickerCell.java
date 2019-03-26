@@ -10,6 +10,7 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ListPickerCell extends FrameLayout {
 
     // Views
+    private TextInputLayout textInputLayout;
     private EditText valueEditText;
     private Spinner slotSpinner;
 
@@ -67,7 +69,7 @@ public class ListPickerCell extends FrameLayout {
     }
 
     public void setHint(@Nullable String hint) {
-        valueEditText.setHint(hint);
+        textInputLayout.setHint(hint);
     }
 
     /**
@@ -82,6 +84,7 @@ public class ListPickerCell extends FrameLayout {
     private void init(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (!isInEditMode()) {
             View view = LayoutInflater.from(c).inflate(R.layout.view_list_picker_cell, this, true);
+            textInputLayout = view.findViewById(R.id.textLayout);
             valueEditText = view.findViewById(R.id.value);
             slotSpinner = view.findViewById(R.id.slotsSpinner);
 
