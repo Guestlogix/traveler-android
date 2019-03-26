@@ -15,6 +15,8 @@ import com.guestlogix.traveleruikit.forms.descriptors.*;
 import com.guestlogix.traveleruikit.viewmodels.BookingQuestionsViewModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class QuestionsActivity extends AppCompatActivity {
@@ -95,6 +97,8 @@ public class QuestionsActivity extends AppCompatActivity {
                         return Form.FormType.TEXT.getValue();
                     case QUANTITY:
                         return Form.FormType.QUANTITY.getValue();
+                    case DATE:
+                        return Form.FormType.DATE.getValue();
                     default:
                         return 0;
                 }
@@ -143,6 +147,12 @@ public class QuestionsActivity extends AppCompatActivity {
                         q.minQuantity = 0;
                         q.subtitle = question.getDescription();
                         return q;
+                    case DATE:
+                        DateDescriptor d = new DateDescriptor();
+                        d.defaultDate = new Date();
+                        d.title = question.getTitle();
+                        d.subtitle = question.getDescription();
+                        return d;
                     default:
                         return null;
                 }
@@ -225,6 +235,9 @@ public class QuestionsActivity extends AppCompatActivity {
                     break;
                 case STRING:
                     answer = new TextualAnswer(value.toString(), question);
+                    break;
+                case DATE:
+                    answer = new DateAnswer((Calendar) value, question);
                     break;
             }
 

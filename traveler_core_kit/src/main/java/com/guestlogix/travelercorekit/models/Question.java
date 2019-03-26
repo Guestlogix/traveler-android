@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
@@ -75,6 +76,11 @@ public class Question implements Serializable {
 
                 List<Choice> choices = null;
 
+                JsonToken token = reader.peek();
+                if (JsonToken.NULL == token) {
+                    reader.skipValue();
+                    return null;
+                }
                 reader.beginObject();
 
                 while (reader.hasNext()) {
@@ -133,6 +139,8 @@ public class Question implements Serializable {
                         return QuestionType.STRING;
                     case "Quantity":
                         return QuestionType.QUANTITY;
+                    case "Date":
+                        return QuestionType.DATE;
                     // Add more question types here.
                 }
             }

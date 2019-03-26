@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margin_default"
+        android:paddingRight="@dimen/margin_default">
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/hint_select_date"
+                android:inputType="textCapCharacters"
+                app:errorEnabled="true"
+                android:focusable="false"
+                android:textAllCaps="true"
+                android:imeOptions="actionDone"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>
