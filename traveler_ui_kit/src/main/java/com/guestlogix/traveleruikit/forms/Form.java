@@ -605,6 +605,7 @@ public class Form extends FrameLayout {
          */
         @Override
         void bindBaseCell(BaseCell cell, int sectionId, int fieldId, int type) {
+            InputDescriptor id;
             switch (FormType.valueOf(type)) {
                 case HEADER:
                     HeaderCell headerCell = (HeaderCell) cell;
@@ -613,61 +614,61 @@ public class Form extends FrameLayout {
                     break;
                 case TEXT:
                     TextCell textCell = (TextCell) cell;
-                    TextDescriptor textDescriptor = (TextDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
                     textCell.setValue((String) dataSource.getValue(sectionId, fieldId));
-                    textCell.setHint(textDescriptor.hint);
+                    textCell.setHint(id.title);
                     break;
                 case QUANTITY:
                     QuantityCell quantityCell = (QuantityCell) cell;
-                    QuantityDescriptor quantityDescriptor = (QuantityDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    quantityCell.setQuantity(quantityDescriptor.value == null ? "0" : quantityDescriptor.value.toString());
-                    quantityCell.setTitle(quantityDescriptor.title);
-                    quantityCell.setSubtitle(quantityDescriptor.subtitle);
+                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    Integer quantityValue = (Integer) dataSource.getValue(sectionId, fieldId);
+                    quantityCell.setTitle(id.title);
+                    quantityCell.setSubtitle(id.subtitle);
                     quantityCell.setAdapter(new QuantityCell.QuantityCellAdapter() {
                         @Override
                         public String getTitle() {
-                            return quantityDescriptor.title;
+                            return id.title;
                         }
 
-                        @Nullable
                         @Override
                         public Integer getMaxQuantity() {
-                            return quantityDescriptor.maxQuantity;
+                            return 10;
                         }
 
                         @NonNull
                         @Override
                         public Integer getMinQuantity() {
-                            return quantityDescriptor.minQuantity;
+                            return 0;
                         }
 
                         @NonNull
                         @Override
                         public Integer getValue() {
-                            Integer value = (Integer) dataSource.getValue(sectionId, fieldId);
-                            if (value == null) {
-                                value = quantityDescriptor.minQuantity;
+                            if (quantityValue == null) {
+                                return 0;
                             }
-                            return value;
+                            return quantityValue;
                         }
                     });
                     break;
                 case BUTTON:
                     ButtonCell buttonCell = (ButtonCell) cell;
-                    ButtonDescriptor buttonDescriptor = (ButtonDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    buttonCell.setText(buttonDescriptor.text);
+                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    buttonCell.setText(id.title);
                     break;
                 case SPINNER:
                     SpinnerCell spinnerCell = (SpinnerCell) cell;
-                    SpinnerDescriptor spinnerDescriptor = (SpinnerDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    spinnerCell.setHint(spinnerDescriptor.title);
-                    spinnerCell.setOptions(spinnerDescriptor.options, spinnerDescriptor.value);
+                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    Integer spinnerValue = (Integer) dataSource.getValue(sectionId, fieldId);
+                    spinnerCell.setHint(id.title);
+                    spinnerCell.setOptions(id.options, spinnerValue);
                     break;
                 case DATE:
                     DateCell dateCell = (DateCell) cell;
-                    DateDescriptor dateDescriptor = (DateDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    dateCell.setHint(dateDescriptor.title);
-                    dateCell.setDate(dateDescriptor.defaultDate);
+                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    String dateValue = (String) dataSource.getValue(sectionId, fieldId);
+                    dateCell.setHint(id.title);
+                    dateCell.setValue(dateValue);
                     break;
                 case MESSAGE:
                     MessageCell messageCell = (MessageCell) cell;

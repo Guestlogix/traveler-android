@@ -5,26 +5,29 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.travelercorekit.models.Price;
-import com.guestlogix.travelercorekit.models.Receipt;
+import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
+import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel;
+import com.guestlogix.traveleruikit.fragments.BillingInformationCollectionFragment;
+import com.guestlogix.traveleruikit.fragments.ProductSummaryFragment;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.ARG_RECEIPT;
 
-public class OrderSummaryActivity extends AppCompatActivity {
+public class OrderSummaryActivity extends AppCompatActivity implements ProcessOrderCallback, BillingInformationCollectionFragment.PaymentMethodAdditionListener {
 
     public static final String EXTRA_ORDER = "ORDER_SUMMARY_ACTIVITY_EXTRA_ORDER";
     public static final int CARD_REQUEST = 233;
 
-    private OrderSummaryViewModel viewModel;
     private ActionStrip actionStrip;
+
+    // Data
+    private Payment payment;
+    private Order order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +38,28 @@ public class OrderSummaryActivity extends AppCompatActivity {
         if (extras == null || !extras.containsKey(EXTRA_ORDER)) {
             TravelerLog.e("OrderSummaryActivity requires an Order object.");
             finish();
+            return;
         }
 
-        Order order = (Order) extras.getSerializable(EXTRA_ORDER);
+        order = (Order) extras.getSerializable(EXTRA_ORDER);
 
         if (order == null) {
             TravelerLog.e("OrderSummaryActivity requires an Order object.");
             finish();
+            return;
+        }
+
+        // Product Summary.
+        ProductSummaryFragment productSummaryFragment =
+                (ProductSummaryFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_orderSummary_ProductDetails);
+
+        BillingInformationCollectionFragment billingInformationCollectionFragment =
+                (BillingInformationCollectionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_orderSummary_billingInformation);
+
+        if (productSummaryFragment == null || billingInformationCollectionFragment == null) {
+            TravelerLog.e("ProductSummaryFragment or BillingInformationCollectionFragment was not inflated correctly.");
+            finish();
+            return;
         }
 
         actionStrip = findViewById(R.id.actionStrip_orderSummary);
@@ -51,14 +69,19 @@ public class OrderSummaryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(R.string.review_order);
 
-        viewModel = ViewModelProviders.of(this).get(OrderSummaryViewModel.class);
-        viewModel.setup(order);
+        // Action strip.
+        Price price = order.getTotal();
+        actionStrip.setValue(price.getFormattedValue());
+        actionStrip.setLabel(getString(R.string.label_price));
+        actionStrip.setButtonText(getString(R.string.next));
+        actionStrip.setActionOnClickListener(this::onActionStripClick);
+        actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
-        viewModel.getObservableDisplayPrice().observe(this, this::onPriceChanged);
-        viewModel.getObservableState().observe(this, this::onStateChanged);
-        viewModel.getObservableReceipt().observe(this, this::onReceiptChanged);
+        // Product Summary
+        productSummaryFragment.setProducts(order.getProducts());
 
-        actionStrip.setActionOnClickListener(v -> viewModel.submit());
+        // Billing info.
+        billingInformationCollectionFragment.setPaymentMethodAdditionListener(this);
     }
 
     @Override
@@ -84,34 +107,32 @@ public class OrderSummaryActivity extends AppCompatActivity {
         return true;
     }
 
-    private void onStateChanged(OrderSummaryViewModel.State state) {
-        switch (state) {
-            case LOADING:
-                actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
-                break;
-            case DEFAULT:
-                actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
-                break;
-            case READY:
-                actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-                break;
-            case ERROR:
-                actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.unknown_error_message)
-                        .show();
-        }
-    }
-
-    private void onPriceChanged(Price price) {
-        actionStrip.setValue(price.getFormattedValue());
-        actionStrip.setLabel(getString(R.string.label_price));
-        actionStrip.setButtonText(getString(R.string.next));
-    }
-
-    private void onReceiptChanged(Receipt receipt) {
+    @Override
+    public void onOrderProcessSuccess(Receipt receipt) {
         Intent orderConfirmationIntent = new Intent(this, OrderConfirmationActivity.class);
         orderConfirmationIntent.putExtra(ARG_RECEIPT, receipt);
         startActivity(orderConfirmationIntent);
+        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+    }
+
+    @Override
+    public void onOrderProcessError(Error error) {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.unexpected_error)
+                .show();
+
+        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+    }
+
+    @Override
+    public void onPaymentAdded(Payment payment) {
+        this.payment = payment;
+        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+    }
+
+    private void onActionStripClick(View _v) {
+        if (payment != null && order != null) {
+            Traveler.processOrder(order, payment, this);
+        }
     }
 }

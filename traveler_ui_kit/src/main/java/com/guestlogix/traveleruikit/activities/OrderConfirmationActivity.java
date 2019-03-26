@@ -6,18 +6,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Receipt;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.viewmodels.OrderConfirmationViewModel;
 
 public class OrderConfirmationActivity extends AppCompatActivity {
 
     public static final String ARG_RECEIPT = "ARG_RECEIPT";
-    OrderConfirmationViewModel orderConfirmationViewModel;
 
+    // Views
     private TextView titleTextView;
     private TextView subTitleTextView;
     private ImageView confirmationImageView;
@@ -28,6 +27,9 @@ public class OrderConfirmationActivity extends AppCompatActivity {
     private Button viewTicketsButton;
     private Button homeButton;
 
+    // Data
+    private Receipt receipt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,34 +37,24 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        if (null != extras && extras.containsKey(ARG_RECEIPT)) {
-
-            titleTextView = findViewById(R.id.titleTextView);
-            subTitleTextView = findViewById(R.id.subTitleTextView);
-            confirmationImageView = findViewById(R.id.confirmationImageView);
-            messageTitleTextView = findViewById(R.id.messageTitleTextView);
-            messageSubTitleTextView = findViewById(R.id.messageSubTitleTextView);
-            confirmationNumberValueTextView = findViewById(R.id.confirmationNumberValueTextView);
-            emailValueTextView = findViewById(R.id.emailValueTextView);
-            viewTicketsButton = findViewById(R.id.viewTicketsButton);
-            homeButton = findViewById(R.id.homeButton);
-
-            homeButton.setOnClickListener(homeOnClickListener);
-
-            orderConfirmationViewModel = ViewModelProviders.of(this).get(OrderConfirmationViewModel.class);
-            orderConfirmationViewModel.getObservableReceipt().observe(this, this::onReceiptUpdate);
-
-            orderConfirmationViewModel.setReceipt((Receipt) extras.getSerializable(ARG_RECEIPT));
-
-        } else {
-            throw new RuntimeException("ARG_RECEIPT is required");
+        if (null == extras || !extras.containsKey(ARG_RECEIPT)) {
+            TravelerLog.e("A receipt object is required to run this activity. See ARG_RECEIPT");
+            finish();
+            return;
         }
-    }
 
-    View.OnClickListener homeOnClickListener = v -> finish();
+        receipt = (Receipt) extras.getSerializable(ARG_RECEIPT);
 
-    private void onReceiptUpdate(Receipt receipt) {
-        //update UI
+        titleTextView = findViewById(R.id.titleTextView);
+        subTitleTextView = findViewById(R.id.subTitleTextView);
+        confirmationImageView = findViewById(R.id.confirmationImageView);
+        messageTitleTextView = findViewById(R.id.messageTitleTextView);
+        messageSubTitleTextView = findViewById(R.id.messageSubTitleTextView);
+        confirmationNumberValueTextView = findViewById(R.id.confirmationNumberValueTextView);
+        emailValueTextView = findViewById(R.id.emailValueTextView);
+        viewTicketsButton = findViewById(R.id.viewTicketsButton);
+        homeButton = findViewById(R.id.homeButton);
+        homeButton.setOnClickListener(homeOnClickListener);
 
         if (receipt.getProducts().size() > 0) {
             Product product = receipt.getProducts().get(0);
@@ -76,4 +68,6 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         emailValueTextView.setText(receipt.getEmail());
         confirmationNumberValueTextView.setText(receipt.getOrderNumber());
     }
+
+    View.OnClickListener homeOnClickListener = v -> finish();
 }

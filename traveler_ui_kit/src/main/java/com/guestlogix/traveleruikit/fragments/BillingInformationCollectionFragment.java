@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.Attribute;
@@ -18,25 +17,41 @@ import com.guestlogix.travelercorekit.models.Payment;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.activities.OrderSummaryActivity;
-import com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A fragment which displays all available payment options and a way too add more.
- * Observes {@link OrderSummaryViewModel} to display the models.
+ * Subscribe to payment add events via {@link PaymentMethodAdditionListener}
  *
  * <p>Starts a payment collection activity with the registered payment provider.</p>
  */
 public class BillingInformationCollectionFragment extends BaseFragment {
-    private OrderSummaryViewModel viewModel;
+
+    /**
+     * Callback interface for payment add events.
+     */
+    public interface PaymentMethodAdditionListener {
+        /**
+         * Invoked whenever a new payment method was added.
+         *
+         * @param payment Object which was added.
+         */
+        void onPaymentAdded(Payment payment);
+    }
+
+    // Views
     private RecyclerView recyclerView;
     private PaymentsAdapter adapter;
+
+    // Data
+    private List<Payment> payments;
+    private PaymentMethodAdditionListener paymentMethodAdditionListener;
 
     public BillingInformationCollectionFragment() {
         // Do nothing
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,33 +63,11 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.recyclerView_billingCollection_availableItems);
-
-        viewModel = ViewModelProviders.of(getActivityContext()).get(OrderSummaryViewModel.class);
-        viewModel.getObservableAvailablePayments().observe(this, this::onPaymentsChanged);
+        payments = new ArrayList<>();
 
 
         Button button = view.findViewById(R.id.button_orderSummary_addCard);
         button.setOnClickListener(this::onAddPaymentButtonClick);
-    }
-
-    private void onPaymentsChanged(List<Payment> payments) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
-
-        if (adapter == null) {
-            adapter = new PaymentsAdapter();
-            recyclerView.setAdapter(adapter);
-        }
-
-        adapter.payments = payments;
-
-        adapter.notifyDataSetChanged();
-    }
-
-    private void onAddPaymentButtonClick(View _button) {
-        if (TravelerUI.getPaymentProvider() != null) {
-            Intent i = TravelerUI.getPaymentProvider().getPaymentActivityIntent(getActivity());
-            startActivityForResult(i, OrderSummaryActivity.CARD_REQUEST);
-        }
     }
 
     @Override
@@ -82,11 +75,41 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         if (requestCode == OrderSummaryActivity.CARD_REQUEST && resultCode == OrderSummaryActivity.RESULT_OK) {
             Bundle extras = data.getExtras();
 
-            // TODO find a better way of getting the key.
             if (extras != null && extras.containsKey("RESULT_INTENT_EXTRA_PAYMENT_KEY")) {
                 Payment payment = (Payment) extras.getSerializable("RESULT_INTENT_EXTRA_PAYMENT_KEY");
-                viewModel.setPayment(payment);
+
+                if (paymentMethodAdditionListener != null) {
+                    paymentMethodAdditionListener.onPaymentAdded(payment);
+                }
+
+                payments.add(payment);
+
+                if (adapter == null) {
+                    adapter = new PaymentsAdapter();
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
+                }
+
+                adapter.payments = payments;
+
+                adapter.notifyDataSetChanged();
             }
+        }
+    }
+
+    /**
+     * Subscribes to payment add events.
+     *
+     * @param paymentMethodAdditionListener Callback interface to be invoked whenever a payment is added.
+     */
+    public void setPaymentMethodAdditionListener(PaymentMethodAdditionListener paymentMethodAdditionListener) {
+        this.paymentMethodAdditionListener = paymentMethodAdditionListener;
+    }
+
+    private void onAddPaymentButtonClick(View _button) {
+        if (TravelerUI.getPaymentProvider() != null) {
+            Intent i = TravelerUI.getPaymentProvider().getPaymentActivityIntent(getActivity());
+            startActivityForResult(i, OrderSummaryActivity.CARD_REQUEST);
         }
     }
 

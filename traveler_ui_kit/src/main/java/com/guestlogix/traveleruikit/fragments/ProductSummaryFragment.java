@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,16 +15,13 @@ import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.viewmodels.OrderSummaryViewModel;
 
 import java.util.List;
 
 /**
- * A fragment which displays the general information for a list of products.
- * Observes {@link OrderSummaryViewModel} for products to display.
+ * Fragment which displays a summary of a list of products.
  */
 public class ProductSummaryFragment extends BaseFragment {
-    private OrderSummaryViewModel viewModel;
 
     private RecyclerView recyclerView;
     private ProductsAdapter productsAdapter;
@@ -45,11 +41,9 @@ public class ProductSummaryFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.recyclerView_orderSummary_productsContainer);
-        viewModel = ViewModelProviders.of(getActivityContext()).get(OrderSummaryViewModel.class);
-        viewModel.getObservableProducts().observe(this, this::onProductsChanged);
     }
 
-    private void onProductsChanged(List<Product> products) {
+    public void setProducts(List<Product> products) {
         if (productsAdapter == null) {
             productsAdapter = new ProductsAdapter();
             recyclerView.setAdapter(productsAdapter);
@@ -63,6 +57,7 @@ public class ProductSummaryFragment extends BaseFragment {
 
         productsAdapter.notifyDataSetChanged();
     }
+
 
     private class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
         private List<Product> products;
