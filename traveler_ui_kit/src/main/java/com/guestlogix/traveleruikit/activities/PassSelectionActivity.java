@@ -183,7 +183,7 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putSerializable(EXTRA_PRODUCT, product);
-        outState.putSerializable(EXTRA_PASSES,(Serializable) passes);
+        outState.putSerializable(EXTRA_PASSES, (Serializable) passes);
         super.onSaveInstanceState(outState);
     }
 
