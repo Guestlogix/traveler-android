@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * Form layout used to translate a double indexed section and field data type into a single index recycler view.
- *
+ * <p>
  * Use {@link FormBuilder} to create custom views or use {@link FormType} base fields.
  * This form must be given a {@link DataSource} to start rendering.
  */
@@ -225,7 +225,7 @@ public class Form extends FrameLayout {
     /**
      * Sets the data source and begins rendering the form.
      *
-     * @param dataSource Callback for information required by the form.
+     * @param dataSource    Callback for information required by the form.
      * @param layoutManager Layout Manager
      */
     public void setDataSource(@NonNull DataSource dataSource, RecyclerView.LayoutManager layoutManager) {
@@ -361,7 +361,7 @@ public class Form extends FrameLayout {
      * Currently out of the box, supported form cell types.
      */
     public enum FormType {
-        HEADER(0), TEXT(1), BUTTON(2), QUANTITY(3), SPINNER(4), MESSAGE(5);
+        HEADER(0), TEXT(1), BUTTON(2), QUANTITY(3), SPINNER(4), MESSAGE(5), DATE(6);
 
         private static Map<Integer, FormType> map = new HashMap<>();
 
@@ -403,6 +403,7 @@ public class Form extends FrameLayout {
 
     /**
      * Sets a custom FormBuilder for this form.
+     *
      * @param formBuilder
      */
     public void setFormBuilder(FormBuilder formBuilder) {
@@ -426,6 +427,7 @@ public class Form extends FrameLayout {
 
         /**
          * Amount of fields in a specific section.
+         *
          * @param sectionId Section index.
          * @return amount of fields for the section index.
          */
@@ -435,7 +437,7 @@ public class Form extends FrameLayout {
          * Type of a specific field as dictated by a {@link FormBuilder} class.
          *
          * @param sectionId section where the field is.
-         * @param fieldId field in the section.
+         * @param fieldId   field in the section.
          * @return type of the specific field.
          */
         int getType(int sectionId, int fieldId);
@@ -444,8 +446,8 @@ public class Form extends FrameLayout {
          * Input descriptor for a specific cell.
          *
          * @param sectionId section index where the field is.
-         * @param fieldId field index where the field is.
-         * @param type type of the field.
+         * @param fieldId   field index where the field is.
+         * @param type      type of the field.
          * @return InputDescriptor for a given type.
          */
         @NonNull
@@ -453,6 +455,7 @@ public class Form extends FrameLayout {
 
         /**
          * Title of a section.
+         *
          * @param sectionId Section index.
          * @return Optional title for the section.
          */
@@ -461,6 +464,7 @@ public class Form extends FrameLayout {
 
         /**
          * Disclaimer of a section.
+         *
          * @param sectionId Section index.
          * @return Optional disclaimer for the section.
          */
@@ -469,8 +473,9 @@ public class Form extends FrameLayout {
 
         /**
          * Message for a specific field. See {@link FormMessage} for supported message types.
+         *
          * @param sectionId section index.
-         * @param fieldId field index.
+         * @param fieldId   field index.
          * @return pair of message and type.
          */
         @Nullable
@@ -478,8 +483,9 @@ public class Form extends FrameLayout {
 
         /**
          * Get the value for a field. If null will treat as if there was never a value set in the field.
+         *
          * @param sectionId section index.
-         * @param fieldId field index.
+         * @param fieldId   field index.
          * @return value for the field. Assumes it can be cast to correct type when binding.
          */
         @Nullable
@@ -575,6 +581,9 @@ public class Form extends FrameLayout {
                 case MESSAGE:
                     view = LayoutInflater.from(context).inflate(FormLayout.MESSAGE_LAYOUT, parent, false);
                     return new MessageCell(view);
+                case DATE:
+                    view = LayoutInflater.from(context).inflate(FormLayout.DATE_LAYOUT, parent, false);
+                    return new DateCell(view);
                 default:
                     CustomCellAdapter adapter = customComponentMap.get(elementType);
 
@@ -589,10 +598,10 @@ public class Form extends FrameLayout {
         /**
          * Binds the default cells with values or tries to find an adapter to bind other cells.
          *
-         * @param cell Cell to be populated.
+         * @param cell      Cell to be populated.
          * @param sectionId Section where this cell is.
-         * @param fieldId Field where this cell is.
-         * @param type Type of cell as defined by the adapter.
+         * @param fieldId   Field where this cell is.
+         * @param type      Type of cell as defined by the adapter.
          */
         @Override
         void bindBaseCell(BaseCell cell, int sectionId, int fieldId, int type) {
@@ -654,6 +663,12 @@ public class Form extends FrameLayout {
                     spinnerCell.setHint(spinnerDescriptor.title);
                     spinnerCell.setOptions(spinnerDescriptor.options, spinnerDescriptor.value);
                     break;
+                case DATE:
+                    DateCell dateCell = (DateCell) cell;
+                    DateDescriptor dateDescriptor = (DateDescriptor) dataSource.getInputDescriptor(sectionId, fieldId, type);
+                    dateCell.setHint(dateDescriptor.title);
+                    dateCell.setDate(dateDescriptor.defaultDate);
+                    break;
                 case MESSAGE:
                     MessageCell messageCell = (MessageCell) cell;
                     Pair<String, FormMessage> msg = dataSource.getMessage(sectionId, fieldId);
@@ -708,6 +723,8 @@ public class Form extends FrameLayout {
             static final int SPINNER_LAYOUT = R.layout.form_spinner;
             @LayoutRes
             static final int MESSAGE_LAYOUT = R.layout.form_message_cell;
+            @LayoutRes
+            static final int DATE_LAYOUT = R.layout.form_date;
         }
     }
 
