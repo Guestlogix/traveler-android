@@ -67,6 +67,11 @@ public class ContactInfo implements Serializable {
                 String address = "";
                 List<String> phones = new ArrayList<>();
 
+                JsonToken token = reader.peek();
+                if (JsonToken.NULL == token) {
+                    reader.skipValue();
+                    return null;
+                }
                 reader.beginObject();
 
                 while (reader.hasNext()) {

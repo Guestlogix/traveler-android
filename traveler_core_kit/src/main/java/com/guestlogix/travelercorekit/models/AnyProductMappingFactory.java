@@ -5,6 +5,8 @@ import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import android.util.JsonToken;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +33,11 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         String title = null;
         List<Pass> passes = null;
 
+        JsonToken token = reader.peek();
+        if (JsonToken.NULL == token) {
+            reader.skipValue();
+            return null;
+        }
         reader.beginObject();
         try {
 

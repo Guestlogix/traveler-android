@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
@@ -76,6 +77,11 @@ public class Price implements Serializable {
                 Double value = 0.0;
                 String currency = "";
 
+                JsonToken token = reader.peek();
+                if (JsonToken.NULL == token) {
+                    reader.skipValue();
+                    return null;
+                }
                 reader.beginObject();
 
                 while (reader.hasNext()) {

@@ -102,6 +102,8 @@ public class Router {
 
         if (option != null) {
             rb.param("option-id", option.getId());
+        }else{
+            rb.param("option-id", availability.getId());
         }
 
         return rb.build(session.getAuthToken().getValue());

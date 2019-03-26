@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
@@ -48,6 +49,11 @@ public class Choice implements Serializable {
                 String id = "";
                 String value = "";
 
+                JsonToken token = reader.peek();
+                if (JsonToken.NULL == token) {
+                    reader.skipValue();
+                    return null;
+                }
                 reader.beginObject();
 
                 while (reader.hasNext()) {
@@ -68,7 +74,6 @@ public class Choice implements Serializable {
                 }
 
                 reader.endObject();
-
                 return new Choice(id, value);
             } catch (IllegalArgumentException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));

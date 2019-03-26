@@ -25,7 +25,7 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
             callback.onSuccess(model);
         } catch (IOException | IllegalStateException e) {
-            callback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, "Invalid JSON stream"));
+            callback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, String.format("Invalid JSON stream: %s", e.getMessage())));
         } catch (ObjectMappingException e) {
             callback.onError(e.getError());
         }

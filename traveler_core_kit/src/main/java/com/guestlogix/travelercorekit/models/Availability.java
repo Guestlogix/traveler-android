@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
@@ -23,10 +24,6 @@ public class Availability implements Serializable {
 
         if (date == null) {
             throw new IllegalArgumentException("date can not be null");
-        }
-
-        if (bookingOptionSet == null) {
-            throw new IllegalArgumentException("bookingOptionSet can not be null");
         }
 
         this.id = id;
@@ -65,6 +62,11 @@ public class Availability implements Serializable {
                 String id = null;
                 BookingOptionSet bookingOptionSet = null;
 
+                JsonToken token = reader.peek();
+                if (JsonToken.NULL == token) {
+                    reader.skipValue();
+                    return null;
+                }
                 reader.beginObject();
 
                 while (reader.hasNext()) {
@@ -72,7 +74,6 @@ public class Availability implements Serializable {
 
                     switch (key) {
                         case "date":
-
                             date = DateHelper.parseDate(JsonReaderHelper.readString(reader));
                             break;
                         case "id":

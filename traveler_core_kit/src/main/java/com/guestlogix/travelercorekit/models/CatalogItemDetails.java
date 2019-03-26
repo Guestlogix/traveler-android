@@ -111,7 +111,12 @@ public class CatalogItemDetails implements Product {
                 PurchaseStrategy purchaseStrategy = PurchaseStrategy.Bookable;
                 List<Attribute> information = new ArrayList<>();
 
-                if (BEGIN_ARRAY == reader.peek()) {
+                JsonToken token = reader.peek();
+                if (JsonToken.NULL == token) {
+                    reader.skipValue();
+                    return null;
+                }
+                else if (BEGIN_ARRAY == token) {
                     reader.beginArray();
                 } else {
                     reader.beginObject();
