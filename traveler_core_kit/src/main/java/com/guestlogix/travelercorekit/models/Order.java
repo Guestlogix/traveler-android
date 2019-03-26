@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.*;
 
@@ -78,6 +79,11 @@ public class Order implements Serializable {
                 List<Product> products = null;
                 Date createdDate = null;
 
+                JsonToken token = reader.peek();
+                if (JsonToken.NULL == token) {
+                    reader.skipValue();
+                    return null;
+                }
                 reader.beginObject();
 
                 while (reader.hasNext()) {
