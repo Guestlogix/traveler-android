@@ -65,8 +65,6 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
 
     public void onDateChanged(Calendar calendar) {
         actionState.setValue(State.LOADING);
-
-        // TODO: Don't re-fetch if its the same date.
         Traveler.fetchAvailabilities(product, calendar.getTime(), calendar.getTime(), this);
     }
 

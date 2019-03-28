@@ -26,6 +26,9 @@ public class DatePickerCell extends FrameLayout {
     private TextInputEditText dateEditText;
 
     private Calendar calendar;
+    // Data
+    private Calendar minDate;
+    private Calendar maxDate;
 
     /**
      * Listener to dispatch date change events.
@@ -95,6 +98,14 @@ public class DatePickerCell extends FrameLayout {
         this.onDateChangedListener = l;
     }
 
+    public void setMinDate(Calendar minDate) {
+        this.minDate = minDate;
+    }
+
+    public void setMaxDate(Calendar maxDate) {
+        this.maxDate = maxDate;
+    }
+
     private void onClickEventHandler(View v) {
         if (calendar == null) {
             calendar = Calendar.getInstance();
@@ -106,8 +117,15 @@ public class DatePickerCell extends FrameLayout {
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             final DatePickerDialog d = new DatePickerDialog(getContext(), this::onDateSetEventHandler, year, month, day);
 
-            d.show();
+            if (minDate != null) {
+                d.getDatePicker().setMinDate(minDate.getTimeInMillis());
+            }
 
+            if (maxDate != null) {
+                d.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
+            }
+
+            d.show();
     }
 
     private void onDateSetEventHandler(DatePicker d, int year, int month, int day) {
