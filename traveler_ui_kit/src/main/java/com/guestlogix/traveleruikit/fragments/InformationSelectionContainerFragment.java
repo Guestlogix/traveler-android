@@ -40,7 +40,6 @@ public class InformationSelectionContainerFragment extends BaseFragment {
 
     private void onCatalogItemDetailsChanged(CatalogItemDetails catalogItemDetails) {
         PurchaseStrategy strategy = catalogItemDetails.getPurchaseStrategy();
-        Product product = viewModel.getProduct();
 
         FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
         Fragment fragment;
@@ -56,7 +55,7 @@ public class InformationSelectionContainerFragment extends BaseFragment {
             default:
                 fragment = new BookableInformationSelectionFragment();
                 productVM = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
-                productVM.setup(product);
+                productVM.setup(catalogItemDetails);
                 break;
         }
 
