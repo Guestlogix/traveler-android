@@ -87,7 +87,7 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
         actionStrip.setButtonText(getString(R.string.book_now));
         actionStrip.setLabel(getString(R.string.label_starting_at));
         actionStrip.setActionOnClickListener(this::onActionStripClick);
-        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+        actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
         calculatePrice();
     }
@@ -161,6 +161,22 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
         }
 
         passQuantities.put(pass, val);
+
+        boolean hasAtLeastOnePass = false;
+        for (Integer i : passQuantities.values()) {
+            if (i != null && i > 0) {
+                hasAtLeastOnePass = true;
+                break;
+            }
+        }
+
+        if (hasAtLeastOnePass) {
+            actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+        } else {
+            actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
+        }
+
+
         calculatePrice();
     }
 
