@@ -15,6 +15,8 @@ import com.guestlogix.traveleruikit.viewmodels.BookableProductViewModel;
 import com.guestlogix.traveleruikit.widgets.DatePickerCell;
 import com.guestlogix.traveleruikit.widgets.ListPickerCell;
 
+import java.util.Calendar;
+
 public class BookableInformationSelectionFragment extends BaseFragment {
     private ListPickerCell timePickerCell;
     private DatePickerCell datePickerCell;
@@ -36,6 +38,10 @@ public class BookableInformationSelectionFragment extends BaseFragment {
         datePickerCell.setHint(getString(R.string.hint_select_date));
         timePickerCell = view.findViewById(R.id.timePickerCell);
         timePickerCell.setHint(getString(R.string.hint_select_time));
+
+        Calendar today = Calendar.getInstance();
+        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH), 0, 0 ,0);
+        datePickerCell.setMinDate(today);
 
         BookableProductViewModel sharedViewModel = ViewModelProviders.of(getActivityContext()).get(BookableProductViewModel.class);
         sharedViewModel.getObservableOptions().observe(getActivityContext(), timePickerCell::setValueList);
