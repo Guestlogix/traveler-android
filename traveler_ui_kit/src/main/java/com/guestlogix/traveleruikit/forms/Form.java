@@ -198,11 +198,13 @@ public class Form extends FrameLayout {
      * Scrolls to a specific field int the form. If fieldId is left null, will scroll to the header
      *
      * @param sectionId section index.
-     * @param fieldId   field index.
+     * @param fieldId   field index, leave null if you want to scroll to header.
      */
     public void smoothScrollToPosition(@NonNull Integer sectionId, @Nullable Integer fieldId) {
         if (fieldId == null) {
             fieldId = -1;
+        } else {
+            fieldId -= 1; // Scroll to just above the field
         }
 
         Integer pos = sectionToPos.get(new Pair<>(sectionId, fieldId));

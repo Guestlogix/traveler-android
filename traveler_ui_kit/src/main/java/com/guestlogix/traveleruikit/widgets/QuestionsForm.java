@@ -291,6 +291,7 @@ public class QuestionsForm extends FrameLayout implements Form.DataSource {
 
             if (!errors.isEmpty()) {
                 currentError = errors.get(0);
+                form.smoothScrollToPosition(currentError.getGroupId(), currentError.getQuestionId());
             } else if (null != questionsFormSubmitted) {
                 questionsFormSubmitted.onQuestionFormSubmitted(); // Notify activity form is done
             }
