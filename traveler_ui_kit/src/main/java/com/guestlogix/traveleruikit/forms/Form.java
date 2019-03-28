@@ -646,10 +646,11 @@ public class Form extends FrameLayout {
                         @NonNull
                         @Override
                         public Integer getValue() {
-                            if (quantityValue == null) {
+                            Integer qVal = (Integer) dataSource.getValue(sectionId, fieldId);
+                            if (qVal == null) {
                                 return 0;
                             }
-                            return quantityValue;
+                            return qVal;
                         }
                     });
                     break;
