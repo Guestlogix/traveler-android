@@ -23,7 +23,6 @@ public class CatalogItemDetails implements Product {
     private ContactInfo contact;
     private List<Location> locations;
     private PurchaseStrategy purchaseStrategy;
-    private Price priceStartingAt;
     private List<Attribute> information;
 
     private CatalogItemDetails(String id, String title, String description, List<URL> imageURLs, ContactInfo contact, List<Location> locations, Price priceStartingAt, PurchaseStrategy purchaseStrategy, List<Attribute> information) throws IllegalArgumentException {
@@ -38,7 +37,6 @@ public class CatalogItemDetails implements Product {
         this.price = priceStartingAt;
         this.contact = contact;
         this.locations = locations;
-        this.priceStartingAt = priceStartingAt;
         this.purchaseStrategy = purchaseStrategy;
         this.information = information;
     }
@@ -71,10 +69,6 @@ public class CatalogItemDetails implements Product {
 
     public List<Location> getLocations() {
         return locations;
-    }
-
-    public Price getPriceStartingAt() {
-        return priceStartingAt;
     }
 
     public PurchaseStrategy getPurchaseStrategy() {
