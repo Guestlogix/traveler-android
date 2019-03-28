@@ -2,10 +2,11 @@ package com.guestlogix.traveleruikit.forms.cells;
 
 import android.text.InputType;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 
 import java.util.List;
@@ -49,6 +50,7 @@ public class SpinnerCell extends BaseCell {
         });
 
         this.autocomplete.setOnClickListener(v -> this.autocomplete.showDropDown());
+        this.autocomplete.setThreshold(0);
         this.autocomplete.setInputType(InputType.TYPE_NULL);
     }
 
@@ -76,7 +78,8 @@ public class SpinnerCell extends BaseCell {
         }
 
         if (null != autocomplete && position != null) {
-            autocomplete.setText((String) autocomplete.getAdapter().getItem(position));
+//            autocomplete.setText((String) autocomplete.getAdapter().getItem(position));
+            autocomplete.setListSelection(position);
         }
     }
 
