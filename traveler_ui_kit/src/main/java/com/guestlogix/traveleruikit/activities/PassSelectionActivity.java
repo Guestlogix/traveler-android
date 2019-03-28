@@ -140,7 +140,7 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
     @Nullable
     @Override
     public Object getValue(int sectionId, int fieldId) {
-        Pass pass = passes.get(sectionId);
+        Pass pass = passes.get(fieldId);
 
         Integer value = passQuantities.get(pass);
 
@@ -152,8 +152,8 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
     }
 
     @Override
-    public void onFormValueChanged(int sectionId, int _fieldId, Object value) {
-        Pass pass = passes.get(sectionId);
+    public void onFormValueChanged(int _sectionId, int fieldId, Object value) {
+        Pass pass = passes.get(fieldId);
         Integer val = (Integer) value;
 
         if (val == null) {
