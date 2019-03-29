@@ -8,7 +8,7 @@ import com.guestlogix.travelercorekit.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.*;
 import com.guestlogix.travelercorekit.tasks.AuthTokenFetchTask;
-import com.guestlogix.travelercorekit.tasks.AuthenticatedNetworkRequestTask;
+import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTask;
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
@@ -77,6 +77,20 @@ public class Traveler {
         taskManager.addTask(authTokenFetchBlockTask);
     }
 
+    public static void setUserId(String userId) {
+        if (null == localInstance) {
+            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
+        }
+        localInstance.session.setUserId(userId);
+    }
+
+    public static void removeUserId() {
+        if (null == localInstance) {
+            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
+        }
+        localInstance.session.setUserId(null);
+    }
+
     /**
      * Searches all available flights matching the flight query.
      *
@@ -89,7 +103,7 @@ public class Traveler {
         } else {
             AuthenticatedUrlRequest request = Router.searchFlight(localInstance.session, flightQuery, localInstance.session.getContext());
 
-            AuthenticatedNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedRemoteNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
@@ -124,7 +138,7 @@ public class Traveler {
         } else {
             AuthenticatedUrlRequest request = Router.catalog(localInstance.session, catalogQuery, localInstance.session.getContext());
 
-            AuthenticatedNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Catalog.CatalogObjectMappingFactory());
+            AuthenticatedRemoteNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Catalog.CatalogObjectMappingFactory());
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override
@@ -155,7 +169,7 @@ public class Traveler {
             catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             AuthenticatedUrlRequest request = Router.product(localInstance.session, catalogItem, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+            AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
 
             BlockTask catalogItemDetailsBlockTask = new BlockTask() {
                 @Override
@@ -189,7 +203,7 @@ public class Traveler {
             checkAvailabilityCallback.onAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, product, startDate, endDate, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<List<Availability>> fetchAvailabilitiesTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
+            AuthenticatedRemoteNetworkRequestTask<List<Availability>> fetchAvailabilitiesTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
@@ -226,7 +240,7 @@ public class Traveler {
         } else {
 
             AuthenticatedUrlRequest request = Router.productPass(localInstance.session, product, availability, option, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<List<Pass>> fetchPassesTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
+            AuthenticatedRemoteNetworkRequestTask<List<Pass>> fetchPassesTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
 
             BlockTask fetchPassBlockTask = new BlockTask() {
                 @Override
@@ -262,7 +276,7 @@ public class Traveler {
         } else {
 
             AuthenticatedUrlRequest request = Router.productQuestion(localInstance.session, product, passes, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<List<QuestionGroup>> fetchBookingFormTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
+            AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchBookingFormTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
@@ -295,7 +309,7 @@ public class Traveler {
             ArrayList<BookingForm> forms = new ArrayList<>();
             forms.add(bookingForm);
             AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.session.getContext());
-            AuthenticatedNetworkRequestTask<Order> createOrderTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
+            AuthenticatedRemoteNetworkRequestTask<Order> createOrderTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
@@ -328,7 +342,7 @@ public class Traveler {
         } else {
             AuthenticatedUrlRequest request = Router.orderProcess(localInstance.session, order, payment, localInstance.session.getContext());
 
-            AuthenticatedNetworkRequestTask<Receipt> processOrderTask = new AuthenticatedNetworkRequestTask<>(localInstance.session, request, new Receipt.ReceiptMappingFactory());
+            AuthenticatedRemoteNetworkRequestTask<Receipt> processOrderTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Receipt.ReceiptMappingFactory());
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override

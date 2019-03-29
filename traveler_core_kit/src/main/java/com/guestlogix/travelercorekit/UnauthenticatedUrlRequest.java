@@ -5,12 +5,11 @@ import java.util.Map;
 
 class UnauthenticatedUrlRequest extends UrlRequest {
 
-    UnauthenticatedUrlRequest(Method method, URL url, String apiKey, Map<String, String> headers) {
-        super(method, url);
+    private String apiKey;
 
-        this.url = url;
+    UnauthenticatedUrlRequest(Method method, URL url, String apiKey, Map<String, String> headers) {
+        super(method, url, headers);
         this.apiKey = apiKey;
-        this.headers = headers;
     }
 
     @Override

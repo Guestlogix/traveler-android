@@ -1,5 +1,7 @@
 package com.guestlogix.traveleruikit.viewmodels;
 
+import android.app.Application;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
@@ -14,7 +16,8 @@ public class CatalogItemDetailsViewModel extends StatefulViewModel {
 
     private Product product;
 
-    public CatalogItemDetailsViewModel() {
+    public CatalogItemDetailsViewModel(@NonNull Application application) {
+        super(application);
         this.catalogItemDetailsRepository = new CatalogItemDetailsRepository();
 
         catalogItemDetails = new MutableLiveData<>();

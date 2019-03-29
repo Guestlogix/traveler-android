@@ -1,20 +1,18 @@
 package com.guestlogix.travelercorekit;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
 
 public class AuthenticatedUrlRequest extends UrlRequest {
 
+    private String mToken;
+    private String apiKey;
+
     AuthenticatedUrlRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers) {
-        super(method, URL);
+        super(method, URL, headers);
 
         this.mToken = token;
         this.apiKey = apiKey;
-        this.headers = headers;
     }
 
     AuthenticatedUrlRequest(Method method, URL url, String apiKey, Map<String, String> headers, String token) {

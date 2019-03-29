@@ -20,7 +20,7 @@ import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 import java.util.List;
 
-import static com.guestlogix.traveler.viewmodels.CatalogViewModel.EXTRA_FLIGHT;
+import static com.guestlogix.traveler.viewmodels.HomeViewModel.EXTRA_FLIGHT;
 
 /**
  * A fragment representing a list of Flights.

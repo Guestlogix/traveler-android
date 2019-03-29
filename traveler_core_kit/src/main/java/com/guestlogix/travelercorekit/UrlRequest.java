@@ -15,13 +15,18 @@ import java.util.Map;
 public class UrlRequest implements NetworkTask.Request {
     protected Method method;
     protected URL url;
-    protected String mToken;
-    protected String apiKey;
-    protected Map<String, String> headers;
+    Map<String, String> headers;
+
+    public UrlRequest(Method method, URL url, Map<String, String> headers) {
+        this.url = url;
+        this.method = method;
+        this.headers = headers;
+    }
 
     public UrlRequest(Method method, URL url) {
         this.url = url;
         this.method = method;
+        this.headers = null;
     }
 
     @Override
