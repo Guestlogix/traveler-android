@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
@@ -28,12 +29,20 @@ public class CatalogFragment extends BaseFragment {
 
         View catalogFragmentView = inflater.inflate(R.layout.fragment_catalog, container, false);
 
-        catalogWidgetFragment = (CatalogWidgetFragment) getChildFragmentManager().findFragmentById(R.id.catalogFragment);
-        RecyclerView flightResultRecyclerView = catalogFragmentView.findViewById(R.id.flightResultRecyclerView);
-        flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(catalogFragmentView.getContext()));
+        catalogWidgetFragment = (CatalogWidgetFragment) getChildFragmentManager().findFragmentById(R.id.fragment_catalogFragment_catalogContainer);
+
+        // Setup flights recycler view.
+        RecyclerView flightResultRecyclerView = catalogFragmentView.findViewById(R.id.recyclerView_catalogFragment_addedFlights);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(flightResultRecyclerView.getContext());
         homeFragmentRecyclerViewAdapter = new HomeFragmentRecyclerViewAdapter();
         homeFragmentRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
+        DividerItemDecoration decorator = new DividerItemDecoration
+                (flightResultRecyclerView.getContext(), layoutManager.getOrientation());
+
+        // Bind recycler view data.
+        flightResultRecyclerView.setLayoutManager(layoutManager);
         flightResultRecyclerView.setAdapter(homeFragmentRecyclerViewAdapter);
+        flightResultRecyclerView.addItemDecoration(decorator);
 
         return catalogFragmentView;
     }

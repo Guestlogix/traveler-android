@@ -8,12 +8,8 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
-import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.CatalogViewModel;
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
 
 public class CatalogActivity extends AppCompatActivity {
     private CatalogViewModel catalogViewModel;
