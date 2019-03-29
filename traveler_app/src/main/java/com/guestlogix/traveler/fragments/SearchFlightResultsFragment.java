@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,7 +43,7 @@ public class SearchFlightResultsFragment extends BaseFragment {
 
         view = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
 
-        flightResultRecyclerView = view.findViewById(R.id.flightResultRecyclerView);
+        flightResultRecyclerView = view.findViewById(R.id.recyclerView_catalogFragment_addedFlights);
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
