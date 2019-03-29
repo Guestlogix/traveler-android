@@ -16,10 +16,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "TRAVELER_API_KEY", traveler_key_release
+            buildConfigField "String", "GOOGL_SIGN_IN_CLIENT_ID", google_sign_in_client_id_release
         }
 
         debug {
             buildConfigField "String", "TRAVELER_API_KEY", traveler_key_debug
+            buildConfigField "String", "GOOGL_SIGN_IN_CLIENT_ID", google_sign_in_client_id_debug
         }
     }
 
@@ -54,8 +56,13 @@ dependencies {
 
     //Testing frameworks
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     testImplementation "junit:junit:${junit_version}"
     androidTestImplementation "androidx.test:runner:${androidx_test_runner_version}"
+
+    //Google Auth
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
 }
 repositories {
     mavenCentral()

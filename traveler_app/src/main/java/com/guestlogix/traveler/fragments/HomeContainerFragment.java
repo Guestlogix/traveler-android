@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.AddedFlightsRecyclerViewAdapter;
-import com.guestlogix.traveler.viewmodels.CatalogViewModel;
+import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogFragment;
@@ -21,18 +21,18 @@ import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import java.util.List;
 
-public class CatalogContainerFragment extends BaseFragment {
+public class HomeContainerFragment extends BaseFragment {
 
-    private CatalogViewModel catalogViewModel;
+    private HomeViewModel catalogViewModel;
     private AddedFlightsRecyclerViewAdapter flightsRecyclerViewAdapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View catalogFragmentView = inflater.inflate(R.layout.fragment_catalog_container, container, false);
+        View homeContainerFragmentView = inflater.inflate(R.layout.fragment_home_container, container, false);
 
         // Setup flights recycler view.
-        RecyclerView flightResultRecyclerView = catalogFragmentView.findViewById(R.id.recyclerView_catalogFragment_addedFlights);
+        RecyclerView flightResultRecyclerView = homeContainerFragmentView.findViewById(R.id.recyclerView_catalogFragment_addedFlights);
         LinearLayoutManager layoutManager = new LinearLayoutManager(flightResultRecyclerView.getContext());
         flightsRecyclerViewAdapter = new AddedFlightsRecyclerViewAdapter();
         flightsRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
@@ -44,13 +44,13 @@ public class CatalogContainerFragment extends BaseFragment {
         flightResultRecyclerView.setAdapter(flightsRecyclerViewAdapter);
         flightResultRecyclerView.addItemDecoration(decorator);
 
-        return catalogFragmentView;
+        return homeContainerFragmentView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        catalogViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogViewModel.class);
+        catalogViewModel = ViewModelProviders.of(getActivityContext()).get(HomeViewModel.class);
         catalogViewModel.getObservableFlights().observe(getActivityContext(), this::flightsUpdateHandler);
         catalogViewModel.getStatus().observe(getActivityContext(), this::onStateChange);
     }

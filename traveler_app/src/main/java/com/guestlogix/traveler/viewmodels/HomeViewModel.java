@@ -1,8 +1,14 @@
 package com.guestlogix.traveler.viewmodels;
 
-import android.content.Intent;
+import android.app.Application;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.guestlogix.traveler.callbacks.ProfileCallback;
+import com.guestlogix.traveler.models.Profile;
+import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
@@ -13,32 +19,42 @@ import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
 import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.*;
 
-public class CatalogViewModel extends StatefulViewModel {
+public class HomeViewModel extends StatefulViewModel {
     public static final int ADD_FLIGHT_REQUEST_CODE = 1;
+    public static final int REQUEST_CODE_SIGN_IN = 2;
+
     public static final String EXTRA_FLIGHT = "extra_flight";
     private MutableLiveData<List<Flight>> flightsList;
+    private MutableLiveData<Profile> profile;
     private MutableLiveData<Catalog> catalog;
 
 
-    public CatalogViewModel() {
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
         this.flightsList = new MutableLiveData<>();
         this.flightsList.setValue(new ArrayList<>());
+        this.profile = new MutableLiveData<>();
         this.catalog = new MutableLiveData<>();
-    }
 
-    public Catalog getCatalog() {
-        return catalog.getValue();
+        lookupProfile();
     }
 
     public LiveData<List<Flight>> getObservableFlights() {
         return flightsList;
     }
 
-    private void addFlight(Flight flight) {
-        //TODO User repository to manage flights in user session
+    public LiveData<Profile> getObservableProfile() {
+        return profile;
+    }
+
+    public Catalog getCatalog() {
+        return catalog.getValue();
+    }
+
+    public void addFlight(Flight flight) {
+        //TODO Profile repository to manage flights in user session
         if (null != flightsList.getValue()) {
             List<Flight> flightsList = this.flightsList.getValue();
             flightsList.add(flight);
@@ -56,6 +72,34 @@ public class CatalogViewModel extends StatefulViewModel {
             flightsList.remove(index);
             this.flightsList.postValue(flightsList);
         }
+    }
+
+    public void setProfile(Profile profile) {
+        if (null == profile) {
+            Profile.remove(getApplication());
+        }
+        this.profile.postValue(profile);
+    }
+
+    private void lookupProfile() {
+        Profile profile = Guest.getInstance().getSignedInUser(getApplication());
+        if (null != profile) {
+            //If user session exist locally
+            this.profile.postValue(profile);
+        } else {
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplication());
+            if (null != account) {
+                //user already authorized us, get user model from backend
+                fetchProfile(account.getIdToken());
+            } else {
+                //user needs to sign in and authorize us via google.
+                this.profile.postValue(null);
+            }
+        }
+    }
+
+    public void fetchProfile(String idToken) {
+        Guest.getInstance().fetchProfile(idToken, profileCallback);
     }
 
     public void fetchCatalog() {
@@ -77,18 +121,18 @@ public class CatalogViewModel extends StatefulViewModel {
         }
     };
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case ADD_FLIGHT_REQUEST_CODE:
-                    Flight flight = (Flight) data.getExtras().getSerializable(EXTRA_FLIGHT);
-                    addFlight(flight);
-                    break;
-            }
+    private ProfileCallback profileCallback = new ProfileCallback() {
+        @Override
+        public void onSignInSuccess(Profile _profile) {
+            //TODO: Profile fetched
+            _profile.save(getApplication());
+            profile.postValue(_profile);
         }
-    }
-//
-//    public void refreshCatalog() {
-//        fetchCatalog(flightsList.getValue());
-//    }
+
+        @Override
+        public void onSignInError(Error error) {
+            //TODO: Display error
+            profile.postValue(null);
+        }
+    };
 }

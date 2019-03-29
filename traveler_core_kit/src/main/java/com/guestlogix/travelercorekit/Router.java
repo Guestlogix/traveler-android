@@ -225,7 +225,6 @@ public class Router {
         }
     }
 
-    // This class only build AuthenticatedUrlRequest or UnauthenticatedUrlRequest classes
     private static class RequestBuilder {
         private Method method;
         private String path;

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+            android:id="@+id/profile_action"
+            android:orderInCategory="100"
+            app:showAsAction="always"
+            android:title="@string/sign_in"/>
+    <item
+            android:id="@+id/sign_in_action"
+            android:orderInCategory="100"
+            app:showAsAction="always"
+            android:title="@string/sign_in"/>
+    <item
+            android:id="@+id/flight_add_action"
+            android:icon="@drawable/ic_add_white_24dp"
+            android:orderInCategory="100"
+            app:showAsAction="ifRoom"
+            android:title="@string/add_flight"/>
+</menu>

@@ -1,5 +1,7 @@
 package com.guestlogix.traveler.viewmodels;
 
+import android.app.Application;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.traveler.repositories.FlightSearchRepository;
@@ -16,7 +18,8 @@ public class SearchFlightResultViewModel extends StatefulViewModel {
     private MutableLiveData<List<Flight>> flightsList;
     private FlightSearchRepository flightSearchRepository;
 
-    public SearchFlightResultViewModel() {
+    public SearchFlightResultViewModel(@NonNull Application application) {
+        super(application);
         this.flightsList = new MutableLiveData<>();
         this.flightSearchRepository = new FlightSearchRepository();
     }

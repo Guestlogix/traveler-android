@@ -8,7 +8,7 @@ import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
-public class AuthenticatedNetworkRequestTask<T> extends Task {
+public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
 
     private TaskManager taskManager = new TaskManager();
     private Session session;
@@ -18,7 +18,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
     private Error error;
     private T resource;
 
-    public AuthenticatedNetworkRequestTask(Session session, AuthenticatedUrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
+    public AuthenticatedRemoteNetworkRequestTask(Session session, AuthenticatedUrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
         this.session = session;
         this.request = request;
         this.objectMappingFactory = objectMappingFactory;
@@ -26,12 +26,12 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         jsonObjectMapper = new JsonObjectMapper<>(this.objectMappingFactory, new JsonObjectMapperCallback<T>() {
             @Override
             public void onSuccess(T resource) {
-                AuthenticatedNetworkRequestTask.this.resource = resource;
+                AuthenticatedRemoteNetworkRequestTask.this.resource = resource;
             }
 
             @Override
             public void onError(Error error) {
-                AuthenticatedNetworkRequestTask.this.error = error;
+                AuthenticatedRemoteNetworkRequestTask.this.error = error;
             }
         });
     }
@@ -82,7 +82,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
                 }
 
                 if (error != null) {
-                    AuthenticatedNetworkRequestTask.this.error = error;
+                    AuthenticatedRemoteNetworkRequestTask.this.error = error;
                 }
             }
         };
@@ -90,7 +90,7 @@ public class AuthenticatedNetworkRequestTask<T> extends Task {
         BlockTask finishTask = new BlockTask() {
             @Override
             protected void main() {
-                AuthenticatedNetworkRequestTask.this.finish();
+                AuthenticatedRemoteNetworkRequestTask.this.finish();
             }
         };
         networkBlockTask.addDependency(networkTask);

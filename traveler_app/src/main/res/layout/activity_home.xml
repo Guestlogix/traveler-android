@@ -6,14 +6,14 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:background="@color/white"
-              tools:context=".activities.CatalogActivity">
+              tools:context=".activities.HomeActivity">
     <fragment
-            android:id="@+id/home_host_fragment"
+            android:id="@+id/homeHostFragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/catalog_navigation"/>
+            app:navGraph="@navigation/home_navigation"/>
 
 </LinearLayout>
