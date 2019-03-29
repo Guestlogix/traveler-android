@@ -7,7 +7,7 @@ android {
         applicationId "com.guestlogix.traveler"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 5
+        versionCode 7
         versionName "0.0.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
