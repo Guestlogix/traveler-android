@@ -608,6 +608,7 @@ public class Form extends FrameLayout {
         @Override
         void bindBaseCell(BaseCell cell, int sectionId, int fieldId, int type) {
             InputDescriptor id;
+            cell.reload();
             switch (FormType.valueOf(type)) {
                 case HEADER:
                     HeaderCell headerCell = (HeaderCell) cell;
@@ -626,6 +627,7 @@ public class Form extends FrameLayout {
                     Integer quantityValue = (Integer) dataSource.getValue(sectionId, fieldId);
                     quantityCell.setTitle(id.title);
                     quantityCell.setSubtitle(id.subtitle);
+                    quantityCell.setQuantity(String.valueOf(quantityValue));
                     quantityCell.setAdapter(new QuantityCell.QuantityCellAdapter() {
                         @Override
                         public String getTitle() {

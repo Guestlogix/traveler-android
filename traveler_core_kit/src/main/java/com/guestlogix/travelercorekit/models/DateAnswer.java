@@ -22,6 +22,6 @@ public class DateAnswer extends Answer {
     }
 
     public String getValue() {
-        return DateHelper.formatDateToISO8601(value.getTime());
+        return DateHelper.formatDate(value.getTime());
     }
 }
