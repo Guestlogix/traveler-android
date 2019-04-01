@@ -30,7 +30,7 @@
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/departureIataTextView"
+            android:id="@+id/textView_catalog_departureIata"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
@@ -47,7 +47,7 @@
             tools:text="13:35"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/departureIataTextView"
+            app:layout_constraintTop_toBottomOf="@+id/textView_catalog_departureIata"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
 
@@ -71,7 +71,7 @@
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/arrivalIataTextView"
+            android:id="@+id/textView_catalog_arrivalIata"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="YYZ"
@@ -88,7 +88,7 @@
             tools:text="16:55"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/arrivalIataTextView"
+            app:layout_constraintTop_toBottomOf="@+id/textView_catalog_arrivalIata"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
