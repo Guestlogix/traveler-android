@@ -53,7 +53,7 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
         }
 
         @Override
-        public void onBindItem(int sectionPosition, int itemIndex, int holderId, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView) {
+        public void onBindItem(int sectionPosition, int itemIndex, int holderId, ImageView thumbNailImageView, TextView titleTextView) {
             CatalogItem item = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
 
             //TODO: Set some default image
@@ -74,7 +74,6 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
                         }
                     });
             titleTextView.setText(item.getTitle());
-            subTitleTextView.setText(item.getSubTitle());
         }
 
         @Override

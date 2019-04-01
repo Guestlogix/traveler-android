@@ -63,7 +63,7 @@ public class CatalogView extends FrameLayout {
     public interface CatalogViewAdapter {
         void onBindSection(int sectionPosition, TextView titleTextView);
 
-        void onBindItem(int sectionPosition, int itemIndex, int holderId, ImageView thumbNailImageView, TextView titleTextView, TextView subTitleTextView);
+        void onBindItem(int sectionPosition, int itemIndex, int holderId, ImageView thumbNailImageView, TextView titleTextView);
 
         void onSeeAllClick(int sectionPosition);
 
