@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.guestlogix.traveleruikit.R;
 
@@ -32,12 +31,12 @@ public abstract class TravelerErrorFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_traveler_error, container, false);
-        TextView titleTextView = view.findViewById(R.id.titleTextView);
-        TextView messageTextView = view.findViewById(R.id.messageTextView);
-        TextView actionTextView = view.findViewById(R.id.actionTextView);
+        TextView titleTextView = view.findViewById(R.id.textView_errorFragment_title);
+        TextView messageTextView = view.findViewById(R.id.textView_errorFragment_message);
+        TextView actionTextView = view.findViewById(R.id.textView_errorFragment_action);
 
         Bundle bundle = getArguments();
         if (null != bundle) {

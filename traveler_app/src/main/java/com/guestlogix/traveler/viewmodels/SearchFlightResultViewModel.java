@@ -25,17 +25,15 @@ public class SearchFlightResultViewModel extends StatefulViewModel {
         return flightsList;
     }
 
-
-    public void flightSearch(FlightQuery query) {
-        status.postValue(LOADING);
-        flightSearchRepository.flightSearch(query, flightSearchCallback);
-    }
-
     private FlightSearchCallback flightSearchCallback = new FlightSearchCallback() {
         @Override
         public void onFlightSearchSuccess(List<Flight> flights) {
-            flightsList.postValue(flights);
-            status.setValue(SUCCESS);
+            if (flights != null && !flights.isEmpty()) {
+                flightsList.setValue(flights);
+                status.setValue(SUCCESS);
+            } else {
+                status.setValue(ERROR);
+            }
         }
 
         @Override
@@ -43,6 +41,11 @@ public class SearchFlightResultViewModel extends StatefulViewModel {
             status.setValue(ERROR);
         }
     };
+
+    public void flightSearch(FlightQuery query) {
+        status.setValue(LOADING);
+        flightSearchRepository.flightSearch(query, flightSearchCallback);
+    }
 
 
 }

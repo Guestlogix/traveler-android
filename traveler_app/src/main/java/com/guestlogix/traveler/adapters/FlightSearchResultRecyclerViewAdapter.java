@@ -34,12 +34,12 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = flightsList.get(position);
-        holder.departureCityTextView.setText(flightsList.get(position).getDepartureAirport().getCity());
-        holder.departureIataTextView.setText(flightsList.get(position).getDepartureAirport().getCode());
-        holder.departureTimeTextView.setText(DateHelper.formatTime(flightsList.get(position).getDepartureDate()));
-        holder.arrivalCityTextView.setText(flightsList.get(position).getArrivalAirport().getCity());
-        holder.arrivalIataTextView.setText(flightsList.get(position).getArrivalAirport().getCode());
-        holder.arrivalTimeTextView.setText(DateHelper.formatTime(flightsList.get(position).getArrivalDate()));
+        holder.departureCityTextView.setText(holder.mItem.getDepartureAirport().getCity());
+        holder.departureIataTextView.setText(holder.mItem.getDepartureAirport().getCode());
+        holder.departureTimeTextView.setText(DateHelper.formatTime(holder.mItem.getDepartureDate()));
+        holder.arrivalCityTextView.setText(holder.mItem.getArrivalAirport().getCity());
+        holder.arrivalIataTextView.setText(holder.mItem.getArrivalAirport().getCode());
+        holder.arrivalTimeTextView.setText(DateHelper.formatTime(holder.mItem.getArrivalDate()));
 
         holder.addFlightTextView.setTag(position);
         holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);

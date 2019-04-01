@@ -11,15 +11,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_centerInParent="true">
+
+    <!-- TODO: android:textStyle="bold" causes an error in logs, find alternative -->
     <TextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/textView_errorFragment_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_sorry"
             android:textStyle="bold"
             android:textSize="20sp"/>
     <TextView
-            android:id="@+id/messageTextView"
+            android:id="@+id/textView_errorFragment_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="20dp"
@@ -27,8 +29,8 @@
             android:textSize="17sp"
             android:text="@string/label_nothing_to_show"/>
     <TextView
+            android:id="@+id/textView_errorFragment_action"
             android:layout_width="wrap_content"
-            android:id="@+id/actionTextView"
             android:layout_height="wrap_content"
             android:text="@string/try_again"
             android:padding="10dp"/>
