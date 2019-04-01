@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.utils.HorizontalSpaceItemDecoration;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
 public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAdapter.CatalogSectionViewHolder> {
@@ -41,7 +42,15 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
         return catalogViewAdapter.getSectionsCount();
     }
 
-    public class CatalogSectionViewHolder extends RecyclerView.ViewHolder {
+    private View.OnClickListener onSeeAllClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int index = (Integer) v.getTag();
+            catalogViewAdapter.onSeeAllClick(index);
+        }
+    };
+
+    class CatalogSectionViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
         TextView sectionTitleTextView;
@@ -49,7 +58,7 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
         RecyclerView sectionItemRecyclerView;
         CatalogItemAdapter catalogItemAdapter;
 
-        public CatalogSectionViewHolder(@NonNull View itemView) {
+        CatalogSectionViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
             sectionTitleTextView = mView.findViewById(R.id.sectionTitleTextView);
@@ -57,18 +66,14 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
             sectionItemRecyclerView = mView.findViewById(R.id.sectionItemRecyclerView);
             sectionItemRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+            HorizontalSpaceItemDecoration spaceItemDecoration =
+                    new HorizontalSpaceItemDecoration((int) itemView.getContext().getResources().getDimension(R.dimen.padding_xlarge));
+
             catalogItemAdapter = new CatalogItemAdapter();
             sectionItemRecyclerView.setAdapter(catalogItemAdapter);
+            sectionItemRecyclerView.addItemDecoration(spaceItemDecoration);
         }
     }
-
-    View.OnClickListener onSeeAllClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int index = (Integer) v.getTag();
-            catalogViewAdapter.onSeeAllClick(index);
-        }
-    };
 
     public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogSectionAdapter.CatalogItemViewHolder> {
 
@@ -84,10 +89,10 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
 
         @Override
         public void onBindViewHolder(@NonNull CatalogSectionAdapter.CatalogItemViewHolder holder, int position) {
-            catalogViewAdapter.onBindItem(sectionPosition, position, holder.hashCode(), holder.thumbnailImageView, holder.titleTextView, holder.subTitleTextView);
+            catalogViewAdapter.onBindItem(sectionPosition, position, holder.hashCode(), holder.thumbnail, holder.title);
 
-            holder.mView.setTag(position);
-            holder.mView.setOnClickListener(onItemClickListener);
+            holder.itemView.setTag(position);
+            holder.itemView.setOnClickListener(onItemClickListener);
         }
 
         @Override
@@ -109,18 +114,13 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
     }
 
     class CatalogItemViewHolder extends RecyclerView.ViewHolder {
-
-        View mView;
-        ImageView thumbnailImageView;
-        TextView titleTextView;
-        TextView subTitleTextView;
+        ImageView thumbnail;
+        TextView title;
 
         CatalogItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            mView = itemView;
-            thumbnailImageView = mView.findViewById(R.id.thumbnailImageView);
-            titleTextView = mView.findViewById(R.id.titleTextView);
-            subTitleTextView = mView.findViewById(R.id.subTitleTextView);
+            thumbnail = itemView.findViewById(R.id.imageView_catalogSectionItem_thumbnail);
+            title = itemView.findViewById(R.id.textView_catalogSectionItem_title);
         }
     }
 }

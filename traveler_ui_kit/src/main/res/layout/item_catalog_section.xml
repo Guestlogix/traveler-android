@@ -4,13 +4,14 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:padding="6dp"
         android:layout_height="wrap_content">
 
     <TextView
             style="@style/BodyHeaderTextView"
-            android:layout_width="wrap_content"
             tools:text="Dummy Title"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal"
+            android:layout_width="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:maxLines="1"
@@ -20,6 +21,8 @@
 
     <TextView
             style="@style/BodyLabelTextView"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal"
             android:layout_width="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -28,6 +31,7 @@
             android:id="@+id/seeAllTextView"/>
 
     <androidx.recyclerview.widget.RecyclerView
+            style="@style/Container"
             android:id="@+id/sectionItemRecyclerView"
             android:layout_below="@+id/sectionTitleTextView"
             android:layout_width="wrap_content"

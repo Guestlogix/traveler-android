@@ -3,9 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".fragments.CatalogWidgetSuccessFragment"
-             android:paddingLeft="@dimen/padding_normal"
-             android:paddingRight="@dimen/padding_normal">
+             tools:context=".fragments.CatalogWidgetSuccessFragment">
 
     <com.guestlogix.traveleruikit.widgets.CatalogView
             android:id="@+id/catalogView"
