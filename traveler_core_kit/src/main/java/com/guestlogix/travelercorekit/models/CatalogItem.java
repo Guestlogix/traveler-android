@@ -7,6 +7,7 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class CatalogItem implements Product {
@@ -88,7 +89,11 @@ public class CatalogItem implements Product {
                             subTitle = JsonReaderHelper.readString(reader);
                             break;
                         case "thumbnail":
-                            thumbnail = new URL(JsonReaderHelper.readString(reader));
+                            try {
+                                thumbnail = new URL(JsonReaderHelper.readString(reader));
+                            } catch (MalformedURLException e) {
+                                thumbnail = null;
+                            }
                             break;
                         default:
                             reader.skipValue();
