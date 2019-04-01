@@ -72,10 +72,10 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
             super(view);
             this.view = view;
             departureCityTextView = this.view.findViewById(R.id.departureCityTextView);
-            departureIataTextView = this.view.findViewById(R.id.departureIataTextView);
+            departureIataTextView = this.view.findViewById(R.id.textView_catalog_departureIata);
             departureTimeTextView = this.view.findViewById(R.id.departureTimeTextView);
             arrivalCityTextView = this.view.findViewById(R.id.arrivalCityTextView);
-            arrivalIataTextView = this.view.findViewById(R.id.arrivalIataTextView);
+            arrivalIataTextView = this.view.findViewById(R.id.textView_catalog_arrivalIata);
             arrivalTimeTextView = this.view.findViewById(R.id.arrivalTimeTextView);
             addFlightTextView = this.view.findViewById(R.id.addFlightTextView);
         }

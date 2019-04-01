@@ -27,7 +27,7 @@ public class CatalogWidgetFragment extends BaseFragment implements TravelerError
     private NavController navController;
     private View catalogFragmentView;
     private CatalogWidgetViewModel catalogWidgetViewModel;
-    private List<Flight> flights = new ArrayList<>();
+    private CatalogFetchSuccessCallback catalogFetchSuccessCallback;
 
     public CatalogWidgetFragment() {
         // Required empty public constructor
@@ -55,12 +55,19 @@ public class CatalogWidgetFragment extends BaseFragment implements TravelerError
         }
     }
 
+    public void setCatalogFetchSuccessCallback(CatalogFetchSuccessCallback catalogFetchSuccessCallback) {
+        this.catalogFetchSuccessCallback = catalogFetchSuccessCallback;
+    }
+
     private void onStateChange(StatefulViewModel.State state) {
         switch (state) {
             case LOADING:
                 navController.navigate(R.id.loading_action);
                 break;
             case SUCCESS:
+                if (catalogFetchSuccessCallback != null) {
+                    catalogFetchSuccessCallback.onCatalogFetchSuccess();
+                }
                 navController.navigate(R.id.catalog_destination);
                 break;
             case ERROR:
@@ -79,5 +86,9 @@ public class CatalogWidgetFragment extends BaseFragment implements TravelerError
         if (null != catalogWidgetViewModel) {
             catalogWidgetViewModel.updateCatalog();
         }
+    }
+
+    public interface CatalogFetchSuccessCallback {
+        void onCatalogFetchSuccess();
     }
 }
