@@ -94,8 +94,8 @@ public class DateCell extends BaseCell {
     @Override
     public void reload() {
         input.setText(null);
-        input.setHint(null);
         dateInputLayout.setHint(null);
+        input.clearFocus();
     }
 
     public void setHint(String hint) {

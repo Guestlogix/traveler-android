@@ -2,15 +2,21 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/margin_default"
         android:paddingRight="@dimen/margin_default">
-
-    <EditText
-            android:id="@+id/input"
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_form_textLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editText_form_textInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:hint="Test Hint"/>
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
