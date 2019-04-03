@@ -6,13 +6,13 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/dateLayout"
+            android:id="@+id/textInputLayout_datePickerCell_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/dateEditText"
+                android:id="@+id/editText_datePickerCell_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/hint_select_date"

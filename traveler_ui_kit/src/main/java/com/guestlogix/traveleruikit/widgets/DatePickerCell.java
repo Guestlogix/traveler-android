@@ -67,8 +67,8 @@ public class DatePickerCell extends FrameLayout {
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (!isInEditMode()) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_date_picker_cell, this, true);
-            dateLayout = view.findViewById(R.id.dateLayout);
-            dateEditText = view.findViewById(R.id.dateEditText);
+            dateLayout = view.findViewById(R.id.textInputLayout_datePickerCell_layout);
+            dateEditText = view.findViewById(R.id.editText_datePickerCell_input);
 
             dateEditText.setOnClickListener(this::onClickEventHandler);
         }
@@ -82,11 +82,11 @@ public class DatePickerCell extends FrameLayout {
     }
 
     public void setError(@Nullable String error) {
-        dateEditText.setError(error);
+        dateLayout.setError(error);
     }
 
     public void setHint(@Nullable String hint) {
-        this.dateEditText.setHint(hint);
+        this.dateLayout.setHint(hint);
     }
 
     /**
