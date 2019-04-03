@@ -8,9 +8,10 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-public class CatalogGroup {
+public class CatalogGroup implements Serializable {
     private String title;
     private String subTitle;
     private String description;

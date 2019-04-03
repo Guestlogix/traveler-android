@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class CatalogItem implements Product {
+public class CatalogItem implements Product, Serializable {
     private String id;
     private String title;
     private String subTitle;

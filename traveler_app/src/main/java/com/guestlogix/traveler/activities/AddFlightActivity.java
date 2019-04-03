@@ -10,12 +10,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.SearchFlightResultViewModel;
-import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
+import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.*;
 
-public class AddFlightActivity extends AppCompatActivity  implements TravelerErrorFragment.OnErrorInteractionListener{
+public class AddFlightActivity extends AppCompatActivity  implements RetryFragmentInteractionListener {
     private NavController navController;
     private SearchFlightResultViewModel searchFlightResultViewModel;
 

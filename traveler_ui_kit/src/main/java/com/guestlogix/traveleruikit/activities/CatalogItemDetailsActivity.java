@@ -8,13 +8,12 @@ import androidx.navigation.Navigation;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.fragments.TravelerErrorFragment;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
-import static com.guestlogix.traveleruikit.fragments.TravelerErrorFragment.*;
+import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.*;
 
-public class CatalogItemDetailsActivity extends AppCompatActivity implements TravelerErrorFragment.OnErrorInteractionListener {
+public class CatalogItemDetailsActivity extends AppCompatActivity implements RetryFragmentInteractionListener {
 
     public static final String ARG_CATALOG_ITEM = "catalog_item";
 

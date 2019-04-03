@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.fragments;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,39 +10,54 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
+import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
 import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
-import com.guestlogix.traveleruikit.viewmodels.CatalogWidgetViewModel;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
 import java.util.List;
+
+import static com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity.ARG_CATALOG_ITEM;
 
 /**
  * Fragment to hold the Catalog widget.
  */
 //TODO: Give developer flexibility to change item clicks and see all clicks.
-public class CatalogWidgetSuccessFragment extends BaseFragment {
+public class CatalogFragment extends BaseFragment {
+
+    private static String ARG_CATALOG = "arg_catalog";
 
     private List<CatalogGroup> catalogGroups;
     private CatalogView catalogView;
 
-    public CatalogWidgetSuccessFragment() {
+    public CatalogFragment() {
         // Required empty public constructor
+    }
+
+    public static CatalogFragment newInstance(Catalog catalog) {
+
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CATALOG, catalog);
+        CatalogFragment fragment = new CatalogFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View catalogFragmentView = inflater.inflate(R.layout.fragment_catalog_widget_success, container, false);
+        View catalogFragmentView = inflater.inflate(R.layout.fragment_catalog, container, false);
         catalogView = catalogFragmentView.findViewById(R.id.catalogView);
 
-        CatalogWidgetViewModel catalogWidgetViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogWidgetViewModel.class);
-        catalogWidgetViewModel.getGroupsObservable().observe(this, this::catalogUpdateHandler);
+        Bundle args = getArguments();
+
+        if (null != args && args.containsKey(ARG_CATALOG)) {
+            catalogUpdateHandler((Catalog) args.getSerializable(ARG_CATALOG));
+        }
 
         return catalogFragmentView;
     }
@@ -84,9 +100,9 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
         public void onItemClick(int sectionPosition, int itemIndex) {
             CatalogItem catalogItem = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
 
-            CatalogWidgetSuccessFragmentDirections.CatalogItemDetailsAction directions = CatalogWidgetSuccessFragmentDirections.catalogItemDetailsAction(catalogItem);
-            Navigation.findNavController(catalogView).navigate(directions);
-
+            Intent catalogItemDetailsIntent = new Intent(getActivityContext(), CatalogItemDetailsActivity.class);
+            catalogItemDetailsIntent.putExtra(ARG_CATALOG_ITEM, catalogItem);
+            startActivity(catalogItemDetailsIntent);
         }
 
         @Override
@@ -100,9 +116,10 @@ public class CatalogWidgetSuccessFragment extends BaseFragment {
         }
     };
 
-    private void catalogUpdateHandler(List<CatalogGroup> catalogGroups) {
-        this.catalogGroups = catalogGroups;
-        catalogView.setCatalogViewAdapter(catalogViewAdapter);
+    private void catalogUpdateHandler(Catalog catalog) {
+        if (null != catalog) {
+            catalogGroups = catalog.getGroups();
+            catalogView.setCatalogViewAdapter(catalogViewAdapter);
+        }
     }
-
 }
