@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="@dimen/padding_xlarge"
+              tools:context=".fragments.AboutFragment">
+
+
+    <TextView
+            android:textSize="@dimen/text_view_xlarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="gCrew Stub"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec metus ut lacus ornare molestie eget sed mauris. Donec tempus urna at congue imperdiet. Curabitur semper vehicula blandit. Etiam felis odio, posuere et tincidunt a, dapibus id dolor. Duis pretium metus ac dui porttitor pretium. In risus arcu, elementum sit amet lobortis ut, ultrices quis nunc. Donec pellentesque lacus vel lacus sollicitudin facilisis. Sed vitae rutrum ligula. Maecenas odio purus, laoreet ac augue sed, viverra elementum enim. Cras cursus ullamcorper finibus. Mauris luctus ut nisi eu tincidunt. Pellentesque lacinia elit nulla, at maximus neque euismod ut. Maecenas at malesuada ante. Nunc in dui diam. Cras enim lorem, egestas eget mollis eu, luctus id diam.
+
+Sed non elit eu odio aliquam faucibus. Maecenas consequat elementum massa, sed vulputate massa vehicula eget. Cras sed nisi odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla facilisi. Ut volutpat congue purus a rutrum. Curabitur volutpat sapien aliquet dignissim egestas. Proin velit lorem, pharetra porta aliquet nec, mattis blandit erat. Maecenas sit amet felis in ante scelerisque mattis."/>
+
+</LinearLayout>

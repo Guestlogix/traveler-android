@@ -8,10 +8,21 @@
               android:focusable="true"
               android:background="?attr/selectableItemBackground">
 
+    <ImageView
+            android:id="@+id/imageView_appSettingsItem_icon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
     <TextView
             style="@style/ListItem.Large.Text"
-            android:id="@+id/textView_appSettings_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:id="@+id/textView_appSettingsItem_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:paddingLeft="@dimen/padding_normal"
+            android:paddingRight="@dimen/padding_normal"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:text="Support"/>
 </LinearLayout>

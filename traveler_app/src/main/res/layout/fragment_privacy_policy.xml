@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+              android:orientation="vertical"
+             tools:context=".fragments.PrivacyPolicyFragment"
+             android:padding="@dimen/padding_xlarge">
+    <!-- TODO -->
+    <TextView
+            android:textSize="@dimen/text_view_xlarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Privacy Policy Stub"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aliquam cursus neque ipsum, ut gravida arcu dignissim et. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec mattis tempor lorem, sed interdum nunc. Vestibulum nec tortor aliquam, pellentesque justo vitae, volutpat odio. Vestibulum non egestas arcu, et feugiat tellus. Phasellus facilisis interdum enim sed mollis. Etiam convallis non leo luctus viverra. Sed vulputate est a fermentum semper. Vivamus in eros id risus dignissim pulvinar ut tincidunt mi. Aliquam erat volutpat."/>
+
+</LinearLayout>

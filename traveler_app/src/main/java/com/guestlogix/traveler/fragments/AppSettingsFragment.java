@@ -40,17 +40,7 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
 
         setHasOptionsMenu(true);
 
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            ActionBar actionBar = activity.getSupportActionBar();
 
-            if (actionBar != null) {
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
-                        ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_USE_LOGO);
-
-                actionBar.setHomeAsUpIndicator(R.drawable.ic_home_white_24dp);
-            }
-        }
     }
 
     @Override
@@ -75,6 +65,18 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         recyclerView.setLayoutManager(lm);
         recyclerView.addItemDecoration(new DividerItemDecoration(v.getContext(), lm.getOrientation()));
 
+        if (getActivity() != null) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            ActionBar actionBar = activity.getSupportActionBar();
+
+            if (actionBar != null) {
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
+                        ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_USE_LOGO);
+
+                actionBar.setHomeAsUpIndicator(R.drawable.ic_home_white_24dp);
+            }
+        }
+
         return v;
     }
 
@@ -87,19 +89,23 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         int position = (int) v.getTag();
-        NavController nav = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
+        NavController nav = Navigation.findNavController(getActivity(), R.id.nav_app_settings);
 
         switch (position) {
             case 0:
                 nav.navigate(R.id.action_home_destination_to_support_information_destination);
                 break;
             case 1:
+                nav.navigate(R.id.action_home_destination_to_about_destination);
                 break;
             case 2:
+                nav.navigate(R.id.action_home_destination_to_faq_destination);
                 break;
             case 3:
+                nav.navigate(R.id.action_home_destination_to_legal_destination);
                 break;
             case 4:
+                nav.navigate(R.id.action_home_destination_to_privacy_policy_destination);
                 break;
             case 5:
                 break;
@@ -145,7 +151,7 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setClickable(true);
-            title = itemView.findViewById(R.id.textView_appSettings_title);
+            title = itemView.findViewById(R.id.textView_appSettingsItem_title);
         }
     }
 }

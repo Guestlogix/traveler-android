@@ -5,12 +5,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".fragments.AppSettingsFragment">
+        android:padding="@dimen/padding_xlarge"
+        tools:context=".fragments.FrequentlyAskedQuestionsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_appSettings_actionsList"
+    <!-- TODO -->
+    <TextView
+            android:textSize="@dimen/text_view_xlarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/item_action_settings"
-            tools:itemCount="7"/>
+            android:text="FAQ"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Can this screen look better? Yes."/>
+
 </LinearLayout>
