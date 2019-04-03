@@ -263,6 +263,16 @@
         <item name="android:paddingBottom">@dimen/padding_normal</item>
     </style>
 
+    <style name="ListItem.Large">
+        <item name="android:paddingTop">@dimen/padding_xlarge</item>
+        <item name="android:paddingBottom">@dimen/padding_xlarge</item>
+    </style>
+
+    <style name="ListItem.Large.Text">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/text_view_large</item>
+    </style>
+
     <style name="Container" parent="AppTheme">
         <item name="android:paddingTop">@dimen/padding_large</item>
         <item name="android:paddingBottom">@dimen/padding_large</item>
