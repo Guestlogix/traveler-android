@@ -4,15 +4,15 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".activities.AppSettingsActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_appSettings_actionsList"
-            android:layout_marginLeft="@dimen/margin_xxlarge"
-            android:layout_marginStart="@dimen/margin_xxlarge"
+    <fragment
+            android:id="@+id/nav_app_settings"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_action_settings"
-            tools:itemCount="7"/>
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/app_settings_navigation"/>
 
 </androidx.core.widget.NestedScrollView>
