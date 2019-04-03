@@ -122,13 +122,13 @@ public class BookableProductViewModel extends ProductViewModel implements FetchA
     }
 
     @Override
-    public void onSuccess(List<Pass> pass) {
+    public void onPassFetchSuccess(List<Pass> pass) {
         passes.postValue(pass);
         actionState.postValue(State.AVAILABLE);
     }
 
     @Override
-    public void onError(Error error) {
+    public void onPassFetchError(Error error) {
         actionState.postValue(State.ERROR);
     }
 
