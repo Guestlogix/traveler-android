@@ -20,7 +20,7 @@
 
     <fragment
             android:id="@+id/error_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.TravelerActivityErrorFragment"
+            android:name="com.guestlogix.traveleruikit.fragments.TravelerActivityRetryFragment"
             android:label="Error"
             tools:layout="@layout/fragment_traveler_error">
     </fragment>

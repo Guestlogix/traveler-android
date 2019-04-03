@@ -7,9 +7,10 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-public class Catalog {
+public class Catalog implements Serializable {
     private List<CatalogGroup> groups;
 
     private Catalog(List<CatalogGroup> groups) throws IllegalArgumentException {

@@ -46,6 +46,4 @@ public class SearchFlightResultViewModel extends StatefulViewModel {
         status.setValue(LOADING);
         flightSearchRepository.flightSearch(query, flightSearchCallback);
     }
-
-
 }

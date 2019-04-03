@@ -16,17 +16,17 @@ import com.guestlogix.traveleruikit.R;
  * Set title message and action via bundle arguments.
  * Subclass must implement {@link #onAttachFragment}
  */
-public abstract class TravelerErrorFragment extends Fragment {
+public abstract class TravelerRetryFragment extends Fragment {
 
     public static final String ARG_ERROR_TITLE = "error_title";
     public static final String ARG_ERROR_MESSAGE = "error_message";
     public static final String ARG_ERROR_ACTION = "error_action";
 
-    OnErrorInteractionListener onErrorFragmentInteractionListener = null;
+    RetryFragmentInteractionListener onErrorFragmentInteractionListener = null;
 
     abstract void onAttachFragment(Context context);
 
-    public TravelerErrorFragment() {
+    public TravelerRetryFragment() {
         // Required empty public constructor
     }
 
@@ -72,7 +72,11 @@ public abstract class TravelerErrorFragment extends Fragment {
         onErrorFragmentInteractionListener = null;
     }
 
-    public interface OnErrorInteractionListener {
+    public void setOnInteractionListener(RetryFragmentInteractionListener onErrorFragmentInteractionListener) {
+        this.onErrorFragmentInteractionListener = onErrorFragmentInteractionListener;
+    }
+
+    public interface RetryFragmentInteractionListener {
         void onRetry();
     }
 

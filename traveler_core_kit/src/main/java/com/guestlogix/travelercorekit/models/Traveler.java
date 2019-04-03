@@ -115,12 +115,12 @@ public class Traveler {
      * <p>
      * Must use the long form for flight ids. See {@link Flight#id}.
      *
-     * @param catalogQuery          contains flight ids for which to fetch the catalog
-     * @param catalogSearchCallback callback methods to be executed once the fetch is complete
+     * @param catalogQuery          Ids of the flights for which to fetch the groups.
+     * @param catalogSearchCallback Callback methods which will be executed after the data is fetched.
      */
-    public static void fetchCatalog(CatalogQuery catalogQuery, CatalogSearchCallback catalogSearchCallback) {
+    public static void fetchCatalog(CatalogQuery catalogQuery, catalogSearchCallback catalogSearchCallback) {
         if (null == localInstance) {
-            catalogSearchCallback.onCatalogSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+            catalogSearchCallback.onCatalogError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
             AuthenticatedUrlRequest request = Router.catalog(localInstance.session, catalogQuery, localInstance.session.getContext());
 
@@ -130,10 +130,10 @@ public class Traveler {
                 @Override
                 protected void main() {
                     if (null != searchGroupTask.getError()) {
-                        catalogSearchCallback.onCatalogSearchError(searchGroupTask.getError());
+                        catalogSearchCallback.onCatalogError(searchGroupTask.getError());
                         TravelerLog.e(searchGroupTask.getError().getMessage());
                     } else {
-                        catalogSearchCallback.onCatalogSearchSuccess(searchGroupTask.getResource());
+                        catalogSearchCallback.onCatalogSuccess(searchGroupTask.getResource());
                     }
                 }
             };

@@ -12,7 +12,7 @@
     </fragment>
     <fragment
             android:id="@+id/error_destination"
-            android:name="com.guestlogix.traveler.fragments.ErrorFragment"
+            android:name="com.guestlogix.traveler.fragments.RetryFragment"
             android:label="Error"
             tools:layout="@layout/fragment_traveler_error">
     </fragment>

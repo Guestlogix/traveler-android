@@ -3,7 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".fragments.CatalogFragment"
+        tools:context=".fragments.CatalogContainerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -16,16 +16,14 @@
             tools:listitem="@layout/fragment_home_flight_item"
             tools:itemCount="2"/>
 
-    <fragment
+    <FrameLayout
             app:layout_constraintTop_toBottomOf="@+id/recyclerView_catalogFragment_addedFlights"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_weight="1"
-            android:id="@+id/fragment_catalogFragment_catalogContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:name="com.guestlogix.traveleruikit.fragments.CatalogWidgetFragment"
-            tools:layout="@layout/fragment_catalog_widget_success"/>
+            android:id="@+id/catalogContainer"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
