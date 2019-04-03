@@ -2,11 +2,13 @@ package com.guestlogix.traveleruikit.forms.cells;
 
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.CompletionInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 
 import java.util.List;
@@ -18,10 +20,12 @@ import java.util.List;
  */
 public class SpinnerCell extends BaseCell {
     private AutoCompleteTextView autocomplete;
+    private TextInputLayout layout;
 
     public SpinnerCell(@NonNull View itemView) {
         super(itemView);
-        this.autocomplete = itemView.findViewById(R.id.autocomplete);
+        this.autocomplete = itemView.findViewById(R.id.autocomplete_form_inputValue);
+        this.layout = itemView.findViewById(R.id.textInputLayout_form_textLayout);
 
         this.autocomplete.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -60,6 +64,7 @@ public class SpinnerCell extends BaseCell {
         autocomplete.setError(null);
         autocomplete.setHint(null);
         autocomplete.setAdapter(null);
+        autocomplete.clearFocus();
     }
 
     /**
@@ -78,12 +83,12 @@ public class SpinnerCell extends BaseCell {
         }
 
         if (null != autocomplete && position != null) {
-//            autocomplete.setText((String) autocomplete.getAdapter().getItem(position));
-            autocomplete.setListSelection(position);
+            autocomplete.showDropDown();
+            autocomplete.onCommitCompletion(new CompletionInfo(0, position, null));
         }
     }
 
     public void setHint(String hint) {
-        this.autocomplete.setHint(hint);
+        this.layout.setHint(hint);
     }
 }

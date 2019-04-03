@@ -7,6 +7,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 
 /**
@@ -16,11 +18,13 @@ import com.guestlogix.traveleruikit.R;
  * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellFocusChangeListener}
  */
 public class TextCell extends BaseCell {
-    private EditText input;
+    private TextInputEditText input;
+    private TextInputLayout layout;
 
     public TextCell(@NonNull View itemView) {
         super(itemView);
-        input = itemView.findViewById(R.id.input);
+        input = itemView.findViewById(R.id.editText_form_textInput);
+        layout = itemView.findViewById(R.id.textInputLayout_form_textLayout);
 
         input.addTextChangedListener(new TextWatcher() {
             @Override
@@ -49,11 +53,12 @@ public class TextCell extends BaseCell {
     @Override
     public void reload() {
         input.setText(null);
-        input.setHint(null);
+        layout.setHint(null);
+        input.clearFocus();
     }
 
     public void setHint(String hint) {
-        input.setHint(hint);
+        layout.setHint(hint);
     }
 
     public void setValue(CharSequence value) {

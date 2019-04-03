@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/margin_default"
         android:paddingRight="@dimen/margin_default">
 
-    <AutoCompleteTextView
-            android:id="@+id/autocomplete"
-            android:completionThreshold="0"
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_form_textLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
+
+        <AutoCompleteTextView
+                android:id="@+id/autocomplete_form_inputValue"
+                android:completionThreshold="0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </com.google.android.material.textfield.TextInputLayout>
 </RelativeLayout>
