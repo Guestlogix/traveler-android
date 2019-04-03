@@ -4,12 +4,15 @@ import android.content.Context;
 import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
-import com.guestlogix.travelercorekit.BuildConfig;
 import com.guestlogix.travelercorekit.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.*;
-import com.guestlogix.travelercorekit.tasks.*;
-import com.guestlogix.travelercorekit.utilities.*;
+import com.guestlogix.travelercorekit.tasks.AuthTokenFetchTask;
+import com.guestlogix.travelercorekit.tasks.AuthenticatedNetworkRequestTask;
+import com.guestlogix.travelercorekit.tasks.BlockTask;
+import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +24,12 @@ public class Traveler {
     private TaskManager taskManager = new TaskManager();
     private Session session;
 
+    /**
+     * Initializes the SDK.
+     *
+     * @param apiKey             key provided by the Guestlogix platform. Invalid keys will result in forbidden response codes.
+     * @param applicationContext application context where the sdk is running.
+     */
     public static void initialize(String apiKey, Context applicationContext) {
         if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
@@ -69,10 +78,10 @@ public class Traveler {
     }
 
     /**
-     * Fetches groups of catalog items.
+     * Searches all available flights matching the flight query.
      *
-     * @param flightQuery          Flight query to search flights.
-     * @param flightSearchCallback Callback methods which will be executed after the data is fetched.
+     * @param flightQuery          the flight id and the departure date of a flight
+     * @param flightSearchCallback callback methods to be executed once the search is complete
      */
     public static void flightSearch(FlightQuery flightQuery, FlightSearchCallback flightSearchCallback) {
         if (null == localInstance) {
@@ -102,10 +111,12 @@ public class Traveler {
     }
 
     /**
-     * Fetches groups of catalog items.
+     * Fetches the catalog for all the flights provided in the catalog query.
+     * <p>
+     * Must use the long form for flight ids. See {@link Flight#id}.
      *
-     * @param catalogQuery          Ids of the flights for which to fetch the groups.
-     * @param catalogSearchCallback Callback methods which will be executed after the data is fetched.
+     * @param catalogQuery          contains flight ids for which to fetch the catalog
+     * @param catalogSearchCallback callback methods to be executed once the fetch is complete
      */
     public static void fetchCatalog(CatalogQuery catalogQuery, CatalogSearchCallback catalogSearchCallback) {
         if (null == localInstance) {
@@ -134,10 +145,10 @@ public class Traveler {
     }
 
     /**
-     * Fetches groups of catalog items.
+     * Fetches the details of a catalog item.
      *
-     * @param catalogItem                Ids of the flights for which to fetch the groups.
-     * @param catalogItemDetailsCallback Callback methods which will be executed after the data is fetched.
+     * @param catalogItem                the product for which to fetch details
+     * @param catalogItemDetailsCallback callback methods to be executed once the fetch is complete.
      */
     public static void fetchCatalogItemDetails(CatalogItem catalogItem, CatalogItemDetailsCallback catalogItemDetailsCallback) {
         if (null == localInstance) {
@@ -165,12 +176,13 @@ public class Traveler {
     }
 
     /**
-     * Fetches all availabilities in the given date range.
+     * Fetches availabilities for a product with a given date range. Set the startDate and endDate to the same day
+     * for availabilities on a specific day.
      *
-     * @param product                   Product to fetch availabilities for.
-     * @param startDate                 Start of the date range inclusive.
-     * @param endDate                   End of date Range inclusive.
-     * @param checkAvailabilityCallback Methods that will be executed after the availabilities are fetched.
+     * @param product                   product to fetch availabilities for
+     * @param startDate                 start of the date range inclusive
+     * @param endDate                   end of date Range inclusive
+     * @param checkAvailabilityCallback callback methods to be executed once the availability fetch is complete.
      */
     public static void fetchAvailabilities(Product product, Date startDate, Date endDate, FetchAvailabilitiesCallback checkAvailabilityCallback) {
         if (null == localInstance) {
@@ -198,16 +210,19 @@ public class Traveler {
     }
 
     /**
-     * Fetches passes for a product given an availability and an optional booking option.
+     * Fetches all passes for a product for a given availability.
+     * <p>
+     * Use {@link #fetchAvailabilities(Product, Date, Date, FetchAvailabilitiesCallback)} to get a valid availabilities
+     * for this product
      *
-     * @param product             Product to fetch passes for.
-     * @param availability        Specific availability in the product
-     * @param option              Optional BookingOption
-     * @param fetchPassesCallback callback methods which will be executed after the data is fetched.
+     * @param product             product to fetch passes for
+     * @param availability        availability of the product.
+     * @param option              flavour of the availability, leave null if no flavour is needed
+     * @param fetchPassesCallback callback methods to be executed once the fetch is complete
      */
     public static void fetchPasses(Product product, Availability availability, @Nullable BookingOption option, FetchPassesCallback fetchPassesCallback) {
         if (null == localInstance) {
-            fetchPassesCallback.onError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+            fetchPassesCallback.onPassFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
 
             AuthenticatedUrlRequest request = Router.productPass(localInstance.session, product, availability, option, localInstance.session.getContext());
@@ -217,10 +232,10 @@ public class Traveler {
                 @Override
                 protected void main() {
                     if (null != fetchPassesTask.getError()) {
-                        fetchPassesCallback.onError(fetchPassesTask.getError());
+                        fetchPassesCallback.onPassFetchError(fetchPassesTask.getError());
                         TravelerLog.e(fetchPassesTask.getError().getMessage());
                     } else {
-                        fetchPassesCallback.onSuccess(fetchPassesTask.getResource());
+                        fetchPassesCallback.onPassFetchSuccess(fetchPassesTask.getResource());
                     }
                 }
             };
@@ -232,11 +247,14 @@ public class Traveler {
     }
 
     /**
-     * Fetches a BookingForm containing all questions for a given product and selected passes.
+     * Creates a booking form for a product given a list of passes.
+     * <p>
+     * Passes <b>can</b> be repeated. If a user selects 2 passes of type 'A' and one pass of type 'B', the list should be
+     * of the form: [A, A, B].
      *
-     * @param product                  Product for which to create a booking form.
-     * @param passes                   Passes for the product. Passes can be repeated.
-     * @param fetchBookingFormCallback callback methods which will be executed after fetch runs.
+     * @param product                  product for which to create a booking form
+     * @param passes                   selected passes
+     * @param fetchBookingFormCallback callback methods which will be executed after creation is complete.
      */
     public static void fetchBookingForm(Product product, List<Pass> passes, FetchBookingFormCallback fetchBookingFormCallback) {
         if (null == localInstance) {
@@ -265,10 +283,10 @@ public class Traveler {
     }
 
     /**
-     * Creates an order for a given product.
+     * Creates an order using a booking form.
      *
-     * @param bookingForm         A completed booking form.
-     * @param orderCreateCallback callback methods which will be executed after the code runs.
+     * @param bookingForm         A completed booking form
+     * @param orderCreateCallback callback methods which to be executed once the order creation is processed.
      */
     public static void createOrder(BookingForm bookingForm, OrderCreateCallback orderCreateCallback) {
         if (null == localInstance) {
@@ -298,11 +316,11 @@ public class Traveler {
     }
 
     /**
-     * Process an existing order given the parameters.
+     * Processes an order.
      *
-     * @param order                Order to process.
-     * @param payment              Payment method
-     * @param processOrderCallback callback methods to be executed after the order is processed.
+     * @param order                order to process
+     * @param payment              payment method
+     * @param processOrderCallback callback methods to be executed after the order is processed
      */
     public static void processOrder(Order order, Payment payment, ProcessOrderCallback processOrderCallback) {
         if (null == localInstance) {

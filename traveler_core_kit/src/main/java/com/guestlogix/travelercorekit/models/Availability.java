@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
@@ -12,6 +13,12 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 
+/**
+ * Availability for a product on a specific date.
+ * <p>
+ * A non-null {@link BookingOptionSet} indicates that flavors exist for this availability and that the user must select
+ * an {@link BookingOption} to book a product.
+ */
 public class Availability implements Serializable {
     private String id;
     private Date date;
@@ -39,6 +46,7 @@ public class Availability implements Serializable {
         return id;
     }
 
+    @Nullable
     public BookingOptionSet getBookingOptionSet() {
         return bookingOptionSet;
     }

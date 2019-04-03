@@ -6,11 +6,13 @@ import androidx.annotation.Nullable;
 import java.io.Serializable;
 import java.util.*;
 
-
+/**
+ * A BookingForm contains all the information required to book an experience.
+ */
 public class BookingForm implements Serializable {
+    private Product product;
     private List<Pass> passes;
     private List<QuestionGroup> questionGroups;
-    private Product product;
     private Map<String, Answer> answers;
 
     private HashSet<String> questionIds;
@@ -31,6 +33,12 @@ public class BookingForm implements Serializable {
         answers = new HashMap<>();
     }
 
+    /**
+     * Adds an answer for a question.
+     *
+     * @param answer answer for a question
+     * @throws BookingFormError if the answer does not relate to any question
+     */
     public void addAnswer(Answer answer) throws BookingFormError {
         if (!questionIds.contains(answer.questionId)) {
             throw new BookingFormError(BookingFormErrorCode.INVALID_QUESTION);
@@ -39,6 +47,13 @@ public class BookingForm implements Serializable {
         answers.put(answer.questionId, answer);
     }
 
+    /**
+     * Returns an answer to a question if it was set before.
+     *
+     * @param question question for which to get an answer
+     * @return answer for a question if it exists, null otherwise
+     * @throws BookingFormError if the question is not part of the booking form
+     */
     @Nullable
     public Answer getAnswer(Question question) throws BookingFormError {
         if (!questionIds.contains(question.getId())) {
@@ -48,28 +63,48 @@ public class BookingForm implements Serializable {
         return answers.get(question.getId());
     }
 
+    /**
+     * Returns the passes used in the booking form.
+     *
+     * @return list of passes
+     */
     public List<Pass> getPasses() {
         return this.passes;
     }
 
+    /**
+     * Product used in the booking form.
+     *
+     * @return product
+     */
     public Product getProduct() {
         return product;
     }
 
+    /**
+     * returns all the answers in the booking form.
+     *
+     * @return all answers
+     */
     public List<Answer> getAnswers() {
         return new ArrayList<>(answers.values());
     }
 
+    /**
+     * Returns all question groups
+     *
+     * @return all question groups in the form
+     */
     @NonNull
     public List<QuestionGroup> getQuestionGroups() {
         return this.questionGroups;
     }
 
     /**
-     * Validates all questions in the form and returns an ordered list of all the errors. Empty list means no errors were
-     * found in the form.
+     * Performs an in order validation of all the questions in the booking form. Produces an in order list of all validation
+     * errors found in the booking form. An empty list mean no errors were found.
      *
-     * @return List of errors in the form.
+     * @return ordered list of errors in the form
      */
     @NonNull
     public List<BookingFormError> validate() {
@@ -104,7 +139,7 @@ public class BookingForm implements Serializable {
      * Booking form errors.
      * Contains the relative position in the form of the question which contains errors.
      */
-    public class BookingFormError extends Error{
+    public class BookingFormError extends Error {
         private int groupId;
         private int questionId;
         private ValidationError error;
