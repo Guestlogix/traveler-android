@@ -19,6 +19,13 @@
     <string name="add_flight">Add Flight</string>
     <string name="cancel">Cancel</string>
     <string name="sign_in">Sign In</string>
+    <string name="support">Support</string>
+    <string name="about">About</string>
+    <string name="faq">FAQ</string>
+    <string name="legal">Legal Information</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="delete_profile">Delete Profile</string>
+    <string name="sign_out">Sign out</string>
     <string name="settings">Settings</string>
     <string name="departure">Departure</string>
     <string name="arrival">Arrival</string>
