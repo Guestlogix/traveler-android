@@ -13,6 +13,11 @@
             android:label="@string/settings">
         <action android:id="@+id/action_home_destination_to_support_information_destination"
                 app:destination="@id/support_information_destination"/>
+        <action android:id="@+id/action_home_destination_to_about_destination" app:destination="@id/about_destination"/>
+        <action android:id="@+id/action_home_destination_to_faq_destination" app:destination="@id/faq_destination"/>
+        <action android:id="@+id/action_home_destination_to_legal_destination" app:destination="@id/legal_destination"/>
+        <action android:id="@+id/action_home_destination_to_privacy_policy_destination"
+                app:destination="@id/privacy_policy_destination"/>
     </fragment>
 
     <fragment
@@ -20,5 +25,29 @@
             android:name="com.guestlogix.traveler.fragments.SupportInformationFragment"
             tools:layout="@layout/fragment_support_information"
             android:label="@string/support"/>
+
+    <fragment
+            android:id="@+id/about_destination"
+            android:name="com.guestlogix.traveler.fragments.AboutFragment"
+            tools:layout="@layout/fragment_about"
+            android:label="@string/about"/>
+
+    <fragment
+            android:id="@+id/faq_destination"
+            android:name="com.guestlogix.traveler.fragments.FrequentlyAskedQuestionsFragment"
+            tools:layout="@layout/fragment_frequently_asked_questions"
+            android:label="@string/faq"/>
+
+    <fragment
+            android:id="@+id/legal_destination"
+            android:name="com.guestlogix.traveler.fragments.LegalInformationFragment"
+            tools:layout="@layout/fragment_legal_information"
+            android:label="@string/legal"/>
+
+    <fragment
+            android:id="@+id/privacy_policy_destination"
+            android:name="com.guestlogix.traveler.fragments.PrivacyPolicyFragment"
+            tools:layout="@layout/fragment_privacy_policy"
+            android:label="@string/privacy_policy"/>
 
 </navigation>

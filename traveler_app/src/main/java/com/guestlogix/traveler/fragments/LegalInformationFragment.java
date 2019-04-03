@@ -2,12 +2,10 @@ package com.guestlogix.traveler.fragments;
 
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -17,13 +15,14 @@ import androidx.navigation.Navigation;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
+
 /**
- * Fragment which displays support information
+ * TODO
  */
-public class SupportInformationFragment extends BaseFragment {
+public class LegalInformationFragment extends BaseFragment {
 
 
-    public SupportInformationFragment() {
+    public LegalInformationFragment() {
         // Required empty public constructor
     }
 
@@ -44,8 +43,7 @@ public class SupportInformationFragment extends BaseFragment {
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
         }
-
-        return inflater.inflate(R.layout.fragment_support_information, container, false);
+        return inflater.inflate(R.layout.fragment_legal_information, container, false);
     }
 
     @Override
