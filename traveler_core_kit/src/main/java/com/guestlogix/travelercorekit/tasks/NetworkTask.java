@@ -33,6 +33,7 @@ public class NetworkTask extends Task {
 
     public interface ResponseHandler {
         void onHandleResponse(InputStream stream) throws IOException;
+        void onHandleError(InputStream stream);
     }
 
     public void setRequest(Request mRequest) {
@@ -154,14 +155,9 @@ public class NetworkTask extends Task {
                 is.close();
             }
         } catch (IOException e) {
-
-            String errorMessage = null;
-
             if (urlConnection != null) {
-                errorMessage = InputStreamHelper.getStringFromInputStream(urlConnection.getErrorStream());
+                responseHandler.onHandleError(urlConnection.getErrorStream());
             }
-
-            error = new NetworkTaskError(NetworkTaskError.Code.CONNECTION_ERROR, errorMessage);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

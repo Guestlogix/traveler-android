@@ -2,14 +2,18 @@ package com.guestlogix.travelercorekit.tasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.JsonReader;
 import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.models.TravelerErrorCode;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class DownloadImageTask extends Task {
 
@@ -30,7 +34,7 @@ public class DownloadImageTask extends Task {
     @Override
     public void execute() {
 
-        NetworkTask downloadImageNetworkTask = new NetworkTask(imageRequest, stream -> resource = decodeImageStream(stream));
+        NetworkTask downloadImageNetworkTask = new NetworkTask(imageRequest, responseHandler);
 
         BlockTask finishTask = new BlockTask() {
             @Override
@@ -45,6 +49,24 @@ public class DownloadImageTask extends Task {
         mTaskManager.addTask(downloadImageNetworkTask);
         mTaskManager.addTask(finishTask);
     }
+
+    NetworkTask.ResponseHandler responseHandler = new NetworkTask.ResponseHandler() {
+        @Override
+        public void onHandleResponse(InputStream stream) {
+            resource = decodeImageStream(stream);
+        }
+
+        @Override
+        public void onHandleError(InputStream stream) {
+            try (JsonReader reader = new JsonReader(new InputStreamReader(stream))) {
+                mError = new NetworkTaskError.NetworkTaskErrorMappingFactory().instantiate(reader);
+            } catch (IOException | IllegalStateException e) {
+                mError = new TravelerError(TravelerErrorCode.PARSING_ERROR, String.format("Invalid JSON stream: %s", e.getMessage()));
+            } catch (ObjectMappingException e) {
+                mError = new TravelerError(TravelerErrorCode.PARSING_ERROR, String.format("Invalid JSON stream: %s", e.getMessage()));
+            }
+        }
+    };
 
     private Bitmap decodeImageStream(InputStream stream) {
 

@@ -79,7 +79,7 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
     public void onOrderCreateFailure(Error error) {
         form.setFormCompletedListener(this::onQuestionFormCompleted);
         new AlertDialog.Builder(this)
-                .setMessage(R.string.unexpected_error)
+                .setMessage(error.getMessage())
                 .show();
     }
 
