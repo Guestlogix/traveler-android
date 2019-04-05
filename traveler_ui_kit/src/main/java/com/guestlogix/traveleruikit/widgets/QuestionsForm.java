@@ -290,8 +290,13 @@ public class QuestionsForm extends FrameLayout implements Form.DataSource {
             List<BookingForm.BookingFormError> errors = bookingForm.validate();
 
             if (!errors.isEmpty()) {
+                // Hide current error if its not null
+                if (currentError != null) {
+                    form.reload(currentError.getGroupId(), currentError.getQuestionId());
+                }
+
                 currentError = errors.get(0);
-                form.smoothScrollToPosition(currentError.getGroupId(), currentError.getQuestionId());
+                form.reload(currentError.getGroupId(), currentError.getQuestionId());
             } else if (null != questionsFormSubmitted) {
                 questionsFormSubmitted.onQuestionFormSubmitted(); // Notify activity form is done
             }

@@ -39,7 +39,6 @@ public class Form extends FrameLayout {
     private DataSource dataSource;
     private FormBuilder formBuilder;
     private ArrayList<LinkedFormNode> nodes;
-    private Map<Pair<Integer, Integer>, Integer> sectionToPos;
 
     /**
      * Callback interface used to notify any subscriber whenever a click was performed on an TextCell in the form.
@@ -148,7 +147,6 @@ public class Form extends FrameLayout {
      */
     public void reload() {
         nodes = new ArrayList<>();
-        sectionToPos = new HashMap<>();
 
         int sectionsCount = dataSource.getSectionCount();
 
@@ -159,14 +157,12 @@ public class Form extends FrameLayout {
             if (title != null || disclaimer != null) {
                 // Section has a header.
                 LinkedFormNode node = new LinkedFormNode(i, -1, FormType.HEADER.value);
-                sectionToPos.put(new Pair<>(i, -1), nodes.size());
                 nodes.add(node);
             }
 
             // Field in this section
             for (int j = 0; j < dataSource.getFieldCount(i); j++) {
                 LinkedFormNode node = new LinkedFormNode(i, j, dataSource.getType(i, j));
-                sectionToPos.put(new Pair<>(i, j), nodes.size());
                 nodes.add(node);
             }
         }
@@ -187,11 +183,18 @@ public class Form extends FrameLayout {
             fieldId = -1;
         }
 
-        Integer pos = sectionToPos.get(new Pair<>(sectionId, fieldId));
+        int pos = 0;
 
-        if (pos != null && rvAdapter != null) {
-            rvAdapter.notifyItemChanged(pos);
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).sectionId == sectionId && nodes.get(i).fieldId == fieldId) {
+                pos = i;
+                break;
+            }
         }
+
+        rvAdapter.notifyItemChanged(pos);
+        rvAdapter.notifyDataSetChanged();
+        cellsRecyclerView.smoothScrollToPosition(pos);
     }
 
     /**
@@ -207,11 +210,16 @@ public class Form extends FrameLayout {
             fieldId -= 1; // Scroll to just above the field
         }
 
-        Integer pos = sectionToPos.get(new Pair<>(sectionId, fieldId));
+        int pos = 0;
 
-        if (pos != null && rvAdapter != null) {
-            cellsRecyclerView.smoothScrollToPosition(pos);
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).sectionId == sectionId && nodes.get(i).fieldId == fieldId) {
+                pos = i;
+                break;
+            }
         }
+
+        cellsRecyclerView.smoothScrollToPosition(pos);
     }
 
     /**
