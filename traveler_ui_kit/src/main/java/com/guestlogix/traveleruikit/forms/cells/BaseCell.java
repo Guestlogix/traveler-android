@@ -7,11 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class BaseCell extends RecyclerView.ViewHolder {
 
-    /**
-     * Index of the Holder Cell within the Form
-     */
-    private int index;
-
     OnCellContextRequestListener contextRequestListener;
 
     OnCellValueChangedListener onCellValueChangedListener;
@@ -22,19 +17,6 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
 
     BaseCell(@NonNull View itemView) {
         super(itemView);
-    }
-
-    /**
-     * Index of the ViewHolder within the form.
-     *
-     * @return int
-     */
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
     }
 
     /**

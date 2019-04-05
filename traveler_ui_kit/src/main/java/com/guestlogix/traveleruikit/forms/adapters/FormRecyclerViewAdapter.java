@@ -30,7 +30,6 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
         holder.setOnCellValueChangedListener(null);
 
         formMapper.bindView(holder, position);
-        holder.setIndex(position);
 
         holder.setOnCellClickListener(this::onCellClick);
         holder.setOnCellFocusChangeListener(this::onCellFocusChange);
@@ -73,7 +72,7 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
     }
 
     private void onCellClick(BaseCell cell) {
-        int pos = cell.getIndex();
+        int pos = cell.getAdapterPosition();
 
         if (cellEventsListener != null) {
             cellEventsListener.onClick(pos);
@@ -81,7 +80,7 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
     }
 
     private void onCellFocusChange(BaseCell cell, boolean hasFocus) {
-        int pos = cell.getIndex();
+        int pos = cell.getAdapterPosition();
 
         if (cellEventsListener != null) {
             cellEventsListener.onFocusChanged(pos, hasFocus);
@@ -89,7 +88,7 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
     }
 
     private void onCellValueChanged(BaseCell cell, Object value) {
-        int pos = cell.getIndex();
+        int pos = cell.getAdapterPosition();
 
         if (cellEventsListener != null) {
             cellEventsListener.onValueChanged(pos, value);
