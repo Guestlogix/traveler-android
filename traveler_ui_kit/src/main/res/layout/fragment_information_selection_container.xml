@@ -3,6 +3,11 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             android:id="@+id/information_selection_container"
-             tools:context=".fragments.InformationSelectionContainerFragment">
+             tools:context=".fragments.ProductPurchaseContainerFragment">
+
+    <FrameLayout
+            android:id="@+id/information_selection_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_bookable_information_selection"/>
 </FrameLayout>
