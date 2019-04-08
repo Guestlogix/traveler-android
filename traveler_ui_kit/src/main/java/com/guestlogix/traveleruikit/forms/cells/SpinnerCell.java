@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
+import com.guestlogix.traveleruikit.forms.models.SpinnerFormModel;
 
 import java.util.List;
 
@@ -67,28 +69,21 @@ public class SpinnerCell extends BaseCell {
         autocomplete.clearFocus();
     }
 
-    /**
-     * Populates the view with a list of options and sets the current option to the given index. Does not check whether
-     * the option is currently selected.
-     *
-     * @param options  Items to display in the dropdown list.
-     * @param position Optional element to select in the list.
-     */
-    public void setOptions(List<String> options, @Nullable Integer position) {
-        if (null != contextRequestListener && null != autocomplete) {
+    public void setModel(@NonNull FormModel model) {
+        if (!(model instanceof SpinnerFormModel)) {
+            throw new RuntimeException("Expecting SpinnerFormModel, but got " + model.getClass().getName());
+        }
+
+        SpinnerFormModel s = (SpinnerFormModel) model;
+
+        layout.setHint(s.getHint());
+
+        if (s.getOptions() != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(contextRequestListener.onCellContextRequest(),
-                    android.R.layout.simple_list_item_1, options);
+                    android.R.layout.simple_list_item_1, s.getOptions());
 
             autocomplete.setAdapter(adapter);
         }
-
-        if (null != autocomplete && position != null) {
-            autocomplete.showDropDown();
-            autocomplete.onCommitCompletion(new CompletionInfo(0, position, null));
-        }
     }
 
-    public void setHint(String hint) {
-        this.layout.setHint(hint);
-    }
 }

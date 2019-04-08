@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
 
 public abstract class BaseCell extends RecyclerView.ViewHolder {
 
@@ -18,6 +19,8 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
     BaseCell(@NonNull View itemView) {
         super(itemView);
     }
+
+    public abstract void setModel(@NonNull FormModel model);
 
     /**
      * Signals the cell that it needs to be reloaded to a fresh state.
