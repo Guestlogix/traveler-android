@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
+import com.guestlogix.traveleruikit.forms.models.TextFormModel;
 
 /**
  * Form cell which contains an EditText
@@ -48,6 +50,17 @@ public class TextCell extends BaseCell {
                 this.onCellFocusChangeListener.onCellFocusChange(this, hasFocus);
             }
         });
+    }
+
+    @Override
+    public void setModel(@NonNull FormModel model) {
+        if (!(model instanceof TextFormModel)) {
+            throw new RuntimeException("Expecting TextFormModel, but got " + model.getClass().getName());
+        }
+
+        TextFormModel t = (TextFormModel) model;
+
+        input.setHint(t.getHint());
     }
 
     @Override

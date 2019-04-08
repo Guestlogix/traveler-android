@@ -10,35 +10,75 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
+import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
 
 /**
- * Cell which contains a quantity picker.
+ * Cell which contains a quantityIndicator picker.
  * Implements:
  * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
  */
 public class QuantityCell extends BaseCell {
-    private TextView quantity;
+    private TextView quantityIndicator;
     private TextView title;
     private TextView subTitle;
 
-    private QuantityCellAdapter adapter;
-
     public QuantityCell(@NonNull View itemView) {
         super(itemView);
-        init();
+
+        quantityIndicator = itemView.findViewById(R.id.quantity);
+        title = itemView.findViewById(R.id.title);
+        subTitle = itemView.findViewById(R.id.subTitle);
+    }
+
+    @Override
+    public void setModel(@NonNull FormModel model) {
+        if (!(model instanceof QuantityFormModel)) {
+            throw new RuntimeException("Expecting QuantityFormModel, but got " + model.getClass().getName());
+        }
+
+        QuantityFormModel q = (QuantityFormModel) model;
+
+        title.setText(q.getTitle());
+        subTitle.setText(q.getSubtitle());
+
+        quantityIndicator.setOnClickListener(v -> {
+            final Dialog dialog = new Dialog(contextRequestListener.onCellContextRequest());
+            dialog.setContentView(R.layout.number_picker_dialog);
+
+            Button acceptBtn = dialog.findViewById(R.id.okButton);
+            Button cancelBtn = dialog.findViewById(R.id.cancelButton);
+            TextView title = dialog.findViewById(R.id.numberPickerTitle);
+            NumberPicker picker = dialog.findViewById(R.id.numberPicker);
+
+            // Title
+            title.setText(q.getTitle());
+
+            // Number picker
+            picker.setMaxValue(q.getMaxValue() != null ? q.getMaxValue() : Integer.MAX_VALUE);
+            picker.setMinValue(q.getMinValue() != null ? q.getMinValue() : Integer.MIN_VALUE);
+            // TODO: Value
+
+            // Buttons
+            cancelBtn.setOnClickListener(v1 -> dialog.dismiss());
+            acceptBtn.setOnClickListener(v1 -> {
+                Integer value = picker.getValue();
+                quantityIndicator.setText(String.valueOf(value));
+
+                if (null != onCellValueChangedListener) {
+                    onCellValueChangedListener.onCellValueChanged(this, value);
+                }
+
+                dialog.dismiss();
+            });
+
+            dialog.show();
+        });
     }
 
     @Override
     public void reload() {
-        quantity.setText("");
-    }
-
-    public void setAdapter(QuantityCellAdapter adapter) {
-        this.adapter = adapter;
-    }
-
-    public void setTitle(String title) {
-        this.title.setText(title);
+        quantityIndicator.setText("0");
     }
 
     public void setSubtitle(String subTitle) {
@@ -51,68 +91,5 @@ public class QuantityCell extends BaseCell {
         } else {
             this.subTitle.setText(null);
         }
-    }
-
-    public void setQuantity(String quantity) {
-        this.quantity.setText(quantity);
-    }
-
-    private void init() {
-        quantity = itemView.findViewById(R.id.quantity);
-        title = itemView.findViewById(R.id.title);
-        subTitle = itemView.findViewById(R.id.subTitle);
-
-        if (null != adapter) {
-            quantity.setText(adapter.getMinQuantity());
-        } else {
-            quantity.setText("0");
-        }
-
-        quantity.setOnClickListener(v -> {
-            final Dialog d = new Dialog(contextRequestListener.onCellContextRequest());
-            d.setTitle(adapter.getTitle());
-            d.setContentView(R.layout.number_picker_dialog);
-
-            Button accept = d.findViewById(R.id.okButton);
-            Button cancel = d.findViewById(R.id.cancelButton);
-            TextView e = d.findViewById(R.id.numberPickerTitle);
-            NumberPicker np = d.findViewById(R.id.numberPicker);
-
-            e.setText(adapter.getTitle());
-
-            np.setMaxValue(Integer.MAX_VALUE);
-            if (adapter.getMaxQuantity() != null) {
-                np.setMaxValue(adapter.getMaxQuantity());
-            }
-
-            np.setMinValue(adapter.getMinQuantity());
-            np.setWrapSelectorWheel(false);
-
-            Integer val = adapter.getValue();
-
-            np.setValue(val);
-
-            accept.setOnClickListener(v2 -> {
-                Integer value = np.getValue();
-                quantity.setText(String.valueOf(value));
-
-                if (null != onCellValueChangedListener) {
-                    onCellValueChangedListener.onCellValueChanged(this, value);
-                }
-
-                d.dismiss();
-            });
-
-            cancel.setOnClickListener(v2 -> d.dismiss());
-
-            d.show();
-        });
-    }
-
-    public interface QuantityCellAdapter {
-        String getTitle();
-        @Nullable Integer getMaxQuantity();
-        @NonNull Integer getMinQuantity();
-        @NonNull Integer getValue();
     }
 }

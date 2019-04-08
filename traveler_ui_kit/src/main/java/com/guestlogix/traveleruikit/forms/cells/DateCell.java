@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.widgets.DatePickerCell;
 
 import java.text.DateFormat;
@@ -44,6 +45,11 @@ public class DateCell extends BaseCell {
         });
 
         input.setOnClickListener(this::onClickEventHandler);
+    }
+
+    @Override
+    public void setModel(@NonNull FormModel model) {
+
     }
 
     public void setDate(Date date) {
