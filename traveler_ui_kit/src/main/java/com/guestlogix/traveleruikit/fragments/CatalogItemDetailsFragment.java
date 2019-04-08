@@ -12,19 +12,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
+import com.guestlogix.traveleruikit.models.PurchaseContext;
 import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
-public class CatalogItemDetailsFragment extends BaseFragment {
+public class CatalogItemDetailsFragment extends BaseFragment implements ProductPurchaseContainerFragment.PurchaseContextChangedListener {
 
     private NestedScrollView mainNestedScrollView;
     private WrapContentViewPager catalogItemDetailsPager;
@@ -32,6 +32,9 @@ public class CatalogItemDetailsFragment extends BaseFragment {
     private TextView titleTextView;
     private TextView descriptionTextView;
     private ImageView imageView;
+
+    private ProductPurchaseContainerFragment purchaseContextContainer;
+    private ActionStripContainerFragment actionStripContainer;
 
     public CatalogItemDetailsFragment() {
     }
@@ -47,6 +50,13 @@ public class CatalogItemDetailsFragment extends BaseFragment {
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
 
+        purchaseContextContainer = (ProductPurchaseContainerFragment) getChildFragmentManager().
+                findFragmentById(R.id.fragment_catalogItemDetails_purchaseSelector);
+        purchaseContextContainer.setPurchaseContextChangedListener(this);
+
+        actionStripContainer = (ActionStripContainerFragment) getChildFragmentManager()
+                .findFragmentById(R.id.fragment_catalogItemDetails_actionStrip);
+
         return view;
     }
 
@@ -56,15 +66,6 @@ public class CatalogItemDetailsFragment extends BaseFragment {
 
         CatalogItemDetailsViewModel catalogItemDetailsViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
         catalogItemDetailsViewModel.getObservableCatalogItemDetails().observe(this, this::setView);
-
-        FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
-        ActionStripContainerFragment actionStripContainerFragment = new ActionStripContainerFragment();
-        InformationSelectionContainerFragment infoSelectContainer = new InformationSelectionContainerFragment();
-
-        fragmentTransaction.replace(R.id.action_container, actionStripContainerFragment);
-        fragmentTransaction.replace(R.id.info_container, infoSelectContainer);
-
-        fragmentTransaction.commit();
     }
 
     private void setView(CatalogItemDetails catalogItemDetails) {
@@ -122,5 +123,10 @@ public class CatalogItemDetailsFragment extends BaseFragment {
 
     private void focusOnView(View view) {
         mainNestedScrollView.post(() -> mainNestedScrollView.smoothScrollTo(0, view.getBottom() + 50));
+    }
+
+    @Override
+    public void onPurchaseContextChanged(PurchaseContext purchaseContext) {
+        actionStripContainer.setPurchaseContext(purchaseContext);
     }
 }

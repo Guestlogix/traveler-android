@@ -15,51 +15,47 @@ import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.PurchaseStrategy;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.models.BookingContext;
+import com.guestlogix.traveleruikit.models.PurchaseContext;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 
 /**
  * Fragment to contain Action strip based on Purchased Strategy
  */
 public class ActionStripContainerFragment extends BaseFragment {
+    private PurchaseContext purchaseContext;
+    private PurchaseFragment fragment;
 
     public ActionStripContainerFragment() {
-        // Required empty public constructor
+        // Do nothing.
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_action_strip_container, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        CatalogItemDetailsViewModel vm = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
-        vm.getObservableCatalogItemDetails().observe(this, this::onCatalogItemDetailsChanged);
     }
 
-    private void onCatalogItemDetailsChanged(CatalogItemDetails catalogItemDetails) {
-        FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
-        Fragment fragment;
+    public void setPurchaseContext(PurchaseContext purchaseContext) {
+        // If this context is null have a fragment transaction.
+        if (this.purchaseContext == null) {
+            FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
 
-        PurchaseStrategy strategy = catalogItemDetails.getPurchaseStrategy();
+            // TODO: Add more fragment types here.
+            if (purchaseContext instanceof BookingContext) {
+                fragment = BookableActionStripFragment.getInstance((BookingContext) purchaseContext);
+            }
 
-        switch (strategy) {
-            case Bookable:
-                fragment = new BookableActionStripFragment();
-                break;
-
-            case Buyable:
-                fragment = new BuyableActionStripFragment();
-                break;
-
-            default:
-                fragment = new BookableActionStripFragment();
-                break;
+            fragmentTransaction.replace(R.id.actionStripContainerFrameLayout, fragment);
+            fragmentTransaction.commit();
+        } else {
+            fragment.setPurchaseContext(purchaseContext);
         }
-        fragmentTransaction.replace(R.id.actionStripContainerFrameLayout, fragment);
-        fragmentTransaction.commit();
+
+        this.purchaseContext = purchaseContext;
     }
 }
