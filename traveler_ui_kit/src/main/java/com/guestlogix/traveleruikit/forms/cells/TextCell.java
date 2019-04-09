@@ -1,11 +1,8 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
-import android.os.Build;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -42,6 +39,7 @@ public class TextCell extends BaseCell {
 
             @Override
             public void afterTextChanged(Editable s) {
+                // Do nothing.
             }
         });
 
@@ -53,14 +51,16 @@ public class TextCell extends BaseCell {
     }
 
     @Override
-    public void setModel(@NonNull FormModel model) {
+    public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof TextFormModel)) {
             throw new RuntimeException("Expecting TextFormModel, but got " + model.getClass().getName());
         }
 
         TextFormModel t = (TextFormModel) model;
 
-        input.setHint(t.getHint());
+        layout.setHint(t.getHint());
+        Object value = cellValueAdapter.getCellValue(this);
+        input.setText(value != null ? value.toString() : null);
     }
 
     @Override
@@ -68,19 +68,5 @@ public class TextCell extends BaseCell {
         input.setText(null);
         layout.setHint(null);
         input.clearFocus();
-    }
-
-    public void setHint(String hint) {
-        layout.setHint(hint);
-    }
-
-    public void setValue(CharSequence value) {
-        if (null != value) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                input.setText(Html.fromHtml(value.toString(), Html.FROM_HTML_MODE_COMPACT).toString());
-            } else {
-                input.setText(Html.fromHtml(value.toString()).toString());
-            }
-        }
     }
 }

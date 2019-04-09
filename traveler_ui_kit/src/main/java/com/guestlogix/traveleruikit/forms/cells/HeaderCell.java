@@ -21,7 +21,7 @@ public class HeaderCell extends BaseCell {
     }
 
     @Override
-    public void setModel(@NonNull FormModel model) {
+    public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof HeaderFormModel)) {
             throw new RuntimeException("Expecting HeaderFormModel but got " + model.getClass().getName());
         }

@@ -8,12 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.Form;
+import com.guestlogix.traveleruikit.forms.FormHeader;
+import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.Temp;
 import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
+import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.io.Serializable;
@@ -29,7 +35,10 @@ import java.util.Map;
  * passed as "EXTRA_PASS_ACTIVITY_PRODUCT". If either of those is null or missing the activity will finish with no result!
  * </p>
  */
-public class PassSelectionActivity extends AppCompatActivity implements Form.DataSource, Form.OnFormValueChangedListener, FetchBookingFormCallback {
+public class PassSelectionActivity extends AppCompatActivity implements
+        Temp.DataSource,
+        Temp.FormValueChangedListener,
+        FetchBookingFormCallback {
 
     /**
      * Expects a list of Pass objects.
@@ -48,7 +57,7 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
 
     // Views
     private ActionStrip actionStrip;
-    private Form form;
+    private Temp form;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +89,8 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
 
         form = findViewById(R.id.form_passSelectionActivity);
         form.setDataSource(this);
-        form.setOnFormValueChangedListener(this);
-        form.reload();
+        form.setLayoutManager(new LinearLayoutManager(this));
+        form.setFormValueChangedListener(this);
 
         actionStrip = findViewById(R.id.actionStrip_passSelectionActivity);
         actionStrip.setButtonText(getString(R.string.book_now));
@@ -102,38 +111,22 @@ public class PassSelectionActivity extends AppCompatActivity implements Form.Dat
         return passes == null ? 0 : passes.size();
     }
 
-    @Override
-    public int getType(int sectionId, int fieldId) {
-        return Form.FormType.QUANTITY.getValue();
-    }
-
     @NonNull
     @Override
-    public InputDescriptor getInputDescriptor(int _sectionId, int fieldId, int _type) {
-        InputDescriptor descriptor = new InputDescriptor();
+    public FormModel getModel(int sectionId, int fieldId) {
         Pass pass = passes.get(fieldId);
-
-        descriptor.title = pass.getName();
-        descriptor.subtitle = pass.getDescription();
-
-        return descriptor;
+        return new QuantityFormModel(pass.getName(), pass.getDescription(), 10, 0);
     }
 
     @Nullable
     @Override
-    public String getTitle(int sectionId) {
+    public FormHeader getSectionHeader(int sectionId) {
         return null;
     }
 
     @Nullable
     @Override
-    public String getDisclaimer(int sectionId) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public Pair<String, Form.FormMessage> getMessage(int sectionId, int fieldId) {
+    public FormMessage getMessage(int sectionId, int fieldId) {
         return null;
     }
 

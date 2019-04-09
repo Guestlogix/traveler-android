@@ -5,7 +5,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.forms.Form;
+import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
+import com.guestlogix.traveleruikit.forms.models.MessageFormModel;
 
 public class MessageCell extends BaseCell {
     private TextView message;
@@ -16,17 +18,24 @@ public class MessageCell extends BaseCell {
     }
 
     @Override
-    public void reload() {
-        message.setText(null);
-    }
+    public void bindWithModel(@NonNull FormModel model) {
+        if (!(model instanceof MessageFormModel)) {
+            throw new RuntimeException("Expecting MessageFormModel, but got " + model.getClass().getName());
+        }
 
-    public void setMessage(String msg, Form.FormMessage type) {
-        message.setText(msg);
+        MessageFormModel m = (MessageFormModel) model;
 
-        if (type == Form.FormMessage.ALERT) {
+        message.setText(m.getFormMessage().getMessage());
+
+        if (m.getFormMessage().getType() == FormMessage.FormMessageType.ALERT) {
             message.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.red));
         } else {
             message.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
         }
+    }
+
+    @Override
+    public void reload() {
+        message.setText(null);
     }
 }
