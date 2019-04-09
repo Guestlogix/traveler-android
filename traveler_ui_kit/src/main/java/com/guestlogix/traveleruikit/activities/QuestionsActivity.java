@@ -12,14 +12,13 @@ import com.guestlogix.travelercorekit.models.BookingForm;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.widgets.QuestionsForm;
-import com.guestlogix.traveleruikit.widgets.TempWidget;
+import com.guestlogix.traveleruikit.widgets.BookingFormWidget;
 
 public class QuestionsActivity extends AppCompatActivity implements OrderCreateCallback {
     public static final String EXTRA_BOOKING_FORM = "EXTRA_QUESTIONS_ACTIVITY_BOOKING_FORM";
 
     // Views
-    private TempWidget form;
+    private BookingFormWidget form;
 
     // Data
     private BookingForm bookingForm;

@@ -21,7 +21,7 @@ public class DateAnswer extends Answer {
         return DateHelper.formatDateToISO8601(value.getTime());
     }
 
-    public String getValue() {
-        return DateHelper.formatDate(value.getTime());
+    public Calendar getValue() {
+        return value;
     }
 }

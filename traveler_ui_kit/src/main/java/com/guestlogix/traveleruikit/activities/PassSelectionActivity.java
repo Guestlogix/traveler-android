@@ -2,7 +2,6 @@ package com.guestlogix.traveleruikit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,11 +12,9 @@ import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.FormHeader;
 import com.guestlogix.traveleruikit.forms.FormMessage;
-import com.guestlogix.traveleruikit.forms.Temp;
-import com.guestlogix.traveleruikit.forms.descriptors.InputDescriptor;
+import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
@@ -36,8 +33,8 @@ import java.util.Map;
  * </p>
  */
 public class PassSelectionActivity extends AppCompatActivity implements
-        Temp.DataSource,
-        Temp.FormValueChangedListener,
+        Form.DataSource,
+        Form.FormValueChangedListener,
         FetchBookingFormCallback {
 
     /**
@@ -57,7 +54,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
     // Views
     private ActionStrip actionStrip;
-    private Temp form;
+    private Form form;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

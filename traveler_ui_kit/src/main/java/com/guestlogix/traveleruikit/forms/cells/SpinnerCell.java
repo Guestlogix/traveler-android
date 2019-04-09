@@ -2,6 +2,7 @@ package com.guestlogix.traveleruikit.forms.cells;
 
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.CompletionInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -86,7 +87,9 @@ public class SpinnerCell extends BaseCell {
 
         if (pos != null) {
             autocomplete.showDropDown();
-            autocomplete.setListSelection(pos);
+            autocomplete.onCommitCompletion(new CompletionInfo(0, pos, null));
+        } else {
+            autocomplete.setText(null);
         }
     }
 
