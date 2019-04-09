@@ -8,38 +8,45 @@ import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormHeader;
 import com.guestlogix.traveleruikit.forms.FormMessage;
-import com.guestlogix.traveleruikit.forms.Temp;
+import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.models.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class TempWidget extends Temp implements
-        Temp.DataSource,
-        Temp.FormValueChangedListener,
-        Temp.FormClickListener {
+/**
+ * Wrapper widget around the {@link Form} library. Used to display questions in a booking form.
+ * <p>
+ * Implement {@link FormCompletedListener} to get notified whenever the form is successfully built.
+ */
+public class BookingFormWidget extends Form implements
+        Form.DataSource,
+        Form.FormValueChangedListener,
+        Form.FormClickListener {
 
     // Data
     private BookingForm bookingForm;
     private BookingForm.BookingFormError currentError;
     private FormCompletedListener formCompletedListener;
 
-    public TempWidget(@NonNull Context context) {
+    public BookingFormWidget(@NonNull Context context) {
         super(context);
     }
 
-    public TempWidget(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public BookingFormWidget(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TempWidget(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public BookingFormWidget(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
     public void setBookingForm(@NonNull BookingForm bookingForm) {
         this.bookingForm = bookingForm;
         super.setDataSource(this);
+        super.setFormValueChangedListener(this);
+        super.setFormClickListener(this);
     }
 
     public void setFormCompletedListener(FormCompletedListener formCompletedListener) {
@@ -107,6 +114,27 @@ public class TempWidget extends Temp implements
     @Nullable
     @Override
     public FormMessage getMessage(int sectionId, int fieldId) {
+        if (currentError != null && currentError.getGroupId() == sectionId && currentError.getQuestionId() == fieldId) {
+            String message;
+
+            switch (currentError.getError()) {
+                case REGEX_MISMATCH:
+                    message = getContext().getString(R.string.regex_mismatch);
+                    break;
+                case REQUIRED:
+                    message = getContext().getString(R.string.required);
+                    break;
+                case BAD_QUANTITY:
+                    message = getContext().getString(R.string.bad_quantity);
+                    break;
+                default:
+                    message = "";
+                    break;
+            }
+
+            return new FormMessage(message, FormMessage.FormMessageType.ALERT);
+        }
+
         return null;
     }
 

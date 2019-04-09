@@ -5,13 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <!--<com.guestlogix.traveleruikit.forms.Form-->
-    <!--android:id="@+id/form_passSelectionActivity"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_above="@id/actionStrip_passSelectionActivity"/>-->
-
-    <com.guestlogix.traveleruikit.forms.Temp
+    <com.guestlogix.traveleruikit.forms.Form
             android:id="@+id/form_passSelectionActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

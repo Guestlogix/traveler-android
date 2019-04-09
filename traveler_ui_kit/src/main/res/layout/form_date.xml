@@ -12,7 +12,9 @@
             android:id="@+id/dateLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:errorEnabled="true">
+            app:errorEnabled="true"
+            android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+            android:drawableStart="@android:drawable/ic_menu_my_calendar">
 
         <com.google.android.material.textfield.TextInputEditText
                 app:errorEnabled="true"
@@ -23,9 +25,7 @@
                 android:inputType="textCapCharacters"
                 android:focusable="false"
                 android:textAllCaps="true"
-                android:imeOptions="actionDone"
-                android:drawableLeft="@android:drawable/ic_menu_my_calendar"
-                android:drawableStart="@android:drawable/ic_menu_my_calendar"/>
+                android:imeOptions="actionDone"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
