@@ -3,7 +3,6 @@ package com.guestlogix.traveleruikit.forms.cells;
 import android.view.View;
 import android.widget.Button;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.models.ButtonFormModel;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
@@ -34,7 +33,7 @@ public class ButtonCell extends BaseCell {
     }
 
     @Override
-    public void setModel(@NonNull FormModel model) {
+    public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof ButtonFormModel)) {
             throw new RuntimeException("Expecting ButtonFormModel, but got " + model.getClass().getName());
         }

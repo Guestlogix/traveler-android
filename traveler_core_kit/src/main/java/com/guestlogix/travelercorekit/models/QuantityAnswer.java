@@ -17,7 +17,7 @@ public class QuantityAnswer extends Answer {
         return String.valueOf(amount);
     }
 
-    public int getAmount() {
+    public int getValue() {
         return amount;
     }
 }

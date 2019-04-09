@@ -1,14 +1,11 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
 import android.app.Dialog;
-import android.os.Build;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
@@ -32,7 +29,7 @@ public class QuantityCell extends BaseCell {
     }
 
     @Override
-    public void setModel(@NonNull FormModel model) {
+    public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof QuantityFormModel)) {
             throw new RuntimeException("Expecting QuantityFormModel, but got " + model.getClass().getName());
         }
@@ -41,6 +38,9 @@ public class QuantityCell extends BaseCell {
 
         title.setText(q.getTitle());
         subTitle.setText(q.getSubtitle());
+
+        Integer val = (Integer) cellValueAdapter.getCellValue(this);
+        quantityIndicator.setText(val != null ? val.toString() : "0");
 
         quantityIndicator.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(contextRequestListener.onCellContextRequest());
@@ -57,7 +57,8 @@ public class QuantityCell extends BaseCell {
             // Number picker
             picker.setMaxValue(q.getMaxValue() != null ? q.getMaxValue() : Integer.MAX_VALUE);
             picker.setMinValue(q.getMinValue() != null ? q.getMinValue() : Integer.MIN_VALUE);
-            // TODO: Value
+            Integer i = (Integer) cellValueAdapter.getCellValue(this);
+            picker.setValue(i != null ? i : q.getMinValue());
 
             // Buttons
             cancelBtn.setOnClickListener(v1 -> dialog.dismiss());
@@ -79,17 +80,5 @@ public class QuantityCell extends BaseCell {
     @Override
     public void reload() {
         quantityIndicator.setText("0");
-    }
-
-    public void setSubtitle(String subTitle) {
-        if (subTitle != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                this.subTitle.setText(Html.fromHtml(subTitle, Html.FROM_HTML_MODE_COMPACT).toString());
-            } else {
-                this.subTitle.setText(Html.fromHtml(subTitle).toString());
-            }
-        } else {
-            this.subTitle.setText(null);
-        }
     }
 }

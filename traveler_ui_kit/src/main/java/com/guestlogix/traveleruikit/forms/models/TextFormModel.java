@@ -15,7 +15,7 @@ public class TextFormModel extends FormModel {
     }
 
     @Override
-    int getType() {
+    public int getType() {
         return FormModelType.TEXT.value;
     }
 }

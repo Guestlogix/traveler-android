@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.models.BookingForm;
@@ -12,12 +13,13 @@ import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.widgets.QuestionsForm;
+import com.guestlogix.traveleruikit.widgets.TempWidget;
 
 public class QuestionsActivity extends AppCompatActivity implements OrderCreateCallback {
     public static final String EXTRA_BOOKING_FORM = "EXTRA_QUESTIONS_ACTIVITY_BOOKING_FORM";
 
     // Views
-    private QuestionsForm form;
+    private TempWidget form;
 
     // Data
     private BookingForm bookingForm;
@@ -51,11 +53,12 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
         }
 
         form = findViewById(R.id.questionForm_questionsActivity);
-        form.setForm(bookingForm);
-        form.setQuestionFormSubmittedListener(this::onQuestionFormCompleted);
+        form.setBookingForm(bookingForm);
+        form.setLayoutManager(new LinearLayoutManager(this));
+        form.setFormCompletedListener(this::onQuestionFormCompleted);
     }
 
-    private void onQuestionFormCompleted() {
+    private void onQuestionFormCompleted(BookingForm bookingForm) {
         Traveler.createOrder(bookingForm, this);
     }
 

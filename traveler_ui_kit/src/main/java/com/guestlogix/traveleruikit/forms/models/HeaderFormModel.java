@@ -22,7 +22,7 @@ public class HeaderFormModel extends FormModel {
     }
 
     @Override
-    int getType() {
+    public int getType() {
         return FormModelType.HEADER.value;
     }
 }

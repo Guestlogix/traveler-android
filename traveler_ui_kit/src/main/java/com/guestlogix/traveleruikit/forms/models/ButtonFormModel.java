@@ -15,7 +15,7 @@ public class ButtonFormModel extends FormModel {
     }
 
     @Override
-    int getType() {
+    public int getType() {
         return FormModelType.BUTTON.value;
     }
 }

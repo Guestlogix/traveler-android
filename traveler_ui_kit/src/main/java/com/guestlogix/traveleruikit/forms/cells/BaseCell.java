@@ -16,11 +16,13 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
 
     OnCellFocusChangeListener onCellFocusChangeListener;
 
+    CellValueAdapter cellValueAdapter;
+
     BaseCell(@NonNull View itemView) {
         super(itemView);
     }
 
-    public abstract void setModel(@NonNull FormModel model);
+    public abstract void bindWithModel(@NonNull FormModel model);
 
     /**
      * Signals the cell that it needs to be reloaded to a fresh state.
@@ -61,6 +63,10 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
      */
     public void setOnCellFocusChangeListener(OnCellFocusChangeListener onCellFocusChangeListener) {
         this.onCellFocusChangeListener = onCellFocusChangeListener;
+    }
+
+    public void setCellValueAdapter(CellValueAdapter cellValueAdapter) {
+        this.cellValueAdapter = cellValueAdapter;
     }
 
     /**
@@ -113,5 +119,9 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
          * @param hasFocus Whether the cell has focus right now.
          */
         void onCellFocusChange(BaseCell caller, boolean hasFocus);
+    }
+
+    public interface CellValueAdapter {
+        Object getCellValue(BaseCell cell);
     }
 }

@@ -15,15 +15,17 @@
             app:errorEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
+                app:errorEnabled="true"
                 android:id="@+id/input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_select_date"
                 android:inputType="textCapCharacters"
-                app:errorEnabled="true"
                 android:focusable="false"
                 android:textAllCaps="true"
-                android:imeOptions="actionDone"/>
+                android:imeOptions="actionDone"
+                android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+                android:drawableStart="@android:drawable/ic_menu_my_calendar"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

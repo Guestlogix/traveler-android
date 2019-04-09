@@ -36,7 +36,7 @@ public class QuantityFormModel extends FormModel {
     }
 
     @Override
-    int getType() {
+    public int getType() {
         return FormModelType.QUANTITY.value;
     }
 }

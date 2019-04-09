@@ -1,24 +1,18 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Build;
-import android.text.Editable;
-import android.text.Html;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.models.DateFormModel;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
-import com.guestlogix.traveleruikit.widgets.DatePickerCell;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -31,8 +25,6 @@ public class DateCell extends BaseCell {
     private TextInputLayout dateInputLayout;
     private TextInputEditText input;
 
-    private Calendar calendar;
-
     public DateCell(@NonNull View itemView) {
         super(itemView);
         dateInputLayout = itemView.findViewById(R.id.dateLayout);
@@ -43,24 +35,48 @@ public class DateCell extends BaseCell {
                 this.onCellFocusChangeListener.onCellFocusChange(this, hasFocus);
             }
         });
-
-        input.setOnClickListener(this::onClickEventHandler);
     }
 
     @Override
-    public void setModel(@NonNull FormModel model) {
-
-    }
-
-    public void setDate(Date date) {
-        if (calendar != null) {
-            this.calendar = Calendar.getInstance();
-            this.calendar.setTime(date);
-            updateDateLabel();
+    public void bindWithModel(@NonNull FormModel model) {
+        if (!(model instanceof DateFormModel)) {
+            throw new RuntimeException("Expecting DateFormModel, but got " + model.getClass().getName());
         }
+
+        DateFormModel d = (DateFormModel) model;
+
+        dateInputLayout.setHint(d.getHint());
+
+        Calendar val = (Calendar) cellValueAdapter.getCellValue(this);
+
+        if (val == null) {
+            val = Calendar.getInstance();
+            input.setText(null);
+        } else {
+            updateDateLabel(val);
+        }
+
+        // Copy for final ref.
+        Calendar calendar = val;
+        input.setOnClickListener(v -> {
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            final DatePickerDialog dialog = new DatePickerDialog(contextRequestListener.onCellContextRequest(), this::onDateSetEventHandler, year, month, day);
+
+            if (d.getMaxDate() != null) {
+                dialog.getDatePicker().setMaxDate(d.getMaxDate().getTime());
+            }
+
+            if (d.getMinDate() != null) {
+                dialog.getDatePicker().setMinDate(d.getMinDate().getTime());
+            }
+
+            dialog.show();
+        });
     }
 
-    private void updateDateLabel() {
+    private void updateDateLabel(Calendar calendar) {
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, getLocale());
         String label = df.format(calendar.getTime());
         input.setText(label);
@@ -74,27 +90,14 @@ public class DateCell extends BaseCell {
         }
     }
 
-    private void onClickEventHandler(View v) {
-        if (calendar == null) {
-            calendar = Calendar.getInstance();
-        }
-        //setError(null);
-
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        final DatePickerDialog d = new DatePickerDialog(contextRequestListener.onCellContextRequest(), this::onDateSetEventHandler, year, month, day);
-
-        d.show();
-
-    }
-
     private void onDateSetEventHandler(DatePicker d, int year, int month, int day) {
+        Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        DateCell.this.onCellValueChangedListener.onCellValueChanged(DateCell.this, calendar);
-        updateDateLabel();
+        onCellValueChangedListener.onCellValueChanged(DateCell.this, calendar);
+
+        updateDateLabel(calendar);
     }
 
     @Override
@@ -102,19 +105,5 @@ public class DateCell extends BaseCell {
         input.setText(null);
         dateInputLayout.setHint(null);
         input.clearFocus();
-    }
-
-    public void setHint(String hint) {
-        dateInputLayout.setHint(hint);
-    }
-
-    public void setValue(CharSequence value) {
-        if (null != value) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                input.setText(Html.fromHtml(value.toString(), Html.FROM_HTML_MODE_COMPACT).toString());
-            } else {
-                input.setText(Html.fromHtml(value.toString()).toString());
-            }
-        }
     }
 }

@@ -2,18 +2,14 @@ package com.guestlogix.traveleruikit.forms.cells;
 
 import android.text.InputType;
 import android.view.View;
-import android.view.inputmethod.CompletionInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.SpinnerFormModel;
-
-import java.util.List;
 
 /**
  * Form cell which contains a spinner.
@@ -26,6 +22,7 @@ public class SpinnerCell extends BaseCell {
 
     public SpinnerCell(@NonNull View itemView) {
         super(itemView);
+
         this.autocomplete = itemView.findViewById(R.id.autocomplete_form_inputValue);
         this.layout = itemView.findViewById(R.id.textInputLayout_form_textLayout);
 
@@ -69,7 +66,7 @@ public class SpinnerCell extends BaseCell {
         autocomplete.clearFocus();
     }
 
-    public void setModel(@NonNull FormModel model) {
+    public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof SpinnerFormModel)) {
             throw new RuntimeException("Expecting SpinnerFormModel, but got " + model.getClass().getName());
         }
@@ -83,6 +80,13 @@ public class SpinnerCell extends BaseCell {
                     android.R.layout.simple_list_item_1, s.getOptions());
 
             autocomplete.setAdapter(adapter);
+        }
+
+        Integer pos = (Integer) cellValueAdapter.getCellValue(this);
+
+        if (pos != null) {
+            autocomplete.showDropDown();
+            autocomplete.setListSelection(pos);
         }
     }
 

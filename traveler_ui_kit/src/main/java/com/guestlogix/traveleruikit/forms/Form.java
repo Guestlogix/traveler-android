@@ -76,32 +76,6 @@ public class Form extends FrameLayout {
         initView(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private FormRecyclerViewAdapter.CellEventsListener cellEventsListener = new FormRecyclerViewAdapter.CellEventsListener() {
-        @Override
-        public void onValueChanged(int pos, Object value) {
-            if (onFormValueChangedListener != null) {
-                LinkedFormNode node = nodes.get(pos);
-                onFormValueChangedListener.onFormValueChanged(node.sectionId, node.fieldId, value);
-            }
-        }
-
-        @Override
-        public void onFocusChanged(int pos, boolean hasFocus) {
-            if (onFormFocusChangedListener != null) {
-                LinkedFormNode node = nodes.get(pos);
-                onFormFocusChangedListener.onFormFocusChanged(node.sectionId, node.fieldId, hasFocus);
-            }
-        }
-
-        @Override
-        public void onClick(int pos) {
-            if (onFormClickListener != null) {
-                LinkedFormNode node = nodes.get(pos);
-                onFormClickListener.onFormClick(node.sectionId, node.fieldId);
-            }
-        }
-    };
-
     private FormRecyclerViewAdapter.FormMapper formMapper = new FormRecyclerViewAdapter.FormMapper() {
         @Override
         public int getTotalCount() {
@@ -273,7 +247,6 @@ public class Form extends FrameLayout {
 
         rvAdapter = new FormRecyclerViewAdapter(formMapper);
         rvAdapter.setContextRequestListener(contextRequestListener);
-        rvAdapter.setCellEventsListener(cellEventsListener);
 
         cellsRecyclerView.setLayoutManager(layoutManager);
         cellsRecyclerView.setAdapter(rvAdapter);
@@ -615,95 +588,6 @@ public class Form extends FrameLayout {
          */
         @Override
         void bindBaseCell(BaseCell cell, int sectionId, int fieldId, int type) {
-            InputDescriptor id;
-            cell.reload();
-            switch (FormType.valueOf(type)) {
-                case HEADER:
-                    HeaderCell headerCell = (HeaderCell) cell;
-                    headerCell.setTitle(dataSource.getTitle(sectionId));
-                    headerCell.setSubtitle(dataSource.getSubtitle(sectionId));
-                    break;
-                case TEXT:
-                    TextCell textCell = (TextCell) cell;
-                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    textCell.setValue((String) dataSource.getValue(sectionId, fieldId));
-                    textCell.setHint(id.title);
-                    break;
-                case QUANTITY:
-                    QuantityCell quantityCell = (QuantityCell) cell;
-                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    Integer quantityValue = (Integer) dataSource.getValue(sectionId, fieldId);
-                    quantityCell.setTitle(id.title);
-                    quantityCell.setSubtitle(id.subtitle);
-                    quantityCell.setQuantity(String.valueOf(quantityValue));
-                    quantityCell.setAdapter(new QuantityCell.QuantityCellAdapter() {
-                        @Override
-                        public String getTitle() {
-                            return id.title;
-                        }
-
-                        @Override
-                        public Integer getMaxQuantity() {
-                            return 10;
-                        }
-
-                        @NonNull
-                        @Override
-                        public Integer getMinQuantity() {
-                            return 0;
-                        }
-
-                        @NonNull
-                        @Override
-                        public Integer getValue() {
-                            Integer qVal = (Integer) dataSource.getValue(sectionId, fieldId);
-                            if (qVal == null) {
-                                return 0;
-                            }
-                            return qVal;
-                        }
-                    });
-                    break;
-                case BUTTON:
-                    ButtonCell buttonCell = (ButtonCell) cell;
-                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    buttonCell.setText(id.title);
-                    break;
-                case SPINNER:
-                    SpinnerCell spinnerCell = (SpinnerCell) cell;
-                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    Integer spinnerValue = (Integer) dataSource.getValue(sectionId, fieldId);
-                    spinnerCell.setHint(id.title);
-                    spinnerCell.setOptions(id.options, spinnerValue);
-                    break;
-                case DATE:
-                    DateCell dateCell = (DateCell) cell;
-                    id = dataSource.getInputDescriptor(sectionId, fieldId, type);
-                    String dateValue = (String) dataSource.getValue(sectionId, fieldId);
-                    dateCell.setHint(id.title);
-                    dateCell.setValue(dateValue);
-                    break;
-                case MESSAGE:
-                    MessageCell messageCell = (MessageCell) cell;
-                    Pair<String, FormMessage> msg = dataSource.getMessage(sectionId, fieldId);
-
-                    if (msg != null) {
-                        messageCell.setMessage(msg.first, msg.second);
-                    } else {
-                        messageCell.reload();
-                    }
-                    break;
-                default:
-                    if (customComponentMap.containsKey(type)) {
-                        CustomCellAdapter adapter = customComponentMap.get(type);
-
-                        if (null != adapter) {
-                            adapter.bindCell(cell, sectionId, fieldId, type);
-                            return;
-                        }
-                    }
-                    throw new RuntimeException("Adapter not found. Register adapter with registerCustomCell()");
-            }
         }
 
         public interface CustomCellAdapter {

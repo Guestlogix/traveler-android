@@ -31,7 +31,7 @@ public class DateFormModel extends FormModel {
     }
 
     @Override
-    int getType() {
+    public int getType() {
         return FormModelType.DATE.value;
     }
 }
