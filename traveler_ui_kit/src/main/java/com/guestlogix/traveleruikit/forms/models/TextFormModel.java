@@ -2,6 +2,9 @@ package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
 
+/**
+ * Describes a text input cell.
+ */
 public class TextFormModel extends FormModel {
     private String hint;
 

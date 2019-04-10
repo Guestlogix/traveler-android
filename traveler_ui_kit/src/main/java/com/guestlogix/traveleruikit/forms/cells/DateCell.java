@@ -37,6 +37,12 @@ public class DateCell extends BaseCell {
         });
     }
 
+    /**
+     * Expects a {@link DateFormModel} for correct binding. Otherwise throws a {@link RuntimeException}.
+     * Might invoke {@link CellValueAdapter} multiple times.
+     *
+     * @param model description of the cell.
+     */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof DateFormModel)) {

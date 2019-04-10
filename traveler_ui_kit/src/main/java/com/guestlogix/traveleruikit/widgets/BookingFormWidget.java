@@ -28,6 +28,10 @@ public class BookingFormWidget extends Form implements
     // Data
     private BookingForm bookingForm;
     private BookingForm.BookingFormError currentError;
+
+    /**
+     * Listener used to dispatch BookingForm completion events.
+     */
     private FormCompletedListener formCompletedListener;
 
     public BookingFormWidget(@NonNull Context context) {
@@ -49,8 +53,13 @@ public class BookingFormWidget extends Form implements
         super.setFormClickListener(this);
     }
 
-    public void setFormCompletedListener(FormCompletedListener formCompletedListener) {
-        this.formCompletedListener = formCompletedListener;
+    /**
+     * Registers a callback to be invoked whenever the booking form widget detects that a form is ready to be submitted.
+     *
+     * @param l The callback that will run
+     */
+    public void setFormCompletedListener(FormCompletedListener l) {
+        this.formCompletedListener = l;
     }
 
     @Override
@@ -216,7 +225,15 @@ public class BookingFormWidget extends Form implements
         }
     }
 
+    /**
+     * Interface definition for a callback to be invoked whenever the {@link BookingForm} is ready to submit.
+     */
     public interface FormCompletedListener {
+        /**
+         * Called whenever the {@link BookingForm} is ready to submit.
+         *
+         * @param bookingForm Filled BookingForm
+         */
         void onFormCompleted(BookingForm bookingForm);
     }
 }

@@ -22,6 +22,12 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
+    /**
+     * Binds a form cell with a matching. If the model does not match the type of cell, a {@link RuntimeException} will
+     * occur.
+     *
+     * @param model description of the cell.
+     */
     public abstract void bindWithModel(@NonNull FormModel model);
 
     /**
@@ -121,7 +127,16 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
         void onCellFocusChange(BaseCell caller, boolean hasFocus);
     }
 
+    /**
+     * Callback used to request values for the cell. Might be used multiple times per cell binding.
+     */
     public interface CellValueAdapter {
+        /**
+         * Returns the value for the current cell.
+         *
+         * @param cell where to get value for
+         * @return value of the cell
+         */
         Object getCellValue(BaseCell cell);
     }
 }

@@ -2,6 +2,9 @@ package com.guestlogix.traveleruikit.forms.models;
 
 import com.guestlogix.traveleruikit.forms.FormMessage;
 
+/**
+ * Describes a message cell.
+ */
 public class MessageFormModel extends FormModel {
     private FormMessage formMessage;
 

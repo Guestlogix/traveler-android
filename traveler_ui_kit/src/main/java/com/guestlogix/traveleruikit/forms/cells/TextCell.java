@@ -50,6 +50,11 @@ public class TextCell extends BaseCell {
         });
     }
 
+    /**
+     * Expecting {@link TextFormModel} for binding. Otherwise throws {@link RuntimeException}
+     *
+     * @param model description of the cell.
+     */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof TextFormModel)) {

@@ -2,6 +2,9 @@ package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
 
+/**
+ * Describes a header cell.
+ */
 public class HeaderFormModel extends FormModel {
     private String title;
     private String subtitle;
