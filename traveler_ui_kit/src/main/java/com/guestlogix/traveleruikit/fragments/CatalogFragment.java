@@ -14,14 +14,12 @@ import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogGroup;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
+import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.widgets.CatalogView;
 
 import java.util.List;
-
-import static com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity.ARG_CATALOG_ITEM;
 
 /**
  * Fragment to hold the Catalog widget.
@@ -100,8 +98,7 @@ public class CatalogFragment extends BaseFragment {
         public void onItemClick(int sectionPosition, int itemIndex) {
             CatalogItem catalogItem = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
 
-            Intent catalogItemDetailsIntent = new Intent(getActivityContext(), CatalogItemDetailsActivity.class);
-            catalogItemDetailsIntent.putExtra(ARG_CATALOG_ITEM, catalogItem);
+            Intent catalogItemDetailsIntent = TravelerUI.getCatalogItemDetailsIntent(catalogItem, getActivityContext());
             startActivity(catalogItemDetailsIntent);
         }
 
