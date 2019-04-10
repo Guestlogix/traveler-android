@@ -67,6 +67,12 @@ public class SpinnerCell extends BaseCell {
         autocomplete.clearFocus();
     }
 
+    /**
+     * Expecting {@link SpinnerFormModel} for binding. Otherwise throws {@link RuntimeException}.
+     *
+     * @param model description of the cell.
+     */
+    @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof SpinnerFormModel)) {
             throw new RuntimeException("Expecting SpinnerFormModel, but got " + model.getClass().getName());

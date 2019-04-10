@@ -19,6 +19,10 @@ import com.guestlogix.traveleruikit.forms.models.MessageFormModel;
 
 import java.util.ArrayList;
 
+/**
+ * Wrapper around recycler view used to render a form. Transforms a two dimensional array of questions/question groups
+ * into a single dimensional list of views.
+ */
 public class Form extends RecyclerView implements
         FormRecyclerViewAdapter.FormMapper,
         BaseCell.CellValueAdapter,
@@ -26,15 +30,26 @@ public class Form extends RecyclerView implements
         BaseCell.OnCellValueChangedListener,
         BaseCell.OnCellFocusChangeListener {
 
-    // Interfaces.
-
     // Data
     private ArrayList<FormNode> nodes;
+
     // Adapters
     private DataSource dataSource;
+
     // Callbacks
+    /**
+     * Listener used to dispatch focus change events.
+     */
     private FormFocusChangeListener formFocusChangeListener;
+
+    /**
+     * Listener used to dispatch click events.
+     */
     private FormClickListener formClickListener;
+
+    /**
+     * Listener used to dispatch value change events.
+     */
     private FormValueChangedListener formValueChangedListener;
 
     public Form(@NonNull Context context) {
@@ -75,13 +90,19 @@ public class Form extends RecyclerView implements
         getAdapter().notifyDataSetChanged();
     }
 
+    /**
+     * Rebinds a specific item in the form. This can result in a structural change in the form.
+     *
+     * @param sectionId Section index
+     * @param fieldId   Field index
+     */
     public void reload(int sectionId, int fieldId) {
         FormNode node = null;
         int i;
         for (i = 0; i < nodes.size() && node == null; i++) {
             FormNode t = nodes.get(i);
 
-            if (t.sectionId == sectionId && t.fieldId == sectionId) {
+            if (t.sectionId == sectionId && t.fieldId == fieldId) {
                 node = t;
             }
         }
@@ -232,16 +253,31 @@ public class Form extends RecyclerView implements
         }
     }
 
-    public void setFormFocusChangeListener(FormFocusChangeListener formFocusChangeListener) {
-        this.formFocusChangeListener = formFocusChangeListener;
+    /**
+     * Registers a callback to be invoked whenever the form focus changes.
+     *
+     * @param l The callback that will be run
+     */
+    public void setFormFocusChangeListener(FormFocusChangeListener l) {
+        this.formFocusChangeListener = l;
     }
 
-    public void setFormClickListener(FormClickListener formClickListener) {
-        this.formClickListener = formClickListener;
+    /**
+     * Registers a callback to be invoked whenever the form is clicked.
+     *
+     * @param l The callback that will be run
+     */
+    public void setFormClickListener(FormClickListener l) {
+        this.formClickListener = l;
     }
 
-    public void setFormValueChangedListener(FormValueChangedListener formValueChangedListener) {
-        this.formValueChangedListener = formValueChangedListener;
+    /**
+     * Register a callback to be invoked whenever a value changes in the form.
+     *
+     * @param l The callback that will be run
+     */
+    public void setFormValueChangedListener(FormValueChangedListener l) {
+        this.formValueChangedListener = l;
     }
 
     private void init() {
@@ -251,32 +287,111 @@ public class Form extends RecyclerView implements
         nodes = new ArrayList<>();
     }
 
+    /**
+     * Interface definition for a callback for value change events in the form.
+     */
     public interface FormValueChangedListener {
+        /**
+         * Called whenever a value changes in the form.
+         *
+         * @param sectionId Section where a value was changed
+         * @param fieldId   Field where a value was changed
+         * @param value     New value
+         */
         void onFormValueChanged(int sectionId, int fieldId, Object value);
     }
 
+    /**
+     * Interface definition for a callback to be invoked whenever the form is clicked.
+     */
     public interface FormClickListener {
+        /**
+         * Called whenever the form is clicked.
+         *
+         * @param sectionId Section where the click occurred
+         * @param fieldId   Field in a Section where the click occurred
+         */
         void onFormClick(int sectionId, int fieldId);
     }
 
+    /**
+     * Interface definition for a callback to be invoked whenever the focus changes in the form.
+     */
     public interface FormFocusChangeListener {
+        /**
+         * Called whenever the form focus changes.
+         *
+         * @param sectionId Section where the focus changed
+         * @param fieldId   Field in a Section where the focus changed
+         * @param hasFocus  Whether the element has focus now
+         */
         void onFormFocusChange(int sectionId, int fieldId, boolean hasFocus);
     }
 
+    /**
+     * Data Source definition required for rendering the form.
+     */
     public interface DataSource {
+        /**
+         * Returns the number of sections in the form.
+         *
+         * @return number of sections
+         */
         int getSectionCount();
 
+        /**
+         * Returns the number of fields in a section.
+         *
+         * @param sectionId Section index
+         * @return number of fields in the section
+         */
         int getFieldCount(int sectionId);
 
+        /**
+         * Returns the model describing the field.
+         * <p>
+         * Look at {@link FormModel} to see available models.
+         *
+         * @param sectionId Section index
+         * @param fieldId   Field index
+         * @return Model representing the type of field
+         */
         @NonNull
         FormModel getModel(int sectionId, int fieldId);
 
+        /**
+         * Returns an optional header for a section. If present it will be displayed before all the fields in the section.
+         * <p>
+         * Go to {@link FormHeader} for more information.
+         *
+         * @param sectionId Section index
+         * @return Optional header
+         */
         @Nullable
         FormHeader getSectionHeader(int sectionId);
 
+        /**
+         * Returns an optional message for a field in the form. If present the message will appear under the field.
+         * <p>
+         * Go to {@link FormMessage} for more information.
+         *
+         * @param sectionId Section index
+         * @param fieldId   Field index
+         * @return Optional message for a field
+         */
         @Nullable
         FormMessage getMessage(int sectionId, int fieldId);
 
+        /**
+         * Returns the value for a specific form field. The value must match to the form model type for correct behaviour.
+         * If incorrect object types are given, class cast or ambiguous form behaviour might occur.
+         * <p>
+         * See {@link FormModel} and derived classes for expected values for each type.
+         *
+         * @param sectionId Section index
+         * @param fieldId   Field index
+         * @return Current value for the field
+         */
         @Nullable
         Object getValue(int sectionId, int fieldId);
     }

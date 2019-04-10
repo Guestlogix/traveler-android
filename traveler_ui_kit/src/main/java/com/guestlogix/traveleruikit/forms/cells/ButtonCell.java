@@ -32,6 +32,11 @@ public class ButtonCell extends BaseCell {
         // Do nothing.
     }
 
+    /**
+     * Expects a {@link ButtonFormModel} for correct binding. Otherwise a {@link RuntimeException} will be thrown.
+     *
+     * @param model description of the cell.
+     */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof ButtonFormModel)) {

@@ -17,6 +17,11 @@ public class MessageCell extends BaseCell {
         this.message = itemView.findViewById(R.id.message);
     }
 
+    /**
+     * Expects a {@link MessageFormModel} for binding. Otherwise throws {@link RuntimeException}.
+     *
+     * @param model description of the cell.
+     */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof MessageFormModel)) {

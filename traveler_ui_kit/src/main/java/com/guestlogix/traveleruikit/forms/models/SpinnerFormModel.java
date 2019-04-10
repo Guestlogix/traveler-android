@@ -4,6 +4,9 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+/**
+ * Describes a spinner cell
+ */
 public class SpinnerFormModel extends FormModel {
     private String hint;
     private List<String> options;

@@ -20,6 +20,11 @@ public class HeaderCell extends BaseCell {
         subtitle = itemView.findViewById(R.id.headerSubtitle);
     }
 
+    /**
+     * Expects a {@link HeaderFormModel} for binding. Otherwise throws {@link RuntimeException}.
+     *
+     * @param model description of the cell.
+     */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (!(model instanceof HeaderFormModel)) {

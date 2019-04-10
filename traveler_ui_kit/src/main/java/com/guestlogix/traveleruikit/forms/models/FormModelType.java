@@ -3,6 +3,10 @@ package com.guestlogix.traveleruikit.forms.models;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Predefined form types.
+ * For internal use mostly.
+ */
 public enum FormModelType {
     TEXT(0), BUTTON(1), SPINNER(2), QUANTITY(3), DATE(4), HEADER(5), MESSAGE(6);
 
