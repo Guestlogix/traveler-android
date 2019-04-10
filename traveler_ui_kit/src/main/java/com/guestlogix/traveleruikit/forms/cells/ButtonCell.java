@@ -3,7 +3,9 @@ package com.guestlogix.traveleruikit.forms.cells;
 import android.view.View;
 import android.widget.Button;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.models.ButtonFormModel;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 
@@ -46,5 +48,10 @@ public class ButtonCell extends BaseCell {
         ButtonFormModel b = (ButtonFormModel) model;
 
         button.setText(b.getText());
+    }
+
+    @Override
+    public void setMessage(@Nullable FormMessage message) {
+        // Do nothing.
     }
 }

@@ -30,6 +30,10 @@ public class ImageLoader {
      * @param imageLoaderCallback to get callback with the downloaded image bitmap.
      */
     public Task loadImage(URL url, int width, int height, ImageLoaderCallback imageLoaderCallback) {
+        if (null == url) {
+            imageLoaderCallback.onError();
+            return null;
+        }
 
         //if image found in cache notify observer with bitmap, otherwise start image download
         Bitmap cachedBitmap = imageCache.get(url.toString());
