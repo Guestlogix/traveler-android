@@ -7,8 +7,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.SpinnerFormModel;
 
@@ -96,6 +98,24 @@ public class SpinnerCell extends BaseCell {
             autocomplete.onCommitCompletion(new CompletionInfo(0, pos, null));
         } else {
             autocomplete.setText(null);
+        }
+    }
+
+    @Override
+    public void setMessage(@Nullable FormMessage message) {
+        if (message == null) {
+            layout.setError(null);
+            layout.setHelperText(null);
+        } else {
+            switch (message.getType()) {
+                case INFO:
+                    layout.setError(null);
+                    layout.setHelperText(message.getMessage());
+                    break;
+                case ALERT:
+                    layout.setHelperText(null);
+                    layout.setError(message.getMessage());
+            }
         }
     }
 

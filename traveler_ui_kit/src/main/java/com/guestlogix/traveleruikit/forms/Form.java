@@ -15,7 +15,6 @@ import com.guestlogix.traveleruikit.forms.cells.*;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.FormModelType;
 import com.guestlogix.traveleruikit.forms.models.HeaderFormModel;
-import com.guestlogix.traveleruikit.forms.models.MessageFormModel;
 
 import java.util.ArrayList;
 
@@ -97,19 +96,42 @@ public class Form extends RecyclerView implements
      * @param fieldId   Field index
      */
     public void reload(int sectionId, int fieldId) {
-        FormNode node = null;
-        int i;
-        for (i = 0; i < nodes.size() && node == null; i++) {
+        Integer position = null;
+
+        for (int i = 0; i < nodes.size() && position == null; i++) {
             FormNode t = nodes.get(i);
 
             if (t.sectionId == sectionId && t.fieldId == fieldId) {
-                node = t;
+                position = i;
             }
         }
 
-        if (node != null) {
+        if (position != null) {
+            FormNode node = nodes.get(position);
             node.model = null;
-            getAdapter().notifyItemChanged(i);
+            getAdapter().notifyItemChanged(position);
+        }
+    }
+
+    /**
+     * Smooth scrolls to a given position.
+     *
+     * @param sectionId Section index
+     * @param fieldId   Field index
+     */
+    public void smoothScrollToPosition(int sectionId, int fieldId) {
+        Integer position = null;
+
+        for (int i = 0; i < nodes.size() && position == null; i++) {
+            FormNode node = nodes.get(i);
+
+            if (node.sectionId == sectionId && node.fieldId == fieldId) {
+                position = i;
+            }
+        }
+
+        if (position != null) {
+            getLayoutManager().smoothScrollToPosition(this, null, position);
         }
     }
 
@@ -183,42 +205,8 @@ public class Form extends RecyclerView implements
         cell.setOnCellFocusChangeListener(this);
         cell.setOnCellValueChangedListener(this);
 
-        /*
-
-            Checks if this form needs a message.
-
-            If it does, checks whether a message already exists or not and adds/updates ir accordingly.
-            If it does not, but has a message. removes the next element in the list.
-
-            A node has a message if the method getMessage from the DataSource returns a non null object.
-
-         */
         FormMessage message = dataSource.getMessage(node.sectionId, node.fieldId);
-
-        if (message != null) {
-            FormNode msgNode;
-
-            if (node.hasMessage) {
-                msgNode = nodes.get(position + 1);
-            } else {
-                msgNode = new FormNode(-1, -1, false);
-            }
-
-            msgNode.model = new MessageFormModel(message);
-
-            if (node.hasMessage) {
-                post(() -> getAdapter().notifyItemChanged(position + 1));
-            } else {
-                nodes.add(position + 1, msgNode);
-                post(() -> getAdapter().notifyItemInserted(position + 1));
-            }
-
-            node.hasMessage = true;
-        } else if (node.hasMessage) {
-            nodes.remove(position + 1);
-            node.hasMessage = false;
-            post(() -> getAdapter().notifyItemRemoved(position + 1));
-        }
+        cell.setMessage(message);
     }
 
     @Override
@@ -284,6 +272,7 @@ public class Form extends RecyclerView implements
         FormRecyclerViewAdapter adapter = new FormRecyclerViewAdapter(this);
         adapter.setContextRequestListener(this::getContext);
         setAdapter(adapter);
+        setFocusableInTouchMode(true);
         nodes = new ArrayList<>();
     }
 

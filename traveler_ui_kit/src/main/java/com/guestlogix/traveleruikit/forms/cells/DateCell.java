@@ -2,12 +2,15 @@ package com.guestlogix.traveleruikit.forms.cells;
 
 import android.app.DatePickerDialog;
 import android.os.Build;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.models.DateFormModel;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 
@@ -80,6 +83,24 @@ public class DateCell extends BaseCell {
 
             dialog.show();
         });
+    }
+
+    @Override
+    public void setMessage(@Nullable FormMessage message) {
+        if (message == null) {
+            dateInputLayout.setError(null);
+            dateInputLayout.setHelperText(null);
+        } else {
+            switch (message.getType()) {
+                case INFO:
+                    dateInputLayout.setError(null);
+                    dateInputLayout.setHelperText(message.getMessage());
+                    break;
+                case ALERT:
+                    dateInputLayout.setHelperText(null);
+                    dateInputLayout.setError(message.getMessage());
+            }
+        }
     }
 
     private void updateDateLabel(Calendar calendar) {

@@ -219,7 +219,14 @@ public class BookingFormWidget extends Form implements
 
                 currentError = errors.get(0);
                 reload(currentError.getGroupId(), currentError.getQuestionId());
+                smoothScrollToPosition(currentError.getGroupId(), currentError.getQuestionId());
             } else if (null != formCompletedListener) {
+                // Hide errors if any
+                if (currentError != null) {
+                    reload(currentError.getGroupId(), currentError.getQuestionId());
+                    currentError = null;
+                }
+
                 formCompletedListener.onFormCompleted(bookingForm); // Notify activity form is done
             }
         }

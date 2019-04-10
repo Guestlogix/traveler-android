@@ -3,6 +3,7 @@ package com.guestlogix.traveleruikit.forms.cells;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
@@ -37,6 +38,11 @@ public class MessageCell extends BaseCell {
         } else {
             message.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black));
         }
+    }
+
+    @Override
+    public void setMessage(@Nullable FormMessage message) {
+        // Do nothing.
     }
 
     @Override

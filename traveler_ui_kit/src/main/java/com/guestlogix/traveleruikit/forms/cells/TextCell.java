@@ -4,9 +4,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.TextFormModel;
 
@@ -66,6 +68,27 @@ public class TextCell extends BaseCell {
         layout.setHint(t.getHint());
         Object value = cellValueAdapter.getCellValue(this);
         input.setText(value != null ? value.toString() : null);
+    }
+
+    @Override
+    public void setMessage(@Nullable FormMessage message) {
+        if (message == null) {
+            layout.setError(null);
+            input.setError(null);
+            layout.setHelperText(null);
+        } else {
+            switch (message.getType()) {
+                case INFO:
+                    layout.setError(null);
+                    input.setError(null);
+                    layout.setHelperText(message.getMessage());
+                    break;
+                case ALERT:
+                    layout.setHelperText(null);
+                    input.setError(message.getMessage());
+                    layout.setError(message.getMessage());
+            }
+        }
     }
 
     @Override
