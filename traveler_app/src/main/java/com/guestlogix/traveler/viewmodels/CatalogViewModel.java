@@ -3,7 +3,7 @@ package com.guestlogix.traveler.viewmodels;
 import android.content.Intent;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import com.guestlogix.travelercorekit.callbacks.catalogSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.ERROR;
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.LOADING;
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.SUCCESS;
+import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.*;
 
 public class CatalogViewModel extends StatefulViewModel {
     public static final int ADD_FLIGHT_REQUEST_CODE = 1;
@@ -66,7 +64,7 @@ public class CatalogViewModel extends StatefulViewModel {
         Traveler.fetchCatalog(catalogQuery, catalogSearchCallback);
     }
 
-    private catalogSearchCallback catalogSearchCallback = new catalogSearchCallback() {
+    private CatalogSearchCallback catalogSearchCallback = new CatalogSearchCallback() {
         @Override
         public void onCatalogSuccess(Catalog cat) {
             catalog.postValue(cat);

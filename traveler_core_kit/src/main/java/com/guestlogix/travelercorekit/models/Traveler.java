@@ -118,7 +118,7 @@ public class Traveler {
      * @param catalogQuery          Ids of the flights for which to fetch the groups.
      * @param catalogSearchCallback Callback methods which will be executed after the data is fetched.
      */
-    public static void fetchCatalog(CatalogQuery catalogQuery, catalogSearchCallback catalogSearchCallback) {
+    public static void fetchCatalog(CatalogQuery catalogQuery, CatalogSearchCallback catalogSearchCallback) {
         if (null == localInstance) {
             catalogSearchCallback.onCatalogError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
