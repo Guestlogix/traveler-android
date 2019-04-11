@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.adapters;
 
 import android.content.Context;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -11,7 +12,6 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.CatalogItemInformationFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogItemProviderInformationFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
@@ -38,15 +38,16 @@ public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
         this.locationsList = locationsList;
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return CatalogItemProviderInformationFragment.getInstance(contactInfo, locationsList);
-            case 1:
                 return CatalogItemInformationFragment.getInstance(informationList);
+            case 1:
+                return CatalogItemProviderInformationFragment.getInstance(contactInfo, locationsList);
         }
-        return CatalogItemProviderInformationFragment.getInstance(contactInfo, locationsList);
+        return CatalogItemInformationFragment.getInstance(informationList);
     }
 
     @Override
@@ -61,9 +62,9 @@ public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return context.getString(R.string.provider);
-            case 1:
                 return context.getString(R.string.info);
+            case 1:
+                return context.getString(R.string.provider);
             default:
                 return null;
         }
