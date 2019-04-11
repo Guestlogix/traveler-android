@@ -165,6 +165,12 @@ public class Router {
 
                         payload.put("products", products);
 
+                        // TODO don't send hardcoded value
+                        JSONObject amount = new JSONObject();
+                        amount.put("value", 0);
+                        amount.put("currency", "USD");
+                        payload.put("amount", amount);
+
                         return payload;
                     } catch (JSONException e) {
                         TravelerLog.e("Router.orderCreate() could not create JSONPayloadProvider");
