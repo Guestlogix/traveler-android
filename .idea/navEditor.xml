@@ -8,25 +8,13 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="about_destination">
+                  <entry key="app_info_destination">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="268" />
-                            <option name="y" value="-1" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="faq_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="275" />
-                            <option name="y" value="286" />
+                            <option name="x" value="10" />
+                            <option name="y" value="6" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -38,36 +26,21 @@
                         <option name="myPosition">
                           <Point>
 <<<<<<< HEAD
+<<<<<<< HEAD
                             <option name="x" value="-78" />
                             <option name="y" value="-11" />
 =======
                             <option name="x" value="-355" />
                             <option name="y" value="278" />
+=======
+                            <option name="x" value="-314" />
+                            <option name="y" value="7" />
+>>>>>>> Adds static layouts to app settings
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_home_destination_to_about_destination">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_home_destination_to_faq_destination">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_home_destination_to_legal_destination">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_home_destination_to_privacy_policy_destination">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_home_destination_to_support_information_destination">
+                            <entry key="action_to_info_dest">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -77,254 +50,19 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="legal_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="291" />
-                            <option name="y" value="601" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="privacy_policy_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="294" />
-                            <option name="y" value="916" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="support_information_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="266" />
-                            <option name="y" value="-301" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
                 </map>
               </option>
             </LayoutPositions>
           </value>
         </entry>
-        <entry key="booking_navigation.xml">
-          <value>
-            <LayoutPositions>
-              <option name="myPositions">
-                <map>
-                  <entry key="error_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="error_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="168" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="loading_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="loading_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="pass_selection_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="pass_selection_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="324" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="supplier_questions_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="supplier_questions_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="480" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </LayoutPositions>
-          </value>
-        </entry>
-        <entry key="catalog_container_navigation.xml">
-          <value>
-            <LayoutPositions>
-              <option name="myPositions">
-                <map>
-                  <entry key="catalog_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="catalog_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="280" />
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="catalog_item_details_action">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="catalog_item_details_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="256" />
-                            <option name="y" value="280" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="error_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="error_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="168" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="loading_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="loading_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </LayoutPositions>
-          </value>
-        </entry>
-        <entry key="catalog_item_details_navigation.xml">
-          <value>
-            <LayoutPositions>
-              <option name="myPositions">
-                <map>
-                  <entry key="catalog_item_details_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="catalog_item_details_destination">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="error_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="error_destination">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="loading_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="loading_destination">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </LayoutPositions>
-          </value>
-        </entry>
-        <entry key="catalog_navigation.xml">
+        <entry key="home_navigation.xml">
           <value>
             <LayoutPositions>
               <option name="myPositions">
                 <map>
                   <entry key="flight_search_destination">
                     <value>
+<<<<<<< HEAD
                       <LayoutPositions />
                     </value>
                   </entry>
@@ -368,24 +106,46 @@
                     </value>
                   </entry>
                   <entry key="catalog_destination">
+=======
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="home_destination">
+>>>>>>> Adds static layouts to app settings
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="12" />
+<<<<<<< HEAD
                             <option name="y" value="280" />
 >>>>>>> Adds destination fragments to app settings
+=======
+                            <option name="y" value="12" />
+>>>>>>> Adds static layouts to app settings
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
+<<<<<<< HEAD
                             <entry key="action_home_destination_to_support_information_destination">
+=======
+                            <entry key="flight_add_action">
+>>>>>>> Adds static layouts to app settings
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
                           </map>
                         </option>
+<<<<<<< HEAD
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -398,6 +158,8 @@
                             <option name="y" value="-9" />
                           </Point>
                         </option>
+=======
+>>>>>>> Adds static layouts to app settings
                       </LayoutPositions>
                     </value>
                   </entry>

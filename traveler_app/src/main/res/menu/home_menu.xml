@@ -5,7 +5,7 @@
             android:id="@+id/profile_action"
             android:orderInCategory="100"
             app:showAsAction="always"
-            android:title="@string/sign_in"/>
+            android:title="@string/profile"/>
     <item
             android:id="@+id/sign_in_action"
             android:orderInCategory="100"

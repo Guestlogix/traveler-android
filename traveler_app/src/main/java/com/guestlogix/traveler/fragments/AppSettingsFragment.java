@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Container for the navigation of all the fragments
  */
 public class AppSettingsFragment extends BaseFragment implements View.OnClickListener {
     private List<String> actions = new ArrayList<>();
@@ -50,12 +51,9 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         if (actions.isEmpty()) {
             // Items
             actions.add(getString(R.string.support));
-            actions.add(getString(R.string.about));
             actions.add(getString(R.string.faq));
             actions.add(getString(R.string.legal));
             actions.add(getString(R.string.privacy_policy));
-            actions.add(getString(R.string.delete_profile));
-            actions.add(getString(R.string.sign_out));
         }
 
         RecyclerView recyclerView = v.findViewById(R.id.recyclerView_appSettings_actionsList);
@@ -91,21 +89,41 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         int position = (int) v.getTag();
         NavController nav = Navigation.findNavController(getActivity(), R.id.nav_app_settings);
 
+        String title;
+        int layoutId;
+        AppSettingsFragmentDirections.ActionToInfoDest action;
+
         switch (position) {
             case 0:
-                nav.navigate(R.id.action_home_destination_to_support_information_destination);
+                layoutId = R.layout.fragment_support_information;
+                title = getString(R.string.support);
+                action = AppSettingsFragmentDirections.actionToInfoDest(layoutId, title);
+
+                nav.navigate(action);
                 break;
             case 1:
-                nav.navigate(R.id.action_home_destination_to_about_destination);
+                layoutId = R.layout.fragment_frequently_asked_questions;
+                title = getString(R.string.faq);
+                action = AppSettingsFragmentDirections.actionToInfoDest(layoutId, title);
+
+                nav.navigate(action);
                 break;
             case 2:
-                nav.navigate(R.id.action_home_destination_to_faq_destination);
+                layoutId = R.layout.fragment_legal_information;
+                title = getString(R.string.legal);
+                action = AppSettingsFragmentDirections.actionToInfoDest(layoutId, title);
+
+                nav.navigate(action);
                 break;
             case 3:
-                nav.navigate(R.id.action_home_destination_to_legal_destination);
+                layoutId = R.layout.fragment_privacy_policy;
+                title = getString(R.string.privacy_policy);
+                action = AppSettingsFragmentDirections.actionToInfoDest(layoutId, title);
+
+                nav.navigate(action);
                 break;
             case 4:
-                nav.navigate(R.id.action_home_destination_to_privacy_policy_destination);
+//                nav.navigate(R.id.action_home_destination_to_privacy_policy_destination);
                 break;
             case 5:
                 break;
