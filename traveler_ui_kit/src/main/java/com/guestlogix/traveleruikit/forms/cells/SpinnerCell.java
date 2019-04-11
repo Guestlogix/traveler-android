@@ -1,9 +1,8 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
-import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.CompletionInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
@@ -29,35 +28,21 @@ public class SpinnerCell extends BaseCell {
         this.autocomplete = itemView.findViewById(R.id.autocomplete_form_inputValue);
         this.layout = itemView.findViewById(R.id.textInputLayout_form_textLayout);
 
-        this.autocomplete.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (null != SpinnerCell.this.onCellValueChangedListener) {
-                    SpinnerCell.this.onCellValueChangedListener.onCellValueChanged(SpinnerCell.this, position);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
-
         this.autocomplete.setOnItemClickListener((parent, view, position, id) -> {
             if (null != SpinnerCell.this.onCellValueChangedListener) {
                 SpinnerCell.this.onCellValueChangedListener.onCellValueChanged(SpinnerCell.this, position);
             }
         });
 
-        this.autocomplete.setOnFocusChangeListener((view, hasFocus) -> {
-            if (hasFocus) {
+        this.autocomplete.setOnTouchListener((v, e) -> {
+            if (e.getAction() == MotionEvent.ACTION_UP) {
                 this.autocomplete.showDropDown();
+                return true;
             }
+            return false;
         });
 
-        this.autocomplete.setOnClickListener(v -> this.autocomplete.showDropDown());
         this.autocomplete.setThreshold(0);
-        this.autocomplete.setInputType(InputType.TYPE_NULL);
     }
 
     @Override
