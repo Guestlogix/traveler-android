@@ -14,22 +14,18 @@ import java.util.List;
 public class Order implements Serializable {
     private String id;
     private Price total;
-    private String orderNumber;
+    private String referenceNumber;
     private List<Product> products;
     private Date createdDate;
 
     @SuppressWarnings("ConstantConditions")
-    private Order(@NonNull String id, @NonNull Price total, @NonNull String orderNumber, @NonNull List<Product> products, @NonNull Date createdDate) {
+    private Order(@NonNull String id, @NonNull Price total, String referenceNumber, @NonNull List<Product> products, @NonNull Date createdDate) {
         if (id == null) {
             throw new IllegalArgumentException("id can not be null");
         }
 
         if (total == null) {
             throw new IllegalArgumentException("total can not be null");
-        }
-
-        if (orderNumber == null) {
-            throw new IllegalArgumentException("orderNumber can not be null");
         }
 
         if (products == null) {
@@ -42,7 +38,7 @@ public class Order implements Serializable {
 
         this.id = id;
         this.total = total;
-        this.orderNumber = orderNumber;
+        this.referenceNumber = referenceNumber;
         this.products = products;
         this.createdDate = createdDate;
     }
@@ -55,8 +51,8 @@ public class Order implements Serializable {
         return total;
     }
 
-    public String getOrderNumber() {
-        return orderNumber;
+    public String getReferenceNumber() {
+        return referenceNumber;
     }
 
     public List<Product> getProducts() {
@@ -70,7 +66,7 @@ public class Order implements Serializable {
     static class OrderMappingFactory implements ObjectMappingFactory<Order> {
 
         @Override
-        public Order instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+        public Order instantiate(JsonReader reader) throws ObjectMappingException {
             String key = "Order";
             try {
                 String id = null;
@@ -96,10 +92,10 @@ public class Order implements Serializable {
                         case "amount":
                             price = new Price.PriceObjectMappingFactory().instantiate(reader);
                             break;
-                        case "orderNumber":
-                            orderNumber = JsonReaderHelper.readNonNullString(reader);
+                        case "referenceNumber":
+                            orderNumber = JsonReaderHelper.readString(reader);
                             break;
-                        case "createdAt":
+                        case "createdOn":
                             try {
                                 createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
                             } catch (ParseException e) {
