@@ -29,12 +29,15 @@ public class AddedFlightsRecyclerViewAdapter extends RecyclerView.Adapter<AddedF
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        holder.item = flightList.get(position);
+        Flight item = flightList.get(position);
 
-        holder.departureIata.setText(holder.item.getDepartureAirport().getCode());
-        holder.arrivalIata.setText(holder.item.getArrivalAirport().getCode());
+        holder.departureIata.setText(item.getDepartureAirport().getCode());
+        holder.arrivalIata.setText(item.getArrivalAirport().getCode());
         holder.deleteFlight.setOnClickListener(deleteFlightOnClickListener);
         holder.deleteFlight.setTag(position);
+
+        holder.itemView.setTag(position);
+        holder.itemView.setOnClickListener(this::onFlightClick);
     }
 
     @Override
@@ -52,20 +55,23 @@ public class AddedFlightsRecyclerViewAdapter extends RecyclerView.Adapter<AddedF
         this.deleteFlightOnClickListener = deleteFlightOnClickListener;
     }
 
+    private void onFlightClick(View v) {
+        int position = (int) v.getTag();
+
+        // Do something.
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
-        final View view;
         TextView departureIata;
         TextView arrivalIata;
         Button deleteFlight;
-        Flight item;
 
         ViewHolder(View view) {
             super(view);
-            this.view = view;
 
-            departureIata = view.findViewById(R.id.textView_catalog_departureIata);
-            arrivalIata = view.findViewById(R.id.textView_catalog_arrivalIata);
-            deleteFlight = view.findViewById(R.id.button_catalog_deleteFlights);
+            departureIata = itemView.findViewById(R.id.textView_flightCard_departureIata);
+            arrivalIata = itemView.findViewById(R.id.textView_catalog_arrivalIata);
+            deleteFlight = itemView.findViewById(R.id.button_catalog_deleteFlights);
         }
     }
 }

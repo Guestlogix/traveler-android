@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.Flight;
@@ -24,15 +25,16 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         this.addFlightOnClickListener = addFlightOnClickListener;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_flight_search_results_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.mItem = flightsList.get(position);
         holder.departureCityTextView.setText(holder.mItem.getDepartureAirport().getCity());
         holder.departureIataTextView.setText(holder.mItem.getDepartureAirport().getCode());
@@ -57,7 +59,6 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        View view;
         TextView departureCityTextView;
         TextView departureIataTextView;
         TextView departureTimeTextView;
@@ -70,14 +71,13 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
 
         ViewHolder(View view) {
             super(view);
-            this.view = view;
-            departureCityTextView = this.view.findViewById(R.id.departureCityTextView);
-            departureIataTextView = this.view.findViewById(R.id.textView_catalog_departureIata);
-            departureTimeTextView = this.view.findViewById(R.id.departureTimeTextView);
-            arrivalCityTextView = this.view.findViewById(R.id.arrivalCityTextView);
-            arrivalIataTextView = this.view.findViewById(R.id.textView_catalog_arrivalIata);
-            arrivalTimeTextView = this.view.findViewById(R.id.arrivalTimeTextView);
-            addFlightTextView = this.view.findViewById(R.id.addFlightTextView);
+            departureCityTextView = itemView.findViewById(R.id.textView_flightCard_departureCity);
+            departureIataTextView = itemView.findViewById(R.id.textView_flightCard_departureIata);
+            departureTimeTextView = itemView.findViewById(R.id.textView_flightCard_departureTime);
+            arrivalCityTextView = itemView.findViewById(R.id.textView_flightCard_arrivalCity);
+            arrivalIataTextView = itemView.findViewById(R.id.textView_catalog_arrivalIata);
+            arrivalTimeTextView = itemView.findViewById(R.id.textView_flightCard_arrivalTime);
+            addFlightTextView = itemView.findViewById(R.id.textView_flightCard_addFlight);
         }
     }
 }

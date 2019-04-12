@@ -27,8 +27,6 @@ import static com.guestlogix.traveler.viewmodels.HomeViewModel.EXTRA_FLIGHT;
  */
 public class SearchFlightResultsFragment extends BaseFragment {
 
-    private View view;
-    private RecyclerView flightResultRecyclerView;
     private SearchFlightResultViewModel searchFlightResultViewModel;
     private FlightSearchResultRecyclerViewAdapter flightSearchResultRecyclerViewAdapter;
 
@@ -41,9 +39,9 @@ public class SearchFlightResultsFragment extends BaseFragment {
         searchFlightResultViewModel = ViewModelProviders.of(getActivityContext()).get(SearchFlightResultViewModel.class);
         searchFlightResultViewModel.getObservableFlights().observe(this, this::flightsUpdateHandler);
 
-        view = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
+        View view = inflater.inflate(R.layout.fragment_flight_search_results, container, false);
 
-        flightResultRecyclerView = view.findViewById(R.id.recyclerView_catalogFragment_addedFlights);
+        RecyclerView flightResultRecyclerView = view.findViewById(R.id.recyclerView_catalogFragment_addedFlights);
 
         flightResultRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         flightSearchResultRecyclerViewAdapter = new FlightSearchResultRecyclerViewAdapter();
