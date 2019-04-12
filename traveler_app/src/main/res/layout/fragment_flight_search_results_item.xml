@@ -5,69 +5,67 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:background="#ffffff"
         android:padding="@dimen/text_margin">
 
     <TextView
-            android:id="@+id/labelDepartureTextView"
+            android:id="@+id/textView_flightCard_departureLabel"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Departure"
+            android:text="@string/departure"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/departureCityTextView"
+            android:id="@+id/textView_flightCard_departureCity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Tokyo"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelDepartureTextView"
+            app:layout_constraintTop_toBottomOf="@+id/textView_flightCard_departureLabel"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/textView_catalog_departureIata"
+            android:id="@+id/textView_flightCard_departureIata"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:enabled="false"
             tools:text="HND"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/departureCityTextView"
+            app:layout_constraintTop_toBottomOf="@+id/textView_flightCard_departureCity"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/departureTimeTextView"
+            android:id="@+id/textView_flightCard_departureTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             tools:text="13:35"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_catalog_departureIata"
+            app:layout_constraintTop_toBottomOf="@+id/textView_flightCard_departureIata"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
 
     <TextView
-            android:id="@+id/labelArrivalTextView"
+            android:id="@+id/textView_flightCard_arrivalLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Arrival"
+            android:text="@string/arrival"
             android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@id/textView_flightCard_departureLabel"
             app:layout_constraintEnd_toEndOf="parent"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/arrivalCityTextView"
+            android:id="@+id/textView_flightCard_arrivalCity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Toronto"
-            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelArrivalTextView"
+            app:layout_constraintTop_toBottomOf="@+id/textView_flightCard_arrivalLabel"
+            app:layout_constraintBaseline_toBaselineOf="@id/textView_flightCard_departureCity"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
@@ -77,32 +75,31 @@
             tools:text="YYZ"
             android:enabled="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/arrivalCityTextView"
+            app:layout_constraintTop_toBottomOf="@+id/textView_flightCard_arrivalCity"
+            app:layout_constraintBaseline_toBaselineOf="@id/textView_flightCard_departureIata"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/arrivalTimeTextView"
+            android:id="@+id/textView_flightCard_arrivalTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             tools:text="16:55"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_catalog_arrivalIata"
+            app:layout_constraintBaseline_toBaselineOf="@id/textView_flightCard_departureTime"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     <TextView
-            android:id="@+id/addFlightTextView"
-            app:layout_constraintTop_toBottomOf="@+id/arrivalTimeTextView"
+            android:id="@+id/textView_flightCard_addFlight"
+            app:layout_constraintTop_toBottomOf="@+id/textView_flightCard_arrivalTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Add Flight"
-            android:textColor="@color/colorLink"
-
-    />
+            android:text="@string/add_flight"
+            android:textColor="@color/colorLink"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
