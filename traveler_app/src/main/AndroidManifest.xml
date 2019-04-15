@@ -15,7 +15,13 @@
             android:usesCleartextTraffic="true">
         <activity android:name=".activities.SettingsActivity">
         </activity>
-        <activity android:name=".activities.ProfileActivity">
+        <activity android:name=".activities.ProfileActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".activities.AppSettingsActivity"
                   android:label="@string/settings">
@@ -25,11 +31,7 @@
 
         </activity>
         <activity android:name=".activities.HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
     </application>
 </manifest>
