@@ -1,8 +1,5 @@
 package com.guestlogix.traveler.fragments;
 
-
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,31 +13,19 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
-import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
-import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.guestlogix.traveler.viewmodels.HomeViewModel.ADD_FLIGHT_REQUEST_CODE;
-import static com.guestlogix.traveler.viewmodels.HomeViewModel.EXTRA_FLIGHT;
-import static com.guestlogix.traveler.viewmodels.HomeViewModel.REQUEST_CODE_SIGN_IN;
-
 /**
  * Container for the navigation of all the fragments
  */
 public class AppSettingsFragment extends BaseFragment implements View.OnClickListener {
+
     private List<String> actions = new ArrayList<>();
     private Profile user;
 
@@ -89,7 +74,6 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         super.onViewCreated(view, savedInstanceState);
     }
 
-
     @Override
     public void onClick(View v) {
         int position = (int) v.getTag();
@@ -135,10 +119,6 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
                     // TODO: Log in.
                 }
                 adapter.notifyItemChanged(4);
-                break;
-            case 5:
-                break;
-            case 6:
                 break;
         }
     }
