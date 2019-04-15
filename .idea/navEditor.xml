@@ -13,8 +13,13 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
+<<<<<<< HEAD
                             <option name="x" value="12" />
                             <option name="y" value="12" />
+=======
+                            <option name="x" value="821" />
+                            <option name="y" value="1" />
+>>>>>>> Adds profile handling to app settings
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -25,8 +30,12 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
+<<<<<<< HEAD
                             <option name="x" value="168" />
                             <option name="y" value="12" />
+=======
+                            <option name="x" value="509" />
+>>>>>>> Adds profile handling to app settings
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -37,8 +46,13 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
+<<<<<<< HEAD
                             <option name="x" value="-139" />
                             <option name="y" value="-11" />
+=======
+                            <option name="x" value="13" />
+                            <option name="y" value="-1" />
+>>>>>>> Adds profile handling to app settings
                           </Point>
                         </option>
                         <option name="myPositions">
@@ -48,6 +62,7 @@
                                 <LayoutPositions />
                               </value>
                             </entry>
+<<<<<<< HEAD
                             <entry key="action_home_destination_to_faq_destination">
                               <value>
                                 <LayoutPositions />
@@ -59,6 +74,25 @@
                               </value>
                             </entry>
                             <entry key="action_home_destination_to_privacy_policy_destination">
+=======
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="profile_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="255" />
+                            <option name="y" value="-1" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_profile_dest_to_home_destination">
+>>>>>>> Adds profile handling to app settings
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -73,38 +107,89 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+<<<<<<< HEAD
                   <entry key="legal_destination">
+=======
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
+        <entry key="flight_search_navigation.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="error_action">
                     <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="324" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                  <entry key="error_destination">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                  <entry key="flight_search_action">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                  <entry key="flight_search_dest">
+>>>>>>> Adds profile handling to app settings
+                    <value>
+                      <LayoutPositions />
                     </value>
                   </entry>
                   <entry key="privacy_policy_destination">
                     <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="480" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
+                      <LayoutPositions />
                     </value>
                   </entry>
                   <entry key="support_information_destination">
                     <value>
+<<<<<<< HEAD
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="121" />
                             <option name="y" value="-9" />
                           </Point>
+                        </option>
+                      </LayoutPositions>
+=======
+                      <LayoutPositions />
+>>>>>>> Adds profile handling to app settings
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
+<<<<<<< HEAD
+=======
+        <entry key="home_navigation.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="flight_search_destination">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                  <entry key="home_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="flight_add_action">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -114,6 +199,64 @@
             </LayoutPositions>
           </value>
         </entry>
+        <entry key="profile_navigation.xml">
+          <value>
+            <LayoutPositions>
+              <option name="myPositions">
+                <map>
+                  <entry key="edit_profile_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="13" />
+                            <option name="y" value="-1" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_edit_profile_destination_to_profile_destination">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="profile_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="255" />
+                            <option name="y" value="-1" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_profile_dest_to_home_destination">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_profile_destination_to_edit_profile_destination">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </LayoutPositions>
+          </value>
+        </entry>
+>>>>>>> Adds profile handling to app settings
       </map>
     </option>
   </component>

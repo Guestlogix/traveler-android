@@ -57,9 +57,11 @@ public class EditProfileFragment extends BaseFragment {
         lastNameContainer = v.findViewById(R.id.textInputLayout_editProfile_lastNameContainer);
         emailContainer = v.findViewById(R.id.textInputLayout_editProfile_emailContainer);
 
-        firstName.setText(profile.getFirstName());
-        lastName.setText(profile.getLastName());
-        email.setText(profile.getEmail());
+        if (profile != null) {
+            firstName.setText(profile.getFirstName());
+            lastName.setText(profile.getLastName());
+            email.setText(profile.getEmail());
+        }
 
         Button button = v.findViewById(R.id.button_editProfile_submit);
         button.setOnClickListener(this::onSaveClick);

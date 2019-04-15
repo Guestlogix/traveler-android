@@ -20,7 +20,7 @@
     <fragment
             android:id="@+id/app_settings_destination"
             android:name="com.guestlogix.traveler.fragments.AppSettingsFragment"
-            tools:layout="@layout/app_settings_fragment">
+            tools:layout="@layout/fragment_app_settings">
         <action
                 android:id="@+id/action_to_info_dest"
                 app:destination="@id/app_info_destination"

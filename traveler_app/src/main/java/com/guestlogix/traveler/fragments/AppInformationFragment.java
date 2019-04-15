@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,31 +44,21 @@ public class AppInformationFragment extends BaseFragment {
 
     @NonNull
     @Override
-    public View onCreateView(@NonNull  LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(layoutId, container, false);
 
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            ActionBar actionBar = activity.getSupportActionBar();
+        ImageButton b = v.findViewById(R.id.imageButton_appSettings_back);
 
-            if (actionBar != null) {
-                actionBar.setHomeAsUpIndicator(null);
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setTitle(title);
-            }
+        if (b != null) {
+            b.setOnClickListener(_v -> Navigation.findNavController(getActivityContext(), R.id.nav_app_settings).popBackStack());
         }
 
-        return inflater.inflate(layoutId, container, false);
-    }
+        TextView tv = v.findViewById(R.id.textView_appSettings_title);
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            NavController navController = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
-            navController.popBackStack();
+        if (tv != null) {
+            tv.setText(title);
         }
 
-        return true;
+        return v;
     }
-
 }
