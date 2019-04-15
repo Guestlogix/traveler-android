@@ -49,6 +49,18 @@ public class Profile implements Serializable {
         return email;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public static class UserObjectMappingFactory implements ObjectMappingFactory<Profile> {
 
         @Override
