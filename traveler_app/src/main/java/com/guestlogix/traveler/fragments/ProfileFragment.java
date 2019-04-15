@@ -6,10 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.guestlogix.traveler.R;
@@ -30,19 +35,25 @@ public class ProfileFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
         user = Guest.getInstance().getSignedInUser(getActivityContext());
-        if (null == user) {
-            getActivityContext().finish();
-            return null;
-        }
-
         nav = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
 
         CollapsingToolbarLayout layout = v.findViewById(R.id.collapsingToolbar_profile_title);
-        layout.setTitle(String.format("%s %s", user.getFirstName(), user.getLastName()));
+
+        if (null != user) {
+            layout.setTitle(String.format("%s %s", user.getFirstName(), user.getLastName()));
+            RecyclerView rv = v.findViewById(R.id.recyclerView_profile_userInfo);
+            rv.setAdapter(new ProfileInformationAdapter());
+            rv.setLayoutManager(new LinearLayoutManager(getActivityContext()));
+        }
 
         FloatingActionButton fab = v.findViewById(R.id.fab_profile_editBtn);
         fab.setOnClickListener(this::onEditProfileClick);
@@ -66,5 +77,43 @@ public class ProfileFragment extends BaseFragment {
 
     private void onOrdersClick(View _v) {
         // TODO: When we have a see all orders screen.
+    }
+
+    class ProfileInformationAdapter extends RecyclerView.Adapter<ViewHolder> {
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_profile_information, parent, false);
+
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            holder.icon.setBackgroundResource(R.drawable.ic_email_24dp);
+            holder.key.setText(R.string.email);
+            holder.value.setText(user.getEmail());
+        }
+
+        @Override
+        public int getItemCount() {
+            return 1; // TODO: Change when we can display credit card info.
+        }
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView icon;
+        TextView key;
+        TextView value;
+
+        ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            icon = itemView.findViewById(R.id.imageView_profileItem_icon);
+            key = itemView.findViewById(R.id.textView_profileItem_title);
+            value = itemView.findViewById(R.id.textView_profileItem_value);
+        }
     }
 }

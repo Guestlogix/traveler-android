@@ -1,52 +1,59 @@
 package com.guestlogix.traveler.fragments;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
+import com.guestlogix.traveler.models.Profile;
+import com.guestlogix.traveler.network.Guest;
+import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.guestlogix.traveler.viewmodels.HomeViewModel.ADD_FLIGHT_REQUEST_CODE;
+import static com.guestlogix.traveler.viewmodels.HomeViewModel.EXTRA_FLIGHT;
+import static com.guestlogix.traveler.viewmodels.HomeViewModel.REQUEST_CODE_SIGN_IN;
 
 /**
  * Container for the navigation of all the fragments
  */
 public class AppSettingsFragment extends BaseFragment implements View.OnClickListener {
     private List<String> actions = new ArrayList<>();
+    private Profile user;
+
+    private SettingAdapter adapter;
 
     public AppSettingsFragment() {
         // Do nothing.
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setHasOptionsMenu(true);
-
-
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.app_settings_fragment, container, false);
+        View v = inflater.inflate(R.layout.fragment_app_settings, container, false);
+        user = Guest.getInstance().getSignedInUser(getActivityContext());
 
         if (actions.isEmpty()) {
             // Items
@@ -54,26 +61,25 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
             actions.add(getString(R.string.faq));
             actions.add(getString(R.string.legal));
             actions.add(getString(R.string.privacy_policy));
+
+            if (user != null) {
+                actions.add(getString(R.string.sign_out));
+            } else {
+                actions.add(getString(R.string.sign_in));
+            }
         }
 
         RecyclerView recyclerView = v.findViewById(R.id.recyclerView_appSettings_actionsList);
-        recyclerView.setAdapter(new SettingAdapter());
+        adapter = new SettingAdapter();
+        recyclerView.setAdapter(adapter);
 
         LinearLayoutManager lm = new LinearLayoutManager(v.getContext());
         recyclerView.setLayoutManager(lm);
         recyclerView.addItemDecoration(new DividerItemDecoration(v.getContext(), lm.getOrientation()));
 
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            ActionBar actionBar = activity.getSupportActionBar();
-
-            if (actionBar != null) {
-                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
-                        ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_USE_LOGO);
-
-                actionBar.setHomeAsUpIndicator(R.drawable.ic_home_white_24dp);
-            }
-        }
+        ImageButton imageButton = v.findViewById(R.id.imageButton_appSettings_back);
+        imageButton.setOnClickListener(_button ->
+                Navigation.findNavController(getActivityContext(), R.id.nav_app_settings).popBackStack());
 
         return v;
     }
@@ -123,23 +129,18 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
                 nav.navigate(action);
                 break;
             case 4:
-//                nav.navigate(R.id.action_home_destination_to_privacy_policy_destination);
+                if (user != null) {
+                    Guest.getInstance().logout(getActivityContext());
+                } else {
+                    // TODO: Log in.
+                }
+                adapter.notifyItemChanged(4);
                 break;
             case 5:
                 break;
             case 6:
                 break;
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            NavController navController = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
-            navController.popBackStack();
-        }
-
-        return true;
     }
 
     class SettingAdapter extends RecyclerView.Adapter<ViewHolder> {

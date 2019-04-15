@@ -1,19 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-              android:orientation="vertical"
-             android:padding="@dimen/padding_xlarge">
-    <!-- TODO -->
-    <TextView
-            android:textSize="@dimen/text_view_xlarge"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <ImageButton
+                    style="@style/ToolbarButton"
+                    android:id="@+id/imageButton_appSettings_back"
+                    android:src="@drawable/ic_arrow_back_white_24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="@color/white"
+                    android:text="@string/privacy_policy"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/padding_xlarge"/>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Privacy Policy Stub"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:padding="@dimen/padding_xlarge">
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Aliquam cursus neque ipsum, ut gravida arcu dignissim et. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec mattis tempor lorem, sed interdum nunc. Vestibulum nec tortor aliquam, pellentesque justo vitae, volutpat odio. Vestibulum non egestas arcu, et feugiat tellus. Phasellus facilisis interdum enim sed mollis. Etiam convallis non leo luctus viverra. Sed vulputate est a fermentum semper. Vivamus in eros id risus dignissim pulvinar ut tincidunt mi. Aliquam erat volutpat."/>
+        <!-- TODO -->
+        <TextView
+                android:textSize="@dimen/text_view_xlarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Privacy Policy Stub"/>
 
-</LinearLayout>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Aliquam cursus neque ipsum, ut gravida arcu dignissim et. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec mattis tempor lorem, sed interdum nunc. Vestibulum nec tortor aliquam, pellentesque justo vitae, volutpat odio. Vestibulum non egestas arcu, et feugiat tellus. Phasellus facilisis interdum enim sed mollis. Etiam convallis non leo luctus viverra. Sed vulputate est a fermentum semper. Vivamus in eros id risus dignissim pulvinar ut tincidunt mi. Aliquam erat volutpat."/>
+
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
