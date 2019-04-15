@@ -1,6 +1,5 @@
 package com.guestlogix.traveler.fragments;
 
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +25,9 @@ import com.guestlogix.traveleruikit.fragments.BaseFragment;
  * A fragment which displays the current profile.
  */
 public class ProfileFragment extends BaseFragment {
-    Profile user;
-    NavController nav;
 
+    private Profile user;
+    private NavController nav;
 
     public ProfileFragment() {
         // Do nothing.
@@ -72,7 +71,6 @@ public class ProfileFragment extends BaseFragment {
     private void onSettingsClick(View _settings) {
         NavDirections action = ProfileFragmentDirections.actionProfileDestToHomeDestination();
         nav.navigate(action);
-
     }
 
     private void onOrdersClick(View _v) {

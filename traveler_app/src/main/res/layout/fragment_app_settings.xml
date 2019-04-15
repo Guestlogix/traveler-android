@@ -41,7 +41,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_appSettings_actionsList"
             android:layout_width="match_parent"
