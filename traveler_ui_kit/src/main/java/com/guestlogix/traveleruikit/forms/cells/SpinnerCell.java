@@ -1,8 +1,12 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
+import android.app.Activity;
+import android.content.Context;
+import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.CompletionInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
@@ -36,13 +40,22 @@ public class SpinnerCell extends BaseCell {
 
         this.autocomplete.setOnTouchListener((v, e) -> {
             if (e.getAction() == MotionEvent.ACTION_UP) {
+                Context c = contextRequestListener.onCellContextRequest();
+
+                InputMethodManager imm = (InputMethodManager) c.getSystemService(Activity.INPUT_METHOD_SERVICE);
+
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(itemView.getWindowToken(), 0);
+                }
+
                 this.autocomplete.showDropDown();
                 return true;
             }
+
             return false;
         });
 
-        this.autocomplete.setThreshold(0);
+        this.autocomplete.setInputType(InputType.TYPE_NULL);
     }
 
     @Override
