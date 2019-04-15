@@ -32,10 +32,12 @@
     <TextView
             android:id="@+id/textView_passSummaryItem_value"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:gravity="center"
+            android:gravity="end"
+            android:paddingRight="@dimen/padding_xlarge"
+            android:layout_gravity="center_vertical"
             style="@style/ListItem.Text.Value"
-            tools:text="$200.00"/>
+            tools:text="$200.00" android:paddingEnd="@dimen/padding_xlarge"/>
 
 </LinearLayout>
