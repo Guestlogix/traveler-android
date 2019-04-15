@@ -131,6 +131,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements ProcessOr
     }
 
     private void onActionStripClick(View _v) {
+        actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
         if (payment != null && order != null) {
             Traveler.processOrder(order, payment, this);
         }

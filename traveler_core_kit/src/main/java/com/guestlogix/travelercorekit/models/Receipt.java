@@ -97,10 +97,12 @@ public class Receipt implements Serializable {
                 Date createdDate = null;
 
                 JsonToken token = reader.peek();
+
                 if (JsonToken.NULL == token) {
                     reader.skipValue();
                     return null;
                 }
+
                 reader.beginObject();
 
                 while (reader.hasNext()) {
