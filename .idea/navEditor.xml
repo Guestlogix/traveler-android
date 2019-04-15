@@ -8,144 +8,92 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="app_info_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="10" />
-                            <option name="y" value="6" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="home_destination">
-                    <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                            <option name="x" value="-78" />
-                            <option name="y" value="-11" />
-=======
-                            <option name="x" value="-355" />
-                            <option name="y" value="278" />
-=======
-                            <option name="x" value="-314" />
-                            <option name="y" value="7" />
->>>>>>> Adds static layouts to app settings
-                          </Point>
-                        </option>
-                        <option name="myPositions">
-                          <map>
-                            <entry key="action_to_info_dest">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </LayoutPositions>
-          </value>
-        </entry>
-        <entry key="home_navigation.xml">
-          <value>
-            <LayoutPositions>
-              <option name="myPositions">
-                <map>
-                  <entry key="flight_search_destination">
-                    <value>
-<<<<<<< HEAD
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="home_destination">
-                    <value>
-                      <LayoutPositions>
-<<<<<<< HEAD
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="54" />
-                          </Point>
-                        </option>
-=======
->>>>>>> Adds destination fragments to app settings
-                        <option name="myPositions">
-                          <map>
-                            <entry key="flight_add_action">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                          </map>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </LayoutPositions>
-          </value>
-        </entry>
-        <entry key="catalog_widget_navigation.xml">
-          <value>
-            <LayoutPositions>
-              <option name="myPositions">
-                <map>
-                  <entry key="catalog_action">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                  <entry key="catalog_destination">
-=======
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="292" />
-                            <option name="y" value="-151" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
-                    </value>
-                  </entry>
-                  <entry key="home_destination">
->>>>>>> Adds static layouts to app settings
+                  <entry key="about_destination">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="12" />
-<<<<<<< HEAD
-                            <option name="y" value="280" />
->>>>>>> Adds destination fragments to app settings
-=======
                             <option name="y" value="12" />
->>>>>>> Adds static layouts to app settings
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="faq_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="168" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="home_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="-139" />
+                            <option name="y" value="-11" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-<<<<<<< HEAD
+                            <entry key="action_home_destination_to_about_destination">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_home_destination_to_faq_destination">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_home_destination_to_legal_destination">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                            <entry key="action_home_destination_to_privacy_policy_destination">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_home_destination_to_support_information_destination">
-=======
-                            <entry key="flight_add_action">
->>>>>>> Adds static layouts to app settings
                               <value>
                                 <LayoutPositions />
                               </value>
                             </entry>
                           </map>
                         </option>
-<<<<<<< HEAD
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="legal_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="324" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="privacy_policy_destination">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="480" />
+                            <option name="y" value="12" />
+                          </Point>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -158,8 +106,6 @@
                             <option name="y" value="-9" />
                           </Point>
                         </option>
-=======
->>>>>>> Adds static layouts to app settings
                       </LayoutPositions>
                     </value>
                   </entry>

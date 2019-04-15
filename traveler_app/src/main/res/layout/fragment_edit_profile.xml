@@ -1,67 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        style="@style/Container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/padding_xlarge"
-        android:paddingRight="@dimen/padding_xlarge"
-        tools:context=".fragments.EditProfileFragment">
+        android:fitsSystemWindows="true">
 
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_editProfile_firstNameContainer"
+    <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/Container"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/first_name"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/textInputLayout_editProfile_lastNameContainer">
+            android:paddingLeft="@dimen/padding_xlarge"
+            android:paddingRight="@dimen/padding_xlarge"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText_editProfile_firstName"
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_editProfile_firstNameContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Harry"/>
-    </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/first_name"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/textInputLayout_editProfile_lastNameContainer">
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_editProfile_lastNameContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/last_name"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayout_editProfile_firstNameContainer"
-            app:layout_constraintBottom_toTopOf="@id/textInputLayout_editProfile_emailContainer">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_editProfile_firstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Harry"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText_editProfile_lastName"
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_editProfile_lastNameContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Barnes"/>
-    </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/last_name"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout_editProfile_firstNameContainer"
+                app:layout_constraintBottom_toTopOf="@id/textInputLayout_editProfile_emailContainer">
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_editProfile_emailContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/last_name"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayout_editProfile_lastNameContainer">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_editProfile_lastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="Barnes"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText_editProfile_email"
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_editProfile_emailContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="harrybarnes@guestlogix.com"/>
-    </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/last_name"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayout_editProfile_lastNameContainer">
 
-    <Button
-            style="@style/Button"
-            android:id="@+id/button_editProfile_submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/save"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_editProfile_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="harrybarnes@guestlogix.com"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+                style="@style/Button"
+                android:id="@+id/button_editProfile_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

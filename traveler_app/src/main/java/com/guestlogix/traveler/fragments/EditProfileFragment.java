@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveler.R;
@@ -54,6 +57,10 @@ public class EditProfileFragment extends BaseFragment {
         lastNameContainer = v.findViewById(R.id.textInputLayout_editProfile_lastNameContainer);
         emailContainer = v.findViewById(R.id.textInputLayout_editProfile_emailContainer);
 
+        firstName.setText(profile.getFirstName());
+        lastName.setText(profile.getLastName());
+        email.setText(profile.getEmail());
+
         Button button = v.findViewById(R.id.button_editProfile_submit);
         button.setOnClickListener(this::onSaveClick);
 
@@ -77,7 +84,7 @@ public class EditProfileFragment extends BaseFragment {
             lastNameContainer.setError(getString(R.string.required));
             valid = false;
         } else {
-            profile.setFirstName(lName);
+            profile.setLastName(lName);
         }
 
         String emailAddress = email.getText().toString();
@@ -91,7 +98,9 @@ public class EditProfileFragment extends BaseFragment {
 
         if (valid) {
             profile.save(getActivityContext());
-            // TODO navigation.
+            NavController nav = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
+            NavDirections action = EditProfileFragmentDirections.actionEditProfileDestinationToProfileDestination();
+            nav.navigate(action);
         }
     }
 }

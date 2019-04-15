@@ -4,10 +4,21 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/app_settings_navigation"
-        app:startDestination="@id/home_destination">
+        app:startDestination="@id/profile_destination">
 
     <fragment
-            android:id="@+id/home_destination"
+            android:id="@+id/profile_destination"
+            android:name="com.guestlogix.traveler.fragments.ProfileFragment"
+            tools:layout="@layout/fragment_profile">
+
+        <action android:id="@+id/action_profile_dest_to_home_destination"
+                app:destination="@id/app_settings_destination"/>
+        <action android:id="@+id/action_profile_destination_to_edit_profile_destination"
+                app:destination="@id/edit_profile_destination"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/app_settings_destination"
             android:name="com.guestlogix.traveler.fragments.AppSettingsFragment"
             tools:layout="@layout/app_settings_fragment">
         <action
@@ -23,5 +34,16 @@
 
         <argument android:name="layoutId" app:argType="integer"/>
         <argument android:name="title" app:argType="string"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/edit_profile_destination"
+            android:name="com.guestlogix.traveler.fragments.EditProfileFragment"
+            tools:layout="@layout/fragment_edit_profile">
+
+        <action android:id="@+id/action_edit_profile_destination_to_profile_destination"
+                app:destination="@id/profile_destination"
+                app:popUpTo="@id/profile_destination"
+                app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
