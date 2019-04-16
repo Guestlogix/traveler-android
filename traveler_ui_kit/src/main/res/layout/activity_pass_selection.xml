@@ -5,11 +5,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+    <TextView
+            style="@style/BodyHeaderTextView"
+            android:id="@+id/textView_passSelectionActivity_flavourTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_xlarge"
+            android:layout_alignParentTop="true"
+            tools:text="Some title"/>
+
     <com.guestlogix.traveleruikit.forms.Form
             android:id="@+id/form_passSelectionActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/textView_passSelectionActivity_flavourTitle"
             android:layout_above="@id/actionStrip_passSelectionActivity"/>
 
     <com.guestlogix.traveleruikit.widgets.ActionStrip

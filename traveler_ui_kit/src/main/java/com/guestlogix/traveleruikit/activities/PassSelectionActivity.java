@@ -3,6 +3,7 @@ package com.guestlogix.traveleruikit.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -47,10 +48,16 @@ public class PassSelectionActivity extends AppCompatActivity implements
      */
     public static final String EXTRA_PRODUCT = "EXTRA_PASS_ACTIVITY_PRODUCT";
 
+    /**
+     * Optional String representing the selected flavour.
+     */
+    public static final String EXTRA_FLAVOUR = "EXTRA_FLAVOUR";
+
     // Data
     private List<Pass> passes;
     private Product product;
     private Map<Pass, Integer> passQuantities;
+    private String flavourTitle;
 
     // Views
     private ActionStrip actionStrip;
@@ -64,6 +71,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_PASSES) && savedInstanceState.containsKey(EXTRA_PRODUCT)) {
             passes = (List<Pass>) savedInstanceState.getSerializable(EXTRA_PASSES);
             product = (Product) savedInstanceState.getSerializable(EXTRA_PRODUCT);
+            flavourTitle = (String) savedInstanceState.getSerializable(EXTRA_FLAVOUR);
         }
 
         if (passes == null || product == null) {
@@ -73,6 +81,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
             if (null != extras && extras.containsKey(EXTRA_PASSES) && extras.containsKey(EXTRA_PRODUCT)) {
                 passes = (List<Pass>) extras.getSerializable(EXTRA_PASSES);
                 product = (Product) extras.getSerializable(EXTRA_PRODUCT);
+                flavourTitle = (String) extras.getSerializable(EXTRA_FLAVOUR);
             }
         }
 
@@ -88,6 +97,11 @@ public class PassSelectionActivity extends AppCompatActivity implements
         form.setDataSource(this);
         form.setLayoutManager(new LinearLayoutManager(this));
         form.setFormValueChangedListener(this);
+
+        if (flavourTitle != null) {
+            TextView tv = findViewById(R.id.textView_passSelectionActivity_flavourTitle);
+            tv.setText(flavourTitle);
+        }
 
         actionStrip = findViewById(R.id.actionStrip_passSelectionActivity);
         actionStrip.setButtonText(getString(R.string.book_now));
@@ -166,7 +180,6 @@ public class PassSelectionActivity extends AppCompatActivity implements
             actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
         }
 
-
         calculatePrice();
     }
 
@@ -190,6 +203,11 @@ public class PassSelectionActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putSerializable(EXTRA_PRODUCT, product);
         outState.putSerializable(EXTRA_PASSES, (Serializable) passes);
+
+        if (flavourTitle != null) {
+            outState.putSerializable(EXTRA_FLAVOUR, flavourTitle);
+        }
+
         super.onSaveInstanceState(outState);
     }
 

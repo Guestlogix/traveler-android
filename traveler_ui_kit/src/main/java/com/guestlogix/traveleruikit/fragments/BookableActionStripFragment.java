@@ -110,10 +110,16 @@ public class BookableActionStripFragment extends PurchaseFragment implements Fet
     public void onPassFetchSuccess(List<Pass> pass) {
         actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
         Product p = bookingContext.getProduct();
+        String flavour = null;
+
+        if (bookingContext.getOption() != null) {
+            flavour = bookingContext.getOption().getValue();
+        }
 
         Intent i = new Intent(getActivityContext(), PassSelectionActivity.class);
         i.putExtra(PassSelectionActivity.EXTRA_PRODUCT, p);
         i.putExtra(PassSelectionActivity.EXTRA_PASSES, (Serializable) pass);
+        i.putExtra(PassSelectionActivity.EXTRA_FLAVOUR, flavour);
         startActivity(i);
     }
 
