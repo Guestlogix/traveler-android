@@ -1,16 +1,19 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Receipt;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.TravelerUI;
 
 public class OrderConfirmationActivity extends AppCompatActivity {
 
@@ -54,7 +57,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         emailValueTextView = findViewById(R.id.emailValueTextView);
         viewTicketsButton = findViewById(R.id.viewTicketsButton);
         homeButton = findViewById(R.id.homeButton);
-        homeButton.setOnClickListener(homeOnClickListener);
+        homeButton.setOnClickListener(this::navigateHome);
 
         if (receipt.getProducts().size() > 0) {
             Product product = receipt.getProducts().get(0);
@@ -69,5 +72,16 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         confirmationNumberValueTextView.setText(receipt.getReferenceNumber());
     }
 
-    View.OnClickListener homeOnClickListener = v -> finish();
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(this, CatalogItemDetailsActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
+
+    private void navigateHome(View _v) {
+        Intent i = TravelerUI.getHomeIntent();
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
 }

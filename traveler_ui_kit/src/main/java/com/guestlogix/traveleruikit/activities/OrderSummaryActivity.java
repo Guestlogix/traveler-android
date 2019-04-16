@@ -96,7 +96,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements ProcessOr
         if (item.getItemId() == R.id.menuItem_cancel) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.discard_order)
-                    .setPositiveButton(R.string.discard, (x, y) -> OrderSummaryActivity.this.finish())
+                    .setPositiveButton(R.string.discard, (x, y) -> navigateToCatalogItemDetails())
                     .setNegativeButton(R.string.cancel, (x, y) -> {
                     })
                     .show();
@@ -105,6 +105,12 @@ public class OrderSummaryActivity extends AppCompatActivity implements ProcessOr
         }
 
         return true;
+    }
+
+    private void navigateToCatalogItemDetails() {
+        Intent i = new Intent(this, CatalogItemDetailsActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 
     @Override

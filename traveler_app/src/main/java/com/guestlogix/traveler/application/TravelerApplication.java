@@ -1,7 +1,9 @@
 package com.guestlogix.traveler.application;
 
 import android.app.Application;
+import android.content.Intent;
 import com.guestlogix.traveler.BuildConfig;
+import com.guestlogix.traveler.activities.HomeActivity;
 import com.guestlogix.traveler_stripe_payment_provider.StripePaymentProvider;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.TravelerUI;
@@ -15,7 +17,7 @@ public class TravelerApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext());
-        TravelerUI.initialize(new StripePaymentProvider());
+        TravelerUI.initialize(new StripePaymentProvider(), new Intent(this, HomeActivity.class));
         AppCenter.start(this, BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
     }
 }

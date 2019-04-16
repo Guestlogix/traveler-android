@@ -11,7 +11,7 @@
         </activity>
         <activity android:name=".activities.PassSelectionActivity">
         </activity>
-        <activity android:name=".activities.CatalogItemDetailsActivity">
+        <activity android:name=".activities.CatalogItemDetailsActivity" android:launchMode="singleTop">
         </activity>
     </application>
 
