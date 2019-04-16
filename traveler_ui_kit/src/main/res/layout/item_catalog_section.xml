@@ -19,17 +19,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/sectionTitleTextView"/>
 
-    <TextView
-            style="@style/BodyLabelTextView"
-            android:paddingLeft="@dimen/padding_normal"
-            android:paddingRight="@dimen/padding_normal"
-            android:layout_width="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_height="wrap_content"
-            android:text="@string/button_see_all"
-            android:id="@+id/seeAllTextView"/>
-
     <androidx.recyclerview.widget.RecyclerView
             style="@style/Container"
             android:id="@+id/sectionItemRecyclerView"

@@ -65,8 +65,6 @@ public class CatalogView extends FrameLayout {
 
         void onBindItem(int sectionPosition, int itemIndex, int holderId, ImageView thumbNailImageView, TextView titleTextView);
 
-        void onSeeAllClick(int sectionPosition);
-
         void onItemClick(int sectionPosition, int itemIndex);
 
         int getSectionsCount();
