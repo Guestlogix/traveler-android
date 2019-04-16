@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +45,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     // Views
     private RecyclerView recyclerView;
     private PaymentsAdapter adapter;
+    private Button addCardBtn;
 
     // Data
     private List<Payment> payments;
@@ -66,8 +68,8 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         payments = new ArrayList<>();
 
 
-        Button button = view.findViewById(R.id.button_orderSummary_addCard);
-        button.setOnClickListener(this::onAddPaymentButtonClick);
+        addCardBtn = view.findViewById(R.id.button_orderSummary_addCard);
+        addCardBtn.setOnClickListener(this::onAddPaymentButtonClick);
     }
 
     @Override
@@ -82,15 +84,15 @@ public class BillingInformationCollectionFragment extends BaseFragment {
                     paymentMethodAdditionListener.onPaymentAdded(payment);
                 }
 
+                payments.clear();
                 payments.add(payment);
+                addCardBtn.setVisibility(View.GONE);
 
                 if (adapter == null) {
                     adapter = new PaymentsAdapter();
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
                 }
-
-                adapter.payments = payments;
 
                 adapter.notifyDataSetChanged();
             }
@@ -114,7 +116,6 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     }
 
     private class PaymentsAdapter extends RecyclerView.Adapter<PaymentsAdapter.ViewHolder> {
-        List<Payment> payments;
 
         @NonNull
         @Override
@@ -131,6 +132,14 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
             holder.label.setText(a.getLabel());
             holder.value.setText(a.getValue());
+            holder.delete.setTag(position);
+
+            holder.delete.setOnClickListener(v -> {
+                int pos = (Integer) v.getTag();
+                payments.remove(pos);
+                notifyDataSetChanged();
+                addCardBtn.setVisibility(View.VISIBLE);
+            });
         }
 
         @Override
@@ -141,11 +150,14 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView label;
             TextView value;
+            ImageView delete;
 
             ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 label = itemView.findViewById(R.id.itemLabel);
                 value = itemView.findViewById(R.id.itemValue);
+                delete = itemView.findViewById(R.id.imageView_itemLabel_delete);
+                delete.setVisibility(View.VISIBLE);
             }
         }
     }
