@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.widgets.FlightCardsRecyclerView;
 import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class FlightInformationFragment extends Fragment {
 
         FlightInformationFragmentArgs args = FlightInformationFragmentArgs.fromBundle(getArguments());
         flight = args.getFlight();
+        getActivity().setTitle(String.format("%s - %s", flight.getNumber(), DateHelper.formatDate(flight.getDepartureDate())));
+        setHasOptionsMenu(false);
     }
 
     @Override
