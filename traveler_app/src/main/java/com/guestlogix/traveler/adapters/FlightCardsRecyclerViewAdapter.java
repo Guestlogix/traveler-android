@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Flight}
+ * An adapter to display flight information cards.
  */
-public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<FlightSearchResultRecyclerViewAdapter.ViewHolder> {
+public class FlightCardsRecyclerViewAdapter extends RecyclerView.Adapter<FlightCardsRecyclerViewAdapter.ViewHolder> {
 
     private List<Flight> flightsList = new ArrayList<>();
     private boolean isFlightAddingEnabled = false;
@@ -52,7 +52,7 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
             holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);
         } else {
             holder.addFlightTextView.setEnabled(false);
-            holder.addFlightTextView.setAlpha(0.5f);
+            holder.addFlightTextView.setAlpha(0.2f);
         }
     }
 
