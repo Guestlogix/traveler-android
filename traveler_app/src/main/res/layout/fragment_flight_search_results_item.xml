@@ -90,8 +90,10 @@
             app:layout_constraintBaseline_toBaselineOf="@id/textView_flightCard_departureTime"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
-    <TextView
-            android:id="@+id/textView_flightCard_addFlight"
+
+    <Button
+            style="@style/TextButton.Primary"
+            android:id="@+id/button_flightCard_addFlight"
             app:layout_constraintTop_toBottomOf="@+id/textView_flightCard_arrivalTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +101,6 @@
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/add_flight"
-            android:textColor="@color/colorLink"/>
+            android:text="@string/add_flight"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

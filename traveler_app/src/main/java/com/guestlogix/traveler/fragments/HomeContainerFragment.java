@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +37,7 @@ public class HomeContainerFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(flightResultRecyclerView.getContext());
         flightsRecyclerViewAdapter = new AddedFlightsRecyclerViewAdapter();
         flightsRecyclerViewAdapter.setDeleteFlightOnClickListener(deleteFlightOnClickListener);
+        flightsRecyclerViewAdapter.setViewFlightClickListener(this::onViewFlightClick);
         DividerItemDecoration decorator = new DividerItemDecoration
                 (flightResultRecyclerView.getContext(), layoutManager.getOrientation());
 
@@ -53,6 +55,14 @@ public class HomeContainerFragment extends BaseFragment {
         catalogViewModel = ViewModelProviders.of(getActivityContext()).get(HomeViewModel.class);
         catalogViewModel.getObservableFlights().observe(getActivityContext(), this::flightsUpdateHandler);
         catalogViewModel.getStatus().observe(getActivityContext(), this::onStateChange);
+    }
+
+    private void onViewFlightClick(View v) {
+        int index = (Integer) v.getTag();
+
+        Flight flight = catalogViewModel.getObservableFlights().getValue().get(index);
+        HomeContainerFragmentDirections.FlightInformationAction action = HomeContainerFragmentDirections.flightInformationAction(flight);
+        Navigation.findNavController(getActivityContext(), R.id.homeHostFragment).navigate(action);
     }
 
     private void onStateChange(StatefulViewModel.State state) {

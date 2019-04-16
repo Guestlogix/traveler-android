@@ -18,6 +18,7 @@ public class AddedFlightsRecyclerViewAdapter extends RecyclerView.Adapter<AddedF
 
     private List<Flight> flightList = new ArrayList<>();
     private View.OnClickListener deleteFlightOnClickListener;
+    private View.OnClickListener viewFlightClickListener;
 
     @NonNull
     @Override
@@ -37,7 +38,7 @@ public class AddedFlightsRecyclerViewAdapter extends RecyclerView.Adapter<AddedF
         holder.deleteFlight.setTag(position);
 
         holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(this::onFlightClick);
+        holder.itemView.setOnClickListener(viewFlightClickListener);
     }
 
     @Override
@@ -55,10 +56,8 @@ public class AddedFlightsRecyclerViewAdapter extends RecyclerView.Adapter<AddedF
         this.deleteFlightOnClickListener = deleteFlightOnClickListener;
     }
 
-    private void onFlightClick(View v) {
-        int position = (int) v.getTag();
-
-        // Do something.
+    public void setViewFlightClickListener(View.OnClickListener viewFlightClickListener) {
+        this.viewFlightClickListener = viewFlightClickListener;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

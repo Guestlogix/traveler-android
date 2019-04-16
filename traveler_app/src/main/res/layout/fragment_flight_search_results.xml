@@ -9,12 +9,18 @@
         android:paddingLeft="@dimen/padding_normal"
         android:paddingRight="@dimen/padding_normal">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_catalogFragment_addedFlights"
-            android:name="com.guestlogix.traveler.activities.FlightSearchResultsFragment"
+    <com.guestlogix.traveler.widgets.FlightCardsRecyclerView
+            android:id="@+id/flightCards_searchFlightResult_addFlights"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_height="wrap_content"
+            android:name="com.guestlogix.traveler.widgets.FlightCardsRecyclerView"
             tools:itemCount="2"
             tools:listitem="@layout/fragment_flight_search_results_item"/>
+
+    <!--<androidx.recyclerview.widget.RecyclerView-->
+    <!--android:id="@+id/recyclerView_catalogFragment_addedFlights"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--tools:itemCount="2"-->
+    <!--tools:listitem="@layout/fragment_flight_search_results_item"/>-->
 </RelativeLayout>
