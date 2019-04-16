@@ -10,17 +10,19 @@ public class TravelerUI {
     private static TravelerUI localInstance;
 
     private PaymentProvider mPaymentProvider;
+    private Intent mHomeIntent;
 
-    public static void initialize(PaymentProvider paymentProvider) {
+    private TravelerUI(PaymentProvider paymentProvider, Intent homeIntent) {
+        mPaymentProvider = paymentProvider;
+        mHomeIntent = homeIntent;
+    }
+
+    public static void initialize(PaymentProvider paymentProvider, Intent homeIntent) {
         if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
         } else {
-            localInstance = new TravelerUI(paymentProvider);
+            localInstance = new TravelerUI(paymentProvider, homeIntent);
         }
-    }
-
-    private TravelerUI(PaymentProvider paymentProvider) {
-        mPaymentProvider = paymentProvider;
     }
 
     public static Intent getCatalogItemDetailsIntent(CatalogItem catalogItem, Context context) {
@@ -46,5 +48,14 @@ public class TravelerUI {
         }
 
         return localInstance.mPaymentProvider;
+    }
+
+    public static Intent getHomeIntent() {
+        if (localInstance == null) {
+            TravelerLog.e("SDK not initialized");
+            return null;
+        }
+
+        return localInstance.mHomeIntent;
     }
 }
