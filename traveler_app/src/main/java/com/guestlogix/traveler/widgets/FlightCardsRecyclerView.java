@@ -7,13 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
+import com.guestlogix.traveler.adapters.FlightCardsRecyclerViewAdapter;
 import com.guestlogix.travelercorekit.models.Flight;
 
 import java.util.List;
 
 public class FlightCardsRecyclerView extends RecyclerView implements View.OnClickListener {
-    private FlightSearchResultRecyclerViewAdapter adapter;
+    private FlightCardsRecyclerViewAdapter adapter;
     private LinearLayoutManager layoutManager;
 
     private OnAddFlightListener onAddFlightListener;
@@ -52,7 +52,7 @@ public class FlightCardsRecyclerView extends RecyclerView implements View.OnClic
     }
 
     private void init() {
-        this.adapter = new FlightSearchResultRecyclerViewAdapter();
+        this.adapter = new FlightCardsRecyclerViewAdapter();
         this.layoutManager = new LinearLayoutManager(getContext());
 
         setAdapter(adapter);

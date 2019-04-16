@@ -8,18 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.adapters.FlightSearchResultRecyclerViewAdapter;
 import com.guestlogix.traveler.viewmodels.SearchFlightResultViewModel;
 import com.guestlogix.traveler.widgets.FlightCardsRecyclerView;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
-
-import java.util.List;
 
 import static com.guestlogix.traveler.viewmodels.HomeViewModel.EXTRA_FLIGHT;
 
