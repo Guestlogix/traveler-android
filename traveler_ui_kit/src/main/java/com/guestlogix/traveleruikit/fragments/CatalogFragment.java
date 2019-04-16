@@ -91,10 +91,6 @@ public class CatalogFragment extends BaseFragment {
         }
 
         @Override
-        public void onSeeAllClick(int sectionPosition) {
-        }
-
-        @Override
         public void onItemClick(int sectionPosition, int itemIndex) {
             CatalogItem catalogItem = catalogGroups.get(sectionPosition).getItems().get(itemIndex);
 

@@ -30,9 +30,6 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
 
     @Override
     public void onBindViewHolder(@NonNull CatalogSectionViewHolder holder, int position) {
-
-        holder.seeAllTextView.setTag(position);
-        holder.seeAllTextView.setOnClickListener(onSeeAllClickListener);
         holder.catalogItemAdapter.setSectionPosition(position);
         catalogViewAdapter.onBindSection(position, holder.sectionTitleTextView);
     }
@@ -42,19 +39,10 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
         return catalogViewAdapter.getSectionsCount();
     }
 
-    private View.OnClickListener onSeeAllClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int index = (Integer) v.getTag();
-            catalogViewAdapter.onSeeAllClick(index);
-        }
-    };
-
     class CatalogSectionViewHolder extends RecyclerView.ViewHolder {
 
         View mView;
         TextView sectionTitleTextView;
-        TextView seeAllTextView;
         RecyclerView sectionItemRecyclerView;
         CatalogItemAdapter catalogItemAdapter;
 
@@ -62,7 +50,6 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
             super(itemView);
             mView = itemView;
             sectionTitleTextView = mView.findViewById(R.id.sectionTitleTextView);
-            seeAllTextView = mView.findViewById(R.id.seeAllTextView);
             sectionItemRecyclerView = mView.findViewById(R.id.sectionItemRecyclerView);
             sectionItemRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
