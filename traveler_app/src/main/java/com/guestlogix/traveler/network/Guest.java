@@ -34,7 +34,7 @@ public class Guest {
 
         UrlRequest request = GuestRoute.fetchProfile(authToken);
 
-        RemoteNetworkRequestTask<Profile> fetchProfileTask = new RemoteNetworkRequestTask<>(request, new Profile.UserObjectMappingFactory());
+        RemoteNetworkRequestTask<Profile> fetchProfileTask = new RemoteNetworkRequestTask<>(request, new Profile.ProfileObjectMappingFactory());
 
         BlockTask fetchProfileBlockTask = new BlockTask() {
             @Override

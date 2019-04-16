@@ -61,7 +61,7 @@ public class Profile implements Serializable {
         this.email = email;
     }
 
-    public static class UserObjectMappingFactory implements ObjectMappingFactory<Profile> {
+    public static class ProfileObjectMappingFactory implements ObjectMappingFactory<Profile> {
 
         @Override
         public Profile instantiate(JsonReader reader) throws ObjectMappingException {
