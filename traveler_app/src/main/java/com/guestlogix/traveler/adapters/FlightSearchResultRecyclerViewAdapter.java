@@ -19,6 +19,7 @@ import java.util.List;
 public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<FlightSearchResultRecyclerViewAdapter.ViewHolder> {
 
     private List<Flight> flightsList = new ArrayList<>();
+    private boolean isFlightAddingEnabled = false;
     private View.OnClickListener addFlightOnClickListener;
 
     public void setAddFlightOnClickListener(View.OnClickListener addFlightOnClickListener) {
@@ -35,16 +36,24 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        holder.mItem = flightsList.get(position);
-        holder.departureCityTextView.setText(holder.mItem.getDepartureAirport().getCity());
-        holder.departureIataTextView.setText(holder.mItem.getDepartureAirport().getCode());
-        holder.departureTimeTextView.setText(DateHelper.formatTime(holder.mItem.getDepartureDate()));
-        holder.arrivalCityTextView.setText(holder.mItem.getArrivalAirport().getCity());
-        holder.arrivalIataTextView.setText(holder.mItem.getArrivalAirport().getCode());
-        holder.arrivalTimeTextView.setText(DateHelper.formatTime(holder.mItem.getArrivalDate()));
+        Flight f = flightsList.get(position);
 
-        holder.addFlightTextView.setTag(position);
-        holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);
+        holder.departureCityTextView.setText(f.getDepartureAirport().getCity());
+        holder.departureIataTextView.setText(f.getDepartureAirport().getCode());
+        holder.departureTimeTextView.setText(DateHelper.formatTime(f.getDepartureDate()));
+        holder.arrivalCityTextView.setText(f.getArrivalAirport().getCity());
+        holder.arrivalIataTextView.setText(f.getArrivalAirport().getCode());
+        holder.arrivalTimeTextView.setText(DateHelper.formatTime(f.getArrivalDate()));
+
+        if (isFlightAddingEnabled) {
+            holder.addFlightTextView.setAlpha(1f);
+            holder.addFlightTextView.setEnabled(true);
+            holder.addFlightTextView.setTag(position);
+            holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);
+        } else {
+            holder.addFlightTextView.setEnabled(false);
+            holder.addFlightTextView.setAlpha(0.5f);
+        }
     }
 
     @Override
@@ -58,6 +67,10 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         notifyDataSetChanged();
     }
 
+    public void setFlightAddingEnabled(boolean isFlightAddingEnabled) {
+        this.isFlightAddingEnabled = isFlightAddingEnabled;
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView departureCityTextView;
         TextView departureIataTextView;
@@ -67,8 +80,6 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
         TextView arrivalTimeTextView;
         TextView addFlightTextView;
 
-        Flight mItem;
-
         ViewHolder(View view) {
             super(view);
             departureCityTextView = itemView.findViewById(R.id.textView_flightCard_departureCity);
@@ -77,7 +88,7 @@ public class FlightSearchResultRecyclerViewAdapter extends RecyclerView.Adapter<
             arrivalCityTextView = itemView.findViewById(R.id.textView_flightCard_arrivalCity);
             arrivalIataTextView = itemView.findViewById(R.id.textView_catalog_arrivalIata);
             arrivalTimeTextView = itemView.findViewById(R.id.textView_flightCard_arrivalTime);
-            addFlightTextView = itemView.findViewById(R.id.textView_flightCard_addFlight);
+            addFlightTextView = itemView.findViewById(R.id.button_flightCard_addFlight);
         }
     }
 }

@@ -26,6 +26,8 @@
                 app:destination="@+id/flight_search_destination"/>
 
         <argument android:name="flight" app:argType="com.guestlogix.travelercorekit.models.Flight"/>
+        <action android:id="@+id/flight_information_action"
+                app:destination="@id/flight_information_destination"/>
 
     </fragment>
 
@@ -34,4 +36,13 @@
               android:label="Search Flight"
               tools:layout="@layout/fragment_flight_search">
     </activity>
+
+    <fragment
+            android:id="@+id/flight_information_destination"
+            android:name="com.guestlogix.traveler.fragments.FlightInformationFragment"
+            android:label="Flight Info"
+            tools:layout="@layout/fragment_flight_information">
+
+        <argument android:name="Flight" app:argType="com.guestlogix.travelercorekit.models.Flight"/>
+    </fragment>
 </navigation>
