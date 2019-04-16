@@ -64,9 +64,9 @@ public class OrderConfirmationActivity extends AppCompatActivity {
                 titleTextView.setText(bookableProduct.getTitle());
             }
         }
-        subTitleTextView.setText(receipt.getOrderNumber());
+        subTitleTextView.setText(receipt.getReferenceNumber());
         emailValueTextView.setText(receipt.getEmail());
-        confirmationNumberValueTextView.setText(receipt.getOrderNumber());
+        confirmationNumberValueTextView.setText(receipt.getReferenceNumber());
     }
 
     View.OnClickListener homeOnClickListener = v -> finish();

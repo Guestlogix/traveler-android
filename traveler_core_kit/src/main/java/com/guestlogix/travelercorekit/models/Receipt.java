@@ -16,23 +16,19 @@ public class Receipt implements Serializable {
     private String travelerId;
     private String email;
     private Price total;
-    private String orderNumber;
+    private String referenceNumber;
     private String status;
     private List<Product> products;
     private Date createdDate;
 
     @SuppressWarnings("ConstantConditions")
-    private Receipt(@NonNull String id, String travelerId, String email, @NonNull Price total, String status, @NonNull String orderNumber, @NonNull List<Product> products, @NonNull Date createdDate) {
+    private Receipt(@NonNull String id, String travelerId, String email, @NonNull Price total, String status, String referenceNumber, @NonNull List<Product> products, @NonNull Date createdDate) {
         if (id == null) {
             throw new IllegalArgumentException("id can not be null");
         }
 
         if (total == null) {
             throw new IllegalArgumentException("total can not be null");
-        }
-
-        if (orderNumber == null) {
-            throw new IllegalArgumentException("orderNumber can not be null");
         }
 
         if (products == null) {
@@ -48,7 +44,7 @@ public class Receipt implements Serializable {
         this.email = email;
         this.total = total;
         this.status = status;
-        this.orderNumber = orderNumber;
+        this.referenceNumber = referenceNumber;
         this.products = products;
         this.createdDate = createdDate;
     }
@@ -69,8 +65,8 @@ public class Receipt implements Serializable {
         return total;
     }
 
-    public String getOrderNumber() {
-        return orderNumber;
+    public String getReferenceNumber() {
+        return referenceNumber;
     }
 
     public List<Product> getProducts() {
@@ -92,7 +88,7 @@ public class Receipt implements Serializable {
                 String email = null;
                 String status = null;
                 Price price = null;
-                String orderNumber = null;
+                String referenceNumber = null;
                 List<Product> products = null;
                 Date createdDate = null;
 
@@ -113,7 +109,7 @@ public class Receipt implements Serializable {
                             id = JsonReaderHelper.readNonNullString(reader);
                             break;
                         case "travelerId":
-                            travelerId = JsonReaderHelper.readNonNullString(reader);
+                            travelerId = JsonReaderHelper.readString(reader);
                             break;
                         case "email":
                             email = JsonReaderHelper.readNonNullString(reader);
@@ -124,14 +120,14 @@ public class Receipt implements Serializable {
                         case "status":
                             status = JsonReaderHelper.readString(reader);
                             break;
-                        case "orderNumber":
-                            orderNumber = JsonReaderHelper.readNonNullString(reader);
+                        case "referenceNumber":
+                            referenceNumber = JsonReaderHelper.readString(reader);
                             break;
-                        case "createdAt":
+                        case "createdOn":
                             try {
                                 createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
                             } catch (ParseException e) {
-                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "createdAt has invalid format"));
+                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "createdOn has invalid format"));
                             }
                             break;
                         case "products":
@@ -144,7 +140,7 @@ public class Receipt implements Serializable {
 
                 reader.endObject();
 
-                return new Receipt(id, travelerId, email, price, status, orderNumber, products, createdDate);
+                return new Receipt(id, travelerId, email, price, status, referenceNumber, products, createdDate);
             } catch (IllegalArgumentException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
