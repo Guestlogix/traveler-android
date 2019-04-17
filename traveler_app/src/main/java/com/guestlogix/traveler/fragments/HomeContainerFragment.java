@@ -53,8 +53,8 @@ public class HomeContainerFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         catalogViewModel = ViewModelProviders.of(getActivityContext()).get(HomeViewModel.class);
-        catalogViewModel.getObservableFlights().observe(getActivityContext(), this::flightsUpdateHandler);
-        catalogViewModel.getStatus().observe(getActivityContext(), this::onStateChange);
+        catalogViewModel.getObservableFlights().observe(this, this::flightsUpdateHandler);
+        catalogViewModel.getStatus().observe(this, this::onStateChange);
     }
 
     private void onViewFlightClick(View v) {
