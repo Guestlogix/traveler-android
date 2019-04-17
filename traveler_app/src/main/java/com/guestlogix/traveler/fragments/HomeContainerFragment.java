@@ -67,8 +67,6 @@ public class HomeContainerFragment extends BaseFragment {
 
     private void onStateChange(StatefulViewModel.State state) {
         switch (state) {
-            //TODO: These block only handle catalog loading, success and error states.
-            //TODO: If we need more stateful elements add suitable states in the viewmodel.
             case LOADING:
                 LoadingFragment loadingFragment = new LoadingFragment();
 
@@ -110,6 +108,5 @@ public class HomeContainerFragment extends BaseFragment {
 
     private void flightsUpdateHandler(List<Flight> flights) {
         flightsRecyclerViewAdapter.update(flights);
-        catalogViewModel.fetchCatalog();
     }
 }
