@@ -68,7 +68,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
             }
         }
         subTitleTextView.setText(receipt.getReferenceNumber());
-        emailValueTextView.setText(receipt.getEmail());
+        emailValueTextView.setText(receipt.getCustomerContact().getEmail());
         confirmationNumberValueTextView.setText(receipt.getReferenceNumber());
     }
 

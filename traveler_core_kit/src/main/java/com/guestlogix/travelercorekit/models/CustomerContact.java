@@ -1,0 +1,109 @@
+package com.guestlogix.travelercorekit.models;
+
+import android.util.JsonReader;
+import androidx.annotation.NonNull;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import java.io.IOException;
+import java.io.Serializable;
+
+public class CustomerContact implements Serializable {
+    private String title;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+
+    public CustomerContact(@NonNull String title, @NonNull String firstName, @NonNull String lastName, @NonNull String email, @NonNull String phone) {
+        this.title = title;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    static class CustomerContactObjectMappingFactory implements ObjectMappingFactory<CustomerContact> {
+
+        @Override
+        public CustomerContact instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+            String title = null;
+            String fName = null;
+            String lName = null;
+            String email = null;
+            String phone = null;
+
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+
+                switch (name) {
+                    case "title":
+                        title = JsonReaderHelper.readNonNullString(reader);
+                        break;
+                    case "firstName":
+                        fName = JsonReaderHelper.readNonNullString(reader);
+                        break;
+                    case "lastName":
+                        lName = JsonReaderHelper.readNonNullString(reader);
+                        break;
+                    case "email":
+                        email = JsonReaderHelper.readNonNullString(reader);
+                        break;
+                    case "phone":
+                        phone = JsonReaderHelper.readNonNullString(reader);
+                        break;
+                }
+            }
+
+            reader.endObject();
+
+            if (null == title) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload title field must not be null"));
+            }
+
+            if (null == fName) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload firstName field must not be null"));
+
+            }
+
+            if (null == lName) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload lastName must not be null"));
+
+            }
+
+            if (null == email) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload email must not be null"));
+
+            }
+
+            if (null == phone) {
+                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload phone must not be null"));
+            }
+
+            return new CustomerContact(title, fName, lName, email, phone);
+        }
+    }
+}
