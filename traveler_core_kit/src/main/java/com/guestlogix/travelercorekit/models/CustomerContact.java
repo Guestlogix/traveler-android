@@ -16,7 +16,7 @@ public class CustomerContact implements Serializable {
     private String email;
     private String phone;
 
-    public CustomerContact(@NonNull String title, @NonNull String firstName, @NonNull String lastName, @NonNull String email, @NonNull String phone) {
+    private CustomerContact(String title, String firstName, String lastName, @NonNull String email, String phone) {
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -80,27 +80,9 @@ public class CustomerContact implements Serializable {
 
             reader.endObject();
 
-            if (null == title) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload title field must not be null"));
-            }
-
-            if (null == fName) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload firstName field must not be null"));
-
-            }
-
-            if (null == lName) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload lastName must not be null"));
-
-            }
-
             if (null == email) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload email must not be null"));
 
-            }
-
-            if (null == phone) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload phone must not be null"));
             }
 
             return new CustomerContact(title, fName, lName, email, phone);
