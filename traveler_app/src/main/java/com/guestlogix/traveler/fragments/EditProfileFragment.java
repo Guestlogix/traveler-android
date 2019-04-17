@@ -24,6 +24,9 @@ import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A fragment which allows the user to edit his/her profile information
  */
@@ -125,6 +128,11 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
             valid = false;
         } else {
             profile.setEmail(emailAddress);
+        }
+
+        if (!emailAddress.matches("^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$")) {
+            emailContainer.setError(getString(R.string.invalid_email));
+            valid = false;
         }
 
         if (valid) {
