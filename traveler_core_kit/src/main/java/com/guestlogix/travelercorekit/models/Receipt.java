@@ -14,15 +14,15 @@ import java.util.List;
 public class Receipt implements Serializable {
     private String id;
     private String travelerId;
-    private String email;
     private Price total;
     private String referenceNumber;
     private String status;
     private List<Product> products;
     private Date createdDate;
+    private CustomerContact customerContact;
 
     @SuppressWarnings("ConstantConditions")
-    private Receipt(@NonNull String id, String travelerId, String email, @NonNull Price total, String status, String referenceNumber, @NonNull List<Product> products, @NonNull Date createdDate) {
+    private Receipt(@NonNull String id, String travelerId, @NonNull Price total, String status, String referenceNumber, @NonNull List<Product> products, @NonNull Date createdDate, @NonNull CustomerContact customerContact) {
         if (id == null) {
             throw new IllegalArgumentException("id can not be null");
         }
@@ -39,14 +39,18 @@ public class Receipt implements Serializable {
             throw new IllegalArgumentException("createdDate can not be null");
         }
 
+        if (customerContact == null) {
+            throw new IllegalArgumentException("customerContact can not be null");
+        }
+
         this.id = id;
         this.travelerId = travelerId;
-        this.email = email;
         this.total = total;
         this.status = status;
         this.referenceNumber = referenceNumber;
         this.products = products;
         this.createdDate = createdDate;
+        this.customerContact = customerContact;
     }
 
     public String getId() {
@@ -55,10 +59,6 @@ public class Receipt implements Serializable {
 
     public String getTravelerId() {
         return travelerId;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public Price getTotal() {
@@ -77,6 +77,10 @@ public class Receipt implements Serializable {
         return createdDate;
     }
 
+    public CustomerContact getCustomerContact() {
+        return customerContact;
+    }
+
     static class ReceiptMappingFactory implements ObjectMappingFactory<Receipt> {
 
         @Override
@@ -85,12 +89,12 @@ public class Receipt implements Serializable {
             try {
                 String id = null;
                 String travelerId = null;
-                String email = null;
                 String status = null;
                 Price price = null;
                 String referenceNumber = null;
                 List<Product> products = null;
                 Date createdDate = null;
+                CustomerContact customerContact = null;
 
                 JsonToken token = reader.peek();
 
@@ -111,9 +115,6 @@ public class Receipt implements Serializable {
                         case "travelerId":
                             travelerId = JsonReaderHelper.readString(reader);
                             break;
-                        case "email":
-                            email = JsonReaderHelper.readNonNullString(reader);
-                            break;
                         case "amount":
                             price = new Price.PriceObjectMappingFactory().instantiate(reader);
                             break;
@@ -133,6 +134,9 @@ public class Receipt implements Serializable {
                         case "products":
                             products = new ArrayMappingFactory<>(new AnyProductMappingFactory()).instantiate(reader);
                             break;
+                        case "customer":
+                            customerContact = new CustomerContact.CustomerContactObjectMappingFactory().instantiate(reader);
+                            break;
                         default:
                             reader.skipValue();
                     }
@@ -140,7 +144,7 @@ public class Receipt implements Serializable {
 
                 reader.endObject();
 
-                return new Receipt(id, travelerId, email, price, status, referenceNumber, products, createdDate);
+                return new Receipt(id, travelerId, price, status, referenceNumber, products, createdDate, customerContact);
             } catch (IllegalArgumentException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
