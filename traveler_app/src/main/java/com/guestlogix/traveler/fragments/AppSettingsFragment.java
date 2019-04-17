@@ -80,7 +80,6 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
             actions.add(getString(R.string.privacy_policy));
 
             if (user != null) {
-                actions.add(getString(R.string.delete_profile));
                 actions.add(getString(R.string.sign_out));
             } else {
                 actions.add(getString(R.string.sign_in));
@@ -148,9 +147,7 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
                 nav.navigate(action);
                 break;
             case 5:
-                if (user != null) {
-                    // TODO: Delete user.
-                } else {
+                if (user == null) {
                     // Log In
                     String clientId = BuildConfig.GOOGL_SIGN_IN_CLIENT_ID;
                     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -161,17 +158,15 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
                     GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(getActivityContext(), gso);
                     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN);
+                } else {
+                    // Log Out
+                    Guest.getInstance().logout(getActivityContext());
+                    user = null;
+                    actions.remove(5);
+                    actions.add(getString(R.string.sign_in));
+                    adapter.notifyItemChanged(5);
                 }
-                break;
-            case 6:
-                // Log Out
-                Guest.getInstance().logout(getActivityContext());
-                user = null;
-                actions.remove(6); // Sign out
-                actions.remove(5); // Delete profile
-                adapter.notifyItemRangeRemoved(5, 2);
-                actions.add(getString(R.string.sign_in));
-                adapter.notifyItemInserted(5);
+
                 break;
         }
     }
@@ -200,10 +195,8 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         profile.save(getActivityContext());
 
         actions.remove(5);
-        adapter.notifyItemRemoved(5);
-        actions.add(getString(R.string.delete_profile));
         actions.add(getString(R.string.sign_out));
-        adapter.notifyItemRangeInserted(5, 2);
+        adapter.notifyItemChanged(5);
     }
 
     @Override
