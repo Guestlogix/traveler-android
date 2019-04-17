@@ -38,7 +38,6 @@ public class HomeViewModel extends StatefulViewModel {
         this.profile = new MutableLiveData<>();
         this.catalog = new MutableLiveData<>();
 
-        lookupProfile();
         fetchCatalog();
     }
 
@@ -85,7 +84,7 @@ public class HomeViewModel extends StatefulViewModel {
         this.profile.postValue(profile);
     }
 
-    private void lookupProfile() {
+    public void lookupProfile() {
         Profile profile = Guest.getInstance().getSignedInUser(getApplication());
         if (null != profile) {
             //If user session exist locally
