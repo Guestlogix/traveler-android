@@ -30,7 +30,7 @@ public class FlightCardsRecyclerViewAdapter extends RecyclerView.Adapter<FlightC
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_flight_search_results_item, parent, false);
+                .inflate(R.layout.item_flight_info_card, parent, false);
         return new ViewHolder(view);
     }
 
