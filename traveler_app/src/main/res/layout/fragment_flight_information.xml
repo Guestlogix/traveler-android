@@ -11,6 +11,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="1"
-            tools:listitem="@layout/fragment_flight_search_results_item"/>
+            tools:listitem="@layout/item_flight_info_card"/>
 
 </FrameLayout>

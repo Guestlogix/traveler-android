@@ -14,19 +14,19 @@
 
     <!-- TODO: android:textStyle="bold" causes an error in logs, find alternative -->
     <TextView
+            style="@style/TitleTwoTextView"
             android:id="@+id/textView_errorFragment_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_sorry"
-            android:textStyle="bold"
             android:textSize="20sp"/>
     <TextView
+            style="@style/BodyMainTextView"
             android:id="@+id/textView_errorFragment_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="20dp"
             android:textAlignment="center"
-            android:textSize="17sp"
             android:text="@string/label_nothing_to_show"/>
     <TextView
             android:id="@+id/textView_errorFragment_action"

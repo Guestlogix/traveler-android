@@ -26,7 +26,7 @@
             android:id="@+id/flight_search_result_dest"
             android:name="com.guestlogix.traveler.fragments.SearchFlightResultsFragment"
             android:label="Flights"
-            tools:layout="@layout/fragment_flight_search_results_item">
+            tools:layout="@layout/item_flight_info_card">
     </fragment>
     <action
             android:id="@+id/loading_action"
