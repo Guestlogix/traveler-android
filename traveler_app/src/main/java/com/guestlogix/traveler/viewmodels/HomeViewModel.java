@@ -39,6 +39,7 @@ public class HomeViewModel extends StatefulViewModel {
         this.catalog = new MutableLiveData<>();
 
         lookupProfile();
+        fetchCatalog();
     }
 
     public LiveData<List<Flight>> getObservableFlights() {
@@ -54,7 +55,6 @@ public class HomeViewModel extends StatefulViewModel {
     }
 
     public void addFlight(Flight flight) {
-        //TODO Profile repository to manage flights in user session
         if (null != flightsList.getValue()) {
             List<Flight> flightsList = this.flightsList.getValue();
             flightsList.add(flight);
@@ -64,6 +64,8 @@ public class HomeViewModel extends StatefulViewModel {
             flightsList.add(flight);
             this.flightsList.postValue(flightsList);
         }
+
+        fetchCatalog();
     }
 
     public void deleteFlight(int index) {
@@ -72,6 +74,8 @@ public class HomeViewModel extends StatefulViewModel {
             flightsList.remove(index);
             this.flightsList.postValue(flightsList);
         }
+
+        fetchCatalog();
     }
 
     public void setProfile(Profile profile) {

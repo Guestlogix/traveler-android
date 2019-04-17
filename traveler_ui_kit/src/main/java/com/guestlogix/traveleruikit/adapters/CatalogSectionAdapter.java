@@ -1,5 +1,7 @@
 package com.guestlogix.traveleruikit.adapters;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +10,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.travelercorekit.models.Catalog;
+import com.guestlogix.travelercorekit.models.CatalogGroup;
+import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.tools.AssetManager;
+import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.utils.HorizontalSpaceItemDecoration;
-import com.guestlogix.traveleruikit.widgets.CatalogView;
 
 public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAdapter.CatalogSectionViewHolder> {
 
-    private CatalogView.CatalogViewAdapter catalogViewAdapter;
+    private Context context;
+    private Catalog catalog;
+    private CatalogSectionAdapterCallback catalogItemClickListener;
 
-    public void setCatalogViewAdapter(CatalogView.CatalogViewAdapter catalogViewAdapter) {
-        this.catalogViewAdapter = catalogViewAdapter;
+    public CatalogSectionAdapter(Context context) {
+        this.context = context;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+
+    public void setOnCatalogItemClickListener(CatalogSectionAdapterCallback l) {
+        this.catalogItemClickListener = l;
     }
 
     @NonNull
@@ -31,12 +47,14 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
     @Override
     public void onBindViewHolder(@NonNull CatalogSectionViewHolder holder, int position) {
         holder.catalogItemAdapter.setSectionPosition(position);
-        catalogViewAdapter.onBindSection(position, holder.sectionTitleTextView);
+        CatalogGroup group = catalog.getGroups().get(position);
+
+        holder.sectionTitleTextView.setText(group.getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return catalogViewAdapter.getSectionsCount();
+        return catalog != null && catalog.getGroups() != null ? catalog.getGroups().size() : 0;
     }
 
     class CatalogSectionViewHolder extends RecyclerView.ViewHolder {
@@ -62,6 +80,21 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
         }
     }
 
+    public interface CatalogSectionAdapterCallback {
+        void onCatalogItemClick(int sectionId, int itemId);
+    }
+
+    class CatalogItemViewHolder extends RecyclerView.ViewHolder {
+        ImageView thumbnail;
+        TextView title;
+
+        CatalogItemViewHolder(@NonNull View itemView) {
+            super(itemView);
+            thumbnail = itemView.findViewById(R.id.imageView_catalogSectionItem_thumbnail);
+            title = itemView.findViewById(R.id.textView_catalogSectionItem_title);
+        }
+    }
+
     public class CatalogItemAdapter extends RecyclerView.Adapter<CatalogSectionAdapter.CatalogItemViewHolder> {
 
         int sectionPosition;
@@ -74,40 +107,53 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
             return new CatalogItemViewHolder(view);
         }
 
+        View.OnClickListener onItemClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = (Integer) v.getTag();
+
+                if (catalogItemClickListener != null) {
+                    catalogItemClickListener.onCatalogItemClick(sectionPosition, index);
+                }
+            }
+        };
+
         @Override
         public void onBindViewHolder(@NonNull CatalogSectionAdapter.CatalogItemViewHolder holder, int position) {
-            catalogViewAdapter.onBindItem(sectionPosition, position, holder.hashCode(), holder.thumbnail, holder.title);
+            CatalogItem item = catalog.getGroups().get(sectionPosition).getItems().get(position);
 
+            holder.thumbnail.setImageResource(R.color.colorPrimary);
+            AssetManager.getInstance().loadImage(
+                    item.getImageURL(),
+                    (int) context.getResources().getDimension(R.dimen.thumbnail_width),
+                    (int) context.getResources().getDimension(R.dimen.thumbnail_height),
+                    holder.hashCode(),
+                    new ImageLoader.ImageLoaderCallback() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap) {
+                            holder.thumbnail.setImageBitmap(bitmap);
+                        }
+
+                        @Override
+                        public void onError() {
+                            // Do nothing.
+                        }
+                    });
+
+
+            holder.title.setText(item.getTitle());
             holder.itemView.setTag(position);
             holder.itemView.setOnClickListener(onItemClickListener);
-        }
-
-        @Override
-        public int getItemCount() {
-            return catalogViewAdapter.getSectionItemsCount(sectionPosition);
         }
 
         void setSectionPosition(int sectionPosition) {
             this.sectionPosition = sectionPosition;
         }
 
-        View.OnClickListener onItemClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int index = (Integer) v.getTag();
-                catalogViewAdapter.onItemClick(sectionPosition, index);
-            }
-        };
-    }
-
-    class CatalogItemViewHolder extends RecyclerView.ViewHolder {
-        ImageView thumbnail;
-        TextView title;
-
-        CatalogItemViewHolder(@NonNull View itemView) {
-            super(itemView);
-            thumbnail = itemView.findViewById(R.id.imageView_catalogSectionItem_thumbnail);
-            title = itemView.findViewById(R.id.textView_catalogSectionItem_title);
+        @Override
+        public int getItemCount() {
+            return catalog.getGroups().get(sectionPosition).getItems() != null ?
+                    catalog.getGroups().get(sectionPosition).getItems().size() : 0;
         }
     }
 }

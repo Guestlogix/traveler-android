@@ -3,18 +3,18 @@ package com.guestlogix.traveleruikit.viewmodels;
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.ViewModel;
-import com.guestlogix.traveleruikit.utils.SingleLiveEvent;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 public abstract class StatefulViewModel extends AndroidViewModel {
 
-    protected SingleLiveEvent<State> status = new SingleLiveEvent<>();
+    protected MutableLiveData<State> status = new MutableLiveData<>();
 
     public StatefulViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public SingleLiveEvent<State> getStatus() {
+    public LiveData<State> getStatus() {
         return status;
     }
 
