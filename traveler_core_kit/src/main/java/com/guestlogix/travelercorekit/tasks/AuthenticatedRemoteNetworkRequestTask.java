@@ -46,6 +46,8 @@ public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
             protected void main() {
                 if (null != retryNetworkTask.getError()) {
                     error = retryNetworkTask.getError();
+                } else {
+                    error = null; // Invalidate previous errors
                 }
             }
         };
