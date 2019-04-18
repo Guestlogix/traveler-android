@@ -3,145 +3,108 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:padding="@dimen/padding_xlarge"
         tools:context=".activities.OrderConfirmationActivity">
 
     <TextView
             style="@style/BodyHeaderTextView"
+            android:id="@+id/textView_orderConfirmation_title"
+            android:text="@string/experience_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/subTitleTextView"
+            app:layout_constraintBottom_toTopOf="@id/textView_orderConfirmation_subtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
-            android:text="Experience Name"
-            android:id="@+id/titleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintHorizontal_bias="0"/>
 
     <TextView
-            app:layout_constraintTop_toBottomOf="@id/titleTextView"
+            style="@style/CallOutTextView"
+            android:id="@+id/textView_orderConfirmation_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/textView_orderConfirmation_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            style="@style/CallOutTextView"
             app:layout_constraintHorizontal_bias="0"
-            tools:text="Dec 08, 2019 11am"
-            android:id="@+id/subTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            tools:text="Dec 08, 2019 11am"/>
 
     <ImageView
-            android:id="@+id/confirmationImageView"
+            android:id="@+id/imageView_orderConfirmation_successIcon"
             android:tint="@color/colorAccent"
             android:src="@drawable/ic_done_white_48dp"
-            app:layout_constraintBottom_toTopOf="@+id/separator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_xlarge"
+            app:layout_constraintBottom_toTopOf="@+id/separator"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
     <View
-            app:layout_constraintTop_toBottomOf="@id/subTitleTextView"
+            app:layout_constraintTop_toBottomOf="@id/textView_orderConfirmation_subtitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/messageTitleTextView"
+            app:layout_constraintBottom_toTopOf="@id/textView_orderConfirmation_messageTitle"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/separator"
             style="@style/separator"/>
 
-
     <TextView
             style="@style/BodyLabelTextView"
+            android:id="@+id/textView_orderConfirmation_messageTitle"
+            android:text="@string/order_processed_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintBottom_toTopOf="@id/messageSubTitleTextView"
-            app:layout_constraintTop_toBottomOf="@id/separator"
-            android:text="Thank you, your order has been processed."
-            android:id="@+id/messageTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintBottom_toTopOf="@id/textView_orderConfirmation_message"
+            app:layout_constraintTop_toBottomOf="@id/separator"/>
 
     <TextView
             style="@style/BodyMainTextView"
-            android:text="An order confirmation has been sent to your email.  Please be sure to check your spam if not present in your inbox."
-            app:layout_constraintTop_toBottomOf="@id/messageTitleTextView"
+            android:id="@+id/textView_orderConfirmation_message"
+            android:text="@string/order_processed_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/textView_orderConfirmation_messageTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/messageSubTitleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     <View
-            app:layout_constraintTop_toBottomOf="@id/messageSubTitleTextView"
-            app:layout_constraintBottom_toTopOf="@+id/confirmationNumberLabelTextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            style="@style/separator"
             android:id="@+id/separator1"
-            style="@style/separator"/>
-
-    <TextView
-            app:layout_constraintTop_toBottomOf="@+id/separator1"
-            app:layout_constraintBottom_toTopOf="@+id/confirmationNumberValueTextView"
-            android:layout_width="match_parent"
-            android:text="@string/confirmation_number"
-            style="@style/CallOutTextView"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_xxsmall"
-            android:id="@+id/confirmationNumberLabelTextView"
-    />
-
-    <TextView
-            app:layout_constraintTop_toBottomOf="@+id/confirmationNumberLabelTextView"
-            app:layout_constraintBottom_toTopOf="@+id/separator2"
-            style="@style/BodyHeaderTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/confirmationNumberValueTextView"
-            tools:text="4-5 hours"/>
-
-    <View
-            app:layout_constraintTop_toBottomOf="@id/confirmationNumberValueTextView"
-            app:layout_constraintBottom_toTopOf="@+id/emailLabelTextView"
+            app:layout_constraintTop_toBottomOf="@id/textView_orderConfirmation_message"
+            app:layout_constraintBottom_toTopOf="@+id/textView_orderConfirmation_emailLabel"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/separator2"
-            style="@style/separator"/>
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
-            app:layout_constraintTop_toBottomOf="@+id/separator2"
-            app:layout_constraintBottom_toTopOf="@+id/emailValueTextView"
+            style="@style/CallOutTextView"
+            android:id="@+id/textView_orderConfirmation_emailLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_xxsmall"
-            android:id="@+id/emailLabelTextView"
-            style="@style/CallOutTextView"
-            android:text="@string/confirmation_email"/>
+            android:text="@string/confirmation_email"
+            app:layout_constraintTop_toBottomOf="@+id/separator1"
+            app:layout_constraintBottom_toTopOf="@+id/textView_orderConfirmation_emailValue"/>
 
     <TextView
-            app:layout_constraintTop_toBottomOf="@+id/emailLabelTextView"
             style="@style/BodyHeaderTextView"
+            android:id="@+id/textView_orderConfirmation_emailValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/emailValueTextView"
-            tools:text="4-5 hours"/>
+            app:layout_constraintTop_toBottomOf="@+id/textView_orderConfirmation_emailLabel"
+            tools:text="gorlami@guestlogix.com"/>
 
     <Button
-            app:layout_constraintTop_toBottomOf="@+id/emailValueTextView"
-            style="@style/ActionButton"
-            android:layout_marginTop="@dimen/margin_large"
-            android:id="@+id/viewTicketsButton"
-            android:text="@string/view_tickets"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    <Button
-            app:layout_constraintBottom_toBottomOf="parent"
             style="@style/OutlinedButton.Accent"
             android:id="@+id/homeButton"
             android:text="@string/home"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
