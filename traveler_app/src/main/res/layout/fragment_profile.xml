@@ -95,6 +95,7 @@
 
             <!-- See all orders button layout. -->
             <LinearLayout
+                    android:id="@+id/linearLayout_profile_orders"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_normal"

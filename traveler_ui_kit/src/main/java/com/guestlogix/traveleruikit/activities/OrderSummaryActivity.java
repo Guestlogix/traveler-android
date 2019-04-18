@@ -73,8 +73,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements ProcessOr
         getSupportActionBar().setTitle(R.string.review_order);
 
         // Action strip.
-        Price price = order.getTotal();
-        actionStrip.setValue(price.getFormattedValue());
+        actionStrip.setValue(order.getTotal().getFormattedValue());
         actionStrip.setLabel(getString(R.string.label_price));
         actionStrip.setButtonText(getString(R.string.next));
         actionStrip.setActionOnClickListener(this::onActionStripClick);
