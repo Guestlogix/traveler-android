@@ -116,11 +116,41 @@
         <item name="android:textColor">@color/gray</item>
     </style>
 
+    <style name="Dialog" parent="Base.Theme.MaterialComponents.Dialog">
+        <item name="android:paddingTop">@dimen/padding_dialog_top</item>
+    </style>
+
     <style name="DialogHeader">
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/text_view_xlarge</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="DialogTitle">
+        <item name="android:paddingLeft">@dimen/padding_xxlarge</item>
+        <item name="android:paddingRight">@dimen/padding_xxlarge</item>
+        <item name="android:textSize">@dimen/text_view_large</item>
+        <item name="android:textColor">@color/dialogTitle</item>
+        <item name="android:layout_marginBottom">@dimen/margin_default</item>
+    </style>
+
+    <style name="DialogMessage">
+        <item name="android:paddingLeft">@dimen/padding_xxlarge</item>
+        <item name="android:paddingRight">@dimen/padding_xxlarge</item>
+        <item name="android:textSize">@dimen/text_view_small</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:layout_marginBottom">@dimen/margin_xxlarge</item>
+    </style>
+
+    <style name="DialogActionLayout">
+        <item name="android:layout_marginBottom">@dimen/margin_default</item>
+    </style>
+
+    <style name="DialogActionButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:layout_marginRight">@dimen/margin_small</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="rippleColor">@color/colorPrimary</item>
     </style>
 
     <!-- Base button style -->

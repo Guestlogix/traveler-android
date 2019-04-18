@@ -41,4 +41,7 @@
     <string name="description_cancel_edit_profile">Cancel editing profiles.</string>
     <string name="app_version">App version %s</string>
     <string name="invalid_email">Invalid email pattern</string>
+    <string name="confirm_sign_out">Confirm sign out?</string>
+    <string name="confirm">Confirm</string>
+    <string name="sign_out_msg">Your order history will only be visible once you sign in.</string>
 </resources>

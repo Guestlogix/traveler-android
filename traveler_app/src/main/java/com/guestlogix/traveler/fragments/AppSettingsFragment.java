@@ -1,5 +1,6 @@
 package com.guestlogix.traveler.fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -159,12 +161,25 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
                     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN);
                 } else {
-                    // Log Out
-                    Guest.getInstance().logout(getActivityContext());
-                    user = null;
-                    actions.remove(5);
-                    actions.add(getString(R.string.sign_in));
-                    adapter.notifyItemChanged(5);
+                    final Dialog d = new Dialog(getActivityContext());
+
+                    d.setContentView(R.layout.dialog_alert);
+                    TextView dTitle = d.findViewById(R.id.textView_alertDialog_title);
+                    TextView msg = d.findViewById(R.id.textView_alertDialog_message);
+                    Button cancel = d.findViewById(R.id.button_alertDialog_negativeButton);
+                    Button confirm = d.findViewById(R.id.button_alertDialog_positiveButton);
+
+
+                    dTitle.setText(R.string.confirm_sign_out);
+                    msg.setText(R.string.sign_out_msg);
+
+                    confirm.setText(R.string.confirm);
+                    confirm.setOnClickListener(b -> onSignOut());
+
+                    cancel.setText(R.string.cancel);
+                    cancel.setOnClickListener(b -> d.dismiss());
+
+                    d.show();
                 }
 
                 break;
@@ -212,6 +227,14 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         }
+    }
+
+    private void onSignOut() {
+        Guest.getInstance().logout(getActivityContext());
+        user = null;
+        actions.remove(5);
+        actions.add(getString(R.string.sign_in));
+        adapter.notifyItemChanged(5);
     }
 
     class SettingAdapter extends RecyclerView.Adapter<ViewHolder> {

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        style="@style/Dialog"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="280dp">
+
+    <TextView
+            style="@style/DialogTitle"
+            android:id="@+id/textView_alertDialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Delete your profile?"/>
+
+    <TextView
+            style="@style/DialogMessage"
+            android:id="@+id/textView_alertDialog_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="This will remove features &amp; order history linked to this profile"/>
+
+    <RelativeLayout
+            style="@style/DialogActionLayout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <Button
+                style="@style/DialogActionButton"
+                android:id="@+id/button_alertDialog_negativeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/button_alertDialog_positiveButton"
+                android:layout_toStartOf="@id/button_alertDialog_positiveButton"
+                tools:text="Cancel"/>
+
+        <Button
+                style="@style/DialogActionButton"
+                android:id="@+id/button_alertDialog_positiveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                tools:text="Confirm"/>
+    </RelativeLayout>
+</LinearLayout>
