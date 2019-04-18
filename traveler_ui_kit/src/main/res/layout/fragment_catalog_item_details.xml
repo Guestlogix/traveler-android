@@ -30,31 +30,30 @@
                     android:orientation="vertical">
 
                 <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/titleTextView"
-                        tools:text="Experience Title"
-                        style="@style/TitleOneTextView"
-                        android:layout_gravity="center"/>
-
-                <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        style="@style/TitleTwoTextView"
                         android:id="@+id/subtitleTextView"
-                        tools:text="About the tour"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/label_about_the_tour"
-                        style="@style/TitleTwoTextView"/>
+                        tools:text="About the tour"/>
+                <TextView
+                        style="@style/TitleOneTextView"
+                        android:id="@+id/titleTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        tools:text="Experience Title"/>
 
                 <TextView
+                        style="@style/BodyMainTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/descriptionTextView"
-                        style="@style/BodyMainTextView"
                         tools:text="There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet."/>
 
                 <fragment
-                        android:layout_marginTop="@dimen/margin_default"
                         android:id="@+id/fragment_catalogItemDetails_purchaseSelector"
+                        android:layout_marginTop="@dimen/margin_default"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:name="com.guestlogix.traveleruikit.fragments.ProductPurchaseContainerFragment"
@@ -63,16 +62,16 @@
                 <com.google.android.material.tabs.TabLayout
                         style="@style/TabLayout"
                         android:id="@+id/catalogItemTabs"
+                        android:layout_marginTop="@dimen/margin_default"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"/>
 
-                </com.google.android.material.tabs.TabLayout>
                 <com.guestlogix.traveleruikit.widgets.WrapContentViewPager
+                        android:id="@+id/catalogItemPager"
+                        android:layout_marginTop="@dimen/margin_default"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/catalogItemPager">
+                        android:layout_height="wrap_content"/>
 
-                </com.guestlogix.traveleruikit.widgets.WrapContentViewPager>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

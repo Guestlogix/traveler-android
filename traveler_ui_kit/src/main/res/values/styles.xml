@@ -48,7 +48,8 @@
 
     <style name="TitleTwoTextView" parent="DefaultTextView">
         <item name="android:textSize">@dimen/text_view_large</item>
-        <item name="android:layout_marginTop">@dimen/margin_large</item>
+        <item name="android:layout_marginTop">@dimen/margin_default</item>
+        <item name="android:textColor">@color/darkGray</item>
     </style>
 
     <style name="TitleThree" parent="DefaultTextView">
@@ -68,6 +69,7 @@
     <style name="BodyMainTextView" parent="DefaultTextView">
         <item name="android:textSize">@dimen/text_view_default</item>
         <item name="android:textColor">@color/gray</item>
+        <item name="android:layout_marginTop">@dimen/margin_default</item>
     </style>
 
     <style name="CallOutTextView" parent="DefaultTextView">

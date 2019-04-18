@@ -30,7 +30,7 @@
             app:layout_constraintBottom_toTopOf="@id/action_container"
             android:layout_height="1dp"
             android:layout_marginBottom="@dimen/margin_default"
-            android:background="@color/gray"/>
+            android:background="@color/lightGray"/>
 
     <RelativeLayout
             android:layout_width="wrap_content"
