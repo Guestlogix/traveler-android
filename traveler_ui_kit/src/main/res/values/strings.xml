@@ -39,6 +39,7 @@
     <string name="confirmation_number">Confirmation number:</string>
     <string name="confirmation_email">Confirmation email:</string>
     <string name="home">Home</string>
+
     <string name="experience_name">Experience Name</string>
     <string name="order_processed_label">Thank you, your order has been processed.</string>
     <string name="order_processed_description">An order confirmation has been sent to your email. Please be sure to

@@ -1,11 +1,13 @@
 package com.guestlogix.traveler.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.guestlogix.traveler.R;
+import com.guestlogix.traveler.activities.OrdersActivity;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
@@ -28,6 +31,7 @@ public class ProfileFragment extends BaseFragment {
 
     private Profile user;
     private NavController nav;
+    private LinearLayout viewOrders;
 
     public ProfileFragment() {
         // Do nothing.
@@ -52,6 +56,9 @@ public class ProfileFragment extends BaseFragment {
             RecyclerView rv = v.findViewById(R.id.recyclerView_profile_userInfo);
             rv.setAdapter(new ProfileInformationAdapter());
             rv.setLayoutManager(new LinearLayoutManager(getActivityContext()));
+
+            viewOrders = v.findViewById(R.id.linearLayout_profile_orders);
+            viewOrders.setOnClickListener(this::onOrdersClick);
         }
 
         FloatingActionButton fab = v.findViewById(R.id.fab_profile_editBtn);
@@ -81,7 +88,8 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void onOrdersClick(View _v) {
-        // TODO: When we have a see all orders screen.
+        Intent ordersIntent = new Intent(getActivity(), OrdersActivity.class);
+        startActivity(ordersIntent);
     }
 
     class ProfileInformationAdapter extends RecyclerView.Adapter<ViewHolder> {

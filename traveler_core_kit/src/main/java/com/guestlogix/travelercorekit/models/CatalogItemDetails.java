@@ -1,5 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
@@ -109,8 +111,7 @@ public class CatalogItemDetails implements Product {
                 if (JsonToken.NULL == token) {
                     reader.skipValue();
                     return null;
-                }
-                else if (BEGIN_ARRAY == token) {
+                } else if (BEGIN_ARRAY == token) {
                     reader.beginArray();
                 } else {
                     reader.beginObject();

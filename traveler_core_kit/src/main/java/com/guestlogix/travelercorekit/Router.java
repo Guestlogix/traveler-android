@@ -171,6 +171,8 @@ public class Router {
                         amount.put("currency", "USD");
                         payload.put("amount", amount);
 
+                        payload.put("travelerId", session.getUserId());
+
                         return payload;
                     } catch (JSONException e) {
                         TravelerLog.e("Router.orderCreate() could not create JSONPayloadProvider");

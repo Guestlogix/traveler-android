@@ -6,7 +6,7 @@ import com.guestlogix.travelercorekit.models.Pass;
 import java.util.List;
 
 public interface FetchOrdersCallback {
-    void onOrdersFetchSuccess(List<Order> pass);
+    void onOrdersFetchSuccess(List<Order> orders);
 
     void onOrdersFetchError(Error error);
 }

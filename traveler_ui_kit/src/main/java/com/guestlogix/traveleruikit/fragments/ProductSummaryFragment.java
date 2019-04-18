@@ -65,7 +65,7 @@ public class ProductSummaryFragment extends BaseFragment {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(getActivity()).inflate(R.layout.product_summary_item, parent, false);
+            View v = LayoutInflater.from(getActivity()).inflate(R.layout.item_product_summary, parent, false);
             return new ViewHolder(v);
         }
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:padding="@dimen/padding_normal"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/margin_small"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp">
+
+    <LieanrLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_normal">
+
+        <TextView
+                android:id="@+id/textView_orderItem_dateOrdered"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BodyLabelTextView"
+                tools:text="Date"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_orderItem_products"
+                android:layout_marginTop="@dimen/margin_small"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_order_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/textView_orderItem_totalAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                style="@style/BodyHeaderTextView"
+                tools:text="$475.50"/>
+
+    </LieanrLayout>
+</androidx.cardview.widget.CardView>

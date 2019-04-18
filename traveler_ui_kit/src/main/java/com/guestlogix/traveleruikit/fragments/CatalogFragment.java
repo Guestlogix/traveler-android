@@ -15,7 +15,7 @@ import com.guestlogix.traveleruikit.widgets.CatalogWidget;
 
 /**
  * Fragment to hold the Catalog widget.
- *
+ * <p>
  * TODO: Let other developers override click events.
  */
 public class CatalogFragment extends BaseFragment implements CatalogWidget.OnCatalogItemClickListener {
