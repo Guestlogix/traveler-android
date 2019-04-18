@@ -25,7 +25,8 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="@dimen/padding_normal"
+                    android:paddingLeft="@dimen/padding_xlarge"
+                    android:paddingRight="@dimen/padding_xlarge"
                     android:orientation="vertical">
 
                 <TextView
@@ -60,6 +61,7 @@
                         tools:layout="@layout/fragment_information_selection_container"/>
 
                 <com.google.android.material.tabs.TabLayout
+                        style="@style/TabLayout"
                         android:id="@+id/catalogItemTabs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
