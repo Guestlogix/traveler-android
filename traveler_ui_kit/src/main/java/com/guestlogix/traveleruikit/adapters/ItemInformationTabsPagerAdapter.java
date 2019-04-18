@@ -42,12 +42,11 @@ public class ItemInformationTabsPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0:
-                return CatalogItemInformationFragment.getInstance(informationList);
             case 1:
                 return CatalogItemProviderInformationFragment.getInstance(contactInfo, locationsList);
+            default:
+                return CatalogItemInformationFragment.getInstance(informationList);
         }
-        return CatalogItemInformationFragment.getInstance(informationList);
     }
 
     @Override

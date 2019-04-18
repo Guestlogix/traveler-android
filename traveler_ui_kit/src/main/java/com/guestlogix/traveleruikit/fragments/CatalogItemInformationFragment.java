@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ public class CatalogItemInformationFragment extends Fragment {
     private List<Attribute> itemInfoList;
 
     public CatalogItemInformationFragment() {
+        // Do nothing.
     }
 
     public static CatalogItemInformationFragment getInstance(List<Attribute> itemInfoList) {
@@ -41,9 +43,7 @@ public class CatalogItemInformationFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle bundle = this.getArguments();
         if (null != bundle) {
             itemInfoList = (ArrayList<Attribute>) bundle.getSerializable(ARG_ITEM_INFO);
