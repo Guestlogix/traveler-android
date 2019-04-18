@@ -2,12 +2,14 @@ package com.guestlogix.traveleruikit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
@@ -93,10 +95,13 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
         passQuantities = new HashMap<>();
 
+        LinearLayoutManager lm = new LinearLayoutManager(this);
+
         form = findViewById(R.id.form_passSelectionActivity);
         form.setDataSource(this);
-        form.setLayoutManager(new LinearLayoutManager(this));
+        form.setLayoutManager(lm);
         form.setFormValueChangedListener(this);
+        form.addItemDecoration(new DividerItemDecoration(this, lm.getOrientation()));
 
         if (flavourTitle != null) {
             TextView tv = findViewById(R.id.textView_passSelectionActivity_flavourTitle);
@@ -110,6 +115,8 @@ public class PassSelectionActivity extends AppCompatActivity implements
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
         calculatePrice();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -253,5 +260,14 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
         Price price = new Price(sum, currency);
         actionStrip.setValue(price.getFormattedValue());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
