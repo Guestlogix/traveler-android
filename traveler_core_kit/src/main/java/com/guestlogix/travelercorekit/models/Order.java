@@ -17,9 +17,10 @@ public class Order implements Serializable {
     private String referenceNumber;
     private List<Product> products;
     private Date createdDate;
+    private String status;
 
     @SuppressWarnings("ConstantConditions")
-    private Order(@NonNull String id, @NonNull Price total, String referenceNumber, @NonNull List<Product> products, @NonNull Date createdDate) {
+    private Order(@NonNull String id, @NonNull Price total, String referenceNumber, String status, @NonNull List<Product> products, @NonNull Date createdDate) {
         if (id == null) {
             throw new IllegalArgumentException("id can not be null");
         }
@@ -39,6 +40,7 @@ public class Order implements Serializable {
         this.id = id;
         this.total = total;
         this.referenceNumber = referenceNumber;
+        this.status = status;
         this.products = products;
         this.createdDate = createdDate;
     }
@@ -72,6 +74,7 @@ public class Order implements Serializable {
                 String id = null;
                 Price price = null;
                 String orderNumber = null;
+                String status = null;
                 List<Product> products = null;
                 Date createdDate = null;
 
@@ -95,6 +98,9 @@ public class Order implements Serializable {
                         case "referenceNumber":
                             orderNumber = JsonReaderHelper.readString(reader);
                             break;
+                        case "status":
+                            status = JsonReaderHelper.readString(reader);
+                            break;
                         case "createdOn":
                             try {
                                 createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
@@ -112,7 +118,7 @@ public class Order implements Serializable {
 
                 reader.endObject();
 
-                return new Order(id, price, orderNumber, products, createdDate);
+                return new Order(id, price, orderNumber, status, products, createdDate);
             } catch (IllegalArgumentException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {

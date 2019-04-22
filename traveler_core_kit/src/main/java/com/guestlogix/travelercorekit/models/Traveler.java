@@ -12,6 +12,7 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.PaginatedObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -360,6 +361,43 @@ public class Traveler {
             localInstance.taskManager.addTask(processOrderTask);
             TaskManager.getMainTaskManager().addTask(fetchBlockTask);
 
+        }
+    }
+
+    /**
+     * Fetches all orders for a given user Id.
+     * <p>
+     *
+     * @param skip                skip the number of records
+     * @param take                number of records to fetch
+     * @param from                fetch the records on and after this date
+     * @param to                  fetch the records on and before this date
+     * @param fetchOrdersCallback callback methods to be executed once the fetch is complete
+     */
+    public static void fetchOrders(Integer skip, Integer take, Date from, Date to, FetchOrdersCallback fetchOrdersCallback) {
+        if (null == localInstance) {
+            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+        } else if (null == localInstance.session || null == localInstance.session.getUserId()) {
+            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
+        } else {
+            AuthenticatedUrlRequest request = Router.orders(skip, take, from, to, localInstance.session, localInstance.session.getContext());
+            AuthenticatedRemoteNetworkRequestTask<List<Order>> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new PaginatedObjectMappingFactory<>(new ArrayMappingFactory<>(new Order.OrderMappingFactory())));
+
+            BlockTask fetchOrdersBlockTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null != fetchOrdersTask.getError()) {
+                        fetchOrdersCallback.onOrdersFetchError(fetchOrdersTask.getError());
+                        TravelerLog.e(fetchOrdersTask.getError().getMessage());
+                    } else {
+                        fetchOrdersCallback.onOrdersFetchSuccess(fetchOrdersTask.getResource());
+                    }
+                }
+            };
+
+            fetchOrdersBlockTask.addDependency(fetchOrdersTask);
+            localInstance.taskManager.addTask(fetchOrdersTask);
+            TaskManager.getMainTaskManager().addTask(fetchOrdersBlockTask);
         }
     }
 }

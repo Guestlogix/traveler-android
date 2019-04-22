@@ -102,7 +102,7 @@ public class Router {
 
         if (option != null) {
             rb.param("option-id", option.getId());
-        }else{
+        } else {
             rb.param("option-id", availability.getId());
         }
 
@@ -192,6 +192,22 @@ public class Router {
                 .build(session.getAuthToken().getValue());
     }
 
+    // /order/all
+    public static AuthenticatedUrlRequest orders(Integer skip, Integer take, Date from, Date to, Session session, Context context) {
+        RequestBuilder rb = RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/order/all")
+                .param("traveler", session.getUserId())
+                .param("skip", skip.toString())
+                .param("take", take.toString())
+                .param("from", DateHelper.formatDateToISO8601(from))
+                .param("to", DateHelper.formatDateToISO8601(to))
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey());
+
+        return rb.build(session.getAuthToken().getValue());
+    }
 
     /**
      * Extracts the device information and adds it to the headers.
