@@ -108,7 +108,6 @@ public class BookableActionStripFragment extends PurchaseFragment implements Fet
 
     @Override
     public void onPassFetchSuccess(List<Pass> pass) {
-        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
         Product p = bookingContext.getProduct();
         String flavour = null;
 
@@ -130,5 +129,28 @@ public class BookableActionStripFragment extends PurchaseFragment implements Fet
                 .setTitle(R.string.unexpected_error)
                 .setMessage(error.getMessage())
                 .show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        PurchaseContext.State state = bookingContext.getState();
+        switch (state) {
+            case LOADING:
+                actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
+                break;
+            case AVAILABLE:
+                actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+                break;
+            case OPTION_REQUIRED:
+            case NOT_AVAILABLE:
+            case DEFAULT:
+                actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
+                break;
+            default:
+                TravelerLog.w("State not Handled: %s", state.toString());
+                break;
+        }
     }
 }

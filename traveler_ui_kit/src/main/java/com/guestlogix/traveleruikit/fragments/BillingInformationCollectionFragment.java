@@ -99,6 +99,13 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        addCardBtn.setEnabled(true);
+    }
+
     /**
      * Subscribes to payment add events.
      *
@@ -110,6 +117,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
     private void onAddPaymentButtonClick(View _button) {
         if (TravelerUI.getPaymentProvider() != null) {
+            addCardBtn.setEnabled(false);
             Intent i = TravelerUI.getPaymentProvider().getPaymentActivityIntent(getActivity());
             startActivityForResult(i, OrderSummaryActivity.CARD_REQUEST);
         }

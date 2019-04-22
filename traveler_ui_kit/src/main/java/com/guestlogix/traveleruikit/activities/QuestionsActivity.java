@@ -58,6 +58,7 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
     }
 
     private void onQuestionFormCompleted(BookingForm bookingForm) {
+        form.setFormCompletedListener(null);
         Traveler.createOrder(bookingForm, this);
     }
 
@@ -76,8 +77,18 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
 
     @Override
     public void onOrderCreateFailure(Error error) {
+        form.setFormCompletedListener(this::onQuestionFormCompleted);
         new AlertDialog.Builder(this)
                 .setMessage(R.string.unexpected_error)
                 .show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (form != null) {
+            form.setFormCompletedListener(this::onQuestionFormCompleted);
+        }
     }
 }
