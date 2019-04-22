@@ -8,7 +8,7 @@ public class TextualAnswer extends Answer {
             throw new AnswerError();
         }
 
-        this.value = value;
+        this.value = value.trim();
         this.questionId = question.getId();
     }
 
