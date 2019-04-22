@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
-    private ObjectMappingFactory<T> mObjectMappingFactory;
+    private ObjectMappingFactory<T> objectMappingFactory;
 
     public ArrayMappingFactory(ObjectMappingFactory<T> objectMappingFactory) {
-        this.mObjectMappingFactory = objectMappingFactory;
+        this.objectMappingFactory = objectMappingFactory;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
         }
         reader.beginArray();
         while (reader.hasNext()) {
-            T model = mObjectMappingFactory.instantiate(reader);
+            T model = objectMappingFactory.instantiate(reader);
             objects.add(model);
         }
 

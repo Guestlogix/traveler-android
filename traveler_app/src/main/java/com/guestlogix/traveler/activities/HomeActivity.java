@@ -131,6 +131,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void handleProfile(Profile _profile) {
+
         this.profile = _profile;
         if (this.profile != null) {
             Traveler.setUserId(_profile.getTravelerId());
