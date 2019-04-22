@@ -1,14 +1,15 @@
 package com.guestlogix.traveler.fragments;
 
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
@@ -26,7 +27,8 @@ import com.guestlogix.traveleruikit.fragments.BaseFragment;
 /**
  * A fragment which allows the user to edit his/her profile information
  */
-public class EditProfileFragment extends BaseFragment {
+@SuppressWarnings("unused")
+public class EditProfileFragment extends BaseFragment implements View.OnTouchListener {
 
     // Views
     private TextInputEditText firstName;
@@ -35,6 +37,7 @@ public class EditProfileFragment extends BaseFragment {
     private TextInputLayout firstNameContainer;
     private TextInputLayout lastNameContainer;
     private TextInputLayout emailContainer;
+    // TODO: Add profile picture
     private ImageView profilePicture;
 
     private Profile profile;
@@ -51,9 +54,15 @@ public class EditProfileFragment extends BaseFragment {
         profile = Guest.getInstance().getSignedInUser(getActivityContext());
         clearIcon = getResources().getDrawable(R.drawable.ic_cancel_gray_24dp);
 
+        int w = clearIcon.getIntrinsicWidth();
+        int h = clearIcon.getIntrinsicHeight();
+
+        clearIcon.setBounds(0, 0, w, h);
+
         // TODO: Handle null profile.
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_edit_profile, container, false);
@@ -75,6 +84,10 @@ public class EditProfileFragment extends BaseFragment {
         firstName.addTextChangedListener(new TextWatcherWrapper(firstName));
         lastName.addTextChangedListener(new TextWatcherWrapper(lastName));
         email.addTextChangedListener(new TextWatcherWrapper(email));
+
+        firstName.setOnTouchListener(this);
+        lastName.setOnTouchListener(this);
+        email.setOnTouchListener(this);
 
         Button button = v.findViewById(R.id.button_editProfile_submit);
         button.setOnClickListener(this::onSaveClick);
@@ -126,6 +139,19 @@ public class EditProfileFragment extends BaseFragment {
         // TODO: Get dialog
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        TextInputEditText et = (TextInputEditText) v;
+        if (event.getAction() == MotionEvent.ACTION_UP && et.getCompoundDrawables()[2] != null) {
+            if (event.getX() >= (et.getRight() - et.getLeft() - et.getCompoundDrawables()[2].getBounds().width())) {
+                et.setText("");
+            }
+        }
+
+        return false;
+    }
+
     private class TextWatcherWrapper implements TextWatcher {
         TextInputEditText editText;
 
@@ -147,7 +173,11 @@ public class EditProfileFragment extends BaseFragment {
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
                 editText.setCompoundDrawables(null, null, clearIcon, null);
+            } else {
+                editText.setCompoundDrawables(null, null, null, null);
             }
         }
     }
+
+
 }

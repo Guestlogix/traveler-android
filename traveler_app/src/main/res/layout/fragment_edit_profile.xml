@@ -39,7 +39,7 @@
                     android:layout_width="94dp"
                     android:layout_height="94dp"
                     android:contentDescription="@string/description_profile_pic"
-                    android:src="@drawable/ic_edit_white_24dp"/>
+                    android:src="@drawable/ic_person_white_24dp"/>
         </FrameLayout>
 
         <com.google.android.material.textfield.TextInputLayout
