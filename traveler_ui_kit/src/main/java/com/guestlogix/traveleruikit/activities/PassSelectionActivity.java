@@ -173,20 +173,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
         passQuantities.put(pass, val);
 
-        boolean hasAtLeastOnePass = false;
-        for (Integer i : passQuantities.values()) {
-            if (i != null && i > 0) {
-                hasAtLeastOnePass = true;
-                break;
-            }
-        }
-
-        if (hasAtLeastOnePass) {
-            actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-        } else {
-            actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
-        }
-
+        enableActionStrip();
         calculatePrice();
     }
 
@@ -195,7 +182,6 @@ public class PassSelectionActivity extends AppCompatActivity implements
         Intent intent = new Intent(this, QuestionsActivity.class);
         intent.putExtra(QuestionsActivity.EXTRA_BOOKING_FORM, bookingForm);
         startActivity(intent);
-        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
     }
 
     @Override
@@ -269,5 +255,27 @@ public class PassSelectionActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        enableActionStrip();
+    }
+
+    private void enableActionStrip() {
+        boolean hasAtLeastOnePass = false;
+        for (Integer i : passQuantities.values()) {
+            if (i != null && i > 0) {
+                hasAtLeastOnePass = true;
+                break;
+            }
+        }
+
+        if (hasAtLeastOnePass) {
+            actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+        } else {
+            actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
+        }
     }
 }
