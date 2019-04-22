@@ -1,10 +1,14 @@
 package com.guestlogix.traveler.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
@@ -34,6 +38,7 @@ public class EditProfileFragment extends BaseFragment {
     private ImageView profilePicture;
 
     private Profile profile;
+    private Drawable clearIcon;
 
     public EditProfileFragment() {
         // Do nothing.
@@ -44,6 +49,7 @@ public class EditProfileFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
 
         profile = Guest.getInstance().getSignedInUser(getActivityContext());
+        clearIcon = getResources().getDrawable(R.drawable.ic_cancel_gray_24dp);
 
         // TODO: Handle null profile.
     }
@@ -65,6 +71,10 @@ public class EditProfileFragment extends BaseFragment {
             lastName.setText(profile.getLastName());
             email.setText(profile.getEmail());
         }
+
+        firstName.addTextChangedListener(new TextWatcherWrapper(firstName));
+        lastName.addTextChangedListener(new TextWatcherWrapper(lastName));
+        email.addTextChangedListener(new TextWatcherWrapper(email));
 
         Button button = v.findViewById(R.id.button_editProfile_submit);
         button.setOnClickListener(this::onSaveClick);
@@ -114,5 +124,30 @@ public class EditProfileFragment extends BaseFragment {
 
     private void onCancelClick(View _cancel) {
         // TODO: Get dialog
+    }
+
+    private class TextWatcherWrapper implements TextWatcher {
+        TextInputEditText editText;
+
+        TextWatcherWrapper(TextInputEditText et) {
+            editText = et;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // Do nothing.
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            // Do nothing.
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() > 0) {
+                editText.setCompoundDrawables(null, null, clearIcon, null);
+            }
+        }
     }
 }
