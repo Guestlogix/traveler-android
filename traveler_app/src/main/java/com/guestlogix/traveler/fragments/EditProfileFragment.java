@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
@@ -29,6 +31,7 @@ public class EditProfileFragment extends BaseFragment {
     private TextInputLayout firstNameContainer;
     private TextInputLayout lastNameContainer;
     private TextInputLayout emailContainer;
+    private ImageView profilePicture;
 
     private Profile profile;
 
@@ -55,6 +58,7 @@ public class EditProfileFragment extends BaseFragment {
         firstNameContainer = v.findViewById(R.id.textInputLayout_editProfile_firstNameContainer);
         lastNameContainer = v.findViewById(R.id.textInputLayout_editProfile_lastNameContainer);
         emailContainer = v.findViewById(R.id.textInputLayout_editProfile_emailContainer);
+        profilePicture = v.findViewById(R.id.imageView_editProfile_userPicture);
 
         if (profile != null) {
             firstName.setText(profile.getFirstName());
@@ -64,6 +68,9 @@ public class EditProfileFragment extends BaseFragment {
 
         Button button = v.findViewById(R.id.button_editProfile_submit);
         button.setOnClickListener(this::onSaveClick);
+
+        ImageButton cancel = v.findViewById(R.id.imageButton_editProfile_cancel);
+        cancel.setOnClickListener(this::onCancelClick);
 
         return v;
     }
@@ -103,5 +110,9 @@ public class EditProfileFragment extends BaseFragment {
             NavDirections action = EditProfileFragmentDirections.actionEditProfileDestinationToProfileDestination();
             nav.navigate(action);
         }
+    }
+
+    private void onCancelClick(View _cancel) {
+        // TODO: Get dialog
     }
 }

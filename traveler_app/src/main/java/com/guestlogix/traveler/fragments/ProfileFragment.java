@@ -60,6 +60,9 @@ public class ProfileFragment extends BaseFragment {
         ImageButton settings = v.findViewById(R.id.imageButton_profile_settings);
         settings.setOnClickListener(this::onSettingsClick);
 
+        ImageButton back = v.findViewById(R.id.imageButton_profile_back);
+        back.setOnClickListener(this::onBackClick);
+
         return v;
     }
 
@@ -71,6 +74,10 @@ public class ProfileFragment extends BaseFragment {
     private void onSettingsClick(View _settings) {
         NavDirections action = ProfileFragmentDirections.actionProfileDestToHomeDestination();
         nav.navigate(action);
+    }
+
+    private void onBackClick(View _back) {
+        getActivityContext().finish();
     }
 
     private void onOrdersClick(View _v) {
