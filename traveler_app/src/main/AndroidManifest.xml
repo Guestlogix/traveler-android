@@ -14,7 +14,8 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
         <activity android:name=".activities.ProfileActivity"
-                  android:theme="@style/AppTheme.NoActionBar">
+                  android:theme="@style/AppTheme.NoActionBar"
+                  android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
         <activity android:name=".activities.AddFlightActivity"
                   android:label="Add Flight" >
