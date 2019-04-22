@@ -1,6 +1,7 @@
 package com.guestlogix.traveler.fragments;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
@@ -19,17 +19,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
-import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.activities.HomeActivity;
-import com.guestlogix.traveler.callbacks.ProfileCallback;
-import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
@@ -37,19 +28,13 @@ import com.guestlogix.traveleruikit.fragments.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
-import static com.guestlogix.traveler.viewmodels.HomeViewModel.REQUEST_CODE_SIGN_IN;
-
 /**
  * Container for the navigation of all the fragments
  */
-public class AppSettingsFragment extends BaseFragment implements View.OnClickListener, ProfileCallback {
+public class AppSettingsFragment extends BaseFragment implements View.OnClickListener {
 
     private List<String> actions = new ArrayList<>();
-    private Profile user;
-    RecyclerView actionsRV;
 
-    private SettingAdapter adapter;
     private String version;
 
     public AppSettingsFragment() {
@@ -64,32 +49,25 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
             PackageInfo info = getContext().getPackageManager().getPackageInfo(getActivityContext().getPackageName(), 0);
             version = info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            // >:(
+            TravelerLog.e("Could not fetch version number.");
         }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_app_settings, container, false);
-        user = Guest.getInstance().getSignedInUser(getActivityContext());
 
         if (actions.isEmpty()) {
-            // Items
             actions.add(getString(R.string.support));
             actions.add(String.format(getString(R.string.app_version), version));
             actions.add(getString(R.string.faq));
             actions.add(getString(R.string.legal));
             actions.add(getString(R.string.privacy_policy));
-
-            if (user != null) {
-                actions.add(getString(R.string.sign_out));
-            } else {
-                actions.add(getString(R.string.sign_in));
-            }
+            actions.add(getString(R.string.sign_out));
         }
 
-        actionsRV = v.findViewById(R.id.recyclerView_appSettings_actionsList);
-        adapter = new SettingAdapter();
+        RecyclerView actionsRV = v.findViewById(R.id.recyclerView_appSettings_actionsList);
+        SettingAdapter adapter = new SettingAdapter();
         actionsRV.setAdapter(adapter);
 
         LinearLayoutManager lm = new LinearLayoutManager(v.getContext());
@@ -97,7 +75,8 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         actionsRV.addItemDecoration(new DividerItemDecoration(v.getContext(), lm.getOrientation()));
 
         ImageButton imageButton = v.findViewById(R.id.imageButton_appSettings_back);
-        imageButton.setOnClickListener(this::navigateBack);
+        imageButton.setOnClickListener(_v ->
+                Navigation.findNavController(getActivityContext(), R.id.nav_app_settings).popBackStack());
 
         return v;
     }
@@ -149,92 +128,36 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
                 nav.navigate(action);
                 break;
             case 5:
-                if (user == null) {
-                    // Log In
-                    String clientId = BuildConfig.GOOGL_SIGN_IN_CLIENT_ID;
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken(clientId)
-                            .requestEmail()
-                            .build();
+                final Dialog d = new Dialog(getActivityContext());
 
-                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(getActivityContext(), gso);
-                    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                    startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN);
-                } else {
-                    final Dialog d = new Dialog(getActivityContext());
-
-                    d.setContentView(R.layout.dialog_alert);
-                    TextView dTitle = d.findViewById(R.id.textView_alertDialog_title);
-                    TextView msg = d.findViewById(R.id.textView_alertDialog_message);
-                    Button cancel = d.findViewById(R.id.button_alertDialog_negativeButton);
-                    Button confirm = d.findViewById(R.id.button_alertDialog_positiveButton);
+                d.setContentView(R.layout.dialog_alert);
+                TextView dTitle = d.findViewById(R.id.textView_alertDialog_title);
+                TextView msg = d.findViewById(R.id.textView_alertDialog_message);
+                Button cancel = d.findViewById(R.id.button_alertDialog_negativeButton);
+                Button confirm = d.findViewById(R.id.button_alertDialog_positiveButton);
 
 
-                    dTitle.setText(R.string.confirm_sign_out);
-                    msg.setText(R.string.sign_out_msg);
+                dTitle.setText(R.string.confirm_sign_out);
+                msg.setText(R.string.sign_out_msg);
 
-                    confirm.setText(R.string.confirm);
-                    confirm.setOnClickListener(b -> onSignOut());
+                confirm.setText(R.string.confirm);
+                confirm.setOnClickListener(b -> onSignOut(d));
 
-                    cancel.setText(R.string.cancel);
-                    cancel.setOnClickListener(b -> d.dismiss());
+                cancel.setText(R.string.cancel);
+                cancel.setOnClickListener(b -> d.dismiss());
 
-                    d.show();
-                }
-
+                d.show();
                 break;
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK && null != data && requestCode == REQUEST_CODE_SIGN_IN) {
-            try {
-                Task<GoogleSignInAccount> completedTask = GoogleSignIn.getSignedInAccountFromIntent(data);
-                GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
-                if (account != null) {
-                    Guest.getInstance().fetchProfile(account.getIdToken(), this);
-                }
-
-
-            } catch (ApiException e) {
-                TravelerLog.e("HomeActivity", "signInResult:failed code=" + e.getStatusCode());
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onSignInSuccess(Profile profile) {
-        profile.save(getActivityContext());
-
-        actions.remove(5);
-        actions.add(getString(R.string.sign_out));
-        adapter.notifyItemChanged(5);
-    }
-
-    @Override
-    public void onSignInError(Error error) {
-        Toast.makeText(getActivity(), "Could not sign in", Toast.LENGTH_SHORT).show();
-    }
-
-    private void navigateBack(View _v) {
-        if (user != null) {
-            Navigation.findNavController(getActivityContext(), R.id.nav_app_settings).popBackStack();
-        } else {
-            Intent i = new Intent(getActivity(), HomeActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-        }
-    }
-
-    private void onSignOut() {
+    private void onSignOut(DialogInterface d) {
         Guest.getInstance().logout(getActivityContext());
-        user = null;
-        actions.remove(5);
-        actions.add(getString(R.string.sign_in));
-        adapter.notifyItemChanged(5);
+        d.dismiss();
+
+        Intent i = new Intent(getActivity(), HomeActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 
     class SettingAdapter extends RecyclerView.Adapter<ViewHolder> {
