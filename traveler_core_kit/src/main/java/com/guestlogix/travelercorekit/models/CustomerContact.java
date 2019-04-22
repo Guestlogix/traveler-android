@@ -61,19 +61,19 @@ public class CustomerContact implements Serializable {
 
                 switch (name) {
                     case "title":
-                        title = JsonReaderHelper.readNonNullString(reader);
+                        title = JsonReaderHelper.readString(reader);
                         break;
                     case "firstName":
-                        fName = JsonReaderHelper.readNonNullString(reader);
+                        fName = JsonReaderHelper.readString(reader);
                         break;
                     case "lastName":
-                        lName = JsonReaderHelper.readNonNullString(reader);
+                        lName = JsonReaderHelper.readString(reader);
                         break;
                     case "email":
                         email = JsonReaderHelper.readNonNullString(reader);
                         break;
                     case "phone":
-                        phone = JsonReaderHelper.readNonNullString(reader);
+                        phone = JsonReaderHelper.readString(reader);
                         break;
                 }
             }
