@@ -1,6 +1,7 @@
 package com.guestlogix.traveler.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
@@ -23,9 +25,6 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A fragment which allows the user to edit his/her profile information
@@ -40,11 +39,11 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
     private TextInputLayout firstNameContainer;
     private TextInputLayout lastNameContainer;
     private TextInputLayout emailContainer;
-    // TODO: Add profile picture
     private ImageView profilePicture;
-
-    private Profile profile;
+    private static final String emailRegex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
     private Drawable clearIcon;
+    private boolean didMakeChanges = false;
+    private Profile profile;
 
     public EditProfileFragment() {
         // Do nothing.
@@ -61,8 +60,6 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
         int h = clearIcon.getIntrinsicHeight();
 
         clearIcon.setBounds(0, 0, w, h);
-
-        // TODO: Handle null profile.
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -91,6 +88,10 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
         firstName.setOnTouchListener(this);
         lastName.setOnTouchListener(this);
         email.setOnTouchListener(this);
+
+        firstName.setOnFocusChangeListener(this::onEditTextFocusChange);
+        lastName.setOnFocusChangeListener(this::onEditTextFocusChange);
+        email.setOnFocusChangeListener(this::onEditTextFocusChange);
 
         Button button = v.findViewById(R.id.button_editProfile_submit);
         button.setOnClickListener(this::onSaveClick);
@@ -130,21 +131,48 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
             profile.setEmail(emailAddress);
         }
 
-        if (!emailAddress.matches("^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$")) {
+        if (!emailAddress.matches(emailRegex)) {
             emailContainer.setError(getString(R.string.invalid_email));
             valid = false;
         }
 
         if (valid) {
             profile.save(getActivityContext());
-            NavController nav = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
-            NavDirections action = EditProfileFragmentDirections.actionEditProfileDestinationToProfileDestination();
-            nav.navigate(action);
+            navigateBack();
         }
     }
 
     private void onCancelClick(View _cancel) {
-        // TODO: Get dialog
+        if (didMakeChanges) {
+            final Dialog d = new Dialog(getActivityContext());
+
+            d.setContentView(R.layout.dialog_alert);
+            TextView dTitle = d.findViewById(R.id.textView_alertDialog_title);
+            TextView msg = d.findViewById(R.id.textView_alertDialog_message);
+            Button cancel = d.findViewById(R.id.button_alertDialog_negativeButton);
+            Button ok = d.findViewById(R.id.button_alertDialog_positiveButton);
+
+            dTitle.setVisibility(View.GONE);
+            msg.setText(R.string.unsaved_changes_lost);
+            cancel.setText(R.string.cancel);
+            ok.setText(R.string.ok);
+
+            cancel.setOnClickListener(v -> d.dismiss());
+            ok.setOnClickListener(v -> {
+                d.dismiss();
+                navigateBack();
+            });
+
+            d.show();
+        } else {
+            navigateBack();
+        }
+    }
+
+    private void navigateBack() {
+        NavController nav = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
+        NavDirections action = EditProfileFragmentDirections.actionEditProfileDestinationToProfileDestination();
+        nav.navigate(action);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -158,6 +186,20 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
         }
 
         return false;
+    }
+
+    /*
+        If the edit text loses focus, hides the clear icon.
+        If it gains focus and has a non empty value, displays the clear icon
+     */
+    private void onEditTextFocusChange(View v, boolean hasFocus) {
+        TextInputEditText et = (TextInputEditText) v;
+
+        if (!hasFocus) {
+            et.setCompoundDrawables(null, null, null, null);
+        } else if (et.getText() != null && et.getText().length() > 0) {
+            et.setCompoundDrawables(null, null, clearIcon, null);
+        }
     }
 
     private class TextWatcherWrapper implements TextWatcher {
@@ -179,6 +221,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
 
         @Override
         public void afterTextChanged(Editable s) {
+            didMakeChanges = true;
             if (s.length() > 0) {
                 editText.setCompoundDrawables(null, null, clearIcon, null);
             } else {
@@ -186,6 +229,5 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
             }
         }
     }
-
 
 }
