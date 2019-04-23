@@ -102,44 +102,45 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
         return v;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void onSaveClick(View _button) {
-        boolean valid = true;
-        String fName = firstName.getText().toString();
+        boolean valid = validateRequired(firstName, firstNameContainer);
 
-        if (fName.isEmpty()) {
-            firstNameContainer.setError(getString(R.string.required));
-            valid = false;
-        } else {
-            profile.setFirstName(fName);
-        }
+        valid = validateRequired(lastName, lastNameContainer) && valid;
+        valid = validateRequired(email, emailContainer) && valid;
 
-        String lName = lastName.getText().toString();
-
-        if (fName.isEmpty()) {
-            lastNameContainer.setError(getString(R.string.required));
-            valid = false;
-        } else {
-            profile.setLastName(lName);
-        }
-
+        // Validate email pattern
         String emailAddress = email.getText().toString();
-
-        if (emailAddress.isEmpty()) {
-            emailContainer.setError(getString(R.string.required));
-            valid = false;
-        } else {
-            profile.setEmail(emailAddress);
-        }
-
         if (!emailAddress.matches(emailRegex)) {
             emailContainer.setError(getString(R.string.invalid_email));
             valid = false;
         }
 
+
         if (valid) {
+            profile.setFirstName(firstName.getText().toString());
+            profile.setLastName(lastName.getText().toString());
+            profile.setEmail(emailAddress);
+
             profile.save(getActivityContext());
             navigateBack();
         }
+    }
+
+    private boolean validateRequired(TextInputEditText e, TextInputLayout l) {
+        if (e.getText() == null) {
+            return false;
+        }
+
+        String val = e.getText().toString();
+
+        if (val.isEmpty()) {
+            l.setError(getString(R.string.required));
+            return false;
+        }
+
+        l.setError(null);
+        return true;
     }
 
     private void onCancelClick(View _cancel) {
