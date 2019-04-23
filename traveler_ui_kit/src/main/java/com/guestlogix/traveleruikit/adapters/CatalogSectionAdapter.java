@@ -67,8 +67,8 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
         CatalogSectionViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
-            sectionTitleTextView = mView.findViewById(R.id.sectionTitleTextView);
-            sectionItemRecyclerView = mView.findViewById(R.id.sectionItemRecyclerView);
+            sectionTitleTextView = mView.findViewById(R.id.textView_catalog_sectionTitle);
+            sectionItemRecyclerView = mView.findViewById(R.id.recyclerView_catalog_itemContainer);
             sectionItemRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
 
             HorizontalSpaceItemDecoration spaceItemDecoration =

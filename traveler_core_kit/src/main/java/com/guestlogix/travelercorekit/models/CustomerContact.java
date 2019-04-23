@@ -82,7 +82,6 @@ public class CustomerContact implements Serializable {
 
             if (null == email) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload email must not be null"));
-
             }
 
             return new CustomerContact(title, fName, lName, email, phone);
