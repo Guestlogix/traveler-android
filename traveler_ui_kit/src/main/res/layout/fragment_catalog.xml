@@ -9,7 +9,5 @@
             android:id="@+id/catalogWidget_catalogFragment_container"
             android:visibility="visible"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            style="@style/Container"/>
-
+            android:layout_height="match_parent"/>
 </FrameLayout>

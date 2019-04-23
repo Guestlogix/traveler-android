@@ -7,10 +7,10 @@
 
     <ImageView
             android:id="@+id/imageView_catalogSectionItem_thumbnail"
-            android:layout_width="@dimen/thumbnail_width"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@color/lightGray"
-            android:layout_height="@dimen/thumbnail_height"
             android:tint="@color/catalogOverlay"/>
 
     <TextView
@@ -22,9 +22,5 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:padding="@dimen/padding_small"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="6"
-            android:shadowColor="@color/black"
             tools:text="Chocolate Tour Of Toronto"/>
 </RelativeLayout>

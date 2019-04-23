@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * Activity which lets the user select an arbitrary amount of Passes for a particular product.
  * <p>
- * Requires a <code>List<Pass></code> object passes as "EXTRA_PASS_ACTIVITY_PASSES" extra and a <code>Product</code> object
+ * Requires a <code>List&lt;Pass&gt;</code> object passes as "EXTRA_PASS_ACTIVITY_PASSES" extra and a <code>Product</code> object
  * passed as "EXTRA_PASS_ACTIVITY_PRODUCT". If either of those is null or missing the activity will finish with no result!
  * </p>
  */
