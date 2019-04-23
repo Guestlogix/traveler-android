@@ -2,8 +2,6 @@ package com.guestlogix.traveler.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.traveler.R;
@@ -12,10 +10,6 @@ import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Traveler;
-import com.guestlogix.traveleruikit.fragments.BookableActionStripFragment;
-import com.guestlogix.traveleruikit.fragments.OrdersFragment;
-import com.guestlogix.traveleruikit.models.BookingContext;
-import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
