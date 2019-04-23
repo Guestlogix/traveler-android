@@ -19,10 +19,15 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.activities.HomeActivity;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 import java.util.ArrayList;
@@ -152,12 +157,25 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void onSignOut(DialogInterface d) {
-        Guest.getInstance().logout(getActivityContext());
         d.dismiss();
 
-        Intent i = new Intent(getActivity(), HomeActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        String clientId = BuildConfig.GOOGL_SIGN_IN_CLIENT_ID;
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(clientId)
+                .requestEmail()
+                .build();
+
+        GoogleSignInClient gSignInClient = GoogleSignIn.getClient(getActivityContext(), gso);
+
+        gSignInClient.signOut().addOnCompleteListener(getActivityContext(), task -> {
+
+            Guest.getInstance().logout(getActivityContext());
+            Traveler.removeUserId();
+
+            Intent i = new Intent(getActivity(), HomeActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+        });
     }
 
     class SettingAdapter extends RecyclerView.Adapter<ViewHolder> {
