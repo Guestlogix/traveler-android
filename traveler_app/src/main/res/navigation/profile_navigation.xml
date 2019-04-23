@@ -12,9 +12,12 @@
             tools:layout="@layout/fragment_profile">
 
         <action android:id="@+id/action_profile_dest_to_home_destination"
-                app:destination="@id/app_settings_destination"/>
+                app:destination="@id/app_settings_destination" app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"/>
         <action android:id="@+id/action_profile_destination_to_edit_profile_destination"
-                app:destination="@id/edit_profile_destination"/>
+                app:destination="@id/edit_profile_destination" app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left" app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
     </fragment>
 
     <fragment
@@ -24,7 +27,7 @@
         <action
                 android:id="@+id/action_to_info_dest"
                 app:destination="@id/app_info_destination"
-                app:enterAnim="@anim/nav_default_enter_anim"/>
+                app:enterAnim="@anim/slide_in_right" app:exitAnim="@anim/slide_out_left"/>
     </fragment>
 
     <fragment
@@ -44,6 +47,8 @@
         <action android:id="@+id/action_edit_profile_destination_to_profile_destination"
                 app:destination="@id/profile_destination"
                 app:popUpTo="@id/profile_destination"
-                app:popUpToInclusive="true"/>
+                app:popUpToInclusive="true" app:enterAnim="@anim/slide_in_left"
+                app:exitAnim="@anim/slide_out_right" app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
     </fragment>
 </navigation>
