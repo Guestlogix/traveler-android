@@ -8,7 +8,7 @@
     <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:fitsSystemWindows="true">
@@ -30,7 +30,9 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_normal"
                     android:contentDescription="@string/description_cancel_edit_profile"
-                    android:layout_margin="@dimen/margin_default"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
                     android:src="@drawable/ic_close_white_24dp"/>
 
             <ImageView
