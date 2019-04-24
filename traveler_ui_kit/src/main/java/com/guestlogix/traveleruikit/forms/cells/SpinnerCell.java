@@ -29,8 +29,8 @@ public class SpinnerCell extends BaseCell {
     public SpinnerCell(@NonNull View itemView) {
         super(itemView);
 
-        this.autocomplete = itemView.findViewById(R.id.autocomplete_form_inputValue);
-        this.layout = itemView.findViewById(R.id.textInputLayout_form_textLayout);
+        autocomplete = itemView.findViewById(R.id.autocomplete_form_inputValue);
+        layout = itemView.findViewById(R.id.textInputLayout_form_textLayout);
 
         this.autocomplete.setOnItemClickListener((parent, view, position, id) -> {
             if (null != SpinnerCell.this.onCellValueChangedListener) {
@@ -49,7 +49,6 @@ public class SpinnerCell extends BaseCell {
                 }
 
                 this.autocomplete.showDropDown();
-                return true;
             }
 
             return false;
@@ -64,7 +63,6 @@ public class SpinnerCell extends BaseCell {
         autocomplete.setError(null);
         autocomplete.setHint(null);
         autocomplete.setAdapter(null);
-        autocomplete.clearFocus();
     }
 
     /**
