@@ -1,7 +1,14 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,6 +62,9 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
         form.setBookingForm(bookingForm);
         form.setLayoutManager(new LinearLayoutManager(this));
         form.setFormCompletedListener(this::onQuestionFormCompleted);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void onQuestionFormCompleted(BookingForm bookingForm) {
@@ -90,5 +100,45 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
         if (form != null) {
             form.setFormCompletedListener(this::onQuestionFormCompleted);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.order_summary_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menuItem_cancel) {
+            final Dialog d = new Dialog(this);
+
+            d.setContentView(R.layout.dialog_alert);
+            TextView title = d.findViewById(R.id.textView_alertDialog_title);
+            TextView msg = d.findViewById(R.id.textView_alertDialog_message);
+            Button cancel = d.findViewById(R.id.button_alertDialog_negativeButton);
+            Button discard = d.findViewById(R.id.button_alertDialog_positiveButton);
+
+            title.setVisibility(View.GONE);
+
+            msg.setText(R.string.discard_order);
+
+            discard.setText(R.string.discard);
+            discard.setOnClickListener(b -> {
+                Intent i = new Intent(this, CatalogItemDetailsActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            });
+
+            cancel.setText(R.string.cancel);
+            cancel.setOnClickListener(b -> d.dismiss());
+
+            d.show();
+        } else if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return true;
     }
 }

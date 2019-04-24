@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.activities;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -36,6 +37,9 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Ret
 
             catalogItem = (CatalogItem) extras.getSerializable(ARG_CATALOG_ITEM);
             catalogItemDetailsViewModel.setCatalogItem(catalogItem);
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         } else {
             TravelerLog.e(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, this.getLocalClassName());
             finish();
@@ -64,5 +68,14 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Ret
     @Override
     public void onRetry() {
         catalogItemDetailsViewModel.setCatalogItem(catalogItem);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return true;
     }
 }

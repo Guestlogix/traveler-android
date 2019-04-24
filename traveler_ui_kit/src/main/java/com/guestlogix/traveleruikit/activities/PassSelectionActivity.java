@@ -68,8 +68,8 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
     // Views
     private ActionStrip actionStrip;
-    private Form form;
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,11 +102,14 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
         LinearLayoutManager lm = new LinearLayoutManager(this);
 
-        form = findViewById(R.id.form_passSelectionActivity);
+        Form form = findViewById(R.id.form_passSelectionActivity);
         form.setDataSource(this);
         form.setLayoutManager(lm);
         form.setFormValueChangedListener(this);
         form.addItemDecoration(new PassItemDecoration(this));
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         if (flavourTitle != null) {
             TextView tv = findViewById(R.id.textView_passSelectionActivity_flavourTitle);
