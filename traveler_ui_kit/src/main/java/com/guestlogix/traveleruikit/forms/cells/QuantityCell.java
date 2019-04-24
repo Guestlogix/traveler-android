@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
 import android.app.Dialog;
+import android.graphics.Paint;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -28,6 +29,7 @@ public class QuantityCell extends BaseCell {
         quantityIndicator = itemView.findViewById(R.id.quantity);
         title = itemView.findViewById(R.id.title);
         subTitle = itemView.findViewById(R.id.subTitle);
+        quantityIndicator.setPaintFlags(quantityIndicator.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     /**
@@ -48,7 +50,7 @@ public class QuantityCell extends BaseCell {
         subTitle.setText(q.getSubtitle());
 
         Integer val = (Integer) cellValueAdapter.getCellValue(this);
-        quantityIndicator.setText(val != null ? val.toString() : "0");
+        quantityIndicator.setText(val != null ? val.toString() : q.getMinValue() != null ? q.getMinValue().toString() : "0"); // If all fails, display a 0
 
         quantityIndicator.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(contextRequestListener.onCellContextRequest());

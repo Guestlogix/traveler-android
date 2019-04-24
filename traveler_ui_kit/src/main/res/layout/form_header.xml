@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/margin_default">
+        android:layout_height="wrap_content">
     <TextView
+            style="@style/TitleTwoTextView"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/headerTitle"
-            tools:text="Section Name"
-            style="@style/TitleTwoTextView"/>
+            tools:text="Section Name"/>
 
     <TextView
+            style="@style/DefaultTextView"
+            android:id="@+id/subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/headerSubtitle"
-            android:layout_below="@id/headerTitle"
-            style="@style/DefaultTextView"
             tools:text="Disclaimer: This is just a test section which will be replaced soon enough. Do not worry about a thing."/>
-</RelativeLayout>
+</LinearLayout>

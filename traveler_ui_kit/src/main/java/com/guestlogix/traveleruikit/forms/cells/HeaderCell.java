@@ -18,8 +18,8 @@ public class HeaderCell extends BaseCell {
 
     public HeaderCell(@NonNull View itemView) {
         super(itemView);
-        title = itemView.findViewById(R.id.headerTitle);
-        subtitle = itemView.findViewById(R.id.headerSubtitle);
+        title = itemView.findViewById(R.id.title);
+        subtitle = itemView.findViewById(R.id.subtitle);
     }
 
     /**

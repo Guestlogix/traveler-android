@@ -1,6 +1,11 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
 import com.guestlogix.travelercorekit.models.*;
@@ -101,7 +106,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
         form.setDataSource(this);
         form.setLayoutManager(lm);
         form.setFormValueChangedListener(this);
-        form.addItemDecoration(new DividerItemDecoration(this, lm.getOrientation()));
+        form.addItemDecoration(new PassItemDecoration(this));
 
         if (flavourTitle != null) {
             TextView tv = findViewById(R.id.textView_passSelectionActivity_flavourTitle);
@@ -276,6 +281,66 @@ public class PassSelectionActivity extends AppCompatActivity implements
             actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
         } else {
             actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
+        }
+    }
+
+    private class PassItemDecoration extends RecyclerView.ItemDecoration {
+        private final int MARGIN_IN_DIPS = (int) PassSelectionActivity.this.getResources().getDimension(R.dimen.margin_default);
+        private Drawable divider;
+        private Rect bounds = new Rect();
+
+        PassItemDecoration(Context context) {
+            final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.listDivider});
+            divider = a.getDrawable(0);
+
+            a.recycle();
+        }
+
+        @Override
+        public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+
+            outRect.set(MARGIN_IN_DIPS, outRect.top, MARGIN_IN_DIPS, outRect.bottom);
+        }
+
+        @Override
+        public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+            c.save();
+            int l, r;
+
+            if (parent.getClipToPadding()) {
+                l = parent.getPaddingLeft();
+                r = parent.getWidth() - parent.getPaddingRight();
+
+                c.clipRect(l, parent.getPaddingTop(), r, parent.getHeight() - parent.getPaddingBottom());
+            } else {
+                l = 0;
+                r = parent.getWidth();
+            }
+
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                View v = parent.getChildAt(i);
+                parent.getDecoratedBoundsWithMargins(v, bounds);
+
+                int translationY = Math.round(v.getTranslationY());
+                int t = bounds.top + translationY;
+                int b = t + divider.getIntrinsicHeight();
+
+                divider.setBounds(l, t, r, b);
+                divider.draw(c);
+
+                if (i == parent.getChildCount() - 1) {
+                    // Last item, draw a line under.
+
+                    int b2 = bounds.bottom + translationY;
+                    int t2 = b2 - divider.getIntrinsicHeight();
+
+                    divider.setBounds(l, t2, r, b2);
+                    divider.draw(c);
+                }
+            }
+
+            c.restore();
         }
     }
 }

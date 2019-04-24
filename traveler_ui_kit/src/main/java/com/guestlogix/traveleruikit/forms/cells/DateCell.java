@@ -2,7 +2,6 @@ package com.guestlogix.traveleruikit.forms.cells;
 
 import android.app.DatePickerDialog;
 import android.os.Build;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.DatePicker;
 import androidx.annotation.NonNull;

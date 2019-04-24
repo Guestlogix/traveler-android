@@ -7,5 +7,6 @@
     <com.guestlogix.traveleruikit.widgets.BookingFormWidget
             android:id="@+id/questionForm_questionsActivity"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_default"/>
 </ScrollView>
