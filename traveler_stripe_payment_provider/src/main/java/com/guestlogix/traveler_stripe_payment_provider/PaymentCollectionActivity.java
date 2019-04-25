@@ -2,13 +2,14 @@ package com.guestlogix.traveler_stripe_payment_provider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.View;
 import com.guestlogix.travelercorekit.models.Payment;
 import com.stripe.android.Stripe;
 import com.stripe.android.TokenCallback;
@@ -28,11 +29,14 @@ public class PaymentCollectionActivity extends AppCompatActivity {
         stripe = new Stripe(this, BuildConfig.STRIPE_PUBLISHABLE_KEY);
 
         setContentView(R.layout.activity_payment_collection);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setTitle(R.string.title_payment_collection_Activity);
 
         Button doneButton = findViewById(R.id.done_button);
         doneButton.setOnClickListener(this::onTokenizeCard);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void onTokenizeCard(View button) {
@@ -78,5 +82,14 @@ public class PaymentCollectionActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return true;
     }
 }
