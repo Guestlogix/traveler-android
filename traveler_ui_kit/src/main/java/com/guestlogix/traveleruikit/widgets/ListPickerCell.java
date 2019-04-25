@@ -19,7 +19,7 @@ import com.guestlogix.traveleruikit.R;
 
 import java.util.List;
 
-public class ListPickerCell extends FrameLayout implements AdapterView.OnItemSelectedListener {
+public class ListPickerCell extends FrameLayout {
 
     // Views
     private TextInputLayout textInputLayout;
@@ -33,11 +33,13 @@ public class ListPickerCell extends FrameLayout implements AdapterView.OnItemSel
     public void setValueList(List<String> cellLabels) {
         autocomplete.clearListSelection();
         autocomplete.setText(null);
+
         if (cellLabels != null && !cellLabels.isEmpty()) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.option_dropdown_item, R.id.textView_optionDropdown_label, cellLabels);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                    R.layout.option_dropdown_item, R.id.textView_optionDropdown_label, cellLabels);
 
             autocomplete.setAdapter(adapter);
-            autocomplete.setOnItemSelectedListener(this);
+
         }
     }
 
@@ -72,7 +74,7 @@ public class ListPickerCell extends FrameLayout implements AdapterView.OnItemSel
             View view = LayoutInflater.from(c).inflate(R.layout.view_list_picker_cell, this, true);
             textInputLayout = view.findViewById(R.id.textLayout);
             autocomplete = view.findViewById(R.id.autocomplete);
-
+            autocomplete.setOnItemClickListener(this::onItemSelected);
 
             autocomplete.setOnTouchListener((v, e) -> {
                 if (e.getAction() == MotionEvent.ACTION_UP) {
@@ -97,16 +99,10 @@ public class ListPickerCell extends FrameLayout implements AdapterView.OnItemSel
         this.onItemSelectedListener = l;
     }
 
-    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (onItemSelectedListener != null) {
             onItemSelectedListener.onItemSelected(position);
         }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Do nothing
     }
 
     /**
