@@ -21,7 +21,9 @@ import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.ARG_RECEIPT;
 
-public class OrderSummaryActivity extends AppCompatActivity implements ProcessOrderCallback, BillingInformationCollectionFragment.PaymentMethodAdditionListener {
+public class OrderSummaryActivity extends AppCompatActivity implements
+        ProcessOrderCallback,
+        BillingInformationCollectionFragment.OnPaymentMethodChangeListener {
 
     public static final String EXTRA_ORDER = "ORDER_SUMMARY_ACTIVITY_EXTRA_ORDER";
     public static final int CARD_REQUEST = 233;
@@ -83,7 +85,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements ProcessOr
         productSummaryFragment.setProducts(order.getProducts());
 
         // Billing info.
-        billingInformationCollectionFragment.setPaymentMethodAdditionListener(this);
+        billingInformationCollectionFragment.setOnPaymentMethodChangeListener(this);
     }
 
     @Override
@@ -149,6 +151,14 @@ public class OrderSummaryActivity extends AppCompatActivity implements ProcessOr
     public void onPaymentAdded(Payment payment) {
         this.payment = payment;
         actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+    }
+
+    @Override
+    public void onPaymentRemoved(Payment payment) {
+        if (this.payment == payment) {
+            this.payment = null;
+            actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
+        }
     }
 
     private void onActionStripClick(View _v) {

@@ -24,23 +24,13 @@ import java.util.List;
 
 /**
  * A fragment which displays all available payment options and a way too add more.
- * Subscribe to payment add events via {@link PaymentMethodAdditionListener}
+ * Subscribe to payment add events via {@link OnPaymentMethodChangeListener}
  *
  * <p>Starts a payment collection activity with the registered payment provider.</p>
  */
 public class BillingInformationCollectionFragment extends BaseFragment {
 
-    /**
-     * Callback interface for payment add events.
-     */
-    public interface PaymentMethodAdditionListener {
-        /**
-         * Invoked whenever a new payment method was added.
-         *
-         * @param payment Object which was added.
-         */
-        void onPaymentAdded(Payment payment);
-    }
+    private OnPaymentMethodChangeListener onPaymentMethodChangeListener;
 
     // Views
     private RecyclerView recyclerView;
@@ -49,7 +39,6 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
     // Data
     private List<Payment> payments;
-    private PaymentMethodAdditionListener paymentMethodAdditionListener;
 
     public BillingInformationCollectionFragment() {
         // Do nothing
@@ -82,8 +71,8 @@ public class BillingInformationCollectionFragment extends BaseFragment {
             if (extras != null && extras.containsKey("RESULT_INTENT_EXTRA_PAYMENT_KEY")) {
                 Payment payment = (Payment) extras.getSerializable("RESULT_INTENT_EXTRA_PAYMENT_KEY");
 
-                if (paymentMethodAdditionListener != null) {
-                    paymentMethodAdditionListener.onPaymentAdded(payment);
+                if (onPaymentMethodChangeListener != null) {
+                    onPaymentMethodChangeListener.onPaymentAdded(payment);
                 }
 
                 payments.clear();
@@ -95,6 +84,15 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         }
     }
 
+    /**
+     * Subscribes to payment add events.
+     *
+     * @param onPaymentMethodChangeListener Callback interface to be invoked whenever a payment is added.
+     */
+    public void setOnPaymentMethodChangeListener(OnPaymentMethodChangeListener onPaymentMethodChangeListener) {
+        this.onPaymentMethodChangeListener = onPaymentMethodChangeListener;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -103,12 +101,22 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     }
 
     /**
-     * Subscribes to payment add events.
-     *
-     * @param paymentMethodAdditionListener Callback interface to be invoked whenever a payment is added.
+     * Callback interface for payment change events
      */
-    public void setPaymentMethodAdditionListener(PaymentMethodAdditionListener paymentMethodAdditionListener) {
-        this.paymentMethodAdditionListener = paymentMethodAdditionListener;
+    public interface OnPaymentMethodChangeListener {
+        /**
+         * Invoked whenever a new payment method was added.
+         *
+         * @param payment Object which was added
+         */
+        void onPaymentAdded(Payment payment);
+
+        /**
+         * Invoked whenever a payment method is deleted.
+         *
+         * @param payment the payment method which was deleted
+         */
+        void onPaymentRemoved(Payment payment);
     }
 
     private void onAddPaymentButtonClick(View _button) {
@@ -140,7 +148,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
             holder.delete.setOnClickListener(v -> {
                 int pos = (Integer) v.getTag();
-                payments.remove(pos);
+                onPaymentMethodChangeListener.onPaymentRemoved(payments.remove(pos));
                 notifyDataSetChanged();
                 addCardBtn.setVisibility(View.VISIBLE);
             });
