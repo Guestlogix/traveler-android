@@ -1,34 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.google.android.material.textfield.TextInputLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/timeRelativeLayout"
+        android:id="@+id/textLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:errorEnabled="true">
 
-    <Spinner
-            android:id="@+id/slotsSpinner"
+    <AutoCompleteTextView
+            android:id="@+id/autocomplete"
+            android:focusable="false"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"/>
-
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            app:errorEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_select_time"
-                android:inputType="textCapCharacters"
-                app:errorEnabled="true"
-                android:focusable="false"
-                android:textAllCaps="true"
-                android:imeOptions="actionDone"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-</RelativeLayout>
+            android:inputType="none"
+            android:hint="@string/hint_select_time"
+            android:layout_height="wrap_content"/>
+</com.google.android.material.textfield.TextInputLayout>

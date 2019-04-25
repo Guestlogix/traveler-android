@@ -21,7 +21,7 @@ public class ActionStrip extends FrameLayout {
     private Button actionButton;
     private TextView actionValue;
     private TextView actionLabel;
-    private ProgressBar progressBar;
+    private ProgressBar actionProgressBar;
 
     // State of this widget.
     private ActionStripState state;
@@ -57,7 +57,7 @@ public class ActionStrip extends FrameLayout {
             actionButton = view.findViewById(R.id.actionButton);
             actionValue = view.findViewById(R.id.actionValue);
             actionLabel = view.findViewById(R.id.actionLabel);
-            progressBar = view.findViewById(R.id.progress_bar);
+            actionProgressBar = view.findViewById(R.id.actionProgressBar);
 
             state = ActionStripState.ENABLED; // Default behaviour.
             onStateChange();
@@ -100,17 +100,17 @@ public class ActionStrip extends FrameLayout {
         switch (state) {
             case LOADING:
                 actionButton.setVisibility(INVISIBLE);
-                progressBar.setVisibility(VISIBLE);
+                actionProgressBar.setVisibility(VISIBLE);
                 break;
             case ENABLED:
                 actionButton.setVisibility(VISIBLE);
-                progressBar.setVisibility(INVISIBLE);
+                actionProgressBar.setVisibility(INVISIBLE);
                 actionButton.setEnabled(true);
                 actionButton.setAlpha(1f);
                 break;
             case DISABLED:
                 actionButton.setVisibility(VISIBLE);
-                progressBar.setVisibility(INVISIBLE);
+                actionProgressBar.setVisibility(INVISIBLE);
                 actionButton.setEnabled(false);
                 actionButton.setAlpha(0.5f);
                 break;

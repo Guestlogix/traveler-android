@@ -1,12 +1,16 @@
 package com.guestlogix.traveleruikit.widgets;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -15,23 +19,26 @@ import com.guestlogix.traveleruikit.R;
 
 import java.util.List;
 
-public class ListPickerCell extends FrameLayout {
+public class ListPickerCell extends FrameLayout implements AdapterView.OnItemSelectedListener {
 
     // Views
     private TextInputLayout textInputLayout;
-    private EditText valueEditText;
-    private Spinner slotSpinner;
+    private AutoCompleteTextView autocomplete;
 
     /**
      * Listener to dispatch item selection events.
      */
     private OnItemSelectedListener onItemSelectedListener;
 
-    /**
-     * Callback interface for item selection events.
-     */
-    public interface OnItemSelectedListener {
-        void onItemSelected(int position);
+    public void setValueList(List<String> cellLabels) {
+        autocomplete.clearListSelection();
+        autocomplete.setText(null);
+        if (cellLabels != null && !cellLabels.isEmpty()) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.option_dropdown_item, R.id.textView_optionDropdown_label, cellLabels);
+
+            autocomplete.setAdapter(adapter);
+            autocomplete.setOnItemSelectedListener(this);
+        }
     }
 
     public ListPickerCell(@NonNull Context context) {
@@ -55,17 +62,26 @@ public class ListPickerCell extends FrameLayout {
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setValueList(List<String> cellLabels) {
-        if (cellLabels != null && !cellLabels.isEmpty()) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), R.layout.option_dropdown_item, R.id.textView_optionDropdown_label, cellLabels);
-
-            slotSpinner.setAdapter(adapter);
-            slotSpinner.setOnItemSelectedListener(onSpinnerItemSelectedListener);
-        }
+    public void setError(@Nullable String error) {
+        textInputLayout.setError(error);
     }
 
-    public void setError(@Nullable String error) {
-        valueEditText.setError(error);
+    @SuppressLint("ClickableViewAccessibility")
+    private void init(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        if (!isInEditMode()) {
+            View view = LayoutInflater.from(c).inflate(R.layout.view_list_picker_cell, this, true);
+            textInputLayout = view.findViewById(R.id.textLayout);
+            autocomplete = view.findViewById(R.id.autocomplete);
+
+
+            autocomplete.setOnTouchListener((v, e) -> {
+                if (e.getAction() == MotionEvent.ACTION_UP) {
+                    autocomplete.showDropDown();
+                }
+
+                return false;
+            });
+        }
     }
 
     public void setHint(@Nullable String hint) {
@@ -81,31 +97,27 @@ public class ListPickerCell extends FrameLayout {
         this.onItemSelectedListener = l;
     }
 
-    private void init(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        if (!isInEditMode()) {
-            View view = LayoutInflater.from(c).inflate(R.layout.view_list_picker_cell, this, true);
-            textInputLayout = view.findViewById(R.id.textLayout);
-            valueEditText = view.findViewById(R.id.value);
-            slotSpinner = view.findViewById(R.id.slotsSpinner);
-
-            valueEditText.setOnClickListener(v -> slotSpinner.performClick());
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (onItemSelectedListener != null) {
+            onItemSelectedListener.onItemSelected(position);
         }
     }
 
-    AdapterView.OnItemSelectedListener onSpinnerItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            String value = (String) parent.getItemAtPosition(position);
-            valueEditText.setText(value);
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Do nothing
+    }
 
-            if (onItemSelectedListener != null) {
-                onItemSelectedListener.onItemSelected(position);
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            // Do nothing
-        }
-    };
+    /**
+     * Callback interface for item selection events.
+     */
+    public interface OnItemSelectedListener {
+        /**
+         * Called whenever an item is selected.
+         *
+         * @param position position of the item in the list
+         */
+        void onItemSelected(int position);
+    }
 }
