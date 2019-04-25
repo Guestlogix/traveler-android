@@ -11,8 +11,6 @@ import com.guestlogix.traveleruikit.forms.models.FormModel;
 
 /**
  * A Button input cell type.
- * Implements:
- * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellClickListener}
  */
 public class ButtonCell extends BaseCell {
 
@@ -23,15 +21,10 @@ public class ButtonCell extends BaseCell {
         button = itemView.findViewById(R.id.button);
 
         button.setOnClickListener(v -> {
-            if (null != onCellClickListener) {
-                onCellClickListener.onCellClick(this);
+            if (null != cellEventsListener) {
+                cellEventsListener.onCellClick(this);
             }
         });
-    }
-
-    @Override
-    public void reload() {
-        // Do nothing.
     }
 
     /**

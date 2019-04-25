@@ -52,10 +52,4 @@ public class HeaderCell extends BaseCell {
     public void setMessage(@Nullable FormMessage message) {
         // Do nothing.
     }
-
-    @Override
-    public void reload() {
-        title.setText(null);
-        subtitle.setText(null);
-    }
 }

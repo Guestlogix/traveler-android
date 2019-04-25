@@ -16,5 +16,18 @@ package com.guestlogix.traveleruikit.forms.models;
  * </ul>
  */
 public abstract class FormModel {
+    /*
+        Future Considerations:
+            - More model types are required to have a better user experience. You could add types such as
+                - Email
+                - Phone
+                - Range of numbers/dates
+
+            - The form library could also include validators. This will improve performance since the data would not need
+              to be propagated back to whatever uses the activity.
+
+           - There should be a boolean isRequired in this class. So we can display an asterisk next to important fields.
+     */
+
     public abstract int getType();
 }

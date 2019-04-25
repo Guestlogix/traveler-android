@@ -14,9 +14,6 @@ import com.guestlogix.traveleruikit.forms.models.TextFormModel;
 
 /**
  * Form cell which contains an EditText
- * Implements:
- * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener} with value of type {@link CharSequence}
- * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellFocusChangeListener}
  */
 public class TextCell extends BaseCell {
     private TextInputEditText input;
@@ -34,8 +31,8 @@ public class TextCell extends BaseCell {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (null != TextCell.this.onCellValueChangedListener) {
-                    TextCell.this.onCellValueChangedListener.onCellValueChanged(TextCell.this, s);
+                if (null != cellEventsListener) {
+                    cellEventsListener.onCellValueChanged(TextCell.this, s);
                 }
             }
 
@@ -46,8 +43,8 @@ public class TextCell extends BaseCell {
         });
 
         input.setOnFocusChangeListener((v, hasFocus) -> {
-            if (null != this.onCellFocusChangeListener) {
-                this.onCellFocusChangeListener.onCellFocusChange(this, hasFocus);
+            if (null != cellEventsListener) {
+                cellEventsListener.onCellFocusChange(this, hasFocus);
             }
         });
     }
@@ -89,12 +86,5 @@ public class TextCell extends BaseCell {
                     layout.setError(message.getMessage());
             }
         }
-    }
-
-    @Override
-    public void reload() {
-        input.setText(null);
-        layout.setHint(null);
-        input.clearFocus();
     }
 }

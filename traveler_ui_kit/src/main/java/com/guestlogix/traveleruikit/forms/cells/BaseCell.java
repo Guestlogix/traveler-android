@@ -12,13 +12,9 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
 
     OnCellContextRequestListener contextRequestListener;
 
-    OnCellValueChangedListener onCellValueChangedListener;
-
-    OnCellClickListener onCellClickListener;
-
-    OnCellFocusChangeListener onCellFocusChangeListener;
-
     CellValueAdapter cellValueAdapter;
+
+    CellEventsListener cellEventsListener;
 
     BaseCell(@NonNull View itemView) {
         super(itemView);
@@ -35,46 +31,28 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
     public abstract void setMessage(@Nullable FormMessage message);
 
     /**
-     * Signals the cell that it needs to be reloaded to a fresh state.
+     * Registers a callback to be invoked whenever an event happens in a cell.
+     *
+     * @param l The callback that will be invoked
      */
-    public abstract void reload();
+    public void setCellEventsListener(CellEventsListener l) {
+        this.cellEventsListener = l;
+    }
 
     /**
      * Subscribes to context request events.
      *
-     * @param contextRequestListener handles context request events.
+     * @param l handles context request events
      */
-    public void setContextRequestListener(OnCellContextRequestListener contextRequestListener) {
-        this.contextRequestListener = contextRequestListener;
+    public void setContextRequestListener(OnCellContextRequestListener l) {
+        this.contextRequestListener = l;
     }
 
     /**
-     * Subscribes to value change events.
+     * Adds an adapter which gets the cell value.
      *
-     * @param onCellValueChangedListener callback for value change events.
+     * @param cellValueAdapter adapter to be used by a cell
      */
-    public void setOnCellValueChangedListener(OnCellValueChangedListener onCellValueChangedListener) {
-        this.onCellValueChangedListener = onCellValueChangedListener;
-    }
-
-    /**
-     * Subscribes to click events.
-     *
-     * @param onCellClickListener callback for click events.
-     */
-    public void setOnCellClickListener(OnCellClickListener onCellClickListener) {
-        this.onCellClickListener = onCellClickListener;
-    }
-
-    /**
-     * Subscribes to focus change events.
-     *
-     * @param onCellFocusChangeListener callback for focus change events.
-     */
-    public void setOnCellFocusChangeListener(OnCellFocusChangeListener onCellFocusChangeListener) {
-        this.onCellFocusChangeListener = onCellFocusChangeListener;
-    }
-
     public void setCellValueAdapter(CellValueAdapter cellValueAdapter) {
         this.cellValueAdapter = cellValueAdapter;
     }
@@ -91,36 +69,8 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
         Context onCellContextRequest();
     }
 
-    /**
-     * Listener for events where the value of the cell changed.
-     * It is the responsibility of the individual cells to use this listener.
-     */
-    public interface OnCellValueChangedListener {
-        /**
-         * Is invoked whenever a BaseCell has its value changed.
-         *
-         * @param caller Cell which invoked the event.
-         * @param value  new value of the cell, can be anything based on th cell type.
-         */
-        void onCellValueChanged(BaseCell caller, Object value);
-    }
 
-    /**
-     * Listener for click events.
-     */
-    public interface OnCellClickListener {
-        /**
-         * Is invoked whenever a BaseCell is clicked.
-         *
-         * @param caller Cell which invoked the event.
-         */
-        void onCellClick(BaseCell caller);
-    }
-
-    /**
-     * Listener for focus change events.
-     */
-    public interface OnCellFocusChangeListener {
+    public interface CellEventsListener {
         /**
          * Is invoked whenever the focus was changed in a BaseCell.
          * Up to individual cells to use this callback.
@@ -129,6 +79,21 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
          * @param hasFocus Whether the cell has focus right now.
          */
         void onCellFocusChange(BaseCell caller, boolean hasFocus);
+
+        /**
+         * Is invoked whenever a BaseCell is clicked.
+         *
+         * @param caller Cell which invoked the event.
+         */
+        void onCellClick(BaseCell caller);
+
+        /**
+         * Is invoked whenever a BaseCell has its value changed.
+         *
+         * @param caller Cell which invoked the event.
+         * @param value  new value of the cell, can be anything based on th cell type.
+         */
+        void onCellValueChanged(BaseCell caller, Object value);
     }
 
     /**

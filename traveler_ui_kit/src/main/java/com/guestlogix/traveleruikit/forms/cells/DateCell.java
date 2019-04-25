@@ -19,9 +19,6 @@ import java.util.Locale;
 
 /**
  * Form cell which contains an EditText
- * Implements:
- * {@link OnCellValueChangedListener} with value of type {@link CharSequence}
- * {@link OnCellFocusChangeListener}
  */
 public class DateCell extends BaseCell {
     private TextInputLayout dateInputLayout;
@@ -33,8 +30,8 @@ public class DateCell extends BaseCell {
         input = itemView.findViewById(R.id.input);
 
         input.setOnFocusChangeListener((v, hasFocus) -> {
-            if (null != this.onCellFocusChangeListener) {
-                this.onCellFocusChangeListener.onCellFocusChange(this, hasFocus);
+            if (null != cellEventsListener) {
+                cellEventsListener.onCellFocusChange(this, hasFocus);
             }
         });
     }
@@ -121,15 +118,8 @@ public class DateCell extends BaseCell {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        onCellValueChangedListener.onCellValueChanged(DateCell.this, calendar);
+        cellEventsListener.onCellValueChanged(DateCell.this, calendar);
 
         updateDateLabel(calendar);
-    }
-
-    @Override
-    public void reload() {
-        input.setText(null);
-        dateInputLayout.setHint(null);
-        input.clearFocus();
     }
 }

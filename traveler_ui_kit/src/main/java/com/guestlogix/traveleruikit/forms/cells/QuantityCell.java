@@ -15,8 +15,6 @@ import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
 
 /**
  * Cell which contains a quantityIndicator picker.
- * Implements:
- * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
  */
 public class QuantityCell extends BaseCell {
     private TextView quantityIndicator;
@@ -76,8 +74,8 @@ public class QuantityCell extends BaseCell {
                 Integer value = picker.getValue();
                 quantityIndicator.setText(String.valueOf(value));
 
-                if (null != onCellValueChangedListener) {
-                    onCellValueChangedListener.onCellValueChanged(this, value);
+                if (null != cellEventsListener) {
+                    cellEventsListener.onCellValueChanged(this, value);
                 }
 
                 dialog.dismiss();
@@ -89,11 +87,6 @@ public class QuantityCell extends BaseCell {
 
     @Override
     public void setMessage(@Nullable FormMessage message) {
-        // DO nothing.
-    }
-
-    @Override
-    public void reload() {
-        quantityIndicator.setText("0");
+        // Do nothing.
     }
 }
