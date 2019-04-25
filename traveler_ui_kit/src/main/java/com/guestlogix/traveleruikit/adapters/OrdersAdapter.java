@@ -17,13 +17,11 @@ import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemViewHolder> {
 
-    ArrayList<Order> orders;
-    View.OnClickListener onItemClickListener;
-    RecyclerView.RecycledViewPool viewPool;
+    private List<Order> orders;
+    private RecyclerView.RecycledViewPool viewPool;
+    private OnOrderItemClickListener onOrderItemClickListener;
 
-    public OrdersAdapter(ArrayList<Order> orders, View.OnClickListener onItemClickListener) {
-        this.orders = orders;
-        this.onItemClickListener = onItemClickListener;
+    public OrdersAdapter() {
         this.viewPool = new RecyclerView.RecycledViewPool();
     }
 
@@ -46,7 +44,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
         holder.totalAmount.setText(item.getTotal().getFormattedValue());
 
         holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(onItemClickListener);
+        holder.itemView.setOnClickListener(onClickListener);
     }
 
     @Override
@@ -100,10 +98,33 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
             TextView nameTextView;
 
-            public ProductViewHolder(@NonNull View itemView) {
+            ProductViewHolder(@NonNull View itemView) {
                 super(itemView);
                 nameTextView = itemView.findViewById(R.id.textView_productName);
             }
         }
     }
+
+    public interface OnOrderItemClickListener {
+        void onOrderItemClicked(int position);
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public void setOnOrderItemClickListener(OnOrderItemClickListener onOrderItemClickListener) {
+        this.onOrderItemClickListener = onOrderItemClickListener;
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (Integer) v.getTag();
+
+            if (null != onOrderItemClickListener) {
+                onOrderItemClickListener.onOrderItemClicked(position);
+            }
+        }
+    };
 }

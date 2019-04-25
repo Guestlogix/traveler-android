@@ -6,9 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import com.guestlogix.traveler.R;
+import com.guestlogix.traveler.fragments.OrdersFragment;
 import com.guestlogix.travelercorekit.models.Order;
-
-import com.guestlogix.traveleruikit.fragments.OrdersFragment;
 
 import java.util.ArrayList;
 

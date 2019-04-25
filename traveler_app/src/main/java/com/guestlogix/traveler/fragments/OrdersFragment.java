@@ -1,4 +1,4 @@
-package com.guestlogix.traveleruikit.fragments;
+package com.guestlogix.traveler.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,21 +7,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.adapters.OrdersAdapter;
+import com.guestlogix.traveleruikit.widgets.OrdersListWidget;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrdersFragment extends Fragment {
     private static final String ARG_ORDERS = "arg_orders";
 
-    private RecyclerView ordersRecyclerView;
-    private ArrayList<Order> orders;
-    private OrdersAdapter ordersAdapter;
+    private OrdersListWidget ordersListWidget;
+    private List<Order> orders;
 
     public OrdersFragment() {
         // Required empty public constructor
@@ -31,8 +28,8 @@ public class OrdersFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param orders .
-     * @return A new instance of fragment OrdersFragment.
+     * @param orders List of orders to show.
+     * @return A new instance of {@link OrdersFragment}.
      */
     public static OrdersFragment newInstance(ArrayList<Order> orders) {
         OrdersFragment fragment = new OrdersFragment();
@@ -48,10 +45,6 @@ public class OrdersFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             orders = (ArrayList<Order>) getArguments().getSerializable(ARG_ORDERS);
-            ordersAdapter = new OrdersAdapter(orders, v -> {
-                //TODO: Remove the toast
-                Toast.makeText(getActivity(), "Item Clicked...", Toast.LENGTH_SHORT).show();
-            });
         }
     }
 
@@ -60,15 +53,13 @@ public class OrdersFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
-        ordersRecyclerView = view.findViewById(R.id.recyclerView_ordersFragment_orders);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        ordersRecyclerView.setLayoutManager(linearLayoutManager);
-
-        ordersRecyclerView.setAdapter(ordersAdapter);
+        ordersListWidget = view.findViewById(R.id.ordersListWidget_ordersFragment_orders);
+        ordersListWidget.setOrders(orders);
+        ordersListWidget.setOnOrderItemClickListener(position -> {
+            //TODO: Intent for Order Details Activity
+            Toast.makeText(getActivity(), "Item Clicked:" + position, Toast.LENGTH_SHORT).show();
+        });
 
         return view;
     }
-
-
 }

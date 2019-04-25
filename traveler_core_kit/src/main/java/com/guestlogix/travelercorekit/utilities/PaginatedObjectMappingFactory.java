@@ -16,7 +16,7 @@ public class PaginatedObjectMappingFactory<T> implements ObjectMappingFactory<Li
 
     @Override
     public List<T> instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-        String key = "result";
+        String key;
         List<T> objects = new ArrayList<>();
 
         JsonToken token = reader.peek();

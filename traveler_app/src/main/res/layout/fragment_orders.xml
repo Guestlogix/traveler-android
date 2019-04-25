@@ -5,8 +5,8 @@
              android:layout_height="match_parent"
              tools:context=".fragments.OrdersFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_ordersFragment_orders"
+    <com.guestlogix.traveleruikit.widgets.OrdersListWidget
+            android:id="@+id/ordersListWidget_ordersFragment_orders"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 

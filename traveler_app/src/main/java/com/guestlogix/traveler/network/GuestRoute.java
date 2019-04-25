@@ -50,7 +50,7 @@ class GuestRoute {
         private GuestRequestBuilder() {
         }
 
-        public static GuestRequestBuilder Builder() {
+        static GuestRequestBuilder Builder() {
             return new GuestRequestBuilder();
         }
 
@@ -86,7 +86,7 @@ class GuestRoute {
             return createURL(url, path, null);
         }
 
-        public GuestRequestBuilder method(NetworkTask.Request.Method method) {
+        GuestRequestBuilder method(NetworkTask.Request.Method method) {
             this.method = method;
             return this;
         }
@@ -96,7 +96,7 @@ class GuestRoute {
             return this;
         }
 
-        public GuestRequestBuilder url(String url) {
+        GuestRequestBuilder url(String url) {
             this.url = url;
             return this;
         }
@@ -126,12 +126,12 @@ class GuestRoute {
             return this;
         }
 
-        public GuestRequestBuilder headers(Map<String, String> headers) {
+        GuestRequestBuilder headers(Map<String, String> headers) {
             this.headers = headers;
             return this;
         }
 
-        public UrlRequest build() {
+        UrlRequest build() {
             URL url;
             if (params == null) {
                 url = createURL(this.url, path);

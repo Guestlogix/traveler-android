@@ -199,7 +199,7 @@ public class Router {
         RequestBuilder rb = RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("/order/all")
+                .path("/order")
                 .param("traveler", session.getUserId())
                 .param("skip", skip.toString())
                 .param("take", take.toString())
