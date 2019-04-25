@@ -1,7 +1,7 @@
 <resources>
-    <string name="title_activity_payment_collection">PaymentCollectionActivity</string>
     <string name="invalid_card_or_cvc">Invalid card or CVC</string>
     <string name="retry">Retry</string>
     <string name="could_not_process_cc">Could not process credit card.</string>
-    <string name="title_payment_collection_Activity">Enter credit card info</string>
+    <string name="title_payment_collection_Activity">Billing Information</string>
+    <string name="done">Done</string>
 </resources>
