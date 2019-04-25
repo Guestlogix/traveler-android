@@ -321,10 +321,25 @@
         <item name="tabSelectedTextColor">@color/darkGray</item>
         <item name="tabTextColor">@color/lightGray</item>
         <item name="tabRippleColor">@color/colorPrimary</item>
+        <item name="android:background">#00000000</item>
     </style>
 
     <style name="ExpandedTitle" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/text_view_xlarge</item>
+    </style>
+
+    <!-- Base style for action bars -->
+    <style name="ActionBar" parent="TextAppearance">
+    </style>
+
+    <style name="ActionBar.Subtitle">
+        <item name="android:textSize">@dimen/text_view_xxsmall</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="ActionBar.Title">
+        <item name="android:textSize">@dimen/text_view_xlarge</item>
+        <item name="android:textColor">@color/darkGray</item>
     </style>
 </resources>

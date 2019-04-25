@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.textfield.TextInputLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/textInputLayout_datePickerCell_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        app:errorEnabled="true">
 
-    <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_datePickerCell_layout"
+    <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText_datePickerCell_input"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:errorEnabled="true">
+            android:layout_height="match_parent"
+            android:hint="@string/hint_select_date"
+            android:focusable="false"
+            app:errorEnabled="true"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText_datePickerCell_input"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/hint_select_date"
-                android:inputType="textCapCharacters"
-                app:errorEnabled="true"
-                android:focusable="false"
-                android:textAllCaps="true"
-                android:imeOptions="actionDone"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-</LinearLayout>
+</com.google.android.material.textfield.TextInputLayout>
