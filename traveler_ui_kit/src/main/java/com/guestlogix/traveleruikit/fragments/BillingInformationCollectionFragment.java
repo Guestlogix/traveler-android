@@ -32,6 +32,8 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
     private OnPaymentMethodChangeListener onPaymentMethodChangeListener;
 
+    private static final String BUNDLE_PAYMENT = "payment";
+
     // Views
     private RecyclerView recyclerView;
     private PaymentsAdapter adapter;
@@ -45,6 +47,16 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.payments = new ArrayList<>();
+
+        if (null != savedInstanceState && savedInstanceState.containsKey(BUNDLE_PAYMENT)) {
+            this.payments.add((Payment) savedInstanceState.getSerializable(BUNDLE_PAYMENT));
+        }
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         adapter = new PaymentsAdapter();
         return inflater.inflate(R.layout.fragment_billing_information_collection, container, false);
@@ -55,12 +67,15 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.recyclerView_billingCollection_availableItems);
-        payments = new ArrayList<>();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
 
         addCardBtn = view.findViewById(R.id.button_orderSummary_addCard);
         addCardBtn.setOnClickListener(this::onAddPaymentButtonClick);
+
+        if (!payments.isEmpty()) {
+            addCardBtn.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -87,17 +102,36 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     /**
      * Subscribes to payment add events.
      *
-     * @param onPaymentMethodChangeListener Callback interface to be invoked whenever a payment is added.
+     * @param l Callback interface to be invoked whenever a payment is added.
      */
-    public void setOnPaymentMethodChangeListener(OnPaymentMethodChangeListener onPaymentMethodChangeListener) {
-        this.onPaymentMethodChangeListener = onPaymentMethodChangeListener;
+    public void setOnPaymentMethodChangeListener(OnPaymentMethodChangeListener l) {
+        this.onPaymentMethodChangeListener = l;
+
+        if (l != null && !payments.isEmpty()) {
+            l.onPaymentAdded(payments.get(0));
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
+        if (payments.size() > 0) {
+            addCardBtn.setVisibility(View.GONE);
+        } else {
+            addCardBtn.setVisibility(View.VISIBLE);
+        }
+
         addCardBtn.setEnabled(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (!payments.isEmpty()) {
+            outState.putSerializable(BUNDLE_PAYMENT, payments.get(0)); // Only one for now
+        }
     }
 
     /**

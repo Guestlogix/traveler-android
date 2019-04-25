@@ -13,7 +13,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
-import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.Payment;
+import com.guestlogix.travelercorekit.models.Receipt;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.BillingInformationCollectionFragment;
 import com.guestlogix.traveleruikit.fragments.ProductSummaryFragment;
@@ -70,9 +73,12 @@ public class OrderSummaryActivity extends AppCompatActivity implements
         actionStrip = findViewById(R.id.actionStrip_orderSummary);
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle(R.string.review_order);
+
+        if (null != getSupportActionBar()) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle(R.string.review_order);
+        }
 
         // Action strip.
         actionStrip.setValue(order.getTotal().getFormattedValue());
