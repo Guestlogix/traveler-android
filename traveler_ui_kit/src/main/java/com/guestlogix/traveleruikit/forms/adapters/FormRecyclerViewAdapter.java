@@ -6,19 +6,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveleruikit.forms.cells.BaseCell;
 
-public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
-    private FormMapper formMapper;
-    private OnFormContextRequestListener contextRequestListener;
+public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell>
+        implements BaseCell.OnCellContextRequestListener {
 
-    public FormRecyclerViewAdapter(@NonNull FormMapper formMapper) {
+    private FormMapper formMapper;
+    private Context context;
+
+    public FormRecyclerViewAdapter(@NonNull FormMapper formMapper, @NonNull Context context) {
         this.formMapper = formMapper;
+        this.context = context;
     }
 
     @NonNull
     @Override
     public BaseCell onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         BaseCell cell = formMapper.createViewHolder(parent, viewType);
-        cell.setContextRequestListener(contextRequestHandler);
+        cell.setContextRequestListener(this);
         return cell;
     }
 
@@ -37,21 +40,18 @@ public class FormRecyclerViewAdapter extends RecyclerView.Adapter<BaseCell> {
         return formMapper.getTotalCount();
     }
 
-    public void setContextRequestListener(OnFormContextRequestListener contextRequestListener) {
-        this.contextRequestListener = contextRequestListener;
+    @Override
+    public Context onCellContextRequest() {
+        return context;
     }
 
     public interface FormMapper {
         int getTotalCount();
+
         int getViewType(int position);
+
         BaseCell createViewHolder(ViewGroup parent, int type);
+
         void bindView(BaseCell cell, int position);
     }
-
-    public interface OnFormContextRequestListener {
-        Context onFormContextRequest();
-    }
-
-    private BaseCell.OnCellContextRequestListener contextRequestHandler = () -> null != contextRequestListener ?
-            contextRequestListener.onFormContextRequest() : null;
 }

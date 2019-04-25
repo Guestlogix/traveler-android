@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.forms.cells;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.text.InputType;
@@ -19,13 +20,12 @@ import com.guestlogix.traveleruikit.forms.models.SpinnerFormModel;
 
 /**
  * Form cell which contains a spinner.
- * Implements:
- * {@link com.guestlogix.traveleruikit.forms.cells.BaseCell.OnCellValueChangedListener}
  */
 public class SpinnerCell extends BaseCell {
     private AutoCompleteTextView autocomplete;
     private TextInputLayout layout;
 
+    @SuppressLint("ClickableViewAccessibility")
     public SpinnerCell(@NonNull View itemView) {
         super(itemView);
 
@@ -33,8 +33,8 @@ public class SpinnerCell extends BaseCell {
         layout = itemView.findViewById(R.id.textInputLayout_form_textLayout);
 
         this.autocomplete.setOnItemClickListener((parent, view, position, id) -> {
-            if (null != SpinnerCell.this.onCellValueChangedListener) {
-                SpinnerCell.this.onCellValueChangedListener.onCellValueChanged(SpinnerCell.this, position);
+            if (null != cellEventsListener) {
+                cellEventsListener.onCellValueChanged(SpinnerCell.this, position);
             }
         });
 
@@ -55,14 +55,6 @@ public class SpinnerCell extends BaseCell {
         });
 
         this.autocomplete.setInputType(InputType.TYPE_NULL);
-    }
-
-    @Override
-    public void reload() {
-        autocomplete.setText(null);
-        autocomplete.setError(null);
-        autocomplete.setHint(null);
-        autocomplete.setAdapter(null);
     }
 
     /**

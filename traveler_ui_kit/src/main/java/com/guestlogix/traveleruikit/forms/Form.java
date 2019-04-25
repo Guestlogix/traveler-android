@@ -22,12 +22,11 @@ import java.util.ArrayList;
  * Wrapper around recycler view used to render a form. Transforms a two dimensional array of questions/question groups
  * into a single dimensional list of views.
  */
+@SuppressWarnings("ConstantConditions")
 public class Form extends RecyclerView implements
         FormRecyclerViewAdapter.FormMapper,
         BaseCell.CellValueAdapter,
-        BaseCell.OnCellClickListener,
-        BaseCell.OnCellValueChangedListener,
-        BaseCell.OnCellFocusChangeListener {
+        BaseCell.CellEventsListener {
 
     // Data
     private ArrayList<FormNode> nodes;
@@ -66,8 +65,14 @@ public class Form extends RecyclerView implements
         init();
     }
 
+    /**
+     * Adds a data source to the form and starts to render.
+     *
+     * @param dataSource Data provider for the form
+     */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+        nodes.clear();
 
         for (int i = 0; i < dataSource.getSectionCount(); i++) {
             FormHeader header = dataSource.getSectionHeader(i);
@@ -194,16 +199,12 @@ public class Form extends RecyclerView implements
         }
 
         // Unregister previous listeners.
-        cell.setOnCellValueChangedListener(null);
-        cell.setOnCellFocusChangeListener(null);
-        cell.setOnCellClickListener(null);
+        cell.setCellEventsListener(null);
 
         cell.setCellValueAdapter(this);
         cell.bindWithModel(node.model);
 
-        cell.setOnCellClickListener(this);
-        cell.setOnCellFocusChangeListener(this);
-        cell.setOnCellValueChangedListener(this);
+        cell.setCellEventsListener(this);
 
         FormMessage message = dataSource.getMessage(node.sectionId, node.fieldId);
         cell.setMessage(message);
@@ -269,10 +270,9 @@ public class Form extends RecyclerView implements
     }
 
     private void init() {
-        FormRecyclerViewAdapter adapter = new FormRecyclerViewAdapter(this);
-        adapter.setContextRequestListener(this::getContext);
+        FormRecyclerViewAdapter adapter = new FormRecyclerViewAdapter(this, getContext());
         setAdapter(adapter);
-        setFocusableInTouchMode(true);
+
         nodes = new ArrayList<>();
     }
 
@@ -385,6 +385,9 @@ public class Form extends RecyclerView implements
         Object getValue(int sectionId, int fieldId);
     }
 
+    /*
+        The layouts of existing form cells.
+     */
     private static class FormLayout {
         @LayoutRes
         static final int TEXT_LAYOUT = R.layout.form_text_input;
@@ -402,10 +405,12 @@ public class Form extends RecyclerView implements
         static final int DATE_LAYOUT = R.layout.form_date;
     }
 
+    /**
+     * Internal representation of the form.
+     */
     private class FormNode {
         int sectionId;
         int fieldId;
-        boolean hasMessage;
         boolean isHeader;
 
         @Nullable
@@ -415,7 +420,6 @@ public class Form extends RecyclerView implements
             this.sectionId = sectionId;
             this.fieldId = fieldId;
             this.isHeader = isHeader;
-            this.hasMessage = false;
         }
     }
 }

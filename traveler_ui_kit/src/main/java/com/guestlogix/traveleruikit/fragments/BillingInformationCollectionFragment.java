@@ -57,6 +57,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        adapter = new PaymentsAdapter();
         return inflater.inflate(R.layout.fragment_billing_information_collection, container, false);
     }
 
@@ -66,7 +67,8 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
         recyclerView = view.findViewById(R.id.recyclerView_billingCollection_availableItems);
         payments = new ArrayList<>();
-
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
 
         addCardBtn = view.findViewById(R.id.button_orderSummary_addCard);
         addCardBtn.setOnClickListener(this::onAddPaymentButtonClick);
@@ -87,12 +89,6 @@ public class BillingInformationCollectionFragment extends BaseFragment {
                 payments.clear();
                 payments.add(payment);
                 addCardBtn.setVisibility(View.GONE);
-
-                if (adapter == null) {
-                    adapter = new PaymentsAdapter();
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivityContext()));
-                }
 
                 adapter.notifyDataSetChanged();
             }

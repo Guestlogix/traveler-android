@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Predefined form types.
- * For internal use mostly.
+ * Contains the types of all form models which are ready to use.
  */
 public enum FormModelType {
     TEXT(0), BUTTON(1), SPINNER(2), QUANTITY(3), DATE(4), HEADER(5), MESSAGE(6);

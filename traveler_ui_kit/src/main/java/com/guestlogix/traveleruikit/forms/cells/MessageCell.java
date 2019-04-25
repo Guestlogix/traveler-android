@@ -42,11 +42,6 @@ public class MessageCell extends BaseCell {
 
     @Override
     public void setMessage(@Nullable FormMessage message) {
-        // Do nothing.
-    }
-
-    @Override
-    public void reload() {
-        message.setText(null);
+        // Is this recursion?
     }
 }
