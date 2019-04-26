@@ -202,7 +202,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
                 super(itemView);
                 label = itemView.findViewById(R.id.itemLabel);
                 value = itemView.findViewById(R.id.itemValue);
-                delete = itemView.findViewById(R.id.imageView_itemLabel_delete);
+                delete = itemView.findViewById(R.id.deleteImageView);
                 delete.setVisibility(View.VISIBLE);
             }
         }

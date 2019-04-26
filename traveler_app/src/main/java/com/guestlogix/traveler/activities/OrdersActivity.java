@@ -2,6 +2,8 @@ package com.guestlogix.traveler.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.traveler.R;
@@ -10,16 +12,22 @@ import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.traveleruikit.fragments.TravelerActivityRetryFragment;
+import com.guestlogix.traveleruikit.fragments.TravelerRetryFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class OrdersActivity extends AppCompatActivity {
+import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.ARG_ERROR_ACTION;
+import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.ARG_ERROR_MESSAGE;
+import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.ARG_ERROR_TITLE;
 
-    TabLayout ordersTabs;
-    ViewPager ordersPager;
+public class OrdersActivity extends AppCompatActivity implements TravelerRetryFragment.RetryFragmentInteractionListener {
+
+    private TabLayout ordersTabs;
+    private ViewPager ordersPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,10 @@ public class OrdersActivity extends AppCompatActivity {
     FetchOrdersCallback fetchOrdersCallback = new FetchOrdersCallback() {
         @Override
         public void onOrdersFetchSuccess(List<Order> orders) {
+            if (null == orders || orders.size() <= 0) {
 
+                return;
+            }
             ArrayList<Order> orderArrayList = new ArrayList<>(orders);
 
             ArrayList<Order> pastOrdersArrayList = new ArrayList<>();
@@ -72,7 +83,17 @@ public class OrdersActivity extends AppCompatActivity {
 
         @Override
         public void onOrdersFetchError(Error error) {
-            TravelerLog.d("In onOrdersFetchError");
+            Fragment retryFragment = TravelerActivityRetryFragment.getInstance(getString(com.guestlogix.traveleruikit.R.string.label_sorry), getString(com.guestlogix.traveleruikit.R.string.label_nothing_to_show), getString(com.guestlogix.traveleruikit.R.string.try_again));
+
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            fragmentTransaction.replace(com.guestlogix.traveleruikit.R.id.actionStripContainerFrameLayout, retryFragment);
+            fragmentTransaction.commit();
         }
     };
+
+    @Override
+    public void onRetry() {
+
+    }
 }

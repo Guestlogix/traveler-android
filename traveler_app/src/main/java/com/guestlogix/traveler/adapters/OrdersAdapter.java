@@ -1,4 +1,4 @@
-package com.guestlogix.traveleruikit.adapters;
+package com.guestlogix.traveler.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,20 +6,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.traveleruikit.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemViewHolder> {
 
-    ArrayList<Order> orders;
-    View.OnClickListener onItemClickListener;
-    RecyclerView.RecycledViewPool viewPool;
+    private List<Order> orders;
+    private View.OnClickListener onItemClickListener;
+    private RecyclerView.RecycledViewPool viewPool;
 
     public OrdersAdapter(ArrayList<Order> orders, View.OnClickListener onItemClickListener) {
         this.orders = orders;
@@ -100,7 +100,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
             TextView nameTextView;
 
-            public ProductViewHolder(@NonNull View itemView) {
+            ProductViewHolder(@NonNull View itemView) {
                 super(itemView);
                 nameTextView = itemView.findViewById(R.id.textView_productName);
             }
