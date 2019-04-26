@@ -20,6 +20,7 @@ import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.FormHeader;
 import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.Form;
@@ -142,6 +143,11 @@ public class PassSelectionActivity extends AppCompatActivity implements
     public FormModel getModel(int sectionId, int fieldId) {
         Pass pass = passes.get(fieldId);
         return new QuantityFormModel(pass.getName(), pass.getDescription(), 10, 0);
+    }
+
+    @Override
+    public FormFieldType getFieldType(int sectionId, int fieldId) {
+        return FormFieldType.QUANTITY;
     }
 
     @Nullable

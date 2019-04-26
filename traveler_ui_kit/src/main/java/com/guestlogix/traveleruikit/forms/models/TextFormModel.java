@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 
 /**
  * Describes a text input cell.
@@ -18,7 +19,7 @@ public class TextFormModel extends FormModel {
     }
 
     @Override
-    public int getType() {
-        return FormModelType.TEXT.value;
+    public FormFieldType getType() {
+        return FormFieldType.TEXT;
     }
 }

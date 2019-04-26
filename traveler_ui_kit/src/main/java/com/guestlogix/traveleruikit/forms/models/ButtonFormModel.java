@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 
 /**
  * Describes a button form cell.
@@ -18,7 +19,7 @@ public class ButtonFormModel extends FormModel {
     }
 
     @Override
-    public int getType() {
-        return FormModelType.BUTTON.value;
+    public FormFieldType getType() {
+        return FormFieldType.BUTTON;
     }
 }

@@ -13,23 +13,26 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.adapters.FormRecyclerViewAdapter;
 import com.guestlogix.traveleruikit.forms.cells.*;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
-import com.guestlogix.traveleruikit.forms.models.FormModelType;
 import com.guestlogix.traveleruikit.forms.models.HeaderFormModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Wrapper around recycler view used to render a form. Transforms a two dimensional array of questions/question groups
  * into a single dimensional list of views.
  */
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "unused"})
 public class Form extends RecyclerView implements
         FormRecyclerViewAdapter.FormMapper,
         BaseCell.CellValueAdapter,
         BaseCell.CellEventsListener {
 
     // Data
-    private ArrayList<FormNode> nodes;
+    private List<FormNode> nodes;
+    private Map<FormFieldType, CustomFormCellAdapter> customViewsAdapter;
 
     // Adapters
     private DataSource dataSource;
@@ -119,6 +122,16 @@ public class Form extends RecyclerView implements
     }
 
     /**
+     * Notifies the form library to use a custom view type instead of the default cells.
+     *
+     * @param type Which type to override
+     * @param adapter adapter for that type
+     */
+    public void setCustomViewsAdapter(FormFieldType type, CustomFormCellAdapter adapter) {
+
+    }
+
+    /**
      * Smooth scrolls to a given position.
      *
      * @param sectionId Section index
@@ -149,20 +162,26 @@ public class Form extends RecyclerView implements
     public int getViewType(int position) {
         FormNode node = nodes.get(position);
 
-        // JIT.
-        if (node.model == null) {
-            node.model = dataSource.getModel(node.sectionId, node.fieldId);
+        if (node.fieldId == -1) {
+            return FormFieldType.HEADER.getValue();
         }
 
-        return node.model.getType();
+        return dataSource.getFieldType(node.sectionId, node.fieldId).getValue();
     }
 
     @Override
     public BaseCell createViewHolder(ViewGroup parent, int type) {
         View view;
         LayoutInflater inflater = LayoutInflater.from(getContext());
+        FormFieldType fType = FormFieldType.valueOf(type);
 
-        switch (FormModelType.valueOf(type)) {
+        CustomFormCellAdapter adapter = customViewsAdapter.get(fType);
+
+        if (null != adapter) {
+            return adapter.createCustomCell(parent, getContext());
+        }
+
+        switch (fType) {
             case QUANTITY:
                 view = inflater.inflate(FormLayout.QUANTITY_LAYOUT, parent, false);
                 return new QuantityCell(view);
@@ -272,8 +291,9 @@ public class Form extends RecyclerView implements
     private void init() {
         FormRecyclerViewAdapter adapter = new FormRecyclerViewAdapter(this, getContext());
         setAdapter(adapter);
-
+        setHasFixedSize(true);
         nodes = new ArrayList<>();
+        customViewsAdapter = new HashMap<>();
     }
 
     /**
@@ -318,6 +338,21 @@ public class Form extends RecyclerView implements
     }
 
     /**
+     * Adapter which enables the user to override default form views from being used.
+     */
+    public interface CustomFormCellAdapter {
+        /**
+         * Method which inflates a base cell with a custom view.
+         *
+         * @param parent Where to inflate the view to
+         * @param context Context of the form library
+         * @return custom view holder
+         */
+        @NonNull
+        BaseCell createCustomCell(ViewGroup parent, Context context);
+    }
+
+    /**
      * Data Source definition required for rendering the form.
      */
     public interface DataSource {
@@ -347,6 +382,15 @@ public class Form extends RecyclerView implements
          */
         @NonNull
         FormModel getModel(int sectionId, int fieldId);
+
+        /**
+         * Returns the type of a field in the form. See {@link FormFieldType} for all available types.
+         *
+         * @param sectionId Section index
+         * @param fieldId Field index
+         * @return type of the field at given indices
+         */
+        FormFieldType getFieldType(int sectionId, int fieldId);
 
         /**
          * Returns an optional header for a section. If present it will be displayed before all the fields in the section.

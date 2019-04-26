@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.SpinnerFormModel;
 
@@ -64,7 +65,7 @@ public class SpinnerCell extends BaseCell {
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
-        if (!(model instanceof SpinnerFormModel)) {
+        if (model.getType() != FormFieldType.SPINNER) {
             throw new RuntimeException("Expecting SpinnerFormModel, but got " + model.getClass().getName());
         }
 

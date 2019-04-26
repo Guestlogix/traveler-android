@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.MessageFormModel;
 
@@ -25,7 +26,7 @@ public class MessageCell extends BaseCell {
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
-        if (!(model instanceof MessageFormModel)) {
+        if (model.getType() != FormFieldType.MESSAGE) {
             throw new RuntimeException("Expecting MessageFormModel, but got " + model.getClass().getName());
         }
 

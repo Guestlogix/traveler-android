@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 
 /**
  * Describes a header cell.
@@ -25,7 +26,7 @@ public class HeaderFormModel extends FormModel {
     }
 
     @Override
-    public int getType() {
-        return FormModelType.HEADER.value;
+    public FormFieldType getType() {
+        return FormFieldType.HEADER;
     }
 }

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.models.ButtonFormModel;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 
@@ -34,7 +35,7 @@ public class ButtonCell extends BaseCell {
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
-        if (!(model instanceof ButtonFormModel)) {
+        if (model.getType() != FormFieldType.BUTTON) {
             throw new RuntimeException("Expecting ButtonFormModel, but got " + model.getClass().getName());
         }
 

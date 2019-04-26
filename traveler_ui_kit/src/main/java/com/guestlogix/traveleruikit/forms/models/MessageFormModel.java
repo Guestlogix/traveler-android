@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 
 /**
  * Describes a message cell.
@@ -17,7 +18,7 @@ public class MessageFormModel extends FormModel {
     }
 
     @Override
-    public int getType() {
-        return FormModelType.MESSAGE.value;
+    public FormFieldType getType() {
+        return FormFieldType.MESSAGE;
     }
 }

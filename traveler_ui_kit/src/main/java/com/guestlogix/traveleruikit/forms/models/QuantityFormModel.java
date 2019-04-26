@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 
 /**
  * Describes a quantity cell.
@@ -39,7 +40,7 @@ public class QuantityFormModel extends FormModel {
     }
 
     @Override
-    public int getType() {
-        return FormModelType.QUANTITY.value;
+    public FormFieldType getType() {
+        return FormFieldType.QUANTITY;
     }
 }

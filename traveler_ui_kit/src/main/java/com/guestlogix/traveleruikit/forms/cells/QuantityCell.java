@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
 
@@ -38,7 +39,7 @@ public class QuantityCell extends BaseCell {
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
-        if (!(model instanceof QuantityFormModel)) {
+        if (model.getType() != FormFieldType.QUANTITY) {
             throw new RuntimeException("Expecting QuantityFormModel, but got " + model.getClass().getName());
         }
 
