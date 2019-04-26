@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 
 import java.util.Date;
 
@@ -34,7 +35,7 @@ public class DateFormModel extends FormModel {
     }
 
     @Override
-    public int getType() {
-        return FormModelType.DATE.value;
+    public FormFieldType getType() {
+        return FormFieldType.DATE;
     }
 }

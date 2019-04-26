@@ -10,6 +10,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.models.DateFormModel;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 
@@ -44,7 +45,7 @@ public class DateCell extends BaseCell {
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
-        if (!(model instanceof DateFormModel)) {
+        if (model.getType() != FormFieldType.DATE) {
             throw new RuntimeException("Expecting DateFormModel, but got " + model.getClass().getName());
         }
 

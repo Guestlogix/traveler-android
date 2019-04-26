@@ -9,6 +9,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.TextFormModel;
 
@@ -56,7 +57,7 @@ public class TextCell extends BaseCell {
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
-        if (!(model instanceof TextFormModel)) {
+        if (model.getType() != FormFieldType.TEXT) {
             throw new RuntimeException("Expecting TextFormModel, but got " + model.getClass().getName());
         }
 

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.FormHeader;
 import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.Form;
@@ -102,6 +103,28 @@ public class BookingFormWidget extends Form implements
             default:
                 return new TextFormModel(question.getTitle());
         }
+    }
+
+    @Override
+    public FormFieldType getFieldType(int sectionId, int fieldId) {
+        if (sectionId == bookingForm.getQuestionGroups().size()) {
+            return FormFieldType.BUTTON;
+        }
+
+        Question q = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
+
+        switch (q.getType()) {
+            case QUANTITY:
+                return FormFieldType.QUANTITY;
+            case DATE:
+                return FormFieldType.DATE;
+            case STRING:
+                return FormFieldType.TEXT;
+            case MULTIPLE_CHOICE:
+                return FormFieldType.SPINNER;
+        }
+
+        return FormFieldType.TEXT;
     }
 
     @Nullable

@@ -126,6 +126,7 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
 
             discard.setText(R.string.discard);
             discard.setOnClickListener(b -> {
+                d.dismiss();
                 Intent i = new Intent(this, CatalogItemDetailsActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);

@@ -1,5 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
+import com.guestlogix.traveleruikit.forms.FormFieldType;
+
 /**
  * Describes a field in the form.
  * Must use one of the available child classes.
@@ -29,5 +31,5 @@ public abstract class FormModel {
            - There should be a boolean isRequired in this class. So we can display an asterisk next to important fields.
      */
 
-    public abstract int getType();
+    public abstract FormFieldType getType();
 }

@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.forms.models;
 
 import androidx.annotation.Nullable;
+import com.guestlogix.traveleruikit.forms.FormFieldType;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class SpinnerFormModel extends FormModel {
     }
 
     @Override
-    public int getType() {
-        return FormModelType.SPINNER.value;
+    public FormFieldType getType() {
+        return FormFieldType.SPINNER;
     }
 }
