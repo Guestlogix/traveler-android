@@ -1,4 +1,4 @@
-package com.guestlogix.traveleruikit.fragments;
+package com.guestlogix.traveler.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,11 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.guestlogix.traveler.R;
+import com.guestlogix.traveler.adapters.OrdersAdapter;
 import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.adapters.OrdersAdapter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class OrdersFragment extends Fragment {
@@ -28,11 +27,10 @@ public class OrdersFragment extends Fragment {
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Use this factory method to create a new instance of OrdersFragment.
      *
-     * @param orders .
-     * @return A new instance of fragment OrdersFragment.
+     * @param orders List of orders to show.
+     * @return A new instance of {@link OrdersFragment}.
      */
     public static OrdersFragment newInstance(ArrayList<Order> orders) {
         OrdersFragment fragment = new OrdersFragment();
@@ -69,6 +67,4 @@ public class OrdersFragment extends Fragment {
 
         return view;
     }
-
-
 }
