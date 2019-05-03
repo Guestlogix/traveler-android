@@ -29,9 +29,9 @@ public class Order implements Serializable {
             throw new IllegalArgumentException("total can not be null");
         }
 
-//        if (products == null) {
-//            throw new IllegalArgumentException("products can not be null");
-//        }
+        if (products == null) {
+            throw new IllegalArgumentException("products can not be null");
+        }
 
         if (createdDate == null) {
             throw new IllegalArgumentException("createdDate can not be null");

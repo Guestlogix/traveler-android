@@ -57,10 +57,10 @@ public class Pass implements Serializable {
     static class PassObjectMappingFactory implements ObjectMappingFactory<Pass> {
 
         /**
-         * Parses a json reader object into a Pass model.
+         * Parses a json reader object into a {@code Pass} model.
          *
          * @param reader to read from.
-         * @return Pass model.
+         * @return {@code Pass} model.
          * @throws ObjectMappingException if mapping fails or any required field is missing.
          */
         @Override
@@ -101,9 +101,10 @@ public class Pass implements Serializable {
                             break;
                     }
                 }
-
                 reader.endObject();
+
                 return new Pass(id, name, description, price);
+
             } catch (IllegalArgumentException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {

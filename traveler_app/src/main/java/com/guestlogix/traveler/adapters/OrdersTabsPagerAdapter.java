@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.fragments.OrdersFragment;
+import com.guestlogix.traveler.fragments.OrdersListFragment;
 import com.guestlogix.travelercorekit.models.Order;
 
 import java.util.ArrayList;
@@ -31,14 +31,14 @@ public class OrdersTabsPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return OrdersFragment.newInstance(upcomingOrders);
+                return OrdersListFragment.newInstance(upcomingOrders);
             case 1:
-                return OrdersFragment.newInstance(pastOrders);
+                return OrdersListFragment.newInstance(pastOrders);
             case 2:
-                return OrdersFragment.newInstance(cancelledOrders);
+                return OrdersListFragment.newInstance(cancelledOrders);
 
         }
-        return OrdersFragment.newInstance(upcomingOrders);
+        return OrdersListFragment.newInstance(upcomingOrders);
     }
 
     @Override

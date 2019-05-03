@@ -194,12 +194,12 @@ public class Router {
                 .build(session.getAuthToken().getValue());
     }
 
-    // /order/all
+    // /order/
     public static AuthenticatedUrlRequest orders(Integer skip, Integer take, Date from, Date to, Session session, Context context) {
         RequestBuilder rb = RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("/order/all")
+                .path("/order")
                 .param("traveler", session.getUserId())
                 .param("skip", skip.toString())
                 .param("take", take.toString())

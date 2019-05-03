@@ -4,67 +4,74 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
+import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.adapters.OrdersAdapter;
+import com.guestlogix.traveler.adapters.OrdersTabsPagerAdapter;
+import com.guestlogix.traveler.viewmodels.OrdersViewModel;
 import com.guestlogix.travelercorekit.models.Order;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class OrdersFragment extends Fragment {
-    private static final String ARG_ORDERS = "arg_orders";
 
-    private RecyclerView ordersRecyclerView;
-    private ArrayList<Order> orders;
-    private OrdersAdapter ordersAdapter;
+    private TabLayout ordersTabs;
+    private ViewPager ordersPager;
+
+    private OrdersViewModel ordersViewModel;
 
     public OrdersFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of OrdersFragment.
-     *
-     * @param orders List of orders to show.
-     * @return A new instance of {@link OrdersFragment}.
-     */
-    public static OrdersFragment newInstance(ArrayList<Order> orders) {
-        OrdersFragment fragment = new OrdersFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_ORDERS, orders);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            orders = (ArrayList<Order>) getArguments().getSerializable(ARG_ORDERS);
-            ordersAdapter = new OrdersAdapter(orders, v -> {
-                //TODO: Remove the toast
-                Toast.makeText(getActivity(), "Item Clicked...", Toast.LENGTH_SHORT).show();
-            });
-        }
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
-        ordersRecyclerView = view.findViewById(R.id.recyclerView_ordersFragment_orders);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        ordersRecyclerView.setLayoutManager(linearLayoutManager);
+        ordersViewModel = ViewModelProviders.of(getActivity()).get(OrdersViewModel.class);
+        ordersViewModel.getObservableOrdersList().observe(this, this::orderChangeHandler);
 
-        ordersRecyclerView.setAdapter(ordersAdapter);
+        ordersTabs = view.findViewById(R.id.tab_OrdersActivity_ordersTabs);
+        ordersPager = view.findViewById(R.id.viewPager_OrdersActivity_ordersPager);
 
         return view;
+    }
+
+    private void orderChangeHandler(List<Order> orderList) {
+        if (null == orderList || orderList.size() <= 0) {
+            return;
+        }
+        ArrayList<Order> orderArrayList = new ArrayList<>(orderList);
+
+        ArrayList<Order> pastOrdersArrayList = new ArrayList<>();
+        ArrayList<Order> upcomingOrdersArrayList = new ArrayList<>();
+        ArrayList<Order> cancelledOrdersArrayList = new ArrayList<>();
+
+        for (Order order : orderArrayList) {
+
+            if (order.getStatus().equalsIgnoreCase("Canceled")) {
+                cancelledOrdersArrayList.add(order);
+            } else if (order.getCreatedDate().before(new Date())) {
+                pastOrdersArrayList.add(order);
+            } else {
+                upcomingOrdersArrayList.add(order);
+            }
+        }
+
+        OrdersTabsPagerAdapter ordersTabsPagerAdapter = new OrdersTabsPagerAdapter(getActivity().getSupportFragmentManager(), pastOrdersArrayList, upcomingOrdersArrayList, cancelledOrdersArrayList, getActivity());
+
+        ordersPager.setAdapter(ordersTabsPagerAdapter);
+        ordersTabs.setupWithViewPager(ordersPager);
     }
 }
