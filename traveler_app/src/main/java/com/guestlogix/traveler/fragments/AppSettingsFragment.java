@@ -170,7 +170,7 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
         gSignInClient.signOut().addOnCompleteListener(getActivityContext(), task -> {
 
             Guest.getInstance().logout(getActivityContext());
-            Traveler.removeUserId();
+            Traveler.identify(null,null);
 
             Intent i = new Intent(getActivity(), HomeActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

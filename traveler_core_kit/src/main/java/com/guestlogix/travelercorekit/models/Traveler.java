@@ -17,6 +17,7 @@ import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Traveler {
@@ -78,18 +79,22 @@ public class Traveler {
         taskManager.addTask(authTokenFetchBlockTask);
     }
 
-    public static void setUserId(String userId) {
+    /**
+     * This method stores the identity of the traveler internally. Once this identity is set,
+     * all subsequent calls to the this facade will be tracked under this traveler’s identity.
+     * It does not persist the identifier.
+     *
+     * @param identifier A unique string that you receive from your own backend after it retrieves
+     *                   it using the partner API. Passing null will clear the traveler identity from the SDK.
+     * @param attributes  A {@link HashMap} of custom traveler attributes to keep for records.
+     *
+     * @throws RuntimeException if SDK is not initialized.
+     */
+    public static void identify(String identifier, HashMap<String, Object> attributes) {
         if (null == localInstance) {
             throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
         }
-        localInstance.session.setUserId(userId);
-    }
-
-    public static void removeUserId() {
-        if (null == localInstance) {
-            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
-        }
-        localInstance.session.setUserId(null);
+        localInstance.session.setUserId(identifier);
     }
 
     /**
@@ -378,7 +383,7 @@ public class Traveler {
         if (null == localInstance) {
             fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else if (null == localInstance.session || null == localInstance.session.getUserId()) {
-            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
+            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.identify();"));
         } else {
             AuthenticatedUrlRequest request = Router.orders(skip, take, from, to, localInstance.session, localInstance.session.getContext());
             AuthenticatedRemoteNetworkRequestTask<List<Order>> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new PaginatedObjectMappingFactory<>(new ArrayMappingFactory<>(new Order.OrderMappingFactory())));
