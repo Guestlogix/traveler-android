@@ -381,7 +381,7 @@ public class Traveler {
             fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
         } else {
             AuthenticatedUrlRequest request = Router.orders(skip, take, from, to, localInstance.session, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<List<Order>> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new PaginatedObjectMappingFactory<>(new ArrayMappingFactory<>(new Order.OrderMappingFactory())));
+            AuthenticatedRemoteNetworkRequestTask<OrderResults> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new OrderResults.OrderResultsObjectMappingFactory());
 
             BlockTask fetchOrdersBlockTask = new BlockTask() {
                 @Override

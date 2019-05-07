@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.OrderResults;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
@@ -16,13 +17,13 @@ import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.*;
 
 public class OrdersViewModel extends StatefulViewModel {
 
-    MutableLiveData<List<Order>> ordersList = new MutableLiveData<>();
+    private MutableLiveData<OrderResults> ordersList = new MutableLiveData<>();
 
     public OrdersViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public LiveData<List<Order>> getObservableOrdersList() {
+    public LiveData<OrderResults> getObservableOrdersList() {
         return ordersList;
     }
 
@@ -40,7 +41,7 @@ public class OrdersViewModel extends StatefulViewModel {
 
     FetchOrdersCallback fetchOrdersCallback = new FetchOrdersCallback() {
         @Override
-        public void onOrdersFetchSuccess(List<Order> orders) {
+        public void onOrdersFetchSuccess(OrderResults orders) {
             status.setValue(SUCCESS);
             ordersList.setValue(orders);
         }

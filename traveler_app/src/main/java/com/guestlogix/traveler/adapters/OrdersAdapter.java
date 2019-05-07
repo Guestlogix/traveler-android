@@ -21,7 +21,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
     private View.OnClickListener onItemClickListener;
     private RecyclerView.RecycledViewPool viewPool;
 
-    public OrdersAdapter(ArrayList<Order> orders, View.OnClickListener onItemClickListener) {
+    public OrdersAdapter(List<Order> orders, View.OnClickListener onItemClickListener) {
         this.orders = orders;
         this.onItemClickListener = onItemClickListener;
         this.viewPool = new RecyclerView.RecycledViewPool();
