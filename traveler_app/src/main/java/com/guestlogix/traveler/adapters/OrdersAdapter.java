@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.BookableProduct;
@@ -47,6 +48,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(onItemClickListener);
+        holder.productsRecyclerView.setAdapter(holder.productsAdapter);
     }
 
     @Override
@@ -66,6 +68,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
             title = itemView.findViewById(R.id.textView_orderItem_dateOrdered);
             productsRecyclerView = itemView.findViewById(R.id.recyclerView_orderItem_products);
             totalAmount = itemView.findViewById(R.id.textView_orderItem_totalAmount);
+            productsRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
 
@@ -81,7 +84,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
         @Override
         public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_product, parent, false);
-
             return new ProductViewHolder(view);
         }
 
@@ -89,6 +91,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
         public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
             BookableProduct product = (BookableProduct) products.get(position);
             holder.nameTextView.setText(product.getTitle());
+            holder.itemView.setOnClickListener(onItemClickListener);
         }
 
         @Override
