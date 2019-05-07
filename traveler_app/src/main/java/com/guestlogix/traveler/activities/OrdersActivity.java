@@ -2,29 +2,13 @@ package com.guestlogix.traveler.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.viewpager.widget.ViewPager;
-import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.adapters.OrdersTabsPagerAdapter;
 import com.guestlogix.traveler.viewmodels.OrdersViewModel;
-import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
-import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.travelercorekit.models.Traveler;
-import com.guestlogix.traveleruikit.fragments.TravelerActivityRetryFragment;
 import com.guestlogix.traveleruikit.fragments.TravelerRetryFragment;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.ARG_ERROR_ACTION;
 import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.ARG_ERROR_MESSAGE;
