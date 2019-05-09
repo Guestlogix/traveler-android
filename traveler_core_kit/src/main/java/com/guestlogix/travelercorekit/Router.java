@@ -195,16 +195,16 @@ public class Router {
     }
 
     // /order/
-    public static AuthenticatedUrlRequest orders(Integer skip, Integer take, Date from, Date to, Session session, Context context) {
+    public static AuthenticatedUrlRequest orders(OrderQuery orderQuery, Session session, Context context) {
         RequestBuilder rb = RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
                 .path("/order")
                 .param("traveler", session.getUserId())
-                .param("skip", skip.toString())
-                .param("take", take.toString())
-                .param("from", DateHelper.formatDateToISO8601(from))
-                .param("to", DateHelper.formatDateToISO8601(to))
+                .param("skip", orderQuery.getOffset().toString())
+                .param("take", orderQuery.getLimit().toString())
+                .param("from", DateHelper.formatDateToISO8601(orderQuery.getFrom()))
+                .param("to", DateHelper.formatDateToISO8601(orderQuery.getTo()))
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey());
 

@@ -10,22 +10,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.OrderResult;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemViewHolder> {
 
-    private List<Order> orders;
+    private OrderResult orderResult;
     private View.OnClickListener onItemClickListener;
     private RecyclerView.RecycledViewPool viewPool;
 
-    public OrdersAdapter(List<Order> orders, View.OnClickListener onItemClickListener) {
-        this.orders = orders;
+    public OrdersAdapter(OrderResult orderResult, View.OnClickListener onItemClickListener) {
+        this.orderResult = orderResult;
         this.onItemClickListener = onItemClickListener;
         this.viewPool = new RecyclerView.RecycledViewPool();
+    }
+
+    public void setOrderResult(OrderResult orderResult) {
+        this.orderResult = orderResult;
     }
 
     @NonNull
@@ -38,8 +44,19 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
     @Override
     public void onBindViewHolder(@NonNull OrdersAdapter.OrderItemViewHolder holder, int position) {
-        Order item = orders.get(position);
+        Order item = orderResult.getOrders().get(position);
 
+        if (null == item) {
+            //TODO:  Shimmer cell
+            holder.title.setText("Loading...");
+            holder.totalAmount.setText("");
+            holder.productsAdapter = new OrderProductsAdapter(null);
+            holder.productsRecyclerView.setAdapter(holder.productsAdapter);
+
+            holder.itemView.setOnClickListener(null);
+
+            return;
+        }
         holder.productsRecyclerView.setRecycledViewPool(viewPool);
 
         holder.productsAdapter = new OrderProductsAdapter(item.getProducts());
@@ -53,7 +70,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
     @Override
     public int getItemCount() {
-        return orders.size();
+        return orderResult.getTotal();
     }
 
     class OrderItemViewHolder extends RecyclerView.ViewHolder {

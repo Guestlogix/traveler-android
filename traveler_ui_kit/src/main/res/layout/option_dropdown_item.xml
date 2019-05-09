@@ -15,7 +15,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingRight="@dimen/padding_small"
-            tools:text="Some option we can take, this is a long information to"
+            tools:text="Some option we can limit, this is a long information to"
             android:paddingEnd="@dimen/padding_small"/>
 
     <TextView

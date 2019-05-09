@@ -13,16 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.OrdersAdapter;
 import com.guestlogix.traveler.viewmodels.OrdersViewModel;
-import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.travelercorekit.models.OrderResults;
-
-import java.util.List;
+import com.guestlogix.travelercorekit.models.OrderResult;
+import com.guestlogix.traveleruikit.widgets.EndlessRecyclerViewScrollListener;
 
 public class OrdersFragment extends Fragment {
 
     private OrdersViewModel ordersViewModel;
     private RecyclerView ordersRecyclerView;
     private OrdersAdapter ordersAdapter;
+    private OrderResult orderResult;
+    private boolean loading = false;
+    private EndlessRecyclerViewScrollListener ordersEndlessRecyclerViewScrollListener;
 
     public OrdersFragment() {
         // Required empty public constructor
@@ -38,7 +39,7 @@ public class OrdersFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         ordersViewModel = ViewModelProviders.of(getActivity()).get(OrdersViewModel.class);
-        ordersViewModel.getObservableOrdersList().observe(this, this::orderChangeHandler);
+        ordersViewModel.getObservableOrdersResult().observe(this, this::orderChangeHandler);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_orders_list, container, false);
@@ -46,20 +47,50 @@ public class OrdersFragment extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         ordersRecyclerView.setLayoutManager(linearLayoutManager);
+        ordersEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int skip, int totalItemsCount, RecyclerView view) {
+                ordersViewModel.fetchOrders(skip, totalItemsCount);
+            }
 
+            @Override
+            public int getTotalFetchedItems() {
+                return orderResult.getOrders().size();
+            }
+
+            @Override
+            public boolean reloadWindow(int start, int end) {
+
+                for (int i = start; i <= end; i++) {
+                    if (null == orderResult.getOrders().get(i)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        };
+        ordersRecyclerView.addOnScrollListener(ordersEndlessRecyclerViewScrollListener);
         return view;
     }
 
-    private void orderChangeHandler(OrderResults orderResults) {
-        if (null == orderResults || null == orderResults.getOrders() || orderResults.getOrders().size() <= 0) {
+    private void orderChangeHandler(OrderResult _orderResult) {
+        loading = false;
+        if (null == _orderResult) {
             return;
         }
+        orderResult = _orderResult;
 
-        ordersAdapter = new OrdersAdapter(orderResults.getOrders(), v -> {
-            //TODO: Remove the toast
-            Toast.makeText(getActivity(), "Item Clicked...", Toast.LENGTH_SHORT).show();
-        });
+        if (ordersAdapter == null) {
+            ordersAdapter = new OrdersAdapter(orderResult, v -> {
+                //TODO: Remove the toast
+                Toast.makeText(getActivity(), "Item Clicked...", Toast.LENGTH_SHORT).show();
+            });
+            ordersRecyclerView.setAdapter(ordersAdapter);
+        } else {
+            ordersAdapter.setOrderResult(orderResult);
+            ordersAdapter.notifyDataSetChanged();
+        }
 
-        ordersRecyclerView.setAdapter(ordersAdapter);
     }
 }

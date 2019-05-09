@@ -1,13 +1,13 @@
 package com.guestlogix.travelercorekit.callbacks;
 
-import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.travelercorekit.models.OrderResults;
-import com.guestlogix.travelercorekit.models.Pass;
-
-import java.util.List;
+import com.guestlogix.travelercorekit.models.OrderResult;
 
 public interface FetchOrdersCallback {
-    void onOrdersFetchSuccess(OrderResults orders);
+    void onOrdersFetchSuccess(OrderResult orders);
+
+    void onOrderResultsFetched(OrderResult orders);
+
+    OrderResult getPreviousOrderResults();
 
     void onOrdersFetchError(Error error);
 }

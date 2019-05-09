@@ -7,8 +7,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.OrdersViewModel;
+import com.guestlogix.travelercorekit.models.OrderQuery;
 import com.guestlogix.traveleruikit.fragments.TravelerRetryFragment;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
+
+import java.util.Calendar;
 
 import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.ARG_ERROR_ACTION;
 import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.ARG_ERROR_MESSAGE;
@@ -19,6 +22,7 @@ public class OrdersActivity extends AppCompatActivity implements TravelerRetryFr
     private NavController navController;
     private OrdersViewModel ordersViewModel;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +32,18 @@ public class OrdersActivity extends AppCompatActivity implements TravelerRetryFr
         ordersViewModel = ViewModelProviders.of(OrdersActivity.this).get(OrdersViewModel.class);
 
         ordersViewModel.getStatus().observe(this, this::ordersStateChangeHandler);
-        ordersViewModel.fetchOrders();
+
+        fetchInitialOrders();
+
     }
 
     @Override
     public void onRetry() {
-        ordersViewModel.fetchOrders();
+        fetchInitialOrders();
+    }
+
+    private void fetchInitialOrders() {
+        ordersViewModel.fetchOrders(0,10);
     }
 
     private void ordersStateChangeHandler(StatefulViewModel.State state) {

@@ -12,7 +12,6 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.PaginatedObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -365,23 +364,21 @@ public class Traveler {
     }
 
     /**
-     * Fetches all orders for a given user Id.
+     * Fetches all volatileOrders for a given user Id.
      * <p>
      *
-     * @param skip                skip the number of records
-     * @param take                number of records to fetch
-     * @param from                fetch the records on and after this date
-     * @param to                  fetch the records on and before this date
      * @param fetchOrdersCallback callback methods to be executed once the fetch is complete
      */
-    public static void fetchOrders(Integer skip, Integer take, Date from, Date to, FetchOrdersCallback fetchOrdersCallback) {
+    public static void fetchOrders(OrderQuery orderQuery, FetchOrdersCallback fetchOrdersCallback) {
         if (null == localInstance) {
             fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else if (null == localInstance.session || null == localInstance.session.getUserId()) {
             fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
         } else {
-            AuthenticatedUrlRequest request = Router.orders(skip, take, from, to, localInstance.session, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<OrderResults> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new OrderResults.OrderResultsObjectMappingFactory());
+            AuthenticatedUrlRequest request = Router.orders(orderQuery, localInstance.session, localInstance.session.getContext());
+            AuthenticatedRemoteNetworkRequestTask<OrderResult> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new OrderResult.OrderResultsObjectMappingFactory());
+
+            OrderResult[] orderResults = new OrderResult[1];
 
             BlockTask fetchOrdersBlockTask = new BlockTask() {
                 @Override
@@ -390,13 +387,29 @@ public class Traveler {
                         fetchOrdersCallback.onOrdersFetchError(fetchOrdersTask.getError());
                         TravelerLog.e(fetchOrdersTask.getError().getMessage());
                     } else {
-                        fetchOrdersCallback.onOrdersFetchSuccess(fetchOrdersTask.getResource());
+                        fetchOrdersCallback.onOrdersFetchSuccess(orderResults[0]);
                     }
                 }
             };
 
-            fetchOrdersBlockTask.addDependency(fetchOrdersTask);
+            BlockTask mergingTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null == fetchOrdersTask.getError()) {
+                        if (null == fetchOrdersCallback.getPreviousOrderResults()) {
+                            orderResults[0] = fetchOrdersTask.getResource();
+                        } else {
+                            orderResults[0] = fetchOrdersTask.getResource().merge(fetchOrdersCallback.getPreviousOrderResults().copy());
+                            fetchOrdersCallback.onOrderResultsFetched(orderResults[0]);
+                        }
+                    }
+                }
+            };
+
+            mergingTask.addDependency(fetchOrdersTask);
+            fetchOrdersBlockTask.addDependency(mergingTask);
             localInstance.taskManager.addTask(fetchOrdersTask);
+            localInstance.taskManager.addTask(mergingTask);
             TaskManager.getMainTaskManager().addTask(fetchOrdersBlockTask);
         }
     }

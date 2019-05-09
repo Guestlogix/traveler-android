@@ -13,6 +13,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
             android:layout_marginBottom="@dimen/margin_xxsmall"
             android:id="@+id/textView_productName"
             style="@style/BodyHeaderTextView"
