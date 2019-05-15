@@ -1,7 +1,6 @@
 package com.guestlogix.travelercorekit.callbacks;
 
 import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.travelercorekit.models.Pass;
 
 import java.util.List;
 

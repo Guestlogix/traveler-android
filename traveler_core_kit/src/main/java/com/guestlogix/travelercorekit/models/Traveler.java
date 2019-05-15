@@ -368,19 +368,16 @@ public class Traveler {
      * Fetches all orders for a given user Id.
      * <p>
      *
-     * @param skip                skip the number of records
-     * @param take                number of records to fetch
-     * @param from                fetch the records on and after this date
-     * @param to                  fetch the records on and before this date
+     * @param orderQuery          query to fetch orders
      * @param fetchOrdersCallback callback methods to be executed once the fetch is complete
      */
-    public static void fetchOrders(Integer skip, Integer take, Date from, Date to, FetchOrdersCallback fetchOrdersCallback) {
+    public static void fetchOrders(OrderQuery orderQuery, FetchOrdersCallback fetchOrdersCallback) {
         if (null == localInstance) {
             fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else if (null == localInstance.session || null == localInstance.session.getUserId()) {
             fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
         } else {
-            AuthenticatedUrlRequest request = Router.orders(skip, take, from, to, localInstance.session, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.orders(orderQuery, localInstance.session, localInstance.session.getContext());
             AuthenticatedRemoteNetworkRequestTask<List<Order>> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new PaginatedObjectMappingFactory<>(new ArrayMappingFactory<>(new Order.OrderMappingFactory())));
 
             BlockTask fetchOrdersBlockTask = new BlockTask() {

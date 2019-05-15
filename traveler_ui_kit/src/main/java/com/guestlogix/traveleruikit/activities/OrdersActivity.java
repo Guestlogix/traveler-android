@@ -3,8 +3,10 @@ package com.guestlogix.traveleruikit.activities;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.OrderQuery;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.OrdersFragment;
@@ -14,7 +16,6 @@ import com.guestlogix.traveleruikit.fragments.TravelerRetryFragment;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.ERROR;
@@ -22,31 +23,35 @@ import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.SU
 
 public class OrdersActivity extends AppCompatActivity implements TravelerRetryFragment.RetryFragmentInteractionListener {
 
-    private Calendar fromCalendar = Calendar.getInstance();
-    private Calendar toCalendar = Calendar.getInstance();
+    public static String ARG_ORDER_QUERY = "arg_order_query";
     private ArrayList<Order> orders = new ArrayList<>();
+    private OrderQuery orderQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
 
+        Bundle extras = getIntent().getExtras();
+        if (null == extras || !extras.containsKey(ARG_ORDER_QUERY)) {
+            TravelerLog.e("ARG_ORDER_QUERY is required to launch OrdersActivity");
+            finish();
+            return;
+        }
+        orderQuery = (OrderQuery) extras.getSerializable(ARG_ORDER_QUERY);
         fetchOrders();
     }
 
     //TODO: Updated when filters are decided.
     private void fetchOrders() {
-        fromCalendar.add(Calendar.DAY_OF_YEAR, -105);
-        toCalendar.add(Calendar.DAY_OF_YEAR, 105);
 
-        Traveler.fetchOrders(0, 10, fromCalendar.getTime(), toCalendar.getTime(), fetchOrdersCallback);
+        Traveler.fetchOrders(orderQuery, fetchOrdersCallback);
     }
 
     @Override
     public void onRetry() {
-        Traveler.fetchOrders(0, 10, fromCalendar.getTime(), toCalendar.getTime(), fetchOrdersCallback);
+        Traveler.fetchOrders(orderQuery, fetchOrdersCallback);
     }
-
 
     private void ordersStateChangeHandler(StatefulViewModel.State state) {
         switch (state) {

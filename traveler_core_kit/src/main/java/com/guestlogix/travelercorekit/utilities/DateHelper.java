@@ -14,22 +14,37 @@ public class DateHelper {
     private static final Calendar calendar = Calendar.getInstance();
 
     public static String formatDateToISO8601(Date date) {
+        if (null == date) {
+            return "";
+        }
         return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).format(date);
     }
 
     public static String formatDate(Date date) {
+        if (null == date) {
+            return "";
+        }
         return new SimpleDateFormat(PRETTY_DATE_PATTERN, Locale.getDefault()).format(date);
     }
 
     public static Date parseISO8601(String dateString) throws ParseException {
+        if (null == dateString || dateString.isEmpty()) {
+            return null;
+        }
         return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).parse(dateString);
     }
 
     public static Date parseDate(String dateString) throws ParseException {
+        if (null == dateString || dateString.isEmpty()) {
+            return null;
+        }
         return new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(dateString);
     }
 
     public static String formatTime(Date date) {
+        if (null == date) {
+            return "";
+        }
         return new SimpleDateFormat(TIME_PATTERN, Locale.getDefault()).format(date);
     }
 

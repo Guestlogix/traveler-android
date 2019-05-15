@@ -19,10 +19,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.guestlogix.traveler.R;
+import com.guestlogix.travelercorekit.models.OrderQuery;
 import com.guestlogix.traveleruikit.activities.OrdersActivity;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
+
+import java.util.Date;
+
+import static com.guestlogix.travelercorekit.models.OrderQuery.DEFAULT_PAGE_SIZE;
+import static com.guestlogix.traveleruikit.activities.OrdersActivity.ARG_ORDER_QUERY;
 
 /**
  * A fragment which displays the current profile.
@@ -89,6 +95,8 @@ public class ProfileFragment extends BaseFragment {
 
     private void onOrdersClick(View _v) {
         Intent ordersIntent = new Intent(getActivity(), OrdersActivity.class);
+        OrderQuery orderQuery = new OrderQuery(0, DEFAULT_PAGE_SIZE, null, new Date());
+        ordersIntent.putExtra(ARG_ORDER_QUERY, orderQuery);
         startActivity(ordersIntent);
     }
 
