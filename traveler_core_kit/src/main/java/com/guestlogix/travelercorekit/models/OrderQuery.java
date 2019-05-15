@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,9 @@ import java.util.Date;
  * from                fetch the records on and after this date
  * to                  fetch the records on and before this date
  */
-public class OrderQuery {
+public class OrderQuery implements Serializable {
+
+    public static Integer DEFAULT_PAGE_SIZE = 10;
 
     private Integer offset;
     private Integer limit;

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * ScrollListener for RecyclerView to provide callbacks to fetch items endlessly.
+ * ScrollListener for RecyclerView to provide callbacks with items to skip and total items to fetch endlessly.
  */
 public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 
@@ -52,7 +52,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             previousTotalItemCount = totalItemCount;
         }
 
-        if (!loading && ((lastVisibleItemPosition + visibleThreshold) > totalItemCount) && reloadWindow(totalItemCount - 1, totalItemCount - 1 + pageSize)) {
+        if (!hasConsumed && !loading && ((lastVisibleItemPosition + visibleThreshold) > totalItemCount) && reloadWindow(totalItemCount - 1, totalItemCount - 1 + pageSize)) {
             skipItems = totalItemCount - 1;
             onLoadMore(skipItems, totalItemCount, view);
             loading = true;

@@ -7,26 +7,40 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.OrdersAdapter;
-import com.guestlogix.traveler.viewmodels.OrdersViewModel;
+import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
+import com.guestlogix.travelercorekit.models.OrderQuery;
 import com.guestlogix.travelercorekit.models.OrderResult;
-import com.guestlogix.traveleruikit.widgets.EndlessRecyclerViewScrollListener;
+import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.traveleruikit.widgets.EndlessRecyclerView;
+import com.guestlogix.traveleruikit.widgets.EndlessRecyclerView.PrefetchListener;
+
+import java.util.HashMap;
 
 public class OrdersFragment extends Fragment {
 
-    private OrdersViewModel ordersViewModel;
-    private RecyclerView ordersRecyclerView;
+    private EndlessRecyclerView ordersRecyclerView;
     private OrdersAdapter ordersAdapter;
     private OrderResult orderResult;
     private boolean loading = false;
-    private EndlessRecyclerViewScrollListener ordersEndlessRecyclerViewScrollListener;
+    private OrderQuery orderQuery;
+
+    private static String ARG_ORDER_RESULT = "arg_order_result";
+    private static String ARG_ORDER_QUERY = "arg_order_query";
 
     public OrdersFragment() {
-        // Required empty public constructor
+        // Do nothing.
+    }
+
+    public static OrdersFragment newInstance(OrderResult orderResult, OrderQuery orderQuery) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ORDER_RESULT, orderResult);
+        args.putSerializable(ARG_ORDER_QUERY, orderQuery);
+        OrdersFragment fragment = new OrdersFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -38,59 +52,79 @@ public class OrdersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ordersViewModel = ViewModelProviders.of(getActivity()).get(OrdersViewModel.class);
-        ordersViewModel.getObservableOrdersResult().observe(this, this::orderChangeHandler);
+        Bundle args = getArguments();
 
-        // Inflate the layout for this fragment
+        if (null != args && args.containsKey(ARG_ORDER_RESULT) && args.containsKey(ARG_ORDER_QUERY)) {
+            orderResult = (OrderResult) args.getSerializable(ARG_ORDER_RESULT);
+            orderQuery = (OrderQuery) args.getSerializable(ARG_ORDER_QUERY);
+        } else {
+            throw new RuntimeException("ARG_ORDER_RESULT and ARG_ORDER_QUERY are required to show the orders");
+        }
+
         View view = inflater.inflate(R.layout.fragment_orders_list, container, false);
         ordersRecyclerView = view.findViewById(R.id.recyclerView_ordersFragment_orders);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         ordersRecyclerView.setLayoutManager(linearLayoutManager);
-        ordersEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-            @Override
-            public void onLoadMore(int skip, int totalItemsCount, RecyclerView view) {
-                ordersViewModel.fetchOrders(skip, totalItemsCount);
-            }
+        ordersRecyclerView.setPrefetchListener(prefetchListener);
 
-            @Override
-            public int getTotalFetchedItems() {
-                return orderResult.getOrders().size();
-            }
+        ordersAdapter = new OrdersAdapter(orderResult, v -> {
+            //TODO: Remove the toast
+            Toast.makeText(getActivity(), "Item Clicked...", Toast.LENGTH_SHORT).show();
+        });
+        ordersRecyclerView.setAdapter(ordersAdapter);
 
-            @Override
-            public boolean reloadWindow(int start, int end) {
-
-                for (int i = start; i <= end; i++) {
-                    if (null == orderResult.getOrders().get(i)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-        };
-        ordersRecyclerView.addOnScrollListener(ordersEndlessRecyclerViewScrollListener);
         return view;
     }
 
-    private void orderChangeHandler(OrderResult _orderResult) {
+    private PrefetchListener prefetchListener = (indexes, view) -> {
+
+        if (!loading)
+            for (int i : indexes) {
+                if (null == orderResult.getOrders().get(i)) {
+                    loading = false;
+                    fetchOrders(i, indexes.length);
+                    break;
+                }
+            }
+    };
+
+    private void orderChangeHandler(OrderResult orderResult) {
         loading = false;
-        if (null == _orderResult) {
+        if (null == orderResult) {
             return;
         }
-        orderResult = _orderResult;
+        this.orderResult = orderResult;
 
-        if (ordersAdapter == null) {
-            ordersAdapter = new OrdersAdapter(orderResult, v -> {
-                //TODO: Remove the toast
-                Toast.makeText(getActivity(), "Item Clicked...", Toast.LENGTH_SHORT).show();
-            });
-            ordersRecyclerView.setAdapter(ordersAdapter);
-        } else {
-            ordersAdapter.setOrderResult(orderResult);
-            ordersAdapter.notifyDataSetChanged();
+        ordersAdapter.setOrderResult(this.orderResult);
+        ordersAdapter.notifyDataSetChanged();
+    }
+
+    private void fetchOrders(Integer skip, Integer take) {
+
+        orderQuery.setSkip(skip);
+        orderQuery.setTake(take);
+        Traveler.fetchOrders(orderQuery, fetchOrdersCallback);
+    }
+
+    private FetchOrdersCallback fetchOrdersCallback = new FetchOrdersCallback() {
+        @Override
+        public void onOrdersFetchSuccess(OrderResult orders) {
+            orderChangeHandler(orders);
         }
 
-    }
+        @Override
+        public void onOrderResultsFetched(OrderResult orders) {
+
+        }
+
+        @Override
+        public OrderResult getPreviousOrderResults() {
+            return orderResult;
+        }
+
+        @Override
+        public void onOrdersFetchError(Error error) {
+        }
+    };
 }
