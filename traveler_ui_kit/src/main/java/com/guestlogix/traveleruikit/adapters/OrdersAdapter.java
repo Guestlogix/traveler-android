@@ -17,11 +17,11 @@ import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemViewHolder> {
 
-    ArrayList<Order> orders;
+    List<Order> orders;
     View.OnClickListener onItemClickListener;
     RecyclerView.RecycledViewPool viewPool;
 
-    public OrdersAdapter(ArrayList<Order> orders, View.OnClickListener onItemClickListener) {
+    public OrdersAdapter(List<Order> orders, View.OnClickListener onItemClickListener) {
         this.orders = orders;
         this.onItemClickListener = onItemClickListener;
         this.viewPool = new RecyclerView.RecycledViewPool();

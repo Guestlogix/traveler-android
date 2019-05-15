@@ -49,8 +49,6 @@ public class OrdersFragment extends Fragment {
         if (getArguments() != null) {
             orders = (ArrayList<Order>) getArguments().getSerializable(ARG_ORDERS);
             ordersAdapter = new OrdersAdapter(orders, v -> {
-                //TODO: Remove the toast
-                Toast.makeText(getActivity(), "Item Clicked...", Toast.LENGTH_SHORT).show();
             });
         }
     }
