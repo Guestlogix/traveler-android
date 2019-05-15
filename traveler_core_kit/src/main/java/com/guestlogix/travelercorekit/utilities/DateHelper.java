@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateHelper {
     private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"; //ISO 8601
@@ -14,23 +15,34 @@ public class DateHelper {
     private static final Calendar calendar = Calendar.getInstance();
 
     public static String formatDateToISO8601(Date date) {
-        return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).format(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(date);
     }
 
     public static String formatDate(Date date) {
-        return new SimpleDateFormat(PRETTY_DATE_PATTERN, Locale.getDefault()).format(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(PRETTY_DATE_PATTERN, Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(date);
     }
 
     public static Date parseISO8601(String dateString) throws ParseException {
-        return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).parse(dateString);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.parse(dateString);
     }
 
     public static Date parseDate(String dateString) throws ParseException {
-        return new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(dateString);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_PATTERN, Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.parse(dateString);
+
     }
 
     public static String formatTime(Date date) {
-        return new SimpleDateFormat(TIME_PATTERN, Locale.getDefault()).format(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return dateFormat.format(date);
     }
 
     public static String formatTime(Long rowItem) {
