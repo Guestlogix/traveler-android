@@ -45,4 +45,7 @@
     <string name="order_processed_description">An order confirmation has been sent to your email. Please be sure to
         check your spam if not present in your inbox.
     </string>
+    <string name="past">Past</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="cancelled">Cancelled</string>
 </resources>

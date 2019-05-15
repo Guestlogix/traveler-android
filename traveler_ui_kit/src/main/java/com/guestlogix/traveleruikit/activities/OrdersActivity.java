@@ -1,15 +1,15 @@
-package com.guestlogix.traveler.activities;
+package com.guestlogix.traveleruikit.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
-import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.adapters.OrdersTabsPagerAdapter;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.adapters.OrdersTabsPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;

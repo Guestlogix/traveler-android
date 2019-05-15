@@ -2,7 +2,7 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".activities.OrdersActivity"
+        tools:context="com.guestlogix.traveleruikit.activities.OrdersActivity"
         android:id="@+id/ordersContainerFrameLayout"
         android:layout_width="match_parent"
         android:orientation="vertical"

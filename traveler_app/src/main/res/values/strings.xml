@@ -44,8 +44,5 @@
     <string name="confirm_sign_out">Confirm sign out?</string>
     <string name="confirm">Confirm</string>
     <string name="sign_out_msg">Your order history will only be visible once you sign in.</string>
-    <string name="past">Past</string>
-    <string name="upcoming">Upcoming</string>
-    <string name="cancelled">Cancelled</string>
     <string name="unsaved_changes_lost">All unsaved changes will be lost.</string>
 </resources>

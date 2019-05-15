@@ -1,13 +1,13 @@
-package com.guestlogix.traveler.adapters;
+package com.guestlogix.traveleruikit.adapters;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.Order;
 
+import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.OrdersFragment;
 
 import java.util.ArrayList;

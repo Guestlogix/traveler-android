@@ -16,10 +16,6 @@
         <activity android:name=".activities.ProfileActivity"
                   android:theme="@style/AppTheme.NoActionBar"
                   android:windowSoftInputMode="stateHidden|adjustResize"/>
-        <activity android:name=".activities.OrdersActivity"
-                  android:label="Orders">
-        </activity>
-
         <activity
                 android:name=".activities.AddFlightActivity"
                 android:label="Add Flight">
