@@ -34,7 +34,7 @@ android {
 dependencies {
 
     //AndroidX dependencies
-    implementation "androidx.appcompat:appcompat:${androidx_version}"
+    implementation "com.android.support:appcompat-v7:${android_support_component_version}"
 
     //Testing frameworks
     testImplementation "junit:junit:${junit_version}"
