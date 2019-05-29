@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * User this class to fetch Orders
+ * Creates query to fetch Orders
  * <p>
  * offset                offset the number of records
  * limit                number of records to fetch
@@ -31,31 +31,15 @@ public class OrderQuery implements Serializable {
         return offset;
     }
 
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
-
     public Integer getLimit() {
         return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
     }
 
     public Date getFrom() {
         return from;
     }
 
-    public void setFrom(Date from) {
-        this.from = from;
-    }
-
     public Date getTo() {
         return to;
-    }
-
-    public void setTo(Date to) {
-        this.to = to;
     }
 }
