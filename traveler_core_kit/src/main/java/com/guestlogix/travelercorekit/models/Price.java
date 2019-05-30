@@ -15,7 +15,7 @@ import java.util.Currency;
 import java.util.Locale;
 
 public class Price implements Serializable {
-    private Double value;
+    private double value;
     private String currency;
 
     public Price() {
@@ -23,13 +23,8 @@ public class Price implements Serializable {
         currency = "USD"; //default currency
     }
 
-    public Price(Double value, String currency) {
-        if (value == null) {
-            throw new IllegalArgumentException("value can not be null");
-        } else {
-            this.value = value;
-        }
-
+    public Price(double value, String currency) {
+        this.value = value;
         if (currency == null || currency.trim().isEmpty()) {
             throw new IllegalArgumentException("currency can not be empty");
         } else {
@@ -37,7 +32,7 @@ public class Price implements Serializable {
         }
     }
 
-    public Double getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -74,7 +69,7 @@ public class Price implements Serializable {
         public Price instantiate(JsonReader reader) throws ObjectMappingException {
             String key = "Price";
             try {
-                Double value = 0.0;
+                double value = 0.0;
                 String currency = "";
 
                 JsonToken token = reader.peek();
@@ -89,7 +84,7 @@ public class Price implements Serializable {
 
                     switch (key) {
                         case "value":
-                            value = JsonReaderHelper.readNonNullDouble(reader);
+                            value = JsonReaderHelper.readDouble(reader);
                             break;
                         case "currency":
                             currency = JsonReaderHelper.readNonNullString(reader);

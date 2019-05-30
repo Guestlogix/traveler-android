@@ -9,10 +9,10 @@ import com.guestlogix.traveleruikit.forms.FormFieldType;
 public class QuantityFormModel extends FormModel {
     private String title;
     private String subtitle;
-    private Integer maxValue;
-    private Integer minValue;
+    private int maxValue;
+    private int minValue;
 
-    public QuantityFormModel(@Nullable String title, @Nullable String subtitle, @Nullable Integer maxValue, @Nullable Integer minValue) {
+    public QuantityFormModel(@Nullable String title, @Nullable String subtitle, @Nullable int maxValue, @Nullable int minValue) {
         this.title = title;
         this.subtitle = subtitle;
         this.maxValue = maxValue;
@@ -30,12 +30,12 @@ public class QuantityFormModel extends FormModel {
     }
 
     @Nullable
-    public Integer getMaxValue() {
+    public int getMaxValue() {
         return maxValue;
     }
 
     @Nullable
-    public Integer getMinValue() {
+    public int getMinValue() {
         return minValue;
     }
 

@@ -104,8 +104,8 @@ public class Question implements Serializable {
                             choices = factory.instantiate(reader);
                             break;
                         case "required":
-                            Boolean required = JsonReaderHelper.readBoolean(reader);
-                            if (required != null && required) {
+                            boolean required = JsonReaderHelper.readBoolean(reader);
+                            if (required) {
                                 rules.add(new RequiredValidationRule());
                             }
                             break;
@@ -122,7 +122,7 @@ public class Question implements Serializable {
                 }
 
                 return new Question(id, title, description, type, rules, options);
-            } catch (IllegalArgumentException e) {
+            } catch (ObjectMappingException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));

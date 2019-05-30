@@ -11,21 +11,13 @@ import java.io.Serializable;
 
 public class Location implements Serializable {
     private String address;
-    private Double latitude;
-    private Double longitude;
+    private double latitude;
+    private double longitude;
 
-    private Location(String address, Double latitude, Double longitude) throws ObjectMappingException {
+    private Location(String address, double latitude, double longitude) throws ObjectMappingException {
         this.address = address;
-        if (null == latitude) {
-            throw new IllegalArgumentException("latitude can not be empty");
-        } else {
-            this.latitude = latitude;
-        }
-        if (longitude == null) {
-            throw new IllegalArgumentException("longitude can not be empty");
-        } else {
-            this.longitude = longitude;
-        }
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getAddress() {
@@ -44,11 +36,11 @@ public class Location implements Serializable {
 
         @Override
         public Location instantiate(JsonReader reader) throws ObjectMappingException {
-            String key="Location";
+            String key = "Location";
             try {
                 String address = "";
-                Double latitude = null;
-                Double longitude = null;
+                double latitude = 0;
+                double longitude = 0;
 
                 JsonToken token = reader.peek();
                 if (JsonToken.NULL == token) {
@@ -65,10 +57,10 @@ public class Location implements Serializable {
                             address = JsonReaderHelper.readString(reader);
                             break;
                         case "latitude":
-                            latitude = JsonReaderHelper.readNonNullDouble(reader);
+                            latitude = JsonReaderHelper.readDouble(reader);
                             break;
                         case "longitude":
-                            longitude = JsonReaderHelper.readNonNullDouble(reader);
+                            longitude = JsonReaderHelper.readDouble(reader);
                             break;
                         default:
                             reader.skipValue();
@@ -78,7 +70,7 @@ public class Location implements Serializable {
                 reader.endObject();
 
                 return new Location(address, latitude, longitude);
-            } catch (IllegalArgumentException e) {
+            } catch (ObjectMappingException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));

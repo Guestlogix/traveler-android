@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateHelper {
-    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"; //ISO 8601
+    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS"; //ISO 8601
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String PRETTY_DATE_PATTERN = "dd MMM yyyy";
     private static final String TIME_PATTERN = "HH:mm";

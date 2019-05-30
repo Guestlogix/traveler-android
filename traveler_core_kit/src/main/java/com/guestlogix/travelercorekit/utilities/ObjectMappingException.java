@@ -9,6 +9,10 @@ public class ObjectMappingException extends RuntimeException {
         this.mError = error;
     }
 
+    public ObjectMappingException(String error) {
+        super(error);
+    }
+
     public ObjectMappingError getError() {
         return mError;
     }

@@ -35,11 +35,11 @@ public class JsonReaderHelper {
      * @throws IOException            If reading cannot be performed.
      * @throws ObjectMappingException If value is null
      */
-    public static String readNonNullString(JsonReader reader) throws IOException, IllegalArgumentException {
+    public static String readNonNullString(JsonReader reader) throws IOException, ObjectMappingException {
 
         String value = readString(reader);
         if (null == value || value.isEmpty()) {
-            throw new IllegalArgumentException("%s cannot be empty");
+            throw new ObjectMappingException("%s cannot be empty");
         }
         return value;
     }
@@ -48,121 +48,56 @@ public class JsonReaderHelper {
      * Performs a Boolean read with null check from the reader object.
      *
      * @param reader Reader object to read from
-     * @return Boolean or null
+     * @return boolean
      * @throws IOException If reading cannot be performed.
      */
-    public static Boolean readBoolean(JsonReader reader) throws IOException {
+    public static boolean readBoolean(JsonReader reader) throws IOException, ObjectMappingException {
         JsonToken token = reader.peek();
 
         if (JsonToken.NULL == token) {
             reader.skipValue();
-            return null;
+            throw new ObjectMappingException("%s cannot be empty");
         } else {
             return reader.nextBoolean();
         }
     }
 
     /**
-     * Performs a Boolean read with null check from the reader object.
+     * Performs a int read with null check from the reader object.
      *
      * @param reader Reader object to read from
-     * @return Boolean
+     * @return int or null
      * @throws IOException            If reading cannot be performed.
      * @throws ObjectMappingException If value is null
      */
-    public static Boolean readNonNullBoolean(JsonReader reader) throws IOException, IllegalArgumentException {
-
-        Boolean value = readBoolean(reader);
-        if (null == value) {
-            throw new IllegalArgumentException("%s cannot be empty");
-        }
-        return value;
-    }
-
-    /**
-     * Performs a Integer read with null check from the reader object.
-     *
-     * @param reader Reader object to read from
-     * @return Integer or null
-     * @throws IOException If reading cannot be performed.
-     */
-    public static Integer readInteger(JsonReader reader) throws IOException {
+    public static int readInteger(JsonReader reader) throws IOException, ObjectMappingException {
         JsonToken token = reader.peek();
 
         if (JsonToken.NULL == token) {
             reader.skipValue();
-            return null;
+            throw new ObjectMappingException("%s cannot be empty");
         } else {
             return reader.nextInt();
         }
     }
 
     /**
-     * Performs a Integer read with null check from the reader object.
+     * Performs a double read with null check from the reader object.
      *
      * @param reader Reader object to read from
-     * @return Integer
-     * @throws IOException            If reading cannot be performed.
-     * @throws ObjectMappingException If value is null
-     */
-    public static Integer readNonNullInteger(JsonReader reader) throws IOException, IllegalArgumentException {
-        Integer value = readInteger(reader);
-        if (null == value) {
-            throw new IllegalArgumentException("%s cannot be empty");
-        }
-        return value;
-    }
-
-    /**
-     * Performs a Long read with null check from the reader object.
-     *
-     * @param reader Reader object to read from
-     * @return Long or null
-     * @throws IOException If reading cannot be performed.
-     */
-    public static Long readLong(JsonReader reader) throws IOException {
-        JsonToken token = reader.peek();
-
-        if (JsonToken.NULL == token) {
-            reader.skipValue();
-            return null;
-        } else {
-            return reader.nextLong();
-        }
-    }
-
-    /**
-     * Performs a Double read with null check from the reader object.
-     *
-     * @param reader Reader object to read from
-     * @return Double or null
-     * @throws IOException If reading cannot be performed.
-     */
-    public static Double readDouble(JsonReader reader) throws IOException {
-        JsonToken token = reader.peek();
-
-        if (JsonToken.NULL == token) {
-            reader.skipValue();
-            return null;
-        } else {
-            return reader.nextDouble();
-        }
-    }
-
-    /**
-     * Performs a Double read with null check from the reader object.
-     *
-     * @param reader Reader object to read from
-     * @return Double
+     * @return double
      * @throws IOException            If reading cannot be performed.
      * @throws ObjectMappingException If value is null.
      */
-    public static Double readNonNullDouble(JsonReader reader) throws IOException, IllegalArgumentException {
-        Double value = readDouble(reader);
-        if (null == value) {
-            throw new IllegalArgumentException("%s cannot be empty");
+    public static double readDouble(JsonReader reader) throws IOException, ObjectMappingException {
+        JsonToken token = reader.peek();
+
+        if (JsonToken.NULL == token) {
+            reader.skipValue();
+            throw new ObjectMappingException("%s cannot be empty");
+        } else {
+            return reader.nextDouble();
         }
-        return value;
     }
 
     /**
@@ -184,10 +119,10 @@ public class JsonReaderHelper {
     }
 
     /**
-     * Performs a Integer Array read from the reader object.
+     * Performs a int Array read from the reader object.
      *
      * @param reader Reader object to read from
-     * @return Integer Array or empty array
+     * @return int Array or empty array
      * @throws IOException If reading cannot be performed.
      */
     public static List<Integer> readIntegerArray(JsonReader reader) throws IOException {
@@ -199,24 +134,6 @@ public class JsonReaderHelper {
         }
         reader.endArray();
         return ints;
-    }
-
-    /**
-     * Performs a Long Array read from the reader object.
-     *
-     * @param reader Reader object to read from
-     * @return Long Array or empty array
-     * @throws IOException If reading cannot be performed.
-     */
-    public static List<Long> readLongArray(JsonReader reader) throws IOException {
-        ArrayList<Long> longs = new ArrayList<>();
-
-        reader.beginArray();
-        while (reader.hasNext()) {
-            longs.add(reader.nextLong());
-        }
-        reader.endArray();
-        return longs;
     }
 
     /**

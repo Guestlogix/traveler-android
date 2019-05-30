@@ -279,8 +279,8 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
     private void enableActionStrip() {
         boolean hasAtLeastOnePass = false;
-        for (Integer i : passQuantities.values()) {
-            if (i != null && i > 0) {
+        for (int i : passQuantities.values()) {
+            if (i > 0) {
                 hasAtLeastOnePass = true;
                 break;
             }

@@ -134,9 +134,9 @@ public class HomeActivity extends AppCompatActivity {
 
         this.profile = _profile;
         if (this.profile != null) {
-            Traveler.setUserId(_profile.getTravelerId());
+            Traveler.setIdentity(_profile.getTravelerId());
         } else {
-            Traveler.removeUserId();
+            Traveler.removeIdentity();
         }
         updateMenuItems();
     }

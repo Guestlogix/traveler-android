@@ -171,7 +171,7 @@ public class Router {
                         amount.put("currency", "USD");
                         payload.put("amount", amount);
 
-                        payload.put("travelerId", session.getUserId());
+                        payload.put("travelerId", session.getIdentity());
 
                         return payload;
                     } catch (JSONException e) {
@@ -196,15 +196,32 @@ public class Router {
 
     // /order
     public static AuthenticatedUrlRequest orders(OrderQuery orderQuery, Session session, Context context) {
+        if (null == orderQuery) {
+            TravelerLog.e("OrderQuery can not be null");
+            return null;
+        }
+
+        if (orderQuery.getOffset() < 0) {
+            return null;
+        }
+
+        if (orderQuery.getLimit() < 0) {
+            return null;
+        }
+
+        if (null == orderQuery.getToDate()) {
+            return null;
+        }
+
         RequestBuilder rb = RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
                 .path("/order")
-                .param("traveler", session.getUserId())
-                .param("skip", orderQuery.getOffset().toString())
-                .param("take", orderQuery.getLimit().toString())
-                .param("from", DateHelper.formatDateToISO8601(orderQuery.getFrom()))
-                .param("to", DateHelper.formatDateToISO8601(orderQuery.getTo()))
+                .param("traveler", session.getIdentity())
+                .param("skip", orderQuery.getOffset())
+                .param("take", orderQuery.getLimit())
+                .param("from", DateHelper.formatDateToISO8601(orderQuery.getFromDate()))
+                .param("to", DateHelper.formatDateToISO8601(orderQuery.getToDate()))
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey());
 
@@ -318,6 +335,33 @@ public class Router {
             }
 
             params.add(String.format("%s=%s", urlEncodeUTF8(key), urlEncodeUTF8(value)));
+            return this;
+        }
+
+        RequestBuilder param(String key, int value) {
+            if (params == null) {
+                params = new ArrayList<>();
+            }
+
+            params.add(String.format("%s=%s", urlEncodeUTF8(key), value));
+            return this;
+        }
+
+        RequestBuilder param(String key, double value) {
+            if (params == null) {
+                params = new ArrayList<>();
+            }
+
+            params.add(String.format("%s=%s", urlEncodeUTF8(key), value));
+            return this;
+        }
+
+        RequestBuilder param(String key, boolean value) {
+            if (params == null) {
+                params = new ArrayList<>();
+            }
+
+            params.add(String.format("%s=%s", urlEncodeUTF8(key), value));
             return this;
         }
 

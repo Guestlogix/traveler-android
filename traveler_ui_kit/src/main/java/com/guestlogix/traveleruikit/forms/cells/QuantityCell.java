@@ -49,7 +49,7 @@ public class QuantityCell extends BaseCell {
         subTitle.setText(q.getSubtitle());
 
         Integer val = (Integer) cellValueAdapter.getCellValue(this);
-        quantityIndicator.setText(val != null ? val.toString() : q.getMinValue() != null ? q.getMinValue().toString() : "0"); // If all fails, display a 0
+        quantityIndicator.setText(val != null ? val.toString() : q.getMinValue() + ""); // If all fails, display a 0
 
         quantityIndicator.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(contextRequestListener.onCellContextRequest());
@@ -64,8 +64,8 @@ public class QuantityCell extends BaseCell {
             title.setText(q.getTitle());
 
             // Number picker
-            picker.setMaxValue(q.getMaxValue() != null ? q.getMaxValue() : Integer.MAX_VALUE);
-            picker.setMinValue(q.getMinValue() != null ? q.getMinValue() : Integer.MIN_VALUE);
+            picker.setMaxValue(q.getMaxValue());
+            picker.setMinValue(q.getMinValue());
             Integer i = (Integer) cellValueAdapter.getCellValue(this);
             picker.setValue(i != null ? i : q.getMinValue());
 

@@ -4,42 +4,42 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Creates query to fetch Orders
+ * Creates query toDate fetch Orders
  * <p>
- * offset                offset the number of records
+ * offset               offset the number of records
  * limit                number of records to fetch
- * from                fetch the records on and after this date
- * to                  fetch the records on and before this date
+ * fromDate             fetch the records on and after this date
+ * toDate               fetch the records on and before this date
  */
 public class OrderQuery implements Serializable {
 
-    public static Integer DEFAULT_PAGE_SIZE = 10;
+    public static int DEFAULT_PAGE_SIZE = 10;
 
-    private Integer offset;
-    private Integer limit;
-    private Date from;
-    private Date to;
+    private int offset;
+    private int limit;
+    private Date fromDate;
+    private Date toDate;
 
-    public OrderQuery(Integer offset, Integer limit, Date from, Date to) {
+    public OrderQuery(int offset, int limit, Date fromDate, Date toDate) {
         this.offset = offset;
         this.limit = limit;
-        this.from = from;
-        this.to = to;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
     }
 
-    public Integer getOffset() {
+    public int getOffset() {
         return offset;
     }
 
-    public Integer getLimit() {
+    public int getLimit() {
         return limit;
     }
 
-    public Date getFrom() {
-        return from;
+    public Date getFromDate() {
+        return fromDate;
     }
 
-    public Date getTo() {
-        return to;
+    public Date getToDate() {
+        return toDate;
     }
 }

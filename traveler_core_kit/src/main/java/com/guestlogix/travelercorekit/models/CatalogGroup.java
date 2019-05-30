@@ -15,10 +15,10 @@ public class CatalogGroup implements Serializable {
     private String title;
     private String subTitle;
     private String description;
-    private Boolean isFeatured;
+    private boolean isFeatured;
     private List<CatalogItem> items;
 
-    private CatalogGroup(String title, String subTitle, String description, Boolean isFeatured, List<CatalogItem> items) throws IllegalArgumentException {
+    private CatalogGroup(String title, String subTitle, String description, boolean isFeatured, List<CatalogItem> items) throws IllegalArgumentException {
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
@@ -53,7 +53,7 @@ public class CatalogGroup implements Serializable {
                 String title = "";
                 String subTitle = "";
                 String description = "";
-                Boolean featured = false;
+                boolean featured = false;
                 List<CatalogItem> items = null;
 
                 JsonToken token = reader.peek();
@@ -90,7 +90,7 @@ public class CatalogGroup implements Serializable {
                 reader.endObject();
 
                 return new CatalogGroup(title, subTitle, description, featured, items);
-            } catch (IllegalArgumentException e) {
+            } catch (ObjectMappingException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
                 throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));

@@ -104,9 +104,9 @@ public class Form extends RecyclerView implements
      * @param fieldId   Field index
      */
     public void reload(int sectionId, int fieldId) {
-        Integer position = null;
+        int position = -1;
 
-        for (int i = 0; i < nodes.size() && position == null; i++) {
+        for (int i = 0; i < nodes.size() && position == -1; i++) {
             FormNode t = nodes.get(i);
 
             if (t.sectionId == sectionId && t.fieldId == fieldId) {
@@ -114,7 +114,7 @@ public class Form extends RecyclerView implements
             }
         }
 
-        if (position != null) {
+        if (position != -1) {
             FormNode node = nodes.get(position);
             node.model = null;
             getAdapter().notifyItemChanged(position);
@@ -138,9 +138,9 @@ public class Form extends RecyclerView implements
      * @param fieldId   Field index
      */
     public void smoothScrollToPosition(int sectionId, int fieldId) {
-        Integer position = null;
+        int position = -1;
 
-        for (int i = 0; i < nodes.size() && position == null; i++) {
+        for (int i = 0; i < nodes.size() && position == -1; i++) {
             FormNode node = nodes.get(i);
 
             if (node.sectionId == sectionId && node.fieldId == fieldId) {
@@ -148,7 +148,7 @@ public class Form extends RecyclerView implements
             }
         }
 
-        if (position != null) {
+        if (position != -1) {
             getLayoutManager().smoothScrollToPosition(this, null, position);
         }
     }

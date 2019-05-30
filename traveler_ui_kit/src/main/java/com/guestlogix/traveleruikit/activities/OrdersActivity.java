@@ -7,6 +7,7 @@ import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderQuery;
+import com.guestlogix.travelercorekit.models.OrderResult;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.OrdersFragment;
@@ -18,14 +19,13 @@ import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.ERROR;
-import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.SUCCESS;
+import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.*;
 
 public class OrdersActivity extends AppCompatActivity implements TravelerRetryFragment.RetryFragmentInteractionListener {
 
     public static String ARG_ORDER_QUERY = "arg_order_query";
-    private ArrayList<Order> orders = new ArrayList<>();
     private OrderQuery orderQuery;
+    private OrderResult orderResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,18 +42,17 @@ public class OrdersActivity extends AppCompatActivity implements TravelerRetryFr
         fetchOrders();
     }
 
-    //TODO: Updated when filters are decided.
     private void fetchOrders() {
-
-        Traveler.fetchOrders(orderQuery, fetchOrdersCallback);
+        onOrderResultsChange(LOADING);
+        Traveler.fetchOrders(orderQuery, 0, fetchOrdersCallback);
     }
 
     @Override
     public void onRetry() {
-        Traveler.fetchOrders(orderQuery, fetchOrdersCallback);
+        fetchOrders();
     }
 
-    private void ordersStateChangeHandler(StatefulViewModel.State state) {
+    private void onOrderResultsChange(StatefulViewModel.State state) {
         switch (state) {
             case LOADING:
                 TravelerLoadingFragment loadingFragment = new TravelerLoadingFragment();
@@ -65,7 +64,7 @@ public class OrdersActivity extends AppCompatActivity implements TravelerRetryFr
 
                 break;
             case SUCCESS:
-                OrdersFragment ordersFragment = OrdersFragment.newInstance(orders);
+                OrdersFragment ordersFragment = OrdersFragment.newInstance(orderResult);
 
                 transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.ordersContainer, ordersFragment);
@@ -90,19 +89,23 @@ public class OrdersActivity extends AppCompatActivity implements TravelerRetryFr
 
     FetchOrdersCallback fetchOrdersCallback = new FetchOrdersCallback() {
         @Override
-        public void onOrdersFetchSuccess(List<Order> orders) {
-            if (null == OrdersActivity.this.orders) {
-                OrdersActivity.this.orders = new ArrayList<>();
-            }
-            OrdersActivity.this.orders.clear();
-            OrdersActivity.this.orders.addAll(orders);
-
-            ordersStateChangeHandler(SUCCESS);
+        public void onOrdersReceived(OrderResult result, int identifier) {
         }
 
         @Override
-        public void onOrdersFetchError(Error error) {
-            ordersStateChangeHandler(ERROR);
+        public void onOrdersFetchError(Error error, int identifier) {
+            onOrderResultsChange(ERROR);
+        }
+
+        @Override
+        public void onOrdersFetchSuccess(OrderResult result, int identifier) {
+            orderResult = result;
+            onOrderResultsChange(SUCCESS);
+        }
+
+        @Override
+        public OrderResult getPreviousResult() {
+            return null;
         }
     };
 }

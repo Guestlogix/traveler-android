@@ -89,7 +89,7 @@ public class SearchFlightFragment extends BaseFragment {
         departureDateEditText.setText(DateHelper.formatDate(departureDateCalendar.getTime()));
     }
 
-    private Boolean isFlightNumberValid(String flightNumber) {
+    private boolean isFlightNumberValid(String flightNumber) {
         Matcher m = FLIGHT_NUMBER_PATTERN.matcher(flightNumber);
         return m.find();
     }

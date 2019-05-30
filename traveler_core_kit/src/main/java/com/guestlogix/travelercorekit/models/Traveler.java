@@ -12,7 +12,6 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.PaginatedObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -78,18 +77,19 @@ public class Traveler {
         taskManager.addTask(authTokenFetchBlockTask);
     }
 
-    public static void setUserId(String userId) {
+    public static void setIdentity(String identity) {
         if (null == localInstance) {
+            // TODO: Will be removed in a separate PR as part of runtime exceptions cleanup
             throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
         }
-        localInstance.session.setUserId(userId);
+        localInstance.session.setIdentity(identity);
     }
 
-    public static void removeUserId() {
+    public static void removeIdentity() {
         if (null == localInstance) {
             throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
         }
-        localInstance.session.setUserId(null);
+        localInstance.session.setIdentity(null);
     }
 
     /**
@@ -365,35 +365,57 @@ public class Traveler {
     }
 
     /**
-     * Fetches all orders for a given user Id.
+     * Fetches OrderResult for a given OrderQuery.
      * <p>
      *
      * @param orderQuery          query to fetch orders
+     * @param identifier          an identifier to identify a request
      * @param fetchOrdersCallback callback methods to be executed once the fetch is complete
      */
-    public static void fetchOrders(OrderQuery orderQuery, FetchOrdersCallback fetchOrdersCallback) {
+    public static void fetchOrders(OrderQuery orderQuery, int identifier, FetchOrdersCallback fetchOrdersCallback) {
         if (null == localInstance) {
-            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
-        } else if (null == localInstance.session || null == localInstance.session.getUserId()) {
-            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
+            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"), identifier);
+        } else if (null == localInstance.session || null == localInstance.session.getIdentity()) {
+            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "Identity not set, Please set Identity by calling Traveler.setIdentity();"), identifier);
         } else {
             AuthenticatedUrlRequest request = Router.orders(orderQuery, localInstance.session, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<List<Order>> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new PaginatedObjectMappingFactory<>(new ArrayMappingFactory<>(new Order.OrderMappingFactory())));
+            if (null == request) {
+                TravelerLog.e("Invalid Request");
+                return;
+            }
+            AuthenticatedRemoteNetworkRequestTask<OrderResult> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new OrderResult.OrderResultsObjectMappingFactory());
+
+            OrderResult[] orderResults = new OrderResult[1];
 
             BlockTask fetchOrdersBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
                     if (null != fetchOrdersTask.getError()) {
-                        fetchOrdersCallback.onOrdersFetchError(fetchOrdersTask.getError());
+                        fetchOrdersCallback.onOrdersFetchError(fetchOrdersTask.getError(), identifier);
                         TravelerLog.e(fetchOrdersTask.getError().getMessage());
                     } else {
-                        fetchOrdersCallback.onOrdersFetchSuccess(fetchOrdersTask.getResource());
+                        fetchOrdersCallback.onOrdersFetchSuccess(orderResults[0], identifier);
                     }
                 }
             };
 
-            fetchOrdersBlockTask.addDependency(fetchOrdersTask);
+            BlockTask mergeTask = new BlockTask() {
+                @Override
+                protected void main() {
+                    if (null == fetchOrdersTask.getError()) {
+                        OrderResult orderResult = fetchOrdersCallback.getPreviousResult();
+                        orderResults[0] = orderResult == null ? fetchOrdersTask.getResource() : orderResult.merge(fetchOrdersTask.getResource());
+
+                        fetchOrdersCallback.onOrdersReceived(orderResults[0], identifier);
+                    }
+                }
+            };
+
+            mergeTask.addDependency(fetchOrdersTask);
+            fetchOrdersBlockTask.addDependency(mergeTask);
+            // TODO: Implement a Serial Task Manager
             localInstance.taskManager.addTask(fetchOrdersTask);
+            localInstance.taskManager.addTask(mergeTask);
             TaskManager.getMainTaskManager().addTask(fetchOrdersBlockTask);
         }
     }

@@ -5,9 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.OrderResult;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
@@ -17,14 +19,18 @@ import java.util.List;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemViewHolder> {
 
-    List<Order> orders;
-    View.OnClickListener onItemClickListener;
-    RecyclerView.RecycledViewPool viewPool;
+    private OrderResult orderResult;
+    private View.OnClickListener onItemClickListener;
+    private RecyclerView.RecycledViewPool viewPool;
 
-    public OrdersAdapter(List<Order> orders, View.OnClickListener onItemClickListener) {
-        this.orders = orders;
+    public OrdersAdapter(OrderResult orderResult, View.OnClickListener onItemClickListener) {
+        this.orderResult = orderResult;
         this.onItemClickListener = onItemClickListener;
         this.viewPool = new RecyclerView.RecycledViewPool();
+    }
+
+    public void setOrderResult(OrderResult orderResult) {
+        this.orderResult = orderResult;
     }
 
     @NonNull
@@ -37,8 +43,19 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
     @Override
     public void onBindViewHolder(@NonNull OrdersAdapter.OrderItemViewHolder holder, int position) {
-        Order item = orders.get(position);
+        Order item = orderResult.getOrders().get(position);
 
+        if (null == item) {
+            //TODO:  Shimmer cell
+            holder.title.setText("Loading...");
+            holder.totalAmount.setText("");
+            holder.productsAdapter = new OrderProductsAdapter(null);
+            holder.productsRecyclerView.setAdapter(holder.productsAdapter);
+
+            holder.itemView.setOnClickListener(null);
+
+            return;
+        }
         holder.productsRecyclerView.setRecycledViewPool(viewPool);
 
         holder.productsAdapter = new OrderProductsAdapter(item.getProducts());
@@ -47,11 +64,12 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(onItemClickListener);
+        holder.productsRecyclerView.setAdapter(holder.productsAdapter);
     }
 
     @Override
     public int getItemCount() {
-        return orders.size();
+        return orderResult.getTotal();
     }
 
     class OrderItemViewHolder extends RecyclerView.ViewHolder {
@@ -66,6 +84,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
             title = itemView.findViewById(R.id.textView_orderItem_dateOrdered);
             productsRecyclerView = itemView.findViewById(R.id.recyclerView_orderItem_products);
             totalAmount = itemView.findViewById(R.id.textView_orderItem_totalAmount);
+            productsRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         }
     }
 
@@ -81,7 +100,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
         @Override
         public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_product, parent, false);
-
             return new ProductViewHolder(view);
         }
 
@@ -89,6 +107,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
         public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
             BookableProduct product = (BookableProduct) products.get(position);
             holder.nameTextView.setText(product.getTitle());
+            holder.itemView.setOnClickListener(onItemClickListener);
         }
 
         @Override
@@ -100,7 +119,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderItemV
 
             TextView nameTextView;
 
-            public ProductViewHolder(@NonNull View itemView) {
+            ProductViewHolder(@NonNull View itemView) {
                 super(itemView);
                 nameTextView = itemView.findViewById(R.id.textView_productName);
             }
