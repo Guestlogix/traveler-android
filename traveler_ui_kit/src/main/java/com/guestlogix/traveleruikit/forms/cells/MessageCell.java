@@ -5,6 +5,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.FormFieldType;
@@ -20,14 +21,15 @@ public class MessageCell extends BaseCell {
     }
 
     /**
-     * Expects a {@link MessageFormModel} for binding. Otherwise throws {@link RuntimeException}.
+     * Expects a {@link MessageFormModel} for binding.
      *
      * @param model description of the cell.
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (model.getType() != FormFieldType.MESSAGE) {
-            throw new RuntimeException("Expecting MessageFormModel, but got " + model.getClass().getName());
+            TravelerLog.e("Expecting MessageFormModel, but got " + model.getClass().getName());
+            return;
         }
 
         MessageFormModel m = (MessageFormModel) model;

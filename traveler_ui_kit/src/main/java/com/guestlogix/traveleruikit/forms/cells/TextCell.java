@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.FormFieldType;
@@ -51,14 +52,15 @@ public class TextCell extends BaseCell {
     }
 
     /**
-     * Expecting {@link TextFormModel} for binding. Otherwise throws {@link RuntimeException}
+     * Expecting {@link TextFormModel} for binding.
      *
      * @param model description of the cell.
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (model.getType() != FormFieldType.TEXT) {
-            throw new RuntimeException("Expecting TextFormModel, but got " + model.getClass().getName());
+            TravelerLog.e("Expecting TextFormModel, but got " + model.getClass().getName());
+            return;
         }
 
         TextFormModel t = (TextFormModel) model;

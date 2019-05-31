@@ -13,6 +13,8 @@ import android.widget.AutoCompleteTextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputLayout;
+import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.models.TravelerError;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.FormFieldType;
@@ -59,14 +61,15 @@ public class SpinnerCell extends BaseCell {
     }
 
     /**
-     * Expecting {@link SpinnerFormModel} for binding. Otherwise throws {@link RuntimeException}.
+     * Expecting {@link SpinnerFormModel} for binding.
      *
      * @param model description of the cell.
      */
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (model.getType() != FormFieldType.SPINNER) {
-            throw new RuntimeException("Expecting SpinnerFormModel, but got " + model.getClass().getName());
+            TravelerLog.e("Expecting SpinnerFormModel, but got " + model.getClass().getName());
+            return;
         }
 
         SpinnerFormModel s = (SpinnerFormModel) model;

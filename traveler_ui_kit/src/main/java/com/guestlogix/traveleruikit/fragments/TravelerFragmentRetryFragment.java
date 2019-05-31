@@ -3,6 +3,7 @@ package com.guestlogix.traveleruikit.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import com.guestlogix.travelercorekit.TravelerLog;
 
 /**
  * Generic error fragment to be used by Fragments.
@@ -20,8 +21,7 @@ public class TravelerFragmentRetryFragment extends TravelerRetryFragment {
             if (fragment instanceof RetryFragmentInteractionListener) {
                 onErrorFragmentInteractionListener = (RetryFragmentInteractionListener) fragment;
             } else {
-                throw new RuntimeException(fragment.toString()
-                        + " must implement RetryFragmentInteractionListener");
+                TravelerLog.e(fragment.toString() + " must implement RetryFragmentInteractionListener");
             }
         }
     }

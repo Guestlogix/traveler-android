@@ -80,5 +80,9 @@ public abstract class TravelerRetryFragment extends Fragment {
         void onRetry();
     }
 
-    private View.OnClickListener actionOnClickListener = v -> onErrorFragmentInteractionListener.onRetry();
+    private View.OnClickListener actionOnClickListener = v -> {
+        if (null != onErrorFragmentInteractionListener) {
+            onErrorFragmentInteractionListener.onRetry();
+        }
+    };
 }

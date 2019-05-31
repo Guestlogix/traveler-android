@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.FormFieldType;
@@ -38,7 +39,7 @@ public class DateCell extends BaseCell {
     }
 
     /**
-     * Expects a {@link DateFormModel} for correct binding. Otherwise throws a {@link RuntimeException}.
+     * Expects a {@link DateFormModel} for correct binding.
      * Might invoke {@link CellValueAdapter} multiple times.
      *
      * @param model description of the cell.
@@ -46,7 +47,8 @@ public class DateCell extends BaseCell {
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (model.getType() != FormFieldType.DATE) {
-            throw new RuntimeException("Expecting DateFormModel, but got " + model.getClass().getName());
+            TravelerLog.e("Expecting DateFormModel, but got " + model.getClass().getName());
+            return;
         }
 
         DateFormModel d = (DateFormModel) model;

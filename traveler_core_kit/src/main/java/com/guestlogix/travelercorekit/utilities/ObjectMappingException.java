@@ -2,7 +2,7 @@ package com.guestlogix.travelercorekit.utilities;
 
 import com.guestlogix.travelercorekit.models.ObjectMappingError;
 
-public class ObjectMappingException extends RuntimeException {
+public class ObjectMappingException extends Exception {
     private ObjectMappingError mError;
 
     public ObjectMappingException(ObjectMappingError error) {

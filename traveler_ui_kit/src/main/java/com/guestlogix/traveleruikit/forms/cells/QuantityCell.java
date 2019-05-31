@@ -8,6 +8,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.FormMessage;
 import com.guestlogix.traveleruikit.forms.FormFieldType;
@@ -32,7 +33,7 @@ public class QuantityCell extends BaseCell {
     }
 
     /**
-     * Expects a {@link QuantityFormModel} for binding. Otherwise throws {@link RuntimeException}.
+     * Expects a {@link QuantityFormModel} for binding.
      * Might invoke {@link CellValueAdapter} multiple times.
      *
      * @param model description of the cell.
@@ -40,7 +41,8 @@ public class QuantityCell extends BaseCell {
     @Override
     public void bindWithModel(@NonNull FormModel model) {
         if (model.getType() != FormFieldType.QUANTITY) {
-            throw new RuntimeException("Expecting QuantityFormModel, but got " + model.getClass().getName());
+            TravelerLog.e("Expecting QuantityFormModel, but got " + model.getClass().getName());
+            return;
         }
 
         QuantityFormModel q = (QuantityFormModel) model;

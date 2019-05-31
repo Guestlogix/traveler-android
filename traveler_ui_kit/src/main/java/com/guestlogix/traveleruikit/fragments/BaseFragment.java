@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import com.guestlogix.travelercorekit.TravelerLog;
 
 public class BaseFragment extends Fragment {
     private FragmentActivity activity;
@@ -16,7 +17,7 @@ public class BaseFragment extends Fragment {
         if (context instanceof Activity) {
             activity = (FragmentActivity) context;
         } else {
-            throw new RuntimeException("Parent must be an Activity");
+            TravelerLog.e("Parent must be an Activity");
         }
     }
 

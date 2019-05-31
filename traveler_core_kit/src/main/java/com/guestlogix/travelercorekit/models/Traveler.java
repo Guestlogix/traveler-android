@@ -51,7 +51,7 @@ public class Traveler {
             @Override
             protected void main() {
                 if (authTokenFetchTask.getError() != null) {
-                    throw new RuntimeException(String.format("Could not initialize Traveler SDK. %s ", authTokenFetchTask.getError()));
+                    TravelerLog.e(String.format("Could not initialize Traveler SDK. %s ", authTokenFetchTask.getError()));
                 } else {
                     session.setAuthToken(authTokenFetchTask.getAuthToken());
                 }
@@ -80,14 +80,16 @@ public class Traveler {
 
     public static void setUserId(String userId) {
         if (null == localInstance) {
-            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
+            TravelerLog.e("SDK not initialized, Initialize by calling Traveler.initialize();");
+            return;
         }
         localInstance.session.setUserId(userId);
     }
 
     public static void removeUserId() {
         if (null == localInstance) {
-            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
+            TravelerLog.e("SDK not initialized, Initialize by calling Traveler.initialize();");
+            return;
         }
         localInstance.session.setUserId(null);
     }

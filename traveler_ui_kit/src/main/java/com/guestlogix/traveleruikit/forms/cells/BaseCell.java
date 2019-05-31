@@ -21,8 +21,7 @@ public abstract class BaseCell extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Binds a form cell with a matching FormModel. If the model does not match the type of cell, a {@link RuntimeException} will
-     * occur.
+     * Binds a form cell with a matching FormModel.
      *
      * @param model description of the cell.
      */
