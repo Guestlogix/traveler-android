@@ -27,7 +27,6 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.activities.HomeActivity;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 import java.util.ArrayList;
@@ -158,7 +157,6 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
 
     private void onSignOut(DialogInterface d) {
         d.dismiss();
-
         String clientId = BuildConfig.GOOGL_SIGN_IN_CLIENT_ID;
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(clientId)
@@ -169,9 +167,7 @@ public class AppSettingsFragment extends BaseFragment implements View.OnClickLis
 
         gSignInClient.signOut().addOnCompleteListener(getActivityContext(), task -> {
 
-            Guest.getInstance().logout(getActivityContext());
-            Traveler.removeUserId();
-
+            Guest.getInstance().setUserProfile(getActivityContext(), null);
             Intent i = new Intent(getActivity(), HomeActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);

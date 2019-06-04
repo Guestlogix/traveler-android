@@ -24,10 +24,8 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
             T model = objectMappingFactory.instantiate(reader);
 
             callback.onSuccess(model);
-        } catch (IOException | IllegalStateException e) {
+        } catch (IOException e) {
             callback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, String.format("Invalid JSON stream: %s", e.getMessage())));
-        } catch (ObjectMappingException e) {
-            callback.onError(e.getError());
         }
     }
 }

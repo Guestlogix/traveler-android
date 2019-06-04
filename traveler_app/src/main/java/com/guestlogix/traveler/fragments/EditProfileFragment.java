@@ -53,7 +53,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        profile = Guest.getInstance().getSignedInUser(getActivityContext());
+        profile = Guest.getInstance().getUserProfile(getActivityContext());
         clearIcon = getResources().getDrawable(R.drawable.ic_cancel_gray_24dp);
 
         int w = clearIcon.getIntrinsicWidth();
@@ -122,7 +122,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
             profile.setLastName(lastName.getText().toString());
             profile.setEmail(emailAddress);
 
-            profile.save(getActivityContext());
+            Guest.getInstance().setUserProfile(getActivityContext(), profile);
             navigateBack();
         }
     }

@@ -6,6 +6,7 @@ import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -65,6 +66,7 @@ public class Question implements Serializable {
          */
         @Override
         public Question instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+            String model = "Question";
             String key = "Question";
             try {
                 String id = "";
@@ -122,10 +124,12 @@ public class Question implements Serializable {
                 }
 
                 return new Question(id, title, description, type, rules, options);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
+            } catch (JSONException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, "");
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             }
         }
 
@@ -145,7 +149,7 @@ public class Question implements Serializable {
                 }
             }
 
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "Payload type '" + type + "' is not yet supported"));
+            throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, "Question", type, "not yet supported");
         }
     }
 }

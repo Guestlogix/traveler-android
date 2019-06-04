@@ -7,6 +7,7 @@ import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -64,6 +65,7 @@ public class Availability implements Serializable {
          */
         @Override
         public Availability instantiate(JsonReader reader) throws ObjectMappingException {
+            String model = "Availability";
             String key = "Availability";
             try {
                 Date date = null;
@@ -98,12 +100,12 @@ public class Availability implements Serializable {
                 reader.endObject();
 
                 return new Availability(id, date, bookingOptionSet);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             } catch (ParseException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, e.getMessage()));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, e.getMessage());
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
             }
         }
     }

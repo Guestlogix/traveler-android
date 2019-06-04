@@ -6,6 +6,7 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -87,7 +88,8 @@ public class Flight implements Serializable {
          */
         @Override
         public Flight instantiate(JsonReader reader) throws ObjectMappingException {
-            String key="Flight";
+            String model = "Flight";
+            String key = "Flight";
             try {
                 String id = "";
                 String number = "";
@@ -135,12 +137,14 @@ public class Flight implements Serializable {
 
                 return new Flight(id, number, origin, destination, departure, arrival);
 
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (ParseException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, e.getMessage()));
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
+            } catch (JSONException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, "");
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
+            } catch (ParseException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, e.getMessage());
             }
         }
     }

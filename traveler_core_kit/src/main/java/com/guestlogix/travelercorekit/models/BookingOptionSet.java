@@ -2,11 +2,11 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -42,6 +42,7 @@ public class BookingOptionSet implements Serializable {
 
         @Override
         public BookingOptionSet instantiate(JsonReader reader) throws ObjectMappingException {
+            String model = "BookingOptionSet";
             String key = "BookingOptionSet";
             try {
                 String label = null;
@@ -72,10 +73,12 @@ public class BookingOptionSet implements Serializable {
                 reader.endObject();
 
                 return new BookingOptionSet(label, options);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
+            } catch (JSONException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, "");
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.guestlogix.traveler.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.activities.OrdersActivity;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
@@ -46,7 +44,7 @@ public class ProfileFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        user = Guest.getInstance().getSignedInUser(getActivityContext());
+        user = Guest.getInstance().getUserProfile(getActivityContext());
         nav = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
 
         CollapsingToolbarLayout layout = v.findViewById(R.id.collapsingToolbar_profile_title);
@@ -88,8 +86,6 @@ public class ProfileFragment extends BaseFragment {
     }
 
     private void onOrdersClick(View _v) {
-        Intent ordersIntent = new Intent(getActivity(), OrdersActivity.class);
-        startActivity(ordersIntent);
     }
 
     class ProfileInformationAdapter extends RecyclerView.Adapter<ViewHolder> {

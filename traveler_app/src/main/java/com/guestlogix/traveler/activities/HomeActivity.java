@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
@@ -20,7 +21,6 @@ import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.Flight;
-import com.guestlogix.travelercorekit.models.Traveler;
 
 import static com.guestlogix.traveler.viewmodels.HomeViewModel.*;
 
@@ -35,13 +35,25 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         homeViewModel = ViewModelProviders.of(HomeActivity.this).get(HomeViewModel.class);
-        homeViewModel.getObservableProfile().observe(this, this::handleProfile);
+        homeViewModel.getObservableProfile().observe(this, profile -> {
+            if (null == profile) {
+                Toast.makeText(this, "Could not sign in, please try again.", Toast.LENGTH_SHORT).show();
+            }
+            this.profile = profile;
+            updateMenuItems();
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         homeViewModel.lookupProfile();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -128,17 +140,6 @@ public class HomeActivity extends AppCompatActivity {
             profileMenuItem.setVisible(false);
             signInMenuItem.setVisible(true);
         }
-    }
-
-    private void handleProfile(Profile _profile) {
-
-        this.profile = _profile;
-        if (this.profile != null) {
-            Traveler.setUserId(_profile.getTravelerId());
-        } else {
-            Traveler.removeUserId();
-        }
-        updateMenuItems();
     }
 }
 

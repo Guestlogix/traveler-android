@@ -5,6 +5,7 @@ import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -59,6 +60,7 @@ public class Airport implements Serializable {
          */
         @Override
         public Airport instantiate(JsonReader reader) throws ObjectMappingException {
+            String model = "Airport";
             String key = "Airport";
             try {
                 String name = "";
@@ -93,10 +95,12 @@ public class Airport implements Serializable {
 
                 reader.endObject();
                 return new Airport(name, code, city);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
+            } catch (JSONException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, e.getMessage());
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             }
         }
     }

@@ -21,7 +21,7 @@ import java.util.List;
 
 import static com.guestlogix.traveleruikit.viewmodels.StatefulViewModel.State.*;
 
-public class HomeViewModel extends StatefulViewModel {
+public class HomeViewModel extends StatefulViewModel implements ProfileCallback {
     public static final int ADD_FLIGHT_REQUEST_CODE = 1;
     public static final int REQUEST_CODE_SIGN_IN = 2;
 
@@ -29,7 +29,6 @@ public class HomeViewModel extends StatefulViewModel {
     private MutableLiveData<List<Flight>> flightsList;
     private MutableLiveData<Profile> profile;
     private MutableLiveData<Catalog> catalog;
-
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
@@ -78,31 +77,25 @@ public class HomeViewModel extends StatefulViewModel {
     }
 
     public void setProfile(Profile profile) {
-        if (null == profile) {
-            Profile.remove(getApplication());
-        }
+        Guest.getInstance().setUserProfile(getApplication(), profile);
         this.profile.postValue(profile);
     }
 
     public void lookupProfile() {
-        Profile profile = Guest.getInstance().getSignedInUser(getApplication());
-        if (null != profile) {
-            //If user session exist locally
-            this.profile.postValue(profile);
-        } else {
+        Profile profile = Guest.getInstance().getUserProfile(getApplication());
+        if (null == profile) {
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplication());
             if (null != account) {
-                //user already authorized us, get user model from backend
+                // User already authorized us, get user model from backend
                 fetchProfile(account.getIdToken());
-            } else {
-                //user needs to sign in and authorize us via google.
-                this.profile.postValue(null);
             }
+        } else {
+            setProfile(profile);
         }
     }
 
     public void fetchProfile(String idToken) {
-        Guest.getInstance().fetchProfile(idToken, profileCallback);
+        Guest.getInstance().fetchProfile(idToken, this);
     }
 
     public void fetchCatalog() {
@@ -124,18 +117,15 @@ public class HomeViewModel extends StatefulViewModel {
         }
     };
 
-    private ProfileCallback profileCallback = new ProfileCallback() {
-        @Override
-        public void onSignInSuccess(Profile _profile) {
-            //TODO: Profile fetched
-            _profile.save(getApplication());
-            profile.postValue(_profile);
-        }
+    // Profile Callback
 
-        @Override
-        public void onSignInError(Error error) {
-            //TODO: Display error
-            profile.postValue(null);
-        }
-    };
+    @Override
+    public void onProfileReceived(Profile profile) {
+        setProfile(profile);
+    }
+
+    @Override
+    public void onProfileError(Error error) {
+        setProfile(null);
+    }
 }

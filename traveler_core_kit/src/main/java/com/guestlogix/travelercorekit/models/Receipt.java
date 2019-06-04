@@ -4,6 +4,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.*;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -85,6 +86,7 @@ public class Receipt implements Serializable {
 
         @Override
         public Receipt instantiate(JsonReader reader) throws ObjectMappingException {
+            String model = "Receipt";
             String key = "Receipt";
             try {
                 String id = null;
@@ -128,7 +130,7 @@ public class Receipt implements Serializable {
                             try {
                                 createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
                             } catch (ParseException e) {
-                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "createdOn has invalid format"));
+                                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, "invalid format");
                             }
                             break;
                         case "products":
@@ -145,10 +147,12 @@ public class Receipt implements Serializable {
                 reader.endObject();
 
                 return new Receipt(id, travelerId, price, status, referenceNumber, products, createdDate, customerContact);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
+            } catch (JSONException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, "");
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             }
         }
     }

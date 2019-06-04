@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -48,43 +49,48 @@ public class CustomerContact implements Serializable {
 
         @Override
         public CustomerContact instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-            String title = null;
-            String fName = null;
-            String lName = null;
-            String email = null;
-            String phone = null;
+            String model = "CustomerContact";
+            String key = "CustomerContact";
+            try {
+                String title = null;
+                String fName = null;
+                String lName = null;
+                String email = null;
+                String phone = null;
 
-            reader.beginObject();
+                reader.beginObject();
 
-            while (reader.hasNext()) {
-                String name = reader.nextName();
+                while (reader.hasNext()) {
+                    key = reader.nextName();
 
-                switch (name) {
-                    case "title":
-                        title = JsonReaderHelper.readString(reader);
-                        break;
-                    case "firstName":
-                        fName = JsonReaderHelper.readString(reader);
-                        break;
-                    case "lastName":
-                        lName = JsonReaderHelper.readString(reader);
-                        break;
-                    case "email":
-                        email = JsonReaderHelper.readNonNullString(reader);
-                        break;
-                    case "phone":
-                        phone = JsonReaderHelper.readString(reader);
-                        break;
+                    switch (key) {
+                        case "title":
+                            title = JsonReaderHelper.readString(reader);
+                            break;
+                        case "firstName":
+                            fName = JsonReaderHelper.readString(reader);
+                            break;
+                        case "lastName":
+                            lName = JsonReaderHelper.readString(reader);
+                            break;
+                        case "email":
+                            email = JsonReaderHelper.readNonNullString(reader);
+                            break;
+                        case "phone":
+                            phone = JsonReaderHelper.readString(reader);
+                            break;
+                    }
                 }
+                reader.endObject();
+
+                return new CustomerContact(title, fName, lName, email, phone);
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
+            } catch (JSONException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, "");
+            } catch (IOException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             }
-
-            reader.endObject();
-
-            if (null == email) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload email must not be null"));
-            }
-
-            return new CustomerContact(title, fName, lName, email, phone);
         }
     }
 }

@@ -1,13 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -95,6 +94,7 @@ public class CatalogItemDetails implements Product {
          */
         @Override
         public CatalogItemDetails instantiate(JsonReader reader) throws ObjectMappingException {
+            String model = "CatalogItemDetails";
             String key = "CatalogItemDetails";
             try {
                 String id = "";
@@ -160,10 +160,12 @@ public class CatalogItemDetails implements Product {
 
                 return new CatalogItemDetails(id, title, description, imageURL, contact, locations, priceStartingAt, purchaseStrategy, information);
 
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
+            } catch (JSONException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, "");
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             }
         }
     }

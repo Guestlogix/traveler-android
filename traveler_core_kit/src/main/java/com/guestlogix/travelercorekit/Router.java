@@ -171,7 +171,7 @@ public class Router {
                         amount.put("currency", "USD");
                         payload.put("amount", amount);
 
-                        payload.put("travelerId", session.getUserId());
+                        payload.put("travelerId", session.getIdentity());
 
                         return payload;
                     } catch (JSONException e) {
@@ -194,19 +194,27 @@ public class Router {
                 .build(session.getAuthToken().getValue());
     }
 
-    // /order/all
-    public static AuthenticatedUrlRequest orders(Integer skip, Integer take, Date from, Date to, Session session, Context context) {
+    public static AuthenticatedUrlRequest orders(OrderQuery orderQuery, Session session, Context context) {
+        if (null == orderQuery) {
+            TravelerLog.e("OrderQuery can not be null");
+            return null;
+        }
+
         RequestBuilder rb = RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("/order/all")
-                .param("traveler", session.getUserId())
-                .param("skip", skip.toString())
-                .param("take", take.toString())
-                .param("from", DateHelper.formatDateToISO8601(from))
-                .param("to", DateHelper.formatDateToISO8601(to))
+                .path("/order")
+                .param("traveler", session.getIdentity())
+                .param("skip", String.format("%s", orderQuery.getOffset()))
+                .param("take", String.format("%s", orderQuery.getLimit()))
+                .param("to", DateHelper.formatDateToISO8601(orderQuery.getToDate()))
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey());
+
+        Date fromDate = orderQuery.getFromDate();
+        if (null != fromDate) {
+            rb.param("from", DateHelper.formatDateToISO8601(fromDate));
+        }
 
         return rb.build(session.getAuthToken().getValue());
     }

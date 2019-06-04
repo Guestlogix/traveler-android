@@ -5,6 +5,7 @@ import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -39,6 +40,7 @@ public class Catalog implements Serializable {
          */
         @Override
         public Catalog instantiate(JsonReader reader) throws ObjectMappingException {
+            String model = "Catalog";
             String key = "Catalog";
             try {
                 List<CatalogGroup> catalogGroups = null;
@@ -62,10 +64,10 @@ public class Catalog implements Serializable {
 
                 reader.endObject();
                 return new Catalog(catalogGroups);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+            } catch (IllegalStateException e) {
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
             } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, "IOException has occurred");
             }
         }
 

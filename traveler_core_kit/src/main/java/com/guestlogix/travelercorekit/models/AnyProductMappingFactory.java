@@ -6,6 +6,7 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import android.util.JsonToken;
+import org.json.JSONException;
 
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
             When adding new types, just add the extra fields as temporary variables and read the whole object. Then manually
             instantiate your product.
         */
+        String model = "Product";
         String key = "Product";
         String id = null;
         Price price = null;
@@ -68,17 +70,19 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
             reader.endObject();
 
             if (purchaseStrategy == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload must include a non-null and defined 'purchaseStrategy' field"));
+                throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, "Payload must include a non-null and defined 'purchaseStrategy' field");
             }
 
             // Add extra types here.
             if (purchaseStrategy.equalsIgnoreCase("bookable") || purchaseStrategy.equalsIgnoreCase("0")) {
                 return new BookableProduct(id, price, passes, title);
             }
-        } catch (IllegalArgumentException e) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
+        } catch (JSONException e) {
+            throw new ObjectMappingException(ObjectMappingErrorCode.MISSING_FIELD, model, key, "");
+        } catch (IllegalStateException e) {
+            throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_FIELD, model, key, e.getMessage());
         }
 
-        throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, purchaseStrategy + " type is not yet supported"));
+        throw new ObjectMappingException(ObjectMappingErrorCode.INVALID_DATA, model, key, purchaseStrategy + " type is not yet supported");
     }
 }
