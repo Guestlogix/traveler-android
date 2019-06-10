@@ -4,10 +4,9 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.*;
+import org.json.JSONTokener;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class Receipt implements Serializable {
     private CustomerContact customerContact;
 
     @SuppressWarnings("ConstantConditions")
-    private Receipt(@NonNull String id, String travelerId, @NonNull Price total, String status, String referenceNumber, @NonNull List<Product> products, @NonNull Date createdDate, @NonNull CustomerContact customerContact) {
+    private Receipt(@NonNull String id, String travelerId, @NonNull Price total, String status, String referenceNumber, @NonNull List<Product> products, @NonNull Date createdDate, @NonNull CustomerContact customerContact) throws IllegalArgumentException {
         if (id == null) {
             throw new IllegalArgumentException("id can not be null");
         }
@@ -82,74 +81,84 @@ public class Receipt implements Serializable {
     }
 
     static class ReceiptMappingFactory implements ObjectMappingFactory<Receipt> {
+        /**
+         * Parses a reader object into Receipt model.
+         *
+         * @param reader object to parse from.
+         * @return Receipt model object from the reader.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type, missing required field or unable to parse date type.
+         */
 
         @Override
-        public Receipt instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Receipt";
-            try {
-                String id = null;
-                String travelerId = null;
-                String status = null;
-                Price price = null;
-                String referenceNumber = null;
-                List<Product> products = null;
-                Date createdDate = null;
-                CustomerContact customerContact = null;
+        public Receipt instantiate(JsonReader reader) throws Exception {
+            String id = null;
+            String travelerId = null;
+            String status = null;
+            Price price = null;
+            String referenceNumber = null;
+            List<Product> products = null;
+            Date createdDate = null;
+            CustomerContact customerContact = null;
 
-                JsonToken token = reader.peek();
+            reader.beginObject();
 
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
-                }
+            while (reader.hasNext()) {
+                String key = reader.nextName();
 
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    String name = reader.nextName();
-
-                    switch (name) {
-                        case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "travelerId":
-                            travelerId = JsonReaderHelper.readString(reader);
-                            break;
-                        case "amount":
+                switch (key) {
+                    case "id":
+                        id = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "travelerId":
+                        travelerId = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "amount":
+                        if (JsonToken.NULL != reader.peek()) {
                             price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "status":
-                            status = JsonReaderHelper.readString(reader);
-                            break;
-                        case "referenceNumber":
-                            referenceNumber = JsonReaderHelper.readString(reader);
-                            break;
-                        case "createdOn":
-                            try {
-                                createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
-                            } catch (ParseException e) {
-                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "createdOn has invalid format"));
-                            }
-                            break;
-                        case "products":
-                            products = new ArrayMappingFactory<>(new AnyProductMappingFactory()).instantiate(reader);
-                            break;
-                        case "customer":
-                            customerContact = new CustomerContact.CustomerContactObjectMappingFactory().instantiate(reader);
-                            break;
-                        default:
+                        } else {
+                            price = null;
                             reader.skipValue();
-                    }
+                        }
+                        break;
+                    case "status":
+                        status = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "referenceNumber":
+                        referenceNumber = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "createdOn":
+                        createdDate = DateHelper.parseISO8601(reader.nextString());
+                        break;
+                    case "products":
+                        if (JsonToken.NULL != reader.peek()) {
+                            products = new ArrayMappingFactory<>(new AnyProductMappingFactory()).instantiate(reader);
+                        } else {
+                            products = null;
+                            reader.skipValue();
+                        }
+                        break;
+                    case "customer":
+                        if (JsonToken.NULL != reader.peek()) {
+                            customerContact = new CustomerContact.CustomerContactObjectMappingFactory().instantiate(reader);
+                        } else {
+                            customerContact = null;
+                            reader.skipValue();
+                        }
+                        break;
+                    default:
+                        reader.skipValue();
                 }
-
-                reader.endObject();
-
-                return new Receipt(id, travelerId, price, status, referenceNumber, products, createdDate, customerContact);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(null != id, "id can not be null");
+            Assertion.eval(null != price, "price can not be null");
+            Assertion.eval(null != products, "products can not be null");
+            Assertion.eval(null != createdDate, "createdOn can not be null");
+            Assertion.eval(null != customerContact, "customer can not be null");
+
+            return new Receipt(id, travelerId, price, status, referenceNumber, products, createdDate, customerContact);
         }
     }
 }

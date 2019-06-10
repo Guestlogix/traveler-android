@@ -1,11 +1,9 @@
 package com.guestlogix.travelercorekit.utilities;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.models.TravelerErrorCode;
+import com.guestlogix.travelercorekit.BuildConfig;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -22,12 +20,13 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
     public void onHandleResponse(InputStream stream) {
         try (JsonReader reader = new JsonReader(new InputStreamReader(stream))) {
             T model = objectMappingFactory.instantiate(reader);
-
             callback.onSuccess(model);
-        } catch (IOException | IllegalStateException e) {
-            callback.onError(new TravelerError(TravelerErrorCode.PARSING_ERROR, String.format("Invalid JSON stream: %s", e.getMessage())));
-        } catch (ObjectMappingException e) {
-            callback.onError(e.getError());
+        } catch (Exception e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+
+            callback.onError(new Error(String.format("Error while mapping an object. %s", e.getMessage()), e));
         }
     }
 }

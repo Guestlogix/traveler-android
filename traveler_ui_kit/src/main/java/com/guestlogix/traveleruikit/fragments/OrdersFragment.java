@@ -46,6 +46,7 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             orders = (ArrayList<Order>) getArguments().getSerializable(ARG_ORDERS);
             ordersAdapter = new OrdersAdapter(orders, v -> {

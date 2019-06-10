@@ -1,12 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
-
-import java.io.IOException;
 
 public class Token {
     private String value;
@@ -30,44 +27,34 @@ public class Token {
      * Factory class to construct Token model from {@code JsonReader}.
      */
     public static class AuthTokenObjectMappingFactory implements ObjectMappingFactory<Token> {
-
         /**
          * Parses a reader object into Token.
          *
-         * @param reader Object to parse from.
+         * @param reader object to parse from.
          * @return Token model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type or missing required field.
          */
-
         @Override
-        public Token instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Token";
-            try {
-                String value = "";
+        public Token instantiate(JsonReader reader) throws Exception {
+            String value = "";
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                if (key.equals("token")) {
+                    value = JsonReaderHelper.nextNullableString(reader);
+                } else {
                     reader.skipValue();
-                    return null;
                 }
-                reader.beginObject();
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    if (key.equals("token")) {
-                        value = JsonReaderHelper.readNonNullString(reader);
-                    } else {
-                        reader.skipValue();
-                    }
-                }
-
-                reader.endObject();
-                return new Token(value);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(null != value, "value can not be null");
+
+            return new Token(value);
         }
     }
 }

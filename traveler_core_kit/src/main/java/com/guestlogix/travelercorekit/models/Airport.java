@@ -1,12 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 public class Airport implements Serializable {
@@ -14,23 +12,10 @@ public class Airport implements Serializable {
     private String name;
     private String city;
 
-    private Airport(String name, String code, String city) throws IllegalArgumentException {
-
-        if (null == name || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("name can not be empty");
-        } else {
-            this.name = name;
-        }
-        if (null == code || code.trim().isEmpty()) {
-            throw new IllegalArgumentException("code can not be empty");
-        } else {
-            this.code = code;
-        }
-        if (null == city || city.trim().isEmpty()) {
-            throw new IllegalArgumentException("city can not be empty");
-        } else {
-            this.city = city;
-        }
+    private Airport(String name, String code, String city) {
+        this.name = name;
+        this.code = code;
+        this.city = city;
     }
 
     public String getName() {
@@ -49,55 +34,47 @@ public class Airport implements Serializable {
      * Factory class to construct Airport model from {@code JsonReader}.
      */
     static class AirportObjectMappingFactory implements ObjectMappingFactory<Airport> {
-
         /**
          * Parses a reader object into Airport model.
          *
-         * @param reader Object to parse from.
+         * @param reader object to parse from.
          * @return Airport model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type or missing required field.
          */
         @Override
-        public Airport instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Airport";
-            try {
-                String name = "";
-                String code = "";
-                String city = "";
+        public Airport instantiate(JsonReader reader) throws Exception {
+            String name = "";
+            String code = "";
+            String city = "";
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "name":
+                        name = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "iata":
+                        code = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "city":
+                        city = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "name":
-                            name = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "iata":
-                            code = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "city":
-                            city = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                            break;
-                    }
-                }
-
-                reader.endObject();
-                return new Airport(name, code, city);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(null != name && !name.trim().isEmpty(), "name can not be empty");
+            Assertion.eval(null != code && !code.trim().isEmpty(), "code can not be empty");
+            Assertion.eval(null != city && !city.trim().isEmpty(), "city can not be empty");
+
+            return new Airport(name, code, city);
         }
     }
 }

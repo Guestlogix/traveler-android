@@ -1,15 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,82 +86,92 @@ public class CatalogItemDetails implements Product {
         /**
          * Parses a reader object into CatalogItemDetails model.
          *
-         * @param reader Object to parse from.
+         * @param reader object to parse from.
          * @return CatalogItemDetails model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type, missing required field or unable to parse date type.
          */
         @Override
-        public CatalogItemDetails instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "CatalogItemDetails";
-            try {
-                String id = "";
-                String title = "";
-                String description = "";
-                List<URL> imageURL = new ArrayList<>();
-                ContactInfo contact = new ContactInfo();
-                List<Location> locations = new ArrayList<>();
-                Price priceStartingAt = new Price();
-                PurchaseStrategy purchaseStrategy = PurchaseStrategy.Bookable;
-                List<Attribute> information = new ArrayList<>();
+        public CatalogItemDetails instantiate(JsonReader reader) throws Exception {
+            String id = "";
+            String title = "";
+            String description = "";
+            List<URL> imageURL = new ArrayList<>();
+            ContactInfo contact = new ContactInfo();
+            List<Location> locations = new ArrayList<>();
+            Price priceStartingAt = new Price();
+            PurchaseStrategy purchaseStrategy = PurchaseStrategy.Bookable;
+            List<Attribute> information = new ArrayList<>();
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
-                } else if (BEGIN_ARRAY == token) {
-                    reader.beginArray();
-                } else {
-                    reader.beginObject();
-                }
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-                    switch (key) {
-                        case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "title":
-                            title = JsonReaderHelper.readString(reader);
-                            break;
-                        case "description":
-                            description = JsonReaderHelper.readString(reader);
-                            break;
-                        case "imageUrls":
-                            if (reader.peek() != JsonToken.NULL) {
-                                imageURL.addAll(JsonReaderHelper.readURLArray(reader));
-                            } else {
-                                reader.skipValue();
-                            }
-                            break;
-                        case "contact":
-                            contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "locations":
-                            locations.addAll(new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader));
-                            break;
-                        case "priceStartingAt":
-                            priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "purchaseStrategy":
-                            purchaseStrategy = PurchaseStrategy.valueOf(JsonReaderHelper.readString(reader));
-                            break;
-                        case "information":
-                            information.addAll(new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader));
-                            break;
-                        default:
-                            reader.skipValue();
-                    }
-                }
-
-                reader.endObject();
-
-                return new CatalogItemDetails(id, title, description, imageURL, contact, locations, priceStartingAt, purchaseStrategy, information);
-
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
+            JsonToken token = reader.peek();
+            if (BEGIN_ARRAY == token) {
+                reader.beginArray();
+            } else {
+                reader.beginObject();
             }
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+                switch (key) {
+                    case "id":
+                        id = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "title":
+                        title = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "description":
+                        description = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "imageUrls":
+                        if (reader.peek() != JsonToken.NULL) {
+                            imageURL.addAll(JsonReaderHelper.nextUrlArray(reader));
+                        } else {
+                            imageURL = null;
+                            reader.skipValue();
+                        }
+                        break;
+                    case "contact":
+                        if (reader.peek() != JsonToken.NULL) {
+                            contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
+                        } else {
+                            contact = null;
+                            reader.skipValue();
+                        }
+                        break;
+                    case "locations":
+                        if (reader.peek() != JsonToken.NULL) {
+                            locations.addAll(new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader));
+                        } else {
+                            reader.skipValue();
+                        }
+                        break;
+                    case "priceStartingAt":
+                        if (reader.peek() != JsonToken.NULL) {
+                            priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(reader);
+                        } else {
+                            priceStartingAt = null;
+                            reader.skipValue();
+                        }
+                        break;
+                    case "purchaseStrategy":
+                        purchaseStrategy = PurchaseStrategy.valueOf(reader.nextString());
+                        break;
+                    case "information":
+                        if (reader.peek() != JsonToken.NULL) {
+                            information.addAll(new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader));
+                        } else {
+                            reader.skipValue();
+                        }
+                        break;
+                    default:
+                        reader.skipValue();
+                }
+            }
+
+            reader.endObject();
+
+            Assertion.eval(null != imageURL, "imageUrls can not be null");
+
+            return new CatalogItemDetails(id, title, description, imageURL, contact, locations, priceStartingAt, purchaseStrategy, information);
         }
     }
 }

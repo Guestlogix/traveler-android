@@ -2,11 +2,10 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 
@@ -61,54 +60,50 @@ public class Pass implements Serializable {
          *
          * @param reader to read from.
          * @return Pass model.
-         * @throws ObjectMappingException if mapping fails or any required field is missing.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type, missing required field or unable to parse date type.
          */
         @Override
-        public Pass instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Pass";
-            try {
-                String id = "";
-                String name = "";
-                String description = "";
-                Price price = null;
+        public Pass instantiate(JsonReader reader) throws Exception {
+            String id = "";
+            String name = "";
+            String description = "";
+            Price price = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
-                }
-                reader.beginObject();
+            reader.beginObject();
 
-                while (reader.hasNext()) {
-                    key = reader.nextName();
+            while (reader.hasNext()) {
+                String key = reader.nextName();
 
-                    switch (key) {
-                        case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "title":
-                            name = JsonReaderHelper.readString(reader);
-                            break;
-                        case "description":
-                            description = JsonReaderHelper.readString(reader);
-                            break;
-                        case "price":
-                            ObjectMappingFactory<Price> p = new Price.PriceObjectMappingFactory();
-                            price = p.instantiate(reader);
-                            break;
-                        default:
+                switch (key) {
+                    case "id":
+                        id = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "title":
+                        name = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "description":
+                        description = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "price":
+                        if (JsonToken.NULL != reader.peek()) {
+                            price = new Price.PriceObjectMappingFactory().instantiate(reader);
+                        } else {
+                            price = null;
                             reader.skipValue();
-                            break;
-                    }
+                        }
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-
-                reader.endObject();
-                return new Pass(id, name, description, price);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(null != id && !id.isEmpty(), "id can not be empty");
+            Assertion.eval(null != price, "price can not be empty");
+
+            return new Pass(id, name, description, price);
         }
     }
 }

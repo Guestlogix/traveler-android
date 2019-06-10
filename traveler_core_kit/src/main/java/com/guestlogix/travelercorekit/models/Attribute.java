@@ -1,12 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 public class Attribute implements Serializable {
@@ -14,7 +12,6 @@ public class Attribute implements Serializable {
     private String value;
 
     public Attribute(String label, String value) throws IllegalArgumentException {
-
         if (null == label || label.trim().isEmpty()) {
             throw new IllegalArgumentException("label can not be empty");
         } else {
@@ -39,52 +36,41 @@ public class Attribute implements Serializable {
      * Factory class to construct Attribute model from {@code JsonReader}.
      */
     static class AttributeObjectMappingFactory implements ObjectMappingFactory<Attribute> {
-
         /**
          * Parses a reader object into Attribute model.
          *
-         * @param reader Object to parse from.
-         * @return Airport model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
+         * @param reader object to parse from.
+         * @return Attribute model object from the reader.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type or missing required field.
          */
         @Override
-        public Attribute instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Attribute";
-            try {
-                String label = "";
-                String value = "";
+        public Attribute instantiate(JsonReader reader) throws Exception {
+            String label = "";
+            String value = "";
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "label":
+                        label = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "value":
+                        value = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    default:
+                        reader.skipValue();
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "label":
-                            label = JsonReaderHelper.readString(reader);
-                            break;
-                        case "value":
-                            value = JsonReaderHelper.readString(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                    }
-                }
-
-                reader.endObject();
-
-                return new Attribute(label, value);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
-        }
 
+            reader.endObject();
+
+            Assertion.eval(null != label && !label.trim().isEmpty(), "label can not be empty");
+            Assertion.eval(null != value && !value.trim().isEmpty(), "value can not be empty");
+
+            return new Attribute(label, value);
+        }
     }
 }

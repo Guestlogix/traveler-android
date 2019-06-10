@@ -1,12 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 public class Choice implements Serializable {
@@ -34,52 +32,42 @@ public class Choice implements Serializable {
      * Factory class to construct Choice model from {@code JsonReader}.
      */
     static class ChoiceObjectMappingFactory implements ObjectMappingFactory<Choice> {
-
         /**
          * Parses a reader object into Choice model.
          *
-         * @param reader Object to parse from.
+         * @param reader object to parse from.
          * @return Choice model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type or if the required field is missing.
          */
         @Override
-        public Choice instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Choice";
-            try {
-                String id = "";
-                String value = "";
+        public Choice instantiate(JsonReader reader) throws Exception {
+            String id = "";
+            String value = "";
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "id":
+                        id = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    //key changed in api for product questions: optionLabel -> label
+                    case "label":
+                        value = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                            //key changed in api for product questions: optionLabel -> label
-                        case "label":
-                            value = JsonReaderHelper.readString(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                            break;
-                    }
-                }
-
-                reader.endObject();
-                return new Choice(id, value);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(id != null && !id.trim().isEmpty(), "id cannot be empty");
+
+            return new Choice(id, value);
         }
     }
 }

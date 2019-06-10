@@ -13,6 +13,5 @@ public abstract class Answer implements Serializable {
     }
 
     class AnswerError extends Error {
-
     }
 }

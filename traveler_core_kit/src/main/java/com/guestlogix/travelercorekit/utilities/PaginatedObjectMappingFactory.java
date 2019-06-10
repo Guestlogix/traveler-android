@@ -3,7 +3,6 @@ package com.guestlogix.travelercorekit.utilities;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +14,12 @@ public class PaginatedObjectMappingFactory<T> implements ObjectMappingFactory<Li
     }
 
     @Override
-    public List<T> instantiate(JsonReader reader) throws ObjectMappingException, IOException {
-        String key = "result";
+    public List<T> instantiate(JsonReader reader) throws Exception {
+        String key;
         List<T> objects = new ArrayList<>();
 
-        JsonToken token = reader.peek();
-        if (JsonToken.NULL == token) {
-            reader.skipValue();
-            return null;
-        }
         reader.beginObject();
+
         while (reader.hasNext()) {
             key = reader.nextName();
             switch (key) {
@@ -35,7 +30,9 @@ public class PaginatedObjectMappingFactory<T> implements ObjectMappingFactory<Li
                     reader.skipValue();
             }
         }
+
         reader.endObject();
+
         return objects;
     }
 }

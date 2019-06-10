@@ -1,20 +1,17 @@
 package com.guestlogix.travelercorekit.utilities;
 
-import com.guestlogix.travelercorekit.models.ObjectMappingError;
-
 public class ObjectMappingException extends RuntimeException {
-    private ObjectMappingError mError;
 
-    public ObjectMappingException(ObjectMappingError error) {
-        this.mError = error;
-    }
+    Object object;
+    Throwable throwable;
 
-    public ObjectMappingError getError() {
-        return mError;
+    public ObjectMappingException(Object object, Throwable throwable) {
+        this.object = object;
+        this.throwable = throwable;
     }
 
     @Override
     public String getMessage() {
-        return mError.toString();
+        return String.format("Type: %s Cause: %s", object.getClass().getCanonicalName(), throwable.getMessage());
     }
 }

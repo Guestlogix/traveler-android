@@ -1,14 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import android.util.JsonToken;
+import com.guestlogix.travelercorekit.utilities.*;
 
-
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,7 +12,7 @@ import java.util.List;
 class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
 
     @Override
-    public Product instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+    public Product instantiate(JsonReader reader) throws Exception {
        /*
             Individual json elements might come back in every order possible. That is why we cannot assume that
             that an product is of type X prior to finding the 'purchaseStrategy' field in the payload. Therefore, we must
@@ -26,59 +21,58 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
             When adding new types, just add the extra fields as temporary variables and read the whole object. Then manually
             instantiate your product.
         */
-        String key = "Product";
         String id = null;
         Price price = null;
         String purchaseStrategy = null;
         String title = null;
         List<Pass> passes = null;
 
-        JsonToken token = reader.peek();
-        if (JsonToken.NULL == token) {
-            reader.skipValue();
-            return null;
-        }
         reader.beginObject();
-        try {
 
-            while (reader.hasNext()) {
-                key = reader.nextName();
+        while (reader.hasNext()) {
+            String key = reader.nextName();
 
-                switch (key) {
-                    case "id":
-                        id = JsonReaderHelper.readNonNullString(reader);
-                        break;
-                    case "price":
+            switch (key) {
+                case "id":
+                    id = JsonReaderHelper.nextNullableString(reader);
+                    break;
+                case "price":
+                    if (JsonToken.NULL != reader.peek()) {
                         price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "title":
-                        title = JsonReaderHelper.readString(reader);
-                        break;
-                    case "purchaseStrategy":
-                        purchaseStrategy = JsonReaderHelper.readNonNullString(reader);
-                        break;
-                    case "passes":
-                        passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(reader);
-                        break;
-                    default:
+                    } else {
+                        price = null;
                         reader.skipValue();
-                }
+                    }
+                    break;
+                case "title":
+                    title = JsonReaderHelper.nextNullableString(reader);
+                    break;
+                case "purchaseStrategy":
+                    purchaseStrategy = JsonReaderHelper.nextNullableString(reader);
+                    break;
+                case "passes":
+                    if (JsonToken.NULL != reader.peek()) {
+                        passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(reader);
+                    } else {
+                        reader.skipValue();
+                    }
+                    break;
+                default:
+                    reader.skipValue();
             }
-
-            reader.endObject();
-
-            if (purchaseStrategy == null) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload must include a non-null and defined 'purchaseStrategy' field"));
-            }
-
-            // Add extra types here.
-            if (purchaseStrategy.equalsIgnoreCase("bookable") || purchaseStrategy.equalsIgnoreCase("0")) {
-                return new BookableProduct(id, price, passes, title);
-            }
-        } catch (IllegalArgumentException e) {
-            throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
         }
 
-        throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, purchaseStrategy + " type is not yet supported"));
+        reader.endObject();
+
+        Assertion.eval((purchaseStrategy != null));
+        try {
+            Assertion.eval(purchaseStrategy.equalsIgnoreCase("bookable"));
+        } catch (AssertionException e) {
+            throw new IllegalArgumentException(purchaseStrategy + " type is not yet supported");
+        }
+
+        // Add extra types here.
+        return new BookableProduct(id, price, passes, title);
+
     }
 }

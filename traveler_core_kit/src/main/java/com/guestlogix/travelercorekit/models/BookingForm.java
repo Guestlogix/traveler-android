@@ -36,8 +36,8 @@ public class BookingForm implements Serializable {
     /**
      * Adds an answer for a question.
      *
-     * @param answer answer for a question
-     * @throws BookingFormError if the answer does not relate to any question
+     * @param answer answer for a question.
+     * @throws BookingFormError if the answer does not relate to any question.
      */
     public void addAnswer(Answer answer) throws BookingFormError {
         if (!questionIds.contains(answer.questionId)) {

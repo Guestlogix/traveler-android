@@ -4,17 +4,13 @@ import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import com.guestlogix.traveler.utils.SharedPrefsUtils;
-import com.guestlogix.travelercorekit.models.ObjectMappingError;
-import com.guestlogix.travelercorekit.models.ObjectMappingErrorCode;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
 
 public class Profile implements Serializable {
-
     private String travelerId;
     private String externalId;
     private String firstName;
@@ -22,6 +18,11 @@ public class Profile implements Serializable {
     private String email;
 
     public Profile(String travelerId, String externalId, String firstName, String lastName, String email) {
+        if (travelerId == null) {
+            throw new IllegalArgumentException("travelerId can not be null");
+        }
+        this.travelerId = travelerId;
+
         this.travelerId = travelerId;
         this.externalId = externalId;
         this.firstName = firstName;
@@ -64,54 +65,42 @@ public class Profile implements Serializable {
     public static class ProfileObjectMappingFactory implements ObjectMappingFactory<Profile> {
 
         @Override
-        public Profile instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Profile";
-            try {
-                String travelerId = "";
-                String externalId = "";
-                String firstName = "";
-                String lastName = "";
-                String email = "";
+        public Profile instantiate(JsonReader reader) throws IOException, IllegalStateException, IllegalArgumentException {
+            String travelerId = "";
+            String externalId = "";
+            String firstName = "";
+            String lastName = "";
+            String email = "";
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+                switch (key) {
+                    case "travelerId":
+                        travelerId = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "externalId":
+                        externalId = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "firstName":
+                        firstName = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "lastName":
+                        lastName = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "email":
+                        email = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-                    switch (key) {
-                        case "travelerId":
-                            travelerId = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "externalId":
-                            externalId = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "firstName":
-                            firstName = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "lastName":
-                            lastName = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "email":
-                            email = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                            break;
-                    }
-                }
-
-                reader.endObject();
-                return new Profile(travelerId, externalId, firstName, lastName, email);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            return new Profile(travelerId, externalId, firstName, lastName, email);
         }
     }
 
@@ -143,9 +132,11 @@ public class Profile implements Serializable {
         String firstName = sharedPrefsUtils.getString(SharedPrefsUtils.FIRST_NAME, null);
         String lastName = sharedPrefsUtils.getString(SharedPrefsUtils.LAST_NAME, null);
         String email = sharedPrefsUtils.getString(SharedPrefsUtils.EMAIL, null);
+
         if (email == null) {
             return null;
         }
+
         return new Profile(travelerId, externalId, firstName, lastName, email);
     }
 }

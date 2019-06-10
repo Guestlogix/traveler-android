@@ -2,11 +2,10 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import androidx.annotation.NonNull;
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 public class CustomerContact implements Serializable {
@@ -17,6 +16,12 @@ public class CustomerContact implements Serializable {
     private String phone;
 
     private CustomerContact(String title, String firstName, String lastName, @NonNull String email, String phone) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("email cannot be empty");
+        } else {
+            this.email = email;
+        }
+
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,9 +50,15 @@ public class CustomerContact implements Serializable {
     }
 
     static class CustomerContactObjectMappingFactory implements ObjectMappingFactory<CustomerContact> {
-
+        /**
+         * Parses a reader object into CustomerContact model.
+         *
+         * @param reader object to parse from.
+         * @return CustomerContact model object from the reader.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type or missing required field.
+         */
         @Override
-        public CustomerContact instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+        public CustomerContact instantiate(JsonReader reader) throws Exception {
             String title = null;
             String fName = null;
             String lName = null;
@@ -57,32 +68,30 @@ public class CustomerContact implements Serializable {
             reader.beginObject();
 
             while (reader.hasNext()) {
-                String name = reader.nextName();
+                String key = reader.nextName();
 
-                switch (name) {
+                switch (key) {
                     case "title":
-                        title = JsonReaderHelper.readString(reader);
+                        title = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "firstName":
-                        fName = JsonReaderHelper.readString(reader);
+                        fName = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "lastName":
-                        lName = JsonReaderHelper.readString(reader);
+                        lName = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "email":
-                        email = JsonReaderHelper.readNonNullString(reader);
+                        email = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "phone":
-                        phone = JsonReaderHelper.readString(reader);
+                        phone = JsonReaderHelper.nextNullableString(reader);
                         break;
                 }
             }
 
             reader.endObject();
 
-            if (null == email) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload email must not be null"));
-            }
+            Assertion.eval(null != email && !email.isEmpty(), "email can not be empty");
 
             return new CustomerContact(title, fName, lName, email, phone);
         }

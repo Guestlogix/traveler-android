@@ -3,11 +3,9 @@ package com.guestlogix.travelercorekit.models;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -42,59 +40,51 @@ public class CatalogGroup implements Serializable {
         /**
          * Parses a reader object into CatalogGroup model.
          *
-         * @param reader Object to parse from.
+         * @param reader object to parse from.
          * @return CatalogGroup model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type, missing required field or unable to parse date type.
          */
         @Override
-        public CatalogGroup instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "CatalogGroup";
-            try {
-                String title = "";
-                String subTitle = "";
-                String description = "";
-                Boolean featured = false;
-                List<CatalogItem> items = null;
+        public CatalogGroup instantiate(JsonReader reader) throws Exception {
+            String title = "";
+            String subTitle = "";
+            String description = "";
+            Boolean featured = false;
+            List<CatalogItem> items = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
-                }
-                reader.beginObject();
+            reader.beginObject();
 
-                while (reader.hasNext()) {
-                    key = reader.nextName();
+            while (reader.hasNext()) {
+                String key = reader.nextName();
 
-                    switch (key) {
-                        case "title":
-                            title = JsonReaderHelper.readString(reader);
-                            break;
-                        case "subTitle":
-                            subTitle = JsonReaderHelper.readString(reader);
-                            break;
-                        case "description":
-                            description = JsonReaderHelper.readString(reader);
-                            break;
-                        case "featured":
-                            featured = JsonReaderHelper.readBoolean(reader);
-                            break;
-                        case "items":
+                switch (key) {
+                    case "title":
+                        title = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "subTitle":
+                        subTitle = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "description":
+                        description = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "featured":
+                        featured = JsonReaderHelper.nextNullableBoolean(reader);
+                        break;
+                    case "items":
+                        if (JsonToken.NULL != reader.peek()) {
                             items = new ArrayMappingFactory<>(new CatalogItem.CatalogItemObjectMappingFactory()).instantiate(reader);
-                            break;
-                        default:
+                        } else {
                             reader.skipValue();
-                    }
+                        }
+                        break;
+                    default:
+                        reader.skipValue();
                 }
-
-                reader.endObject();
-
-                return new CatalogGroup(title, subTitle, description, featured, items);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            return new CatalogGroup(title, subTitle, description, featured, items);
         }
     }
 }

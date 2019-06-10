@@ -2,11 +2,9 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,67 +47,55 @@ public class ContactInfo implements Serializable {
      * Factory class to construct ContactInfo model from {@code JsonReader}.
      */
     static class ContactInfoObjectMappingFactory implements ObjectMappingFactory<ContactInfo> {
-
         /**
          * Parses a reader object into ContactInfo model.
          *
-         * @param reader Object to parse from.
+         * @param reader object to parse from.
          * @return ContactInfo model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
+         * @throws {@link Exception} if mapping fails due to unexpected token, invalid type or missing required field.
          */
         @Override
-        public ContactInfo instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "ContactInfo";
-            try {
-                String name = "";
-                String email = "";
-                String website = "";
-                String address = "";
-                List<String> phones = new ArrayList<>();
+        public ContactInfo instantiate(JsonReader reader) throws Exception {
+            String key;
+            String name = "";
+            String email = "";
+            String website = "";
+            String address = "";
+            List<String> phones = new ArrayList<>();
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
-                }
-                reader.beginObject();
+            reader.beginObject();
 
-                while (reader.hasNext()) {
-                    key = reader.nextName();
+            while (reader.hasNext()) {
+                key = reader.nextName();
 
-                    switch (key) {
-                        case "name":
-                            name = JsonReaderHelper.readString(reader);
-                            break;
-                        case "email":
-                            email = JsonReaderHelper.readString(reader);
-                            break;
-                        case "website":
-                            website = JsonReaderHelper.readString(reader);
-                            break;
-                        case "address":
-                            address = JsonReaderHelper.readString(reader);
-                            break;
-                        case "phones":
-                            if (reader.peek() != JsonToken.NULL) {
-                                phones.addAll(JsonReaderHelper.readStringsArray(reader));
-                            } else {
-                                reader.skipValue();
-                            }
-                            break;
-                        default:
+                switch (key) {
+                    case "name":
+                        name = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "email":
+                        email = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "website":
+                        website = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "address":
+                        address = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "phones":
+                        if (reader.peek() != JsonToken.NULL) {
+                            phones.addAll(JsonReaderHelper.nextStringsArray(reader));
+                        } else {
                             reader.skipValue();
-                    }
+                        }
+                        break;
+                    default:
+                        reader.skipValue();
                 }
-
-                reader.endObject();
-
-                return new ContactInfo(name, email, website, address, phones);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            return new ContactInfo(name, email, website, address, phones);
         }
     }
 }
