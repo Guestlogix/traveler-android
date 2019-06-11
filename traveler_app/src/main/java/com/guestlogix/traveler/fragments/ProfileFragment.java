@@ -46,7 +46,7 @@ public class ProfileFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        user = Guest.getInstance().getSignedInUser(getActivityContext());
+        user = Guest.getInstance().getUserProfile(getActivityContext());
         nav = Navigation.findNavController(getActivityContext(), R.id.nav_app_settings);
 
         CollapsingToolbarLayout layout = v.findViewById(R.id.collapsingToolbar_profile_title);

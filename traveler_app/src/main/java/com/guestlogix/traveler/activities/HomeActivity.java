@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
@@ -35,7 +36,13 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         homeViewModel = ViewModelProviders.of(HomeActivity.this).get(HomeViewModel.class);
-        homeViewModel.getObservableProfile().observe(this, this::handleProfile);
+        homeViewModel.getObservableProfile().observe(this, profile -> {
+            if (null == profile) {
+                Toast.makeText(this, "Could not sign in, please try again.", Toast.LENGTH_SHORT).show();
+            }
+            this.profile = profile;
+            updateMenuItems();
+        });
     }
 
     @Override
@@ -66,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(profileIntent);
                 return true;
             case R.id.sign_in_action:
-                //TODO: using server client key to fetch requestIdToken
+                // Note: using server client key to fetch requestIdToken
                 // android app client id results in APIException if we request for RequestIdToken/AuthToken
                 // https://stackoverflow.com/questions/52407793/com-google-android-gms-common-api-apiexception-16
                 String clientId = BuildConfig.GOOGL_SIGN_IN_CLIENT_ID;
@@ -128,17 +135,6 @@ public class HomeActivity extends AppCompatActivity {
             profileMenuItem.setVisible(false);
             signInMenuItem.setVisible(true);
         }
-    }
-
-    private void handleProfile(Profile _profile) {
-
-        this.profile = _profile;
-        if (this.profile != null) {
-            Traveler.setUserId(_profile.getTravelerId());
-        } else {
-            Traveler.removeUserId();
-        }
-        updateMenuItems();
     }
 }
 

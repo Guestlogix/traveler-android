@@ -78,18 +78,12 @@ public class Traveler {
         taskManager.addTask(authTokenFetchBlockTask);
     }
 
-    public static void setUserId(String userId) {
+    public static void setIdentity(String identity) {
         if (null == localInstance) {
+            //TODO: Will be removed in separate PR
             throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
         }
-        localInstance.session.setUserId(userId);
-    }
-
-    public static void removeUserId() {
-        if (null == localInstance) {
-            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
-        }
-        localInstance.session.setUserId(null);
+        localInstance.session.setIdentity(identity);
     }
 
     /**
@@ -377,8 +371,8 @@ public class Traveler {
     public static void fetchOrders(Integer skip, Integer take, Date from, Date to, FetchOrdersCallback fetchOrdersCallback) {
         if (null == localInstance) {
             fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
-        } else if (null == localInstance.session || null == localInstance.session.getUserId()) {
-            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
+        } else if (null == localInstance.session || null == localInstance.session.getIdentity()) {
+            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "Identity not set, Please set userId by calling Traveler.setIdentity();"));
         } else {
             AuthenticatedUrlRequest request = Router.orders(skip, take, from, to, localInstance.session, localInstance.session.getContext());
             AuthenticatedRemoteNetworkRequestTask<List<Order>> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new PaginatedObjectMappingFactory<>(new ArrayMappingFactory<>(new Order.OrderMappingFactory())));

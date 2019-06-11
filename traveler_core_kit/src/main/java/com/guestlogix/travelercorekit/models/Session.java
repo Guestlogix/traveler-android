@@ -9,17 +9,17 @@ public class Session {
     private String apiKey;
     private Context context;
     private Token token;
-    private String userId;
+    private String identity;
 
     Session(String apiKey, Context context) {
         this(apiKey, context, new Token(""), null);
     }
 
-    private Session(String apiKey, Context context, Token token, String userId) {
+    private Session(String apiKey, Context context, Token token, String identity) {
         this.token = token;
         this.context = context;
         this.apiKey = apiKey;
-        this.userId = userId;
+        this.identity = identity;
     }
 
     public Token getAuthToken() {
@@ -38,11 +38,11 @@ public class Session {
         return context;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getIdentity() {
+        return identity;
     }
 }

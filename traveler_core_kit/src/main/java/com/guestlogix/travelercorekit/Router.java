@@ -171,7 +171,7 @@ public class Router {
                         amount.put("currency", "USD");
                         payload.put("amount", amount);
 
-                        payload.put("travelerId", session.getUserId());
+                        payload.put("travelerId", session.getIdentity());
 
                         return payload;
                     } catch (JSONException e) {
@@ -200,7 +200,7 @@ public class Router {
                 .method(Method.GET)
                 .url(BASE_URL)
                 .path("/order/all")
-                .param("traveler", session.getUserId())
+                .param("traveler", session.getIdentity())
                 .param("skip", skip.toString())
                 .param("take", take.toString())
                 .param("from", DateHelper.formatDateToISO8601(from))

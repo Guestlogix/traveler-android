@@ -13,7 +13,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = Guest.getInstance().getSignedInUser(ProfileActivity.this);
+        user = Guest.getInstance().getUserProfile(ProfileActivity.this);
         if (null == user) {
             finish();
             return;

@@ -4,6 +4,7 @@ import android.content.Context;
 import com.guestlogix.traveler.callbacks.ProfileCallback;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.travelercorekit.UrlRequest;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.RemoteNetworkRequestTask;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
@@ -40,9 +41,9 @@ public class Guest {
             @Override
             protected void main() {
                 if (null != fetchProfileTask.getError()) {
-                    profileCallback.onSignInError(fetchProfileTask.getError());
+                    profileCallback.onProfileError(fetchProfileTask.getError());
                 } else {
-                    profileCallback.onSignInSuccess(fetchProfileTask.getResource());
+                    profileCallback.onProfileReceived(fetchProfileTask.getResource());
                 }
             }
         };
@@ -54,20 +55,27 @@ public class Guest {
     }
 
     /**
-     * Removes signed in user from shared prefs.
+     * Get the last signed in user profile, null if there is none.
      *
      * @param context calling context
      */
-    public void logout(Context context) {
-        Profile.remove(context);
+    public Profile getUserProfile(Context context) {
+        return Profile.read(context);
     }
 
     /**
-     * Get the last signed in user if saved in shared prefs null otherwise.
+     * Saves profile in shared prefs and sets Traveler identity.
      *
      * @param context calling context
+     * @param profile saves the profile in shared prefs. If null, profile will be removed from shared prefs
      */
-    public Profile getSignedInUser(Context context) {
-        return Profile.read(context);
+    public void setUserProfile(Context context, Profile profile) {
+        Profile.save(context, profile);
+
+        if (null == profile) {
+            Traveler.setIdentity(null);
+        } else {
+            Traveler.setIdentity(profile.getTravelerId());
+        }
     }
 }

@@ -115,24 +115,22 @@ public class Profile implements Serializable {
         }
     }
 
-    public void save(Context context) {
+    public static void save(Context context, Profile profile) {
         SharedPrefsUtils sharedPrefsUtils = SharedPrefsUtils.getInstance(context);
 
-        sharedPrefsUtils.putString(SharedPrefsUtils.TRAVELER_ID, getTravelerId());
-        sharedPrefsUtils.putString(SharedPrefsUtils.EXTERNAL_ID, getExternalId());
-        sharedPrefsUtils.putString(SharedPrefsUtils.FIRST_NAME, getFirstName());
-        sharedPrefsUtils.putString(SharedPrefsUtils.LAST_NAME, getLastName());
-        sharedPrefsUtils.putString(SharedPrefsUtils.EMAIL, getEmail());
-    }
-
-    public static void remove(Context context) {
-        SharedPrefsUtils sharedPrefsUtils = SharedPrefsUtils.getInstance(context);
-
-        sharedPrefsUtils.removeString(SharedPrefsUtils.TRAVELER_ID);
-        sharedPrefsUtils.removeString(SharedPrefsUtils.EXTERNAL_ID);
-        sharedPrefsUtils.removeString(SharedPrefsUtils.FIRST_NAME);
-        sharedPrefsUtils.removeString(SharedPrefsUtils.LAST_NAME);
-        sharedPrefsUtils.removeString(SharedPrefsUtils.EMAIL);
+        if (profile != null) {
+            sharedPrefsUtils.putString(SharedPrefsUtils.TRAVELER_ID, profile.getTravelerId());
+            sharedPrefsUtils.putString(SharedPrefsUtils.EXTERNAL_ID, profile.getExternalId());
+            sharedPrefsUtils.putString(SharedPrefsUtils.FIRST_NAME, profile.getFirstName());
+            sharedPrefsUtils.putString(SharedPrefsUtils.LAST_NAME, profile.getLastName());
+            sharedPrefsUtils.putString(SharedPrefsUtils.EMAIL, profile.getEmail());
+        } else {
+            sharedPrefsUtils.removeString(SharedPrefsUtils.TRAVELER_ID);
+            sharedPrefsUtils.removeString(SharedPrefsUtils.EXTERNAL_ID);
+            sharedPrefsUtils.removeString(SharedPrefsUtils.FIRST_NAME);
+            sharedPrefsUtils.removeString(SharedPrefsUtils.LAST_NAME);
+            sharedPrefsUtils.removeString(SharedPrefsUtils.EMAIL);
+        }
     }
 
     public static Profile read(Context context) {
