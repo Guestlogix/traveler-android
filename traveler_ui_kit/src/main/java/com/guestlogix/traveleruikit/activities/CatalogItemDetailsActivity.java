@@ -12,9 +12,7 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
-import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.*;
-
-public class CatalogItemDetailsActivity extends AppCompatActivity implements RetryFragmentInteractionListener {
+public class CatalogItemDetailsActivity extends AppCompatActivity {
 
     public static final String ARG_CATALOG_ITEM = "catalog_item";
 
@@ -56,16 +54,17 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Ret
                 break;
             case ERROR:
                 Bundle arguments = new Bundle();
-                arguments.putString(ARG_ERROR_TITLE, getString(R.string.label_sorry));
-                arguments.putString(ARG_ERROR_MESSAGE, getString(R.string.label_nothing_to_show));
-                arguments.putString(ARG_ERROR_ACTION, getString(R.string.try_again));
+                // TODO: Fix these up right in RetryFragment and not use navigation
+                //arguments.putString(ARG_ERROR_TITLE, getString(R.string.label_sorry));
+                //arguments.putString(ARG_ERROR_MESSAGE, getString(R.string.label_nothing_to_show));
+                //arguments.putString(ARG_ERROR_ACTION, getString(R.string.try_again));
 
                 navController.navigate(R.id.error_action, arguments);
                 break;
         }
     }
 
-    @Override
+    // TODO: Fix this
     public void onRetry() {
         catalogItemDetailsViewModel.setCatalogItem(catalogItem);
     }

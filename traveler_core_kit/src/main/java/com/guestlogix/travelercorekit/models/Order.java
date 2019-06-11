@@ -69,10 +69,26 @@ public class Order implements Serializable {
         return status;
     }
 
+    public String getProductTitlesJoinedBy(CharSequence delimiter) {
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < getProducts().size(); i++) {
+            Product product = getProducts().get(i);
+
+            builder.append(product.getTitle());
+
+            if (i != getProducts().size() - 1) {
+                builder.append(delimiter);
+            }
+        }
+
+        return builder.toString();
+    }
+
     static class OrderMappingFactory implements ObjectMappingFactory<Order> {
 
         @Override
-        public Order instantiate(JsonReader reader) throws ObjectMappingException {
+        public Order instantiate(JsonReader reader) throws Exception {
             String key = "Order";
             try {
                 String id = null;

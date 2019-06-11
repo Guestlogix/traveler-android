@@ -2,10 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,7 +38,7 @@ public class QuestionGroup implements Serializable {
     static class QuestionGroupObjectMappingFactory implements ObjectMappingFactory<QuestionGroup> {
 
         @Override
-        public QuestionGroup instantiate(JsonReader reader) throws ObjectMappingException {
+        public QuestionGroup instantiate(JsonReader reader) throws Exception {
             String key = "QuestionGroup";
             try {
                 String title = null;

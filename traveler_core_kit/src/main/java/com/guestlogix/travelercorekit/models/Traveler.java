@@ -12,7 +12,6 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.PaginatedObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ public class Traveler {
     private static Traveler localInstance;
 
     private TaskManager taskManager = new TaskManager();
+    private TaskManager orderSerialTaskManager = new TaskManager(TaskManager.Mode.SERIAL);
     private Session session;
 
     /**
@@ -89,7 +89,7 @@ public class Traveler {
         if (null == localInstance) {
             throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
         }
-        localInstance.session.setUserId(null);
+        //localInstance.session.setUserId(null);
     }
 
     /**
@@ -365,39 +365,72 @@ public class Traveler {
     }
 
     /**
-     * Fetches all orders for a given user Id.
-     * <p>
+     * Fetches an `OrderResult` corresponding to the given `OrderQuery`.
      *
-     * @param skip                skip the number of records
-     * @param take                number of records to fetch
-     * @param from                fetch the records on and after this date
-     * @param to                  fetch the records on and before this date
-     * @param fetchOrdersCallback callback methods to be executed once the fetch is complete
+     * @param query               The `OrderQuery` to filter
+     * @param identifier          An optional `int` identifying the request. This value is returned back in the callbacks. Use this to distinguish between different requests
+     * @param callback            Callback methods to be executed once the results are ready
      */
-    public static void fetchOrders(Integer skip, Integer take, Date from, Date to, FetchOrdersCallback fetchOrdersCallback) {
-        if (null == localInstance) {
-            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
-        } else if (null == localInstance.session || null == localInstance.session.getUserId()) {
-            fetchOrdersCallback.onOrdersFetchError(new TravelerError(TravelerErrorCode.UNDEFINED_USER, "UserId not set, Please set userId by calling Traveler.setUserId();"));
-        } else {
-            AuthenticatedUrlRequest request = Router.orders(skip, take, from, to, localInstance.session, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<List<Order>> fetchOrdersTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new PaginatedObjectMappingFactory<>(new ArrayMappingFactory<>(new Order.OrderMappingFactory())));
 
-            BlockTask fetchOrdersBlockTask = new BlockTask() {
-                @Override
-                protected void main() {
-                    if (null != fetchOrdersTask.getError()) {
-                        fetchOrdersCallback.onOrdersFetchError(fetchOrdersTask.getError());
-                        TravelerLog.e(fetchOrdersTask.getError().getMessage());
-                    } else {
-                        fetchOrdersCallback.onOrdersFetchSuccess(fetchOrdersTask.getResource());
-                    }
-                }
-            };
-
-            fetchOrdersBlockTask.addDependency(fetchOrdersTask);
-            localInstance.taskManager.addTask(fetchOrdersTask);
-            TaskManager.getMainTaskManager().addTask(fetchOrdersBlockTask);
+    public static void fetchOrders(OrderQuery query, int identifier, FetchOrdersCallback callback) {
+        // TODO: Better check and logging for localInstances
+        if (localInstance == null) {
+            return;
         }
+
+        if (localInstance.session.getUserId() == null) {
+            callback.onOrdersFetchError(new OrderResultError(OrderResultError.Code.UNIDENTIFIED_TRAVELER), identifier);
+            return;
+        }
+
+        // TODO: Investigate if context needs to be part of Session or just localInstance
+        AuthenticatedUrlRequest request = Router.orders(query, localInstance.session, localInstance.session.getContext());
+        AuthenticatedRemoteNetworkRequestTask<OrderResult> fetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new OrderResult.OrderResultMappingFactory());
+
+        class ResultWrapper {
+            OrderResult result;
+        }
+
+        final ResultWrapper resultWrapper = new ResultWrapper();
+
+        BlockTask mergeTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (fetchTask.getResource() == null) {
+                    return;
+                }
+
+                OrderResult previousResult = callback.getPreviousResult(identifier);
+                if (previousResult != null) {
+                    resultWrapper.result = previousResult.merge(fetchTask.getResource());
+                }
+
+                if (resultWrapper.result == null)
+                    resultWrapper.result = fetchTask.getResource();
+
+                callback.onOrdersFetchReceive(resultWrapper.result, identifier);
+            }
+        };
+
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (fetchTask.getError() != null) {
+                    callback.onOrdersFetchError(fetchTask.getError(), identifier);
+                    // TODO: There is a log on all error callbacks, remove all of them
+                } else {
+                    // TODO: rename all local variable to that of a shorter one, similar to this
+                    callback.onOrdersFetchSuccess(resultWrapper.result, identifier);
+                }
+            }
+        };
+
+        mergeTask.addDependency(fetchTask);
+        blockTask.addDependency(mergeTask);
+
+        localInstance.taskManager.addTask(fetchTask);
+        localInstance.orderSerialTaskManager.addTask(mergeTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
     }
 }

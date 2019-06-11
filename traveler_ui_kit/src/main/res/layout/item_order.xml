@@ -23,12 +23,8 @@
                 android:layout_height="wrap_content"
                 style="@style/BodyLabelTextView"
                 tools:text="Date"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_orderItem_products"
-                android:layout_marginTop="@dimen/margin_small"
-                tools:itemCount="1"
-                tools:listitem="@layout/item_order_product"
+        <TextView
+                android:id="@+id/textView_orderItem_products"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 

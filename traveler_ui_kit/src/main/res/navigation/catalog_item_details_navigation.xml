@@ -6,9 +6,9 @@
             app:startDestination="@+id/loading_destination">
     <fragment
             android:id="@+id/loading_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.TravelerLoadingFragment"
+            android:name="com.guestlogix.traveleruikit.fragments.LoadingFragment"
             android:label="Loading"
-            tools:layout="@layout/fragment_traveler_loading">
+            tools:layout="@layout/fragment_loading">
     </fragment>
     <fragment
             android:id="@+id/catalog_item_details_destination"
@@ -20,9 +20,9 @@
 
     <fragment
             android:id="@+id/error_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.TravelerActivityRetryFragment"
+            android:name="com.guestlogix.traveleruikit.fragments.RetryFragment"
             android:label="Error"
-            tools:layout="@layout/fragment_traveler_error">
+            tools:layout="@layout/fragment_error">
     </fragment>
 
     <action

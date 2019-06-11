@@ -84,7 +84,7 @@ public class Receipt implements Serializable {
     static class ReceiptMappingFactory implements ObjectMappingFactory<Receipt> {
 
         @Override
-        public Receipt instantiate(JsonReader reader) throws ObjectMappingException {
+        public Receipt instantiate(JsonReader reader) throws Exception {
             String key = "Receipt";
             try {
                 String id = null;

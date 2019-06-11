@@ -1,27 +1,33 @@
-package com.guestlogix.travelercorekit.models;
+package com.guestlogix.travelercorekit.utilities;
 
 import java.util.Locale;
 
 public class ObjectMappingError extends Error {
     private ObjectMappingErrorCode code;
-    private String message;
+    private Throwable cause;
 
+    public ObjectMappingError(ObjectMappingErrorCode code, Throwable cause) {
+        this.code = code;
+        this.cause = cause;
+    }
+
+    // TODO: Remove this
     public ObjectMappingError(ObjectMappingErrorCode code, String message) {
         this.code = code;
-        this.message = message;
     }
 
     public ObjectMappingErrorCode getCode() {
         return code;
     }
 
-    public String getMessage() {
-        return message;
+    @Override
+    public Throwable getCause() {
+        return cause;
     }
 
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(), "%s %s", code, message);
+        return String.format(Locale.getDefault(), "%s %s", code, cause.toString());
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.guestlogix.traveleruikit.fragments;
 
-
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,29 +9,31 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.guestlogix.traveleruikit.R;
 
-/**
- * Abstract Fragment to show error state with title, message and action.
- * Set title message and action via bundle arguments.
- * Subclass must implement {@link #onAttachFragment}
- */
-public abstract class TravelerRetryFragment extends Fragment {
+public class RetryFragment extends Fragment {
+    public static final String ARG_ERROR_TITLE = "ARG_ERROR_TITLE";
+    public static final String ARG_ERROR_MESSAGE = "ARG_ERROR_MESSAGE";
+    public static final String ARG_ERROR_ACTION = "ARG_ERROR_ACTION";
 
-    public static final String ARG_ERROR_TITLE = "error_title";
-    public static final String ARG_ERROR_MESSAGE = "error_message";
-    public static final String ARG_ERROR_ACTION = "error_action";
+    private RetryFragmentInteractionListener onErrorFragmentInteractionListener = null;
 
-    RetryFragmentInteractionListener onErrorFragmentInteractionListener = null;
-
-    abstract void onAttachFragment(Context context);
-
-    public TravelerRetryFragment() {
+    public RetryFragment() {
         // Required empty public constructor
+    }
+
+    public static RetryFragment newInstance(String title, String message) {
+        RetryFragment fragment = new RetryFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ERROR_TITLE, title);
+        args.putSerializable(ARG_ERROR_MESSAGE, message);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_traveler_error, container, false);
+        View view = inflater.inflate(R.layout.fragment_error, container, false);
         TextView titleTextView = view.findViewById(R.id.textView_errorFragment_title);
         TextView messageTextView = view.findViewById(R.id.textView_errorFragment_message);
         TextView actionTextView = view.findViewById(R.id.textView_errorFragment_action);
@@ -44,14 +44,18 @@ public abstract class TravelerRetryFragment extends Fragment {
             String message = bundle.getString(ARG_ERROR_MESSAGE);
             String action = bundle.getString(ARG_ERROR_ACTION);
 
-            if (null != title && !title.isEmpty()) {
-                titleTextView.setText(title);
-            }
-            if (null != message && !message.isEmpty()) {
+            titleTextView.setText(title);
+
+            if (null != message) {
                 messageTextView.setText(message);
+            } else {
+                messageTextView.setText("Something went wrong");
             }
+
             if (null != action && !action.isEmpty()) {
                 actionTextView.setText(action);
+            } else {
+                actionTextView.setText("Retry");
             }
         }
 
@@ -60,11 +64,6 @@ public abstract class TravelerRetryFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        onAttachFragment(context);
-    }
 
     @Override
     public void onDetach() {

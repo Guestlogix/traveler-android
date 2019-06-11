@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.activities.OrdersActivity;
+import com.guestlogix.traveleruikit.activities.OrdersActivity;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;

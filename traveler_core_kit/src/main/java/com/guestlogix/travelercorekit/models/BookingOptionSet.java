@@ -2,11 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,7 +37,7 @@ public class BookingOptionSet implements Serializable {
     static class BookingOptionSetObjectMappingFactory implements ObjectMappingFactory<BookingOptionSet> {
 
         @Override
-        public BookingOptionSet instantiate(JsonReader reader) throws ObjectMappingException {
+        public BookingOptionSet instantiate(JsonReader reader) throws Exception {
             String key = "BookingOptionSet";
             try {
                 String label = null;

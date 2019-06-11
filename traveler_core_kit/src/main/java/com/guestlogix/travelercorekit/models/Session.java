@@ -12,10 +12,6 @@ public class Session {
     private String userId;
 
     Session(String apiKey, Context context) {
-        this(apiKey, context, new Token(""), null);
-    }
-
-    private Session(String apiKey, Context context, Token token, String userId) {
         this.token = token;
         this.context = context;
         this.apiKey = apiKey;

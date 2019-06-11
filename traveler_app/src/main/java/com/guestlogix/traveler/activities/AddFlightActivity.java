@@ -12,9 +12,7 @@ import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.viewmodels.SearchFlightResultViewModel;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
-import static com.guestlogix.traveleruikit.fragments.TravelerRetryFragment.*;
-
-public class AddFlightActivity extends AppCompatActivity  implements RetryFragmentInteractionListener {
+public class AddFlightActivity extends AppCompatActivity {
     private NavController navController;
     private SearchFlightResultViewModel searchFlightResultViewModel;
 
@@ -56,17 +54,17 @@ public class AddFlightActivity extends AppCompatActivity  implements RetryFragme
                 navController.navigate(R.id.flight_search_result_action);
                 break;
             case ERROR:
+                // TODO: Fix this and move away from navigation
                 Bundle arguments = new Bundle();
-                arguments.putString(ARG_ERROR_TITLE, getString(com.guestlogix.traveleruikit.R.string.label_sorry));
-                arguments.putString(ARG_ERROR_MESSAGE, getString(com.guestlogix.traveleruikit.R.string.label_nothing_to_show));
-                arguments.putString(ARG_ERROR_ACTION, getString(com.guestlogix.traveleruikit.R.string.try_again));
+//                arguments.putString(ARG_ERROR_TITLE, getString(com.guestlogix.traveleruikit.R.string.label_sorry));
+//                arguments.putString(ARG_ERROR_MESSAGE, getString(com.guestlogix.traveleruikit.R.string.label_nothing_to_show));
+//                arguments.putString(ARG_ERROR_ACTION, getString(com.guestlogix.traveleruikit.R.string.try_again));
 
                 navController.navigate(R.id.error_action, arguments);
                 break;
         }
     }
 
-    @Override
     public void onRetry() {
         navController.navigate(R.id.flight_search_action);
     }

@@ -2,10 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -64,7 +61,7 @@ public class Question implements Serializable {
          * @throws IOException            If mapping fails.
          */
         @Override
-        public Question instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+        public Question instantiate(JsonReader reader) throws Exception {
             String key = "Question";
             try {
                 String id = "";

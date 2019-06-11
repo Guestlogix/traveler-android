@@ -2,16 +2,14 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 
 public class Token {
     private String value;
 
-    Token(String value) {
+    public Token(String value) {
         if (value == null) {
             throw new IllegalArgumentException("value can not be null");
         }

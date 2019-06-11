@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.tasks;
 
+import android.util.Log;
 import com.guestlogix.travelercorekit.utilities.InputStreamHelper;
 import com.guestlogix.travelercorekit.utilities.Task;
 
@@ -50,7 +51,6 @@ public class NetworkTask extends Task {
 
     @Override
     public void execute() {
-        // Some initial error handling
         if (request == null) {
             error = new NetworkTaskError(NetworkTaskError.Code.NO_REQUEST);
             finish();
@@ -78,6 +78,9 @@ public class NetworkTask extends Task {
         }
 
         HttpURLConnection urlConnection = null;
+
+        // TODO: Better logging
+        Log.d("NetworkTask", "URL: " + url.toString());
 
         try {
             urlConnection = (HttpURLConnection) url.openConnection();

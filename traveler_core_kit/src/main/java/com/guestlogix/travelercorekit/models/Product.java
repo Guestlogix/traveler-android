@@ -5,4 +5,5 @@ import java.io.Serializable;
 public interface Product extends Serializable {
     String getId();
     Price getPrice();
+    String getTitle();
 }

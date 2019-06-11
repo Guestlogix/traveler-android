@@ -17,7 +17,8 @@ import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogFragment;
-import com.guestlogix.traveleruikit.fragments.TravelerFragmentRetryFragment;
+import com.guestlogix.traveleruikit.fragments.LoadingFragment;
+import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
 import java.util.List;
@@ -86,9 +87,7 @@ public class HomeContainerFragment extends BaseFragment {
                 transaction.commit();
                 break;
             case ERROR:
-                TravelerFragmentRetryFragment errorFragment = TravelerFragmentRetryFragment.getInstance(getString(com.guestlogix.traveleruikit.R.string.label_sorry),
-                        getString(com.guestlogix.traveleruikit.R.string.label_nothing_to_show),
-                        getString(com.guestlogix.traveleruikit.R.string.try_again));
+                RetryFragment errorFragment = new RetryFragment();
 
                 errorFragment.setOnInteractionListener(() -> catalogViewModel.fetchCatalog());
 

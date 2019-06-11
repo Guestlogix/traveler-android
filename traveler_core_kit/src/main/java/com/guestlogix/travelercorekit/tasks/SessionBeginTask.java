@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
@@ -25,7 +26,8 @@ public class SessionBeginTask extends Task {
         BlockTask sharedPrefsReadBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                session.getAuthToken().setValue(sharedPrefsReadTask.getResult());
+                session.setAuthToken(new Token(sharedPrefsReadTask.getResult()));
+                //session.getAuthToken().setValue(sharedPrefsReadTask.getResult());
             }
         };
 

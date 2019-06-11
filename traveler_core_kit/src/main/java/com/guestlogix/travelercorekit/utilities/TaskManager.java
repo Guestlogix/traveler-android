@@ -1,12 +1,18 @@
 package com.guestlogix.travelercorekit.utilities;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TaskManager implements TaskObserver {
+    public enum Mode {
+        SERIAL, CONCURRENT
+    }
+
     private ArrayList<Task> tasks;
     private ExecutorService executor;
+    private Mode mode;
 
     private static TaskManager mainTaskManager = new MainTaskManager();
     public static TaskManager getMainTaskManager() {
@@ -14,8 +20,18 @@ public class TaskManager implements TaskObserver {
     }
 
     public TaskManager() {
-        tasks = new ArrayList<Task>();
-        executor = Executors.newCachedThreadPool();
+        this(Mode.CONCURRENT);
+    }
+
+    public TaskManager(Mode mode) {
+        tasks = new ArrayList<>();
+
+        switch (mode) {
+            case SERIAL:
+                executor = Executors.newSingleThreadExecutor();
+            case CONCURRENT:
+                executor = Executors.newCachedThreadPool();
+        }
     }
 
     public void addTask(Task task) {

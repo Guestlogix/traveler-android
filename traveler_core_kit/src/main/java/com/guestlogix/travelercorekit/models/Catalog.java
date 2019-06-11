@@ -2,9 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -38,7 +36,7 @@ public class Catalog implements Serializable {
          * @throws ObjectMappingException if mapping fails or missing any required field.
          */
         @Override
-        public Catalog instantiate(JsonReader reader) throws ObjectMappingException {
+        public Catalog instantiate(JsonReader reader) throws Exception {
             String key = "Catalog";
             try {
                 List<CatalogGroup> catalogGroups = null;

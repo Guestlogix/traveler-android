@@ -16,7 +16,7 @@
         <activity android:name=".activities.ProfileActivity"
                   android:theme="@style/AppTheme.NoActionBar"
                   android:windowSoftInputMode="stateHidden|adjustResize"/>
-        <activity android:name=".activities.OrdersActivity"
+        <activity android:name="com.guestlogix.traveleruikit.activities.OrdersActivity"
                   android:label="Orders">
         </activity>
 

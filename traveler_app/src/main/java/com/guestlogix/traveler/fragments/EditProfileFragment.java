@@ -40,6 +40,7 @@ public class EditProfileFragment extends BaseFragment implements View.OnTouchLis
     private TextInputLayout lastNameContainer;
     private TextInputLayout emailContainer;
     private ImageView profilePicture;
+    // TODO: This doesnt belong here
     private static final String emailRegex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
     private Drawable clearIcon;
     private boolean didMakeChanges = false;

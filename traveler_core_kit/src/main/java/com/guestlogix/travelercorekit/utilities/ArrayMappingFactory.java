@@ -15,14 +15,9 @@ public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
     }
 
     @Override
-    public List<T> instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+    public List<T> instantiate(JsonReader reader) throws Exception {
         List<T> objects = new ArrayList<>();
 
-        JsonToken token = reader.peek();
-        if (JsonToken.NULL == token) {
-            reader.skipValue();
-            return null;
-        }
         reader.beginArray();
         while (reader.hasNext()) {
             T model = objectMappingFactory.instantiate(reader);
@@ -30,6 +25,7 @@ public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
         }
 
         reader.endArray();
+
         return objects;
     }
 }

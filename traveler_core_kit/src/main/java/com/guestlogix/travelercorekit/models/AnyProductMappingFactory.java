@@ -1,14 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 import android.util.JsonToken;
 
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,7 +13,7 @@ import java.util.List;
 class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
 
     @Override
-    public Product instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+    public Product instantiate(JsonReader reader) throws Exception {
        /*
             Individual json elements might come back in every order possible. That is why we cannot assume that
             that an product is of type X prior to finding the 'purchaseStrategy' field in the payload. Therefore, we must

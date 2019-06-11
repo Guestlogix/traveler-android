@@ -20,7 +20,11 @@ import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.travelercorekit.models.OrderQuery;
 import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.traveleruikit.activities.OrdersActivity;
+
+import java.util.Date;
 
 import static com.guestlogix.traveler.viewmodels.HomeViewModel.*;
 
@@ -36,6 +40,13 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         homeViewModel = ViewModelProviders.of(HomeActivity.this).get(HomeViewModel.class);
         homeViewModel.getObservableProfile().observe(this, this::handleProfile);
+
+        Traveler.setUserId("1E8E4AF8-8DA3-4225-97CF-4658043D4F92");
+
+        Intent intent = new Intent(this, OrdersActivity.class);
+        OrderQuery query = new OrderQuery(0, 10, null, new Date());
+        intent.putExtra(OrdersActivity.EXTRA_ORDER_QUERY, query);
+        startActivity(intent);
     }
 
     @Override

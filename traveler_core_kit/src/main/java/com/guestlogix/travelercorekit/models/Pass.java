@@ -2,9 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -64,7 +62,7 @@ public class Pass implements Serializable {
          * @throws ObjectMappingException if mapping fails or any required field is missing.
          */
         @Override
-        public Pass instantiate(JsonReader reader) throws ObjectMappingException {
+        public Pass instantiate(JsonReader reader) throws Exception {
             String key = "Pass";
             try {
                 String id = "";

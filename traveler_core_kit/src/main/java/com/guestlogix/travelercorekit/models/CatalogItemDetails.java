@@ -1,13 +1,8 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingException;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -94,7 +89,7 @@ public class CatalogItemDetails implements Product {
          * @throws ObjectMappingException if mapping fails or missing any required field.
          */
         @Override
-        public CatalogItemDetails instantiate(JsonReader reader) throws ObjectMappingException {
+        public CatalogItemDetails instantiate(JsonReader reader) throws Exception {
             String key = "CatalogItemDetails";
             try {
                 String id = "";
