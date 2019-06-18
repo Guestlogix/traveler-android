@@ -13,7 +13,6 @@ import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 
-import java.time.format.TextStyle;
 import java.util.HashSet;
 
 public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements FetchOrdersCallback {
@@ -21,9 +20,14 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final static int LOADING_VIEW_TYPE = 1;
     private final static int PAGE_SIZE = 10;
 
+    public interface OnItemClickListener {
+        void onOrderClick(Order order);
+    }
+
     private OrderResult result;
     private OrderResult _volatileResult;
     private HashSet pagesLoading = new HashSet();
+    private OnItemClickListener onItemClickListener;
 
     class OrderItemViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
@@ -45,8 +49,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public OrdersAdapter(OrderResult result) {
+    public OrdersAdapter(OrderResult result, OnItemClickListener listener) {
         this._volatileResult = this.result = result;
+        this.onItemClickListener = listener;
     }
 
     @NonNull
@@ -75,6 +80,13 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 itemHolder.titleTextView.setText(DateHelper.formatDate(order.getCreatedDate()));
                 itemHolder.totalTextView.setText(order.getTotal().getFormattedValue());
                 itemHolder.productsTextView.setText(order.getProductTitlesJoinedBy("\n"));
+                itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (onItemClickListener != null)
+                            onItemClickListener.onOrderClick(order);
+                    }
+                });
                 break;
             case LOADING_VIEW_TYPE:
                 // TODO: Add shimmer effect

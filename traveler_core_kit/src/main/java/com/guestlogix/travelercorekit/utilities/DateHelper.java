@@ -21,6 +21,10 @@ public class DateHelper {
         return new SimpleDateFormat(PRETTY_DATE_PATTERN, Locale.getDefault()).format(date);
     }
 
+    public static String formatToMonthDayYear(Date date) {
+        return new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(date);
+    }
+
     public static Date parseISO8601(String dateString) throws ParseException {
         return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).parse(dateString);
     }

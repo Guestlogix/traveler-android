@@ -28,4 +28,5 @@
     <dimen name="thumbnail_height">136dp</dimen>
 
     <dimen name="separator_height_stroke">1dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

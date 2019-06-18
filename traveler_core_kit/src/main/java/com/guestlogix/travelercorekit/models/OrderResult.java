@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
+import android.content.Intent;
 import android.util.JsonReader;
 import android.util.SparseArray;
 import androidx.annotation.NonNull;
@@ -7,27 +8,30 @@ import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class OrderResult implements Serializable {
     private int total;
     private Date fromDate;
     private Date toDate;
-    private SparseArray<Order> orders;
-    private HashMap<String, Order> allOrders;
+    private HashMap<Integer, Order> orders;
+    private HashMap<String, Integer> allOrders;
 
-    OrderResult(int total, @NonNull Date fromDate, @Nullable Date toDate, @NonNull SparseArray<Order> orders) {
+    OrderResult(int total, @NonNull Date fromDate, @Nullable Date toDate, @NonNull HashMap<Integer, Order> orders) {
         this.total = total;
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.orders = orders;
         this.allOrders = new HashMap<>();
 
-        for (int i = 0; i < orders.size(); i++) {
-            Order order = orders.valueAt(i);
-            allOrders.put(order.getId(), order);
+        Iterator iterator = orders.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry indexOrderPair = (Map.Entry) iterator.next();
+            Order order = (Order) indexOrderPair.getValue();
+            Integer index = (Integer) indexOrderPair.getKey();
+
+            allOrders.put(order.getId(), index);
         }
     }
 
@@ -43,7 +47,7 @@ public class OrderResult implements Serializable {
         return toDate;
     }
 
-    public SparseArray<Order> getOrders() {
+    public HashMap<Integer, Order> getOrders() {
         return orders;
     }
 
@@ -61,10 +65,16 @@ public class OrderResult implements Serializable {
             return null;
         }
 
-        SparseArray<Order> orders = this.orders.clone();
+        HashMap<Integer, Order> orders = (HashMap<Integer, Order>) this.orders.clone();
 
-        for (int i = 0; i < orderResult.orders.size(); i++) {
-            orders.put(orderResult.orders.keyAt(i), orderResult.orders.valueAt(i));
+        Iterator iterator = orderResult.orders.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry indexOrderPair = (Map.Entry) iterator.next();
+            Order order = (Order) indexOrderPair.getValue();
+            Integer index = (Integer) indexOrderPair.getKey();
+
+            orders.put(index, order);
         }
 
         return new OrderResult(this.total, this.fromDate, this.toDate, orders);
@@ -116,7 +126,7 @@ public class OrderResult implements Serializable {
             Assertion.eval(toDate != null);
             Assertion.eval(ordersArray != null);
 
-            SparseArray<Order> orders = new SparseArray<>();
+            HashMap<Integer, Order> orders = new HashMap<>();
 
             for (int i = 0; i < ordersArray.size(); i++) {
                 orders.put(i + offset, ordersArray.get(i));

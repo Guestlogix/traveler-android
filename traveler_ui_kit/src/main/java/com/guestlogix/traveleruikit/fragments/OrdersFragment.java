@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,12 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderResult;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.activities.OrderDetailActivity;
 import com.guestlogix.traveleruikit.adapters.OrdersAdapter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class OrdersFragment extends Fragment {
+public class OrdersFragment extends Fragment implements OrdersAdapter.OnItemClickListener {
     public static final String ARG_ORDER_RESULT = "ARG_ORDER_RESULT";
 
     private OrderResult orderResult;
@@ -61,11 +63,21 @@ public class OrdersFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_ordersFragment_orders);
 
         if (orderResult != null) {
-            recyclerView.setAdapter(new OrdersAdapter(orderResult));
+            recyclerView.setAdapter(new OrdersAdapter(orderResult, this));
         } else {
             Log.e(this.getClass().getName(), "No OrderResult");
         }
 
         return view;
+    }
+
+    // OrdersAdapter.OnItemClickListener
+
+    @Override
+    public void onOrderClick(Order order) {
+        Intent intent = new Intent(getContext(), OrderDetailActivity.class);
+        intent.putExtra(OrderDetailActivity.ARG_ORDER, order);
+
+        startActivity(intent);
     }
 }
