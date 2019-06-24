@@ -11,20 +11,7 @@ public class BookableProduct implements Product {
     private List<Pass> passes;
     private String title;
 
-    @SuppressWarnings("ConstantConditions")
-    BookableProduct(@NonNull String id, @NonNull Price price, @NonNull List<Pass> passes, String title) throws IllegalArgumentException {
-        if (passes == null) {
-            throw new IllegalArgumentException("passes can not be null");
-        }
-
-        if (id == null) {
-            throw new IllegalArgumentException("id can not be null");
-        }
-
-        if (price == null) {
-            throw new IllegalArgumentException("price can not be null");
-        }
-
+    BookableProduct(@NonNull String id, @NonNull Price price, @NonNull List<Pass> passes, String title) {
         this.id = id;
         this.price = price;
         this.passes = passes;

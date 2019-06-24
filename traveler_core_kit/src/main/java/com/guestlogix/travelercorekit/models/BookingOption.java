@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
@@ -11,16 +12,7 @@ public class BookingOption implements Serializable {
     private final String id;
     private String value;
 
-    @SuppressWarnings("ConstantConditions")
-    private BookingOption(String id, String value) {
-        if (id == null) {
-            throw new IllegalArgumentException("id can not be null");
-        }
-
-        if (value == null) {
-            throw new IllegalArgumentException("value can not be null");
-        }
-
+    private BookingOption(@NonNull String id, @NonNull String value) {
         this.id = id;
         this.value = value;
     }
@@ -36,43 +28,33 @@ public class BookingOption implements Serializable {
     static class BookingOptionObjectMappingFactory implements ObjectMappingFactory<BookingOption> {
 
         @Override
-        public BookingOption instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "BookingOption";
+        public BookingOption instantiate(JsonReader reader) throws Exception {
+            String id = null;
+            String value = null;
 
-            try {
-                String id = null;
-                String value = null;
+            reader.beginObject();
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "id":
+                        id = reader.nextString();
+                        break;
+                    case "optionLabel":
+                        value = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    default:
+                        reader.skipValue();
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "optionLabel":
-                            value = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                    }
-                }
-
-                reader.endObject();
-
-                return new BookingOption(id, value);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(id != null);
+            Assertion.eval(value != null);
+
+            return new BookingOption(id, value);
         }
     }
 }

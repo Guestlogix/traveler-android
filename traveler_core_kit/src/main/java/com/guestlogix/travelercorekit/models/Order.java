@@ -11,38 +11,23 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-public class Order implements Serializable {
+public final class Order implements Serializable {
     private String id;
     private Price total;
     private String referenceNumber;
     private List<Product> products;
     private Date createdDate;
-    private String status;
+    private OrderStatus status;
+    private CustomerContact contact;
 
-    @SuppressWarnings("ConstantConditions")
-    private Order(@NonNull String id, @NonNull Price total, String referenceNumber, String status, @NonNull List<Product> products, @NonNull Date createdDate) {
-        if (id == null) {
-            throw new IllegalArgumentException("id can not be null");
-        }
-
-        if (total == null) {
-            throw new IllegalArgumentException("total can not be null");
-        }
-
-//        if (products == null) {
-//            throw new IllegalArgumentException("products can not be null");
-//        }
-
-        if (createdDate == null) {
-            throw new IllegalArgumentException("createdDate can not be null");
-        }
-
+    Order(@NonNull String id, @NonNull Price total, String referenceNumber, @NonNull OrderStatus status, @NonNull List<Product> products, @NonNull Date createdDate, @NonNull CustomerContact contact) {
         this.id = id;
         this.total = total;
         this.referenceNumber = referenceNumber;
-        this.status = status;
         this.products = products;
         this.createdDate = createdDate;
+        this.status = status;
+        this.contact = contact;
     }
 
     public String getId() {
@@ -65,8 +50,12 @@ public class Order implements Serializable {
         return createdDate;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
+    }
+
+    public CustomerContact getContact() {
+        return contact;
     }
 
     public String getProductTitlesJoinedBy(CharSequence delimiter) {
@@ -86,64 +75,88 @@ public class Order implements Serializable {
     }
 
     static class OrderMappingFactory implements ObjectMappingFactory<Order> {
-
         @Override
         public Order instantiate(JsonReader reader) throws Exception {
-            String key = "Order";
-            try {
                 String id = null;
                 Price price = null;
                 String orderNumber = null;
-                String status = null;
+                String statusString = null;
+                String last4DigitsString = null;
                 List<Product> products = null;
                 Date createdDate = null;
+                OrderStatus status = null;
+                CustomerContact contact = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
-                }
                 reader.beginObject();
 
                 while (reader.hasNext()) {
-                    key = reader.nextName();
+                    String key = reader.nextName();
 
                     switch (key) {
                         case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
+                            id = reader.nextString();
                             break;
                         case "amount":
                             price = new Price.PriceObjectMappingFactory().instantiate(reader);
                             break;
                         case "referenceNumber":
-                            orderNumber = JsonReaderHelper.readString(reader);
+                            orderNumber = JsonReaderHelper.nextNullableString(reader);
                             break;
                         case "status":
-                            status = JsonReaderHelper.readString(reader);
+                            statusString = reader.nextString();
                             break;
                         case "createdOn":
-                            try {
-                                createdDate = DateHelper.parseISO8601(JsonReaderHelper.readNonNullString(reader));
-                            } catch (ParseException e) {
-                                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "createdAt has invalid format"));
-                            }
+                            createdDate = DateHelper.parseISO8601(reader.nextString());
                             break;
                         case "products":
                             products = new ArrayMappingFactory<>(new AnyProductMappingFactory()).instantiate(reader);
                             break;
+                        case "last4Digits":
+                            last4DigitsString = JsonReaderHelper.nextNullableString(reader);
+                            break;
+                        case "customer":
+                            contact = new CustomerContact.CustomerContactObjectMappingFactory().instantiate(reader);
+                            break;
                         default:
                             reader.skipValue();
+                            break;
                     }
                 }
 
                 reader.endObject();
 
-                return new Order(id, price, orderNumber, status, products, createdDate);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
-            }
+                Assertion.eval(statusString != null);
+
+                switch (statusString) {
+                    case "Pending":
+                        status = new OrderStatus.Pending();
+                        break;
+                    case "Confirmed":
+                        Assertion.eval(last4DigitsString != null);
+                        status = new OrderStatus.Confirmed(new PaymentInfo(last4DigitsString));
+                        break;
+                    case "Declined":
+                        Assertion.eval(last4DigitsString != null);
+                        status = new OrderStatus.Declined(new PaymentInfo(last4DigitsString));
+                        break;
+                    case "UnderReview":
+                        Assertion.eval(last4DigitsString != null);
+                        status = new OrderStatus.UnderReview(new PaymentInfo(last4DigitsString));
+                        break;
+                    case "Cancelled":
+                        Assertion.eval(last4DigitsString != null);
+                        status = new OrderStatus.Cancelled(new PaymentInfo(last4DigitsString));
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unknown status");
+                }
+
+                Assertion.eval(id != null);
+                Assertion.eval(price != null);
+                Assertion.eval(createdDate != null);
+                Assertion.eval(contact != null);
+
+                return new Order(id, price, orderNumber, status, products, createdDate, contact);
         }
     }
 }

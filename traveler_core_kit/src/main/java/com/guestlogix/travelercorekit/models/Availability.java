@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.utilities.*;
 
@@ -21,15 +22,7 @@ public class Availability implements Serializable {
     private Date date;
     private BookingOptionSet bookingOptionSet;
 
-    private Availability(String id, Date date, BookingOptionSet bookingOptionSet) {
-        if (id == null) {
-            throw new IllegalArgumentException("id can not be null");
-        }
-
-        if (date == null) {
-            throw new IllegalArgumentException("date can not be null");
-        }
-
+    private Availability(@NonNull String id, @NonNull Date date, BookingOptionSet bookingOptionSet) {
         this.id = id;
         this.date = date;
         this.bookingOptionSet = bookingOptionSet;
@@ -48,60 +41,39 @@ public class Availability implements Serializable {
         return bookingOptionSet;
     }
 
-    /**
-     * Factory class to construct Availability model from {@code JsonReader}.
-     */
     static class AvailabilityObjectMappingFactory implements ObjectMappingFactory<Availability> {
-        /**
-         * Parses a reader object into Availability model.
-         *
-         * @param reader Object to parse from.
-         * @return Availability model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
-         */
         @Override
         public Availability instantiate(JsonReader reader) throws Exception {
-            String key = "Availability";
-            try {
-                Date date = null;
-                String id = null;
-                BookingOptionSet bookingOptionSet = null;
+            Date date = null;
+            String id = null;
+            BookingOptionSet bookingOptionSet = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "date":
+                        date = DateHelper.parseDate(reader.nextString());
+                        break;
+                    case "id":
+                        id = reader.nextString();
+                        break;
+                    case "optionSet":
+                        bookingOptionSet = new BookingOptionSet.BookingOptionSetObjectMappingFactory().instantiate(reader);
+                        break;
+                    default:
+                        reader.skipValue();
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "date":
-                            date = DateHelper.parseDate(JsonReaderHelper.readString(reader));
-                            break;
-                        case "id":
-                            id = JsonReaderHelper.readString(reader);
-                            break;
-                        case "optionSet":
-                            bookingOptionSet = new BookingOptionSet.BookingOptionSetObjectMappingFactory().instantiate(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                    }
-                }
-
-                reader.endObject();
-
-                return new Availability(id, date, bookingOptionSet);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
-            } catch (ParseException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, e.getMessage()));
             }
+
+            reader.endObject();
+
+            Assertion.eval(date != null);
+            Assertion.eval(id != null);
+
+            return new Availability(id, date, bookingOptionSet);
         }
     }
 }

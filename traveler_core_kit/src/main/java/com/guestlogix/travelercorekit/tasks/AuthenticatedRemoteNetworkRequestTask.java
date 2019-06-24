@@ -58,8 +58,8 @@ public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
                 if (null == authTokenFetchTask.getError()) {
                     //TODO: decouple headers from NetworkTask.Request and build it NetworkTask property to update it only in Network Task
                     //TODO: rewrite header new token
-                    session.setAuthToken(authTokenFetchTask.getAuthToken());
-                    request.setToken(session.getAuthToken().getValue());
+                    session.setToken(authTokenFetchTask.getAuthToken());
+                    request.setToken(session.getToken().getValue());
                     retryNetworkTask.setRequest(request);
                 } else {
                     retryNetworkTask.cancel();

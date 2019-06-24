@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ public class OrderQuery implements Serializable {
     private Date fromDate;
     private Date toDate;
 
-    public OrderQuery(int offset, int limit, Date fromDate, @Nullable Date toDate) {
+    public OrderQuery(int offset, int limit, Date fromDate, @NonNull Date toDate) {
         this.offset = offset;
         this.limit = limit;
         this.fromDate = fromDate;
@@ -30,7 +31,7 @@ public class OrderQuery implements Serializable {
         return fromDate;
     }
 
-    public Date getToDate() {
+    public @NonNull Date getToDate() {
         return toDate;
     }
 }

@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
@@ -17,33 +18,13 @@ public class Flight implements Serializable {
     private Date departureDate;
     private Date arrivalDate;
 
-    private Flight(String id, String number, Airport departureAirport, Airport arrivalAirport, Date departureDate, Date arrivalDate) throws IllegalArgumentException {
-        if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("id can not be empty");
-        } else {
-            this.id = id;
-        }
+    private Flight(@NonNull String id, @NonNull String number, @NonNull Airport departureAirport, @NonNull Airport arrivalAirport, @NonNull Date departureDate, @NonNull Date arrivalDate) {
+        this.id = id;
         this.number = number;
-        if (departureAirport == null) {
-            throw new IllegalArgumentException("departureAirport can not be null");
-        } else {
-            this.departureAirport = departureAirport;
-        }
-        if (arrivalAirport == null) {
-            throw new IllegalArgumentException("arrivalAirport can not be null");
-        } else {
-            this.arrivalAirport = arrivalAirport;
-        }
-        if (departureDate == null) {
-            throw new IllegalArgumentException("departureDate can not be null");
-        } else {
-            this.departureDate = departureDate;
-        }
-        if (arrivalDate == null) {
-            throw new IllegalArgumentException("arrivalDate can not be null");
-        } else {
-            this.arrivalDate = arrivalDate;
-        }
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+        this.departureDate = departureDate;
+        this.arrivalDate = arrivalDate;
     }
 
     public String getId() {
@@ -70,75 +51,56 @@ public class Flight implements Serializable {
         return arrivalDate;
     }
 
-    /**
-     * Factory class to construct Flight model from {@code JsonReader}.
-     */
     static class FlightObjectMappingFactory implements ObjectMappingFactory<Flight> {
-
-        /**
-         * Parses a reader object into Flight model.
-         *
-         * @param reader Object to parse from.
-         * @return Flight model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
-         */
         @Override
-        public Flight instantiate(JsonReader reader) throws ObjectMappingException {
-            String key="Flight";
-            try {
-                String id = "";
-                String number = "";
-                Airport origin = null;
-                Airport destination = null;
-                Date departure = null;
-                Date arrival = null;
+        public Flight instantiate(JsonReader reader) throws Exception {
+            String id = null;
+            String number = null;
+            Airport origin = null;
+            Airport destination = null;
+            Date departure = null;
+            Date arrival = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "id":
+                        id = reader.nextString();
+                        break;
+                    case "flightNumber":
+                        number = reader.nextString();
+                        break;
+                    case "origin":
+                        origin = new Airport.AirportObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "destination":
+                        destination = new Airport.AirportObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "departureTime":
+                        departure = DateHelper.parseISO8601(reader.nextString());
+                        break;
+                    case "arrivalTime":
+                        arrival = DateHelper.parseISO8601(reader.nextString());
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "flightNumber":
-                            number = JsonReaderHelper.readString(reader);
-                            break;
-                        case "origin":
-                            origin = new Airport.AirportObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "destination":
-                            destination = new Airport.AirportObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "departureTime":
-                            departure = DateHelper.parseISO8601(JsonReaderHelper.readString(reader));
-                            break;
-                        case "arrivalTime":
-                            arrival = DateHelper.parseISO8601(JsonReaderHelper.readString(reader));
-                            break;
-                        default:
-                            reader.skipValue();
-                            break;
-                    }
-                }
-
-                reader.endObject();
-
-                return new Flight(id, number, origin, destination, departure, arrival);
-
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (ParseException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, e.getMessage()));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(id != null);
+            Assertion.eval(number != null);
+            Assertion.eval(origin != null);
+            Assertion.eval(destination != null);
+            Assertion.eval(departure != null);
+            Assertion.eval(arrival != null);
+
+            return new Flight(id, number, origin, destination, departure, arrival);
         }
     }
 }

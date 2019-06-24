@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import java.util.Locale;
 
+// TODO: Remove this class entirely
 public class TravelerError extends Error {
     private TravelerErrorCode code;
 

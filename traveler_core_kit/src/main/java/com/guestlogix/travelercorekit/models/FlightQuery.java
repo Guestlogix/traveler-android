@@ -1,12 +1,14 @@
 package com.guestlogix.travelercorekit.models;
 
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 
 public class FlightQuery {
     private String number;
     private Date date;
 
-    public FlightQuery(String number, Date date) {
+    public FlightQuery(@NonNull String number, @NonNull Date date) {
         this.number = number;
         this.date = date;
     }

@@ -4,8 +4,8 @@ public class QuantityAnswer extends Answer {
     private int amount;
 
     public QuantityAnswer(int amount, Question question) {
-        if (question.getType() != QuestionType.QUANTITY) {
-            throw new AnswerError();
+        if (!(question.getType() instanceof QuestionType.Quantity)) {
+            throw new IllegalArgumentException("Question must be of Quantity type");
         }
 
         questionId = question.getId();

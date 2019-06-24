@@ -11,8 +11,4 @@ public abstract class Answer implements Serializable {
     public String getQuestionId() {
         return questionId;
     }
-
-    class AnswerError extends Error {
-
-    }
 }

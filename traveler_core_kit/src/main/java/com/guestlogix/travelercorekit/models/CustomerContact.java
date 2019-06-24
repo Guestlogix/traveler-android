@@ -6,6 +6,7 @@ import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.security.spec.ECField;
 
 public class CustomerContact implements Serializable {
     private String title;
@@ -14,7 +15,7 @@ public class CustomerContact implements Serializable {
     private String email;
     private String phone;
 
-    private CustomerContact(String title, String firstName, String lastName, @NonNull String email, String phone) {
+    private CustomerContact(String title, @NonNull String firstName, @NonNull String lastName, String email, String phone) {
         this.title = title;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -43,9 +44,8 @@ public class CustomerContact implements Serializable {
     }
 
     static class CustomerContactObjectMappingFactory implements ObjectMappingFactory<CustomerContact> {
-
         @Override
-        public CustomerContact instantiate(JsonReader reader) throws ObjectMappingException, IOException {
+        public CustomerContact instantiate(JsonReader reader) throws Exception {
             String title = null;
             String fName = null;
             String lName = null;
@@ -59,28 +59,27 @@ public class CustomerContact implements Serializable {
 
                 switch (name) {
                     case "title":
-                        title = JsonReaderHelper.readString(reader);
+                        title = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "firstName":
-                        fName = JsonReaderHelper.readString(reader);
+                        fName = reader.nextString();
                         break;
                     case "lastName":
-                        lName = JsonReaderHelper.readString(reader);
+                        lName = reader.nextString();
                         break;
                     case "email":
-                        email = JsonReaderHelper.readNonNullString(reader);
+                        email = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "phone":
-                        phone = JsonReaderHelper.readString(reader);
+                        phone = JsonReaderHelper.nextNullableString(reader);
                         break;
                 }
             }
 
             reader.endObject();
 
-            if (null == email) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, "Payload email must not be null"));
-            }
+            Assertion.eval(fName != null);
+            Assertion.eval(lName != null);
 
             return new CustomerContact(title, fName, lName, email, phone);
         }

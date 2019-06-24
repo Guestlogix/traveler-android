@@ -8,21 +8,19 @@ import android.content.Context;
 public class Session {
     private String apiKey;
     private Context context;
-    private Token token;
-    private String userId;
+    private Token token = null;
+    private String identity = null;
 
     Session(String apiKey, Context context) {
-        this.token = token;
         this.context = context;
         this.apiKey = apiKey;
-        this.userId = userId;
     }
 
-    public Token getAuthToken() {
+    public Token getToken() {
         return token;
     }
 
-    public void setAuthToken(Token mToken) {
+    public void setToken(Token mToken) {
         this.token = mToken;
     }
 
@@ -34,11 +32,11 @@ public class Session {
         return context;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getIdentity() {
+        return identity;
     }
 }

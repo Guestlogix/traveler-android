@@ -43,7 +43,7 @@ public class Router {
                 .param("departure-date", DateHelper.formatDateToISO8601(query.getDate()))
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getAuthToken().getValue());
+                .build(session.getToken().getValue());
     }
 
     // /catalog?flight-ids=xxx&flight-ids=yyy...
@@ -63,7 +63,7 @@ public class Router {
                 .paramArray("flight-ids", flightIds) // catalogQuery.getFlights().stream().map(item -> item.getId()).collect(Collectors.toList());
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getAuthToken().getValue());
+                .build(session.getToken().getValue());
     }
 
     // /product/{id}
@@ -74,7 +74,7 @@ public class Router {
                 .path("/product/" + catalogItem.getId())
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getAuthToken().getValue());
+                .build(session.getToken().getValue());
     }
 
     // /product/{id}/schedule
@@ -87,7 +87,7 @@ public class Router {
                 .param("to", DateHelper.formatDateToISO8601(to))
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getAuthToken().getValue());
+                .build(session.getToken().getValue());
     }
 
     // /product/{id}/pass
@@ -106,7 +106,7 @@ public class Router {
             rb.param("option-id", availability.getId());
         }
 
-        return rb.build(session.getAuthToken().getValue());
+        return rb.build(session.getToken().getValue());
     }
 
     // /product/{id}/question?&passes=xxx&passes=yyy&passes=zzz...
@@ -124,7 +124,7 @@ public class Router {
                 .paramArray("pass-ids", passIds)
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getAuthToken().getValue());
+                .build(session.getToken().getValue());
     }
 
     public static AuthenticatedUrlRequest orderCreate(Session session, List<BookingForm> forms, Context context) {
@@ -171,7 +171,7 @@ public class Router {
                         amount.put("currency", "USD");
                         payload.put("amount", amount);
 
-                        payload.put("travelerId", session.getUserId());
+                        payload.put("travelerId", session.getIdentity());
 
                         return payload;
                     } catch (JSONException e) {
@@ -180,7 +180,7 @@ public class Router {
 
                     return null;
                 })
-                .build(session.getAuthToken().getValue());
+                .build(session.getToken().getValue());
     }
 
     public static AuthenticatedUrlRequest orderProcess(Session session, Order order, Payment payment, Context context) {
@@ -191,7 +191,7 @@ public class Router {
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
                 .payload(payment::getSecurePayload)
-                .build(session.getAuthToken().getValue());
+                .build(session.getToken().getValue());
     }
 
     // /order/all
@@ -200,7 +200,7 @@ public class Router {
                 .method(Method.GET)
                 .url(BASE_URL)
                 .path("/order")
-                .param("traveler", session.getUserId())
+                .param("traveler", session.getIdentity())
                 .param("skip", String.valueOf(query.getOffset()))
                 .param("take", String.valueOf(query.getLimit()))
                 .param("to", DateHelper.formatDateToISO8601(query.getToDate()));
@@ -212,7 +212,7 @@ public class Router {
         rb.headers(buildHeaders(context))
                 .apiKey(session.getApiKey());
 
-        return rb.build(session.getAuthToken().getValue());
+        return rb.build(session.getToken().getValue());
     }
 
     /**

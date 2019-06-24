@@ -22,8 +22,7 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
             callback.onSuccess(model);
         } catch (Exception e) {
-            // TODO: Fix this
-            callback.onError(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, e));
+            callback.onError(new ObjectMappingError(objectMappingFactory, e));
         }
     }
 }

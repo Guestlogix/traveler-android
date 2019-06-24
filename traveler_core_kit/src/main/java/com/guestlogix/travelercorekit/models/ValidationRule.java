@@ -3,6 +3,7 @@ package com.guestlogix.travelercorekit.models;
 import java.io.Serializable;
 
 public abstract class ValidationRule implements Serializable {
+    // TODO: There should be no error here
     protected ValidationError error;
 
     /**

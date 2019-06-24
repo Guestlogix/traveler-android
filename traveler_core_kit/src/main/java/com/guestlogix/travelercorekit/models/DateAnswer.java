@@ -3,13 +3,14 @@ package com.guestlogix.travelercorekit.models;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class DateAnswer extends Answer {
-    private Calendar value;
+    private Date value;
 
-    public DateAnswer(Calendar value, Question question) {
-        if (question.getType() != QuestionType.DATE) {
-            throw new AnswerError();
+    public DateAnswer(Date value, Question question) {
+        if (!(question.getType() instanceof QuestionType.Date)) {
+            throw new IllegalArgumentException("Question must be of Date type");
         }
 
         this.value = value;
@@ -18,10 +19,10 @@ public class DateAnswer extends Answer {
 
     @Override
     public String getCodedValue() {
-        return DateHelper.formatDateToISO8601(value.getTime());
+        return DateHelper.formatDateToISO8601(value);
     }
 
-    public Calendar getValue() {
+    public Date getValue() {
         return value;
     }
 }

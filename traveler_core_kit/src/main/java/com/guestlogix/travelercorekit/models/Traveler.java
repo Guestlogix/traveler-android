@@ -53,7 +53,7 @@ public class Traveler {
                 if (authTokenFetchTask.getError() != null) {
                     throw new RuntimeException(String.format("Could not initialize Traveler SDK. %s ", authTokenFetchTask.getError()));
                 } else {
-                    session.setAuthToken(authTokenFetchTask.getAuthToken());
+                    session.setToken(authTokenFetchTask.getAuthToken());
                 }
             }
         };
@@ -61,7 +61,7 @@ public class Traveler {
         BlockTask sessionBeginBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                if (!TextUtils.isEmpty(sessionBeginTask.getSession().getAuthToken().getValue())) {
+                if (!TextUtils.isEmpty(sessionBeginTask.getSession().getToken().getValue())) {
                     authTokenFetchTask.cancel();
                     authTokenFetchBlockTask.cancel();
                 }
@@ -82,7 +82,7 @@ public class Traveler {
         if (null == localInstance) {
             throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
         }
-        localInstance.session.setUserId(userId);
+        localInstance.session.setIdentity(userId);
     }
 
     public static void removeUserId() {
@@ -128,7 +128,7 @@ public class Traveler {
     /**
      * Fetches the catalog for all the flights provided in the catalog query.
      * <p>
-     * Must use the long form for flight ids. See {@link Flight#id}.
+     * Must use the long form for flight ids.
      *
      * @param catalogQuery          Ids of the flights for which to fetch the groups.
      * @param catalogSearchCallback Callback methods which will be executed after the data is fetched.
@@ -177,6 +177,7 @@ public class Traveler {
                 protected void main() {
                     if (null != catalogItemDetailsTask.getError()) {
                         catalogItemDetailsCallback.onCatalogItemDetailsError(catalogItemDetailsTask.getError());
+                        // TODO: Stop using TravelerLog completely
                         TravelerLog.e(catalogItemDetailsTask.getError().getMessage());
                     } else {
                         catalogItemDetailsCallback.onCatalogItemDetailsSuccess(catalogItemDetailsTask.getResource());
@@ -343,7 +344,7 @@ public class Traveler {
         } else {
             AuthenticatedUrlRequest request = Router.orderProcess(localInstance.session, order, payment, localInstance.session.getContext());
 
-            AuthenticatedRemoteNetworkRequestTask<Receipt> processOrderTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Receipt.ReceiptMappingFactory());
+            AuthenticatedRemoteNetworkRequestTask<Order> processOrderTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
@@ -352,7 +353,8 @@ public class Traveler {
                         processOrderCallback.onOrderProcessError(processOrderTask.getError());
                         TravelerLog.e(processOrderTask.getError().getMessage());
                     } else {
-                        processOrderCallback.onOrderProcessSuccess(processOrderTask.getResource());
+                        Receipt receipt = new Receipt(processOrderTask.getResource(), payment);
+                        processOrderCallback.onOrderProcessSuccess(receipt);
                     }
                 }
             };
@@ -378,7 +380,7 @@ public class Traveler {
             return;
         }
 
-        if (localInstance.session.getUserId() == null) {
+        if (localInstance.session.getIdentity() == null) {
             callback.onOrdersFetchError(new OrderResultError(OrderResultError.Code.UNIDENTIFIED_TRAVELER), identifier);
             return;
         }

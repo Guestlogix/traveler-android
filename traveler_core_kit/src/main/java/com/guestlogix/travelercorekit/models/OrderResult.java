@@ -52,7 +52,7 @@ public class OrderResult implements Serializable {
     }
 
     public boolean isResultEquivalentTo(OrderResult orderResult) {
-        return ((this.fromDate != null && orderResult.fromDate.equals(orderResult.fromDate)) ||
+        return ((this.fromDate != null && this.fromDate.equals(orderResult.fromDate)) ||
                 (this.fromDate == null && orderResult.fromDate == null)) &&
 
                 this.toDate.equals(orderResult.toDate) &&
@@ -99,13 +99,12 @@ public class OrderResult implements Serializable {
                         offset = reader.nextInt();
                         break;
                     case "from":
-                        String dateString = JsonReaderHelper.readString(reader);
-                        if (dateString != null)
-                            fromDate = DateHelper.parseDate(JsonReaderHelper.readString(reader));
+                        fromDate = DateHelper.parseDate(reader.nextString());
                         break;
                     case "to":
-                        // TODO: Rename all JsonReaderHelper methods to reflect convention of 'next[Type]'
-                        toDate = DateHelper.parseDate(reader.nextString());
+                        String dateString = JsonReaderHelper.nextNullableString(reader);
+                        if (dateString != null)
+                            toDate = DateHelper.parseDate(reader.nextString());
                         break;
                     case "total":
                         total = reader.nextInt();

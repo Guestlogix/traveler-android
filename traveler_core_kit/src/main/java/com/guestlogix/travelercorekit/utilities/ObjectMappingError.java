@@ -3,21 +3,12 @@ package com.guestlogix.travelercorekit.utilities;
 import java.util.Locale;
 
 public class ObjectMappingError extends Error {
-    private ObjectMappingErrorCode code;
     private Throwable cause;
+    private ObjectMappingFactory factory;
 
-    public ObjectMappingError(ObjectMappingErrorCode code, Throwable cause) {
-        this.code = code;
+    public ObjectMappingError(ObjectMappingFactory factory, Throwable cause) {
+        this.factory = factory;
         this.cause = cause;
-    }
-
-    // TODO: Remove this
-    public ObjectMappingError(ObjectMappingErrorCode code, String message) {
-        this.code = code;
-    }
-
-    public ObjectMappingErrorCode getCode() {
-        return code;
     }
 
     @Override
@@ -27,22 +18,22 @@ public class ObjectMappingError extends Error {
 
     @Override
     public String toString() {
-        return String.format(Locale.getDefault(), "%s %s", code, cause.toString());
+        return factory.toString() + ": " + cause.toString();
+    }
+
+    @Override
+    public String getMessage() {
+        return factory.toString() + ": " + cause.toString() + ": " + cause.getMessage();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (!(obj instanceof ObjectMappingError)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ObjectMappingError error = (ObjectMappingError) obj;
 
-        return this.code == error.getCode();
+        ObjectMappingError err = (ObjectMappingError) obj;
+
+        return this.cause.equals(err.cause) && this.factory.equals(err.factory);
     }
 }

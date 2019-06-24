@@ -26,7 +26,7 @@ public class SessionBeginTask extends Task {
         BlockTask sharedPrefsReadBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                session.setAuthToken(new Token(sharedPrefsReadTask.getResult()));
+                session.setToken(new Token(sharedPrefsReadTask.getResult()));
                 //session.getAuthToken().setValue(sharedPrefsReadTask.getResult());
             }
         };

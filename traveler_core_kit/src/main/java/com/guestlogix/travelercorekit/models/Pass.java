@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
@@ -14,17 +15,9 @@ public class Pass implements Serializable {
     private String description;
     private Price price;
 
-    private Pass(String id, String name, String description, Price price) {
-        if (id == null) {
-            throw new IllegalArgumentException("id can not be empty");
-        } else {
-            this.id = id;
-        }
-        if (price == null) {
-            throw new IllegalArgumentException("price can not be empty");
-        } else {
-            this.price = price;
-        }
+    private Pass(@NonNull String id, @NonNull String name, String description, @NonNull Price price) {
+        this.id = id;
+        this.price = price;
         this.name = name;
         this.description = description;
     }
@@ -49,64 +42,46 @@ public class Pass implements Serializable {
         return price;
     }
 
-    /**
-     * Factory class to construct Pass model from {@code JsonReader}.
-     */
     static class PassObjectMappingFactory implements ObjectMappingFactory<Pass> {
-
-        /**
-         * Parses a json reader object into a Pass model.
-         *
-         * @param reader to read from.
-         * @return Pass model.
-         * @throws ObjectMappingException if mapping fails or any required field is missing.
-         */
         @Override
         public Pass instantiate(JsonReader reader) throws Exception {
-            String key = "Pass";
-            try {
-                String id = "";
-                String name = "";
-                String description = "";
-                Price price = null;
+            String id = null;
+            String name = null;
+            String description = null;
+            Price price = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "id":
+                        id = reader.nextString();
+                        break;
+                    case "title":
+                        name = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "description":
+                        description = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "price":
+                        ObjectMappingFactory<Price> p = new Price.PriceObjectMappingFactory();
+                        price = p.instantiate(reader);
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "id":
-                            id = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "title":
-                            name = JsonReaderHelper.readString(reader);
-                            break;
-                        case "description":
-                            description = JsonReaderHelper.readString(reader);
-                            break;
-                        case "price":
-                            ObjectMappingFactory<Price> p = new Price.PriceObjectMappingFactory();
-                            price = p.instantiate(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                            break;
-                    }
-                }
-
-                reader.endObject();
-                return new Pass(id, name, description, price);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(id != null);
+            Assertion.eval(name != null);
+            Assertion.eval(price != null);
+
+            return new Pass(id, name, description, price);
         }
     }
 }

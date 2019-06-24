@@ -44,16 +44,16 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         Button homeButton = findViewById(R.id.homeButton);
         homeButton.setOnClickListener(this::navigateHome);
 
-        if (receipt.getProducts().size() > 0) {
-            Product product = receipt.getProducts().get(0);
+        if (receipt.getOrder().getProducts().size() > 0) {
+            Product product = receipt.getOrder().getProducts().get(0);
 
             if(product instanceof BookableProduct){
                 BookableProduct bookableProduct = (BookableProduct) product;
                 titleTextView.setText(bookableProduct.getTitle());
             }
         }
-        subTitleTextView.setText(receipt.getReferenceNumber());
-        emailValueTextView.setText(receipt.getCustomerContact().getEmail());
+        subTitleTextView.setText(receipt.getOrder().getReferenceNumber());
+        emailValueTextView.setText(receipt.getOrder().getContact().getEmail());
     }
 
     @Override

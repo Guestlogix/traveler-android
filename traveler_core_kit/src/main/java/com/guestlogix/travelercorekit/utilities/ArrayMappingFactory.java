@@ -19,6 +19,7 @@ public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
         List<T> objects = new ArrayList<>();
 
         reader.beginArray();
+
         while (reader.hasNext()) {
             T model = objectMappingFactory.instantiate(reader);
             objects.add(model);

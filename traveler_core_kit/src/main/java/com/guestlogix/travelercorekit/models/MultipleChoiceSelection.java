@@ -1,25 +1,23 @@
 package com.guestlogix.travelercorekit.models;
 
-import java.util.List;
-
 public class MultipleChoiceSelection extends Answer {
     private int value;
 
-    public MultipleChoiceSelection(int value, Question question) {
-        if (question.getType() != QuestionType.MULTIPLE_CHOICE || question.getOptions() == null) {
-            // Throw exception;
-            throw new AnswerError();
+    public MultipleChoiceSelection(int value, Question question) throws IllegalArgumentException {
+        QuestionType type = question.getType();
+
+        if (!(type instanceof QuestionType.MultipleChoice)) {
+            throw new IllegalArgumentException("Question must be of MultipleChoice type");
         }
 
-        // MC question with non null options.
-        List<Choice> choices = (List<Choice>) question.getOptions();
+        QuestionType.MultipleChoice multipleChoice = (QuestionType.MultipleChoice) type;
 
-        if (value < 0 || value >= choices.size()) {
-            throw new AnswerError();
+        if (value < 0 || value >= multipleChoice.getChoices().size()) {
+            throw new IllegalArgumentException("Answer must be one of available choices");
         }
 
         this.value = value;
-        this.codedValue = choices.get(value).getId();
+        this.codedValue = multipleChoice.getChoices().get(value).getId();
         this.questionId = question.getId();
     }
 

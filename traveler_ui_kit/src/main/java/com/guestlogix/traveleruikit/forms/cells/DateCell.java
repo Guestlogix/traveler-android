@@ -16,6 +16,7 @@ import com.guestlogix.traveleruikit.forms.models.FormModel;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -53,18 +54,20 @@ public class DateCell extends BaseCell {
 
         dateInputLayout.setHint(d.getHint());
 
-        Calendar val = (Calendar) cellValueAdapter.getCellValue(this);
+        Date val = (Date) cellValueAdapter.getCellValue(this);
 
         if (val == null) {
-            val = Calendar.getInstance();
+            val = new Date();
             input.setText(null);
         } else {
             updateDateLabel(val);
         }
 
         // Copy for final ref.
-        Calendar calendar = val;
+        final Date date = val;
         input.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -100,9 +103,9 @@ public class DateCell extends BaseCell {
         }
     }
 
-    private void updateDateLabel(Calendar calendar) {
+    private void updateDateLabel(Date date) {
         DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, getLocale());
-        String label = df.format(calendar.getTime());
+        String label = df.format(date);
         input.setText(label);
     }
 
@@ -119,8 +122,9 @@ public class DateCell extends BaseCell {
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
-        cellEventsListener.onCellValueChanged(DateCell.this, calendar);
 
-        updateDateLabel(calendar);
+        cellEventsListener.onCellValueChanged(DateCell.this, calendar.getTime());
+
+        updateDateLabel(calendar.getTime());
     }
 }

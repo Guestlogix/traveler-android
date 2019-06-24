@@ -56,54 +56,34 @@ public class Price implements Serializable {
         return formatter.format(value);
     }
 
-    /**
-     * Factory class to construct Price model from {@code JsonReader}.
-     */
     static class PriceObjectMappingFactory implements ObjectMappingFactory<Price> {
-
-        /**
-         * Parses a reader object into Price model.
-         *
-         * @param reader Object to parse from.
-         * @return Price model object from the reader.
-         * @throws ObjectMappingException if mapping fails or missing any required field.
-         */
         @Override
-        public Price instantiate(JsonReader reader) throws ObjectMappingException {
-            String key = "Price";
-            try {
-                Double value = 0.0;
-                String currency = "";
+        public Price instantiate(JsonReader reader) throws Exception {
+            double value = 0;
+            String currency = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "value":
+                        value = reader.nextDouble();
+                        break;
+                    case "currency":
+                        currency = reader.nextString();
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "value":
-                            value = JsonReaderHelper.readNonNullDouble(reader);
-                            break;
-                        case "currency":
-                            currency = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                    }
-                }
-                reader.endObject();
-
-                return new Price(value, currency);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            return new Price(value, currency);
         }
 
     }

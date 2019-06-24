@@ -40,13 +40,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         homeViewModel = ViewModelProviders.of(HomeActivity.this).get(HomeViewModel.class);
         homeViewModel.getObservableProfile().observe(this, this::handleProfile);
-
-        Traveler.setUserId("1E8E4AF8-8DA3-4225-97CF-4658043D4F92");
-
-        Intent intent = new Intent(this, OrdersActivity.class);
-        OrderQuery query = new OrderQuery(0, 10, null, new Date());
-        intent.putExtra(OrdersActivity.EXTRA_ORDER_QUERY, query);
-        startActivity(intent);
     }
 
     @Override

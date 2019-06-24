@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
+import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
@@ -13,15 +14,7 @@ public class BookingOptionSet implements Serializable {
     private String label;
     private List<BookingOption> options;
 
-    @SuppressWarnings("ConstantConditions")
-    private BookingOptionSet(String label, List<BookingOption> options) {
-        if (label == null || label.isEmpty()) {
-            throw new IllegalArgumentException("label can not be null or empty");
-        }
-
-        if (options == null) {
-            throw new IllegalArgumentException("options cannot be null");
-        }
+    private BookingOptionSet(@NonNull String label, @NonNull List<BookingOption> options) {
         this.label = label;
         this.options = options;
     }
@@ -38,41 +31,32 @@ public class BookingOptionSet implements Serializable {
 
         @Override
         public BookingOptionSet instantiate(JsonReader reader) throws Exception {
-            String key = "BookingOptionSet";
-            try {
-                String label = null;
-                List<BookingOption> options = null;
+            String label = null;
+            List<BookingOption> options = null;
 
-                JsonToken token = reader.peek();
-                if (JsonToken.NULL == token) {
-                    reader.skipValue();
-                    return null;
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "optionSetLabel":
+                        label = reader.nextString();
+                        break;
+                    case "options":
+                        options = new ArrayMappingFactory<>(new BookingOption.BookingOptionObjectMappingFactory()).instantiate(reader);
+                        break;
+                    default:
+                        reader.skipValue();
                 }
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    key = reader.nextName();
-
-                    switch (key) {
-                        case "optionSetLabel":
-                            label = JsonReaderHelper.readNonNullString(reader);
-                            break;
-                        case "options":
-                            options = new ArrayMappingFactory<>(new BookingOption.BookingOptionObjectMappingFactory()).instantiate(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                    }
-                }
-
-                reader.endObject();
-
-                return new BookingOptionSet(label, options);
-            } catch (IllegalArgumentException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.EMPTY_FIELD, String.format(e.getMessage(), key)));
-            } catch (IOException e) {
-                throw new ObjectMappingException(new ObjectMappingError(ObjectMappingErrorCode.INVALID_DATA, "IOException has occurred"));
             }
+
+            reader.endObject();
+
+            Assertion.eval(label != null);
+            Assertion.eval(options != null);
+
+            return new BookingOptionSet(label, options);
         }
     }
 }

@@ -14,6 +14,7 @@ import com.guestlogix.traveleruikit.forms.models.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -86,22 +87,22 @@ public class BookingFormWidget extends Form implements
 
         Question question = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
 
-        switch (question.getType()) {
-            case QUANTITY:
-                return new QuantityFormModel(question.getTitle(), question.getDescription(), 10, 0);
-            case DATE:
-                return new DateFormModel(question.getTitle(), null, null);
-            case MULTIPLE_CHOICE:
-                List<String> options = new ArrayList<>();
+        if (question.getType() instanceof QuestionType.Quantity) {
+            return new QuantityFormModel(question.getTitle(), question.getDescription(), 10, 0);
+        } else if (question.getType() instanceof QuestionType.Date) {
+            return new DateFormModel(question.getTitle(), null, null);
+        } else if (question.getType() instanceof QuestionType.MultipleChoice) {
+            QuestionType.MultipleChoice type = (QuestionType.MultipleChoice) question.getType();
 
-                for (Choice c : (List<Choice>) question.getOptions()) {
-                    options.add(c.getValue());
-                }
+            List<String> options = new ArrayList<>();
 
-                return new SpinnerFormModel(question.getTitle(), options);
-            case STRING:
-            default:
-                return new TextFormModel(question.getTitle());
+            for (Choice c : type.getChoices()) {
+                options.add(c.getValue());
+            }
+
+            return new SpinnerFormModel(question.getTitle(), options);
+        } else {
+            return new TextFormModel(question.getTitle());
         }
     }
 
@@ -113,18 +114,15 @@ public class BookingFormWidget extends Form implements
 
         Question q = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
 
-        switch (q.getType()) {
-            case QUANTITY:
-                return FormFieldType.QUANTITY;
-            case DATE:
-                return FormFieldType.DATE;
-            case STRING:
-                return FormFieldType.TEXT;
-            case MULTIPLE_CHOICE:
-                return FormFieldType.SPINNER;
+        if (q.getType() instanceof QuestionType.Quantity) {
+            return FormFieldType.QUANTITY;
+        } else if (q.getType() instanceof QuestionType.Date) {
+            return FormFieldType.DATE;
+        } else if (q.getType() instanceof QuestionType.MultipleChoice) {
+            return FormFieldType.SPINNER;
+        } else {
+            return FormFieldType.TEXT;
         }
-
-        return FormFieldType.TEXT;
     }
 
     @Nullable
@@ -184,18 +182,15 @@ public class BookingFormWidget extends Form implements
             return null;
         }
 
-        switch (question.getType()) {
-            case DATE:
-                return ((DateAnswer) answer).getValue();
-            case MULTIPLE_CHOICE:
-                return ((MultipleChoiceSelection) answer).getValue();
-            case QUANTITY:
-                return ((QuantityAnswer) answer).getValue();
-            case STRING:
-                return ((TextualAnswer) answer).getValue();
+        if (answer instanceof DateAnswer) {
+            return ((DateAnswer) answer).getValue();
+        } else if (answer instanceof MultipleChoiceSelection) {
+            return ((MultipleChoiceSelection) answer).getValue();
+        } else if (answer instanceof QuantityAnswer) {
+            return ((QuantityAnswer) answer).getValue();
+        } else {
+            return answer.getCodedValue();
         }
-
-        return null;
     }
 
     @Override
@@ -207,19 +202,14 @@ public class BookingFormWidget extends Form implements
         Question question = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
         Answer answer = null;
 
-        switch (question.getType()) {
-            case DATE:
-                answer = new DateAnswer((Calendar) value, question);
-                break;
-            case MULTIPLE_CHOICE:
-                answer = new MultipleChoiceSelection((Integer) value, question);
-                break;
-            case QUANTITY:
-                answer = new QuantityAnswer((Integer) value, question);
-                break;
-            case STRING:
-                answer = new TextualAnswer(value.toString(), question);
-                break;
+        if (question.getType() instanceof QuestionType.Date) {
+            answer = new DateAnswer((Date) value, question);
+        } else if (question.getType() instanceof QuestionType.MultipleChoice) {
+            answer = new MultipleChoiceSelection((Integer) value, question);
+        } else if (question.getType() instanceof QuestionType.Quantity) {
+            answer = new QuantityAnswer((Integer) value, question);
+        } else if (question.getType() instanceof QuestionType.Textual) {
+            answer = new TextualAnswer(value.toString(), question);
         }
 
         bookingForm.addAnswer(answer);
