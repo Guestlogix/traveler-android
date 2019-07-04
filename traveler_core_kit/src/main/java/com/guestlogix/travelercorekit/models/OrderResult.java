@@ -99,12 +99,12 @@ public class OrderResult implements Serializable {
                         offset = reader.nextInt();
                         break;
                     case "from":
-                        fromDate = DateHelper.parseDate(reader.nextString());
-                        break;
-                    case "to":
                         String dateString = JsonReaderHelper.nextNullableString(reader);
                         if (dateString != null)
-                            toDate = DateHelper.parseDate(reader.nextString());
+                            fromDate = DateHelper.parseDate(dateString);
+                        break;
+                    case "to":
+                        fromDate = DateHelper.parseDate(reader.nextString());
                         break;
                     case "total":
                         total = reader.nextInt();
@@ -122,7 +122,7 @@ public class OrderResult implements Serializable {
             reader.endObject();
 
             Assertion.eval(total >= 0);
-            Assertion.eval(toDate != null);
+            Assertion.eval(fromDate != null);
             Assertion.eval(ordersArray != null);
 
             HashMap<Integer, Order> orders = new HashMap<>();

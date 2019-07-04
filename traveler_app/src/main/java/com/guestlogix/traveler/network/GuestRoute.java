@@ -12,11 +12,13 @@ import java.util.*;
 
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
+// TODO: Redo this class
+
 class GuestRoute {
 
     private static final String BASE_URL = "https://yhe4g45qhi.execute-api.ca-central-1.amazonaws.com/dev";
 
-    static UrlRequest fetchProfile(String requestIdToken) {
+    static UrlRequest profile(String requestIdToken) {
         return GuestRequestBuilder.Builder()
                 .method(NetworkTask.Request.Method.GET)
                 .url(BASE_URL)

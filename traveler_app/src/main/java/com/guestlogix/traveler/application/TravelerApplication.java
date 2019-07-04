@@ -16,8 +16,8 @@ public class TravelerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext());
         TravelerUI.initialize(new StripePaymentProvider(), new Intent(this, HomeActivity.class));
-        AppCenter.start(this, BuildConfig.AppCenterKey, Analytics.class, Crashes.class);
     }
 }

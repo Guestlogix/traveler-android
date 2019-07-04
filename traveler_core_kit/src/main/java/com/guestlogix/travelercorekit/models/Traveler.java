@@ -2,6 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.Router;
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Traveler {
+    private static String TAG = "Traveler";
     private static Traveler localInstance;
 
     private TaskManager taskManager = new TaskManager();
@@ -78,18 +80,13 @@ public class Traveler {
         taskManager.addTask(authTokenFetchBlockTask);
     }
 
-    public static void setUserId(String userId) {
+    public static void identify(String identifier) {
         if (null == localInstance) {
-            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
+            Log.e(TAG, "SDK Not initialized.");
+            return;
         }
-        localInstance.session.setIdentity(userId);
-    }
 
-    public static void removeUserId() {
-        if (null == localInstance) {
-            throw new RuntimeException("SDK not initialized, Initialize by calling Traveler.initialize();");
-        }
-        //localInstance.session.setUserId(null);
+        localInstance.session.setIdentity(identifier);
     }
 
     /**

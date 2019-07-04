@@ -51,6 +51,7 @@ public class OrdersActivity extends AppCompatActivity implements FetchOrdersCall
 
     // FetchOrdersCallback
 
+    // TODO: consider empty cases
     @Override
     public void onOrdersFetchSuccess(OrderResult result, int identifier) {
         // TODO: all statemachines should follow similar pattern as to this file

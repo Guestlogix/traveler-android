@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.AddedFlightsRecyclerViewAdapter;
-import com.guestlogix.traveler.viewmodels.HomeViewModel;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogFragment;
@@ -25,7 +24,6 @@ import java.util.List;
 
 public class HomeContainerFragment extends BaseFragment {
 
-    private HomeViewModel catalogViewModel;
     private AddedFlightsRecyclerViewAdapter flightsRecyclerViewAdapter;
 
     @Override
@@ -53,9 +51,9 @@ public class HomeContainerFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        catalogViewModel = ViewModelProviders.of(getActivityContext()).get(HomeViewModel.class);
-        catalogViewModel.getObservableFlights().observe(getActivityContext(), this::flightsUpdateHandler);
-        catalogViewModel.getStatus().observe(getActivityContext(), this::onStateChange);
+        //catalogViewModel = ViewModelProviders.of(getActivityContext()).get(HomeViewModel.class);
+        //catalogViewModel.getObservableFlights().observe(getActivityContext(), this::flightsUpdateHandler);
+        //catalogViewModel.getStatus().observe(getActivityContext(), this::onStateChange);
 
         getActivity().setTitle(R.string.app_name);
     }
@@ -63,9 +61,9 @@ public class HomeContainerFragment extends BaseFragment {
     private void onViewFlightClick(View v) {
         int index = (Integer) v.getTag();
 
-        Flight flight = catalogViewModel.getObservableFlights().getValue().get(index);
-        HomeContainerFragmentDirections.FlightInformationAction action = HomeContainerFragmentDirections.flightInformationAction(flight);
-        Navigation.findNavController(getActivityContext(), R.id.homeHostFragment).navigate(action);
+        //Flight flight = catalogViewModel.getObservableFlights().getValue().get(index);
+        //HomeContainerFragmentDirections.FlightInformationAction action = HomeContainerFragmentDirections.flightInformationAction(flight);
+        //Navigation.findNavController(getActivityContext(), R.id.homeHostFragment).navigate(action);
     }
 
     private void onStateChange(StatefulViewModel.State state) {
@@ -79,17 +77,17 @@ public class HomeContainerFragment extends BaseFragment {
                 transaction.commit();
                 break;
             case SUCCESS:
-                CatalogFragment catalogFragment = CatalogFragment.newInstance(catalogViewModel.getCatalog());
+               // CatalogFragment catalogFragment = CatalogFragment.newInstance(catalogViewModel.getCatalog());
 
                 transaction = getActivityContext().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.catalogContainer, catalogFragment);
+                //transaction.replace(R.id.catalogContainer, catalogFragment);
 
                 transaction.commit();
                 break;
             case ERROR:
                 RetryFragment errorFragment = new RetryFragment();
 
-                errorFragment.setOnInteractionListener(() -> catalogViewModel.fetchCatalog());
+               // errorFragment.setOnInteractionListener(() -> catalogViewModel.fetchCatalog());
 
                 transaction = getActivityContext().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.catalogContainer, errorFragment);
@@ -103,7 +101,7 @@ public class HomeContainerFragment extends BaseFragment {
         @Override
         public void onClick(View v) {
             int index = (Integer) v.getTag();
-            catalogViewModel.deleteFlight(index);
+           // catalogViewModel.deleteFlight(index);
         }
     };
 

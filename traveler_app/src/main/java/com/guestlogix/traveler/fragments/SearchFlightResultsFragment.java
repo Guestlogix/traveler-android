@@ -15,7 +15,6 @@ import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
 
-import static com.guestlogix.traveler.viewmodels.HomeViewModel.EXTRA_FLIGHT;
 
 /**
  * A fragment representing a list of Flights.
@@ -47,7 +46,7 @@ public class SearchFlightResultsFragment extends BaseFragment {
     private void onAddFlight(int index) {
         Flight flight = searchFlightResultViewModel.getObservableFlights().getValue().get(index);
         Intent data = new Intent();
-        data.putExtra(EXTRA_FLIGHT, flight);
+        //data.putExtra(EXTRA_FLIGHT, flight);
         getActivityContext().setResult(Activity.RESULT_OK, data);
         getActivityContext().finish();
     }

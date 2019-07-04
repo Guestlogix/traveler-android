@@ -13,13 +13,13 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".activities.ProfileActivity"
-                  android:theme="@style/AppTheme.NoActionBar"
-                  android:windowSoftInputMode="stateHidden|adjustResize"/>
-        <activity android:name="com.guestlogix.traveleruikit.activities.OrdersActivity"
-                  android:label="Orders">
+        <activity
+                android:name=".activities.ProfileActivity"
+                android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+                android:name="com.guestlogix.traveleruikit.activities.OrdersActivity"
+                android:label="Orders">
         </activity>
-
         <activity
                 android:name=".activities.AddFlightActivity"
                 android:label="Add Flight">

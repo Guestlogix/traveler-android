@@ -15,10 +15,6 @@
                 app:destination="@id/app_settings_destination" app:enterAnim="@anim/slide_in_right"
                 app:exitAnim="@anim/slide_out_left" app:popEnterAnim="@anim/slide_in_left"
                 app:popExitAnim="@anim/slide_out_right"/>
-        <action android:id="@+id/action_profile_destination_to_edit_profile_destination"
-                app:destination="@id/edit_profile_destination" app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left" app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -42,16 +38,4 @@
         <argument android:name="title" app:argType="string"/>
     </fragment>
 
-    <fragment
-            android:id="@+id/edit_profile_destination"
-            android:name="com.guestlogix.traveler.fragments.EditProfileFragment"
-            tools:layout="@layout/fragment_edit_profile">
-
-        <action android:id="@+id/action_edit_profile_destination_to_profile_destination"
-                app:destination="@id/profile_destination"
-                app:popUpTo="@id/profile_destination"
-                app:popUpToInclusive="true" app:enterAnim="@anim/slide_in_left"
-                app:exitAnim="@anim/slide_out_right" app:popExitAnim="@anim/slide_out_right"
-                app:popEnterAnim="@anim/slide_in_left"/>
-    </fragment>
 </navigation>
