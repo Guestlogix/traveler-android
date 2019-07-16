@@ -2,6 +2,7 @@ package com.guestlogix.traveler.fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,27 +14,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import com.guestlogix.traveler.R;
-import com.guestlogix.traveler.viewmodels.SearchFlightResultViewModel;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.traveleruikit.fragments.BaseFragment;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SearchFlightFragment extends BaseFragment {
+public class FlightSearchFragment extends Fragment {
+    public interface InteractionListener {
+        void onFlightSearch(FlightQuery query);
+    }
 
     private TextView flightNumberEditText;
     private TextView departureDateEditText;
     private TextView searchFlightsButton;
-    private View view;
-    private SearchFlightResultViewModel searchFlightResultViewModel;
+    private InteractionListener interactionListener;
 
+
+    // TODO: Use native Date type, through out the entire app
     private final Calendar departureDateCalendar = Calendar.getInstance();
     private final Pattern FLIGHT_NUMBER_PATTERN = Pattern.compile("^([A-Z]{2}|[A-Z]\\d|\\d[A-Z])([1-9][0-9]{0,3}|[0-9]{0,3}[1-9])$");
 
@@ -41,14 +42,13 @@ public class SearchFlightFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        searchFlightResultViewModel = ViewModelProviders.of(getActivityContext()).get(SearchFlightResultViewModel.class);
-
-        view = inflater.inflate(R.layout.fragment_flight_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_flight_search, container, false);
 
         flightNumberEditText = view.findViewById(R.id.flightNumberEditText);
         departureDateEditText = view.findViewById(R.id.departureDateEditText);
         searchFlightsButton = view.findViewById(R.id.searchFlightsButton);
 
+        // TODO: Do without focus listeners, validation can happen on search click
         flightNumberEditText.setOnFocusChangeListener(this::flightNumberFocusHandler);
         departureDateEditText.setOnFocusChangeListener(this::departureDateFocusHandler);
         departureDateEditText.setOnClickListener(this::departureDateClickHandler);
@@ -58,23 +58,28 @@ public class SearchFlightFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof InteractionListener) {
+            interactionListener = (InteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement FlightSearchFragment.InteractionListener");
+        }
+    }
+
     private void navigateToFlightSearchResults(View view) {
         String flightNumber = flightNumberEditText.getText().toString();
-        String departureDate = DateHelper.formatDateToISO8601(departureDateCalendar.getTime());
+        Date date = departureDateCalendar.getTime();
 
-        if (isFlightNumberValid(flightNumber) && !departureDate.isEmpty()) {
-            hideKeyboard(getActivityContext());
-            try {
-                Date date = DateHelper.parseISO8601(departureDate);
-                FlightQuery flightQuery = new FlightQuery(flightNumber, date);
-                searchFlightResultViewModel.flightSearch(flightQuery);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+        if (isFlightNumberValid(flightNumber)) {
+            hideKeyboard(getActivity());
+            FlightQuery flightQuery = new FlightQuery(flightNumber, date);
+            interactionListener.onFlightSearch(flightQuery);
         } else {
             validateFlightNumber(flightNumber);
-            validateFlightDate(departureDate);
+            validateFlightDate(date);
         }
     }
 
@@ -100,8 +105,10 @@ public class SearchFlightFragment extends BaseFragment {
         }
     }
 
-    private void validateFlightDate(String date) {
-        if (null == date || date.isEmpty()) {
+    // TODO: Do better validations in DRY way ^
+    // Single validate method?
+    private void validateFlightDate(Date date) {
+        if (null == date) {
             departureDateEditText.setError(getString(R.string.empty_date_error));
         }
     }
@@ -116,7 +123,8 @@ public class SearchFlightFragment extends BaseFragment {
     private void departureDateFocusHandler(View view, boolean focus) {
         if (!focus) {
             String date = ((TextView) view).getText().toString();
-            validateFlightDate(date);
+            // TODO: validate date here properly
+            //validateFlightDate(date);
         } else {
             showDatePickerDialog();
         }
@@ -127,11 +135,7 @@ public class SearchFlightFragment extends BaseFragment {
     }
 
     private void showDatePickerDialog() {
-        if (null != getActivityContext()) {
-            new DatePickerDialog(getActivityContext(), datePickerListener, departureDateCalendar
-                    .get(Calendar.YEAR), departureDateCalendar.get(Calendar.MONTH),
-                    departureDateCalendar.get(Calendar.DAY_OF_MONTH)).show();
-        }
+        new DatePickerDialog(getContext(), datePickerListener, departureDateCalendar.get(Calendar.YEAR), departureDateCalendar.get(Calendar.MONTH), departureDateCalendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private boolean softInputSubmit(View v, int actionId, KeyEvent event) {

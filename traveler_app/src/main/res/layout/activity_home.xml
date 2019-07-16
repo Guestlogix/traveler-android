@@ -7,13 +7,18 @@
               android:orientation="vertical"
               android:background="@color/white"
               tools:context=".activities.HomeActivity">
-    <fragment
-            android:id="@+id/homeHostFragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_home_flights"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/home_navigation"/>
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/fragment_home_flight_item"
+            tools:itemCount="2"/>
+
+    <FrameLayout
+            android:id="@+id/catalog_container_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    </FrameLayout>
 
 </LinearLayout>

@@ -18,13 +18,13 @@
     </fragment>
     <fragment
             android:id="@+id/flight_search_dest"
-            android:name="com.guestlogix.traveler.fragments.SearchFlightFragment"
+            android:name="com.guestlogix.traveler.fragments.FlightSearchFragment"
             android:label="Search Flight"
             tools:layout="@layout/fragment_flight_search">
     </fragment>
     <fragment
             android:id="@+id/flight_search_result_dest"
-            android:name="com.guestlogix.traveler.fragments.SearchFlightResultsFragment"
+            android:name="com.guestlogix.traveler.fragments.FlightSearchResultsFragment"
             android:label="Flights"
             tools:layout="@layout/item_flight_info_card">
     </fragment>

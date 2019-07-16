@@ -3,6 +3,7 @@ package com.guestlogix.traveler.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,17 +14,20 @@ import com.guestlogix.travelercorekit.utilities.DateHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * An adapter to display flight information cards.
- */
-public class FlightCardsRecyclerViewAdapter extends RecyclerView.Adapter<FlightCardsRecyclerViewAdapter.ViewHolder> {
 
-    private List<Flight> flightsList = new ArrayList<>();
-    private boolean isFlightAddingEnabled = false;
-    private View.OnClickListener addFlightOnClickListener;
+public class FlightsAdapter extends RecyclerView.Adapter<FlightsAdapter.ViewHolder> {
+    public interface Listener {
+        void onAddFlight(Flight flight);
+        boolean canAddFlight(Flight flight);
+    }
 
-    public void setAddFlightOnClickListener(View.OnClickListener addFlightOnClickListener) {
-        this.addFlightOnClickListener = addFlightOnClickListener;
+    // TODO: Make sure these adhere to proper naming convention
+    private List<Flight> flightsList;
+    private Listener listener;
+
+    public FlightsAdapter(List<Flight> flights, Listener listener) {
+        this.listener = listener;
+        this.flightsList = flights;
     }
 
     @NonNull
@@ -45,30 +49,27 @@ public class FlightCardsRecyclerViewAdapter extends RecyclerView.Adapter<FlightC
         holder.arrivalIataTextView.setText(f.getArrivalAirport().getCode());
         holder.arrivalTimeTextView.setText(DateHelper.formatTime(f.getArrivalDate()));
 
+        boolean isFlightAddingEnabled = listener.canAddFlight(f);
+
         if (isFlightAddingEnabled) {
-            holder.addFlightTextView.setAlpha(1f);
-            holder.addFlightTextView.setEnabled(true);
-            holder.addFlightTextView.setTag(position);
-            holder.addFlightTextView.setOnClickListener(addFlightOnClickListener);
+            holder.addFlightButton.setAlpha(1f);
+            holder.addFlightButton.setEnabled(true);
+            holder.addFlightButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onAddFlight(f);
+                }
+            });
         } else {
-            holder.addFlightTextView.setEnabled(false);
-            holder.addFlightTextView.setAlpha(0.2f);
+            holder.addFlightButton.setEnabled(false);
+            holder.addFlightButton.setAlpha(0.2f);
+            holder.addFlightButton.setOnClickListener(null);
         }
     }
 
     @Override
     public int getItemCount() {
         return flightsList.size();
-    }
-
-    public void update(List<Flight> flightsArrayList) {
-        this.flightsList.clear();
-        this.flightsList.addAll(flightsArrayList);
-        notifyDataSetChanged();
-    }
-
-    public void setFlightAddingEnabled(boolean isFlightAddingEnabled) {
-        this.isFlightAddingEnabled = isFlightAddingEnabled;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -78,7 +79,7 @@ public class FlightCardsRecyclerViewAdapter extends RecyclerView.Adapter<FlightC
         TextView arrivalCityTextView;
         TextView arrivalIataTextView;
         TextView arrivalTimeTextView;
-        TextView addFlightTextView;
+        Button addFlightButton;
 
         ViewHolder(View view) {
             super(view);
@@ -86,9 +87,9 @@ public class FlightCardsRecyclerViewAdapter extends RecyclerView.Adapter<FlightC
             departureIataTextView = itemView.findViewById(R.id.textView_flightCard_departureIata);
             departureTimeTextView = itemView.findViewById(R.id.textView_flightCard_departureTime);
             arrivalCityTextView = itemView.findViewById(R.id.textView_flightCard_arrivalCity);
-            arrivalIataTextView = itemView.findViewById(R.id.textView_catalog_arrivalIata);
+            arrivalIataTextView = itemView.findViewById(R.id.textView_flightCard_arrivalIata);
             arrivalTimeTextView = itemView.findViewById(R.id.textView_flightCard_arrivalTime);
-            addFlightTextView = itemView.findViewById(R.id.button_flightCard_addFlight);
+            addFlightButton = itemView.findViewById(R.id.button_flightCard_addFlight);
         }
     }
 }

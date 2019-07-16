@@ -15,7 +15,7 @@ import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.OrdersFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
 
-public class OrdersActivity extends AppCompatActivity implements FetchOrdersCallback, RetryFragment.RetryFragmentInteractionListener {
+public class OrdersActivity extends AppCompatActivity implements FetchOrdersCallback, RetryFragment.InteractionListener {
     // TODO: Change naming convention to the following throughout the entire project
     public static String EXTRA_ORDER_QUERY = "EXTRA_ORDER_QUERY";
 
@@ -64,7 +64,6 @@ public class OrdersActivity extends AppCompatActivity implements FetchOrdersCall
     @Override
     public void onOrdersFetchError(Error error, int identifier) {
         RetryFragment errorFragment = new RetryFragment();
-        errorFragment.setOnInteractionListener(this);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.ordersContainerFrameLayout, errorFragment);
         transaction.commit();

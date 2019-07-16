@@ -3,34 +3,32 @@ package com.guestlogix.traveleruikit.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogItem;
+import com.guestlogix.travelercorekit.models.CatalogQuery;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
+import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 import com.guestlogix.traveleruikit.widgets.CatalogWidget;
 
-/**
- * Fragment to hold the Catalog widget.
- * <p>
- * TODO: Let other developers override click events.
- */
-public class CatalogFragment extends BaseFragment implements CatalogWidget.OnCatalogItemClickListener {
+public class CatalogFragment extends Fragment implements CatalogSearchCallback, RetryFragment.InteractionListener {
+    private final static String TAG = "CatalogFragment";
+    private final static String ARG_CATALOG_QUERY = "arg_catalog)_query";
 
-    private static String ARG_CATALOG = "arg_catalog";
+    private FragmentTransactionQueue transactionQueue = new FragmentTransactionQueue();
 
-    private Catalog catalog;
-
-    public CatalogFragment() {
-        // Do nothing.
-    }
-
-    public static CatalogFragment newInstance(Catalog catalog) {
+    public static CatalogFragment newInstance(CatalogQuery catalogQuery) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_CATALOG, catalog);
+        args.putSerializable(ARG_CATALOG_QUERY, catalogQuery);
         CatalogFragment fragment = new CatalogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -38,29 +36,65 @@ public class CatalogFragment extends BaseFragment implements CatalogWidget.OnCat
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View catalogFragmentView = inflater.inflate(R.layout.fragment_catalog, container, false);
-        CatalogWidget catalogWidget = catalogFragmentView.findViewById(R.id.catalogWidget_catalogFragment_container);
-        catalogWidget.setOnCatalogItemClickListener(this);
+        View view = inflater.inflate(R.layout.fragment_catalog, container, false);
 
-        Bundle args = getArguments();
+        reloadCatalog();
 
-        if (null != args && args.containsKey(ARG_CATALOG)) {
-
-            catalog = (Catalog) args.getSerializable(ARG_CATALOG);
-            if (catalog != null) {
-                catalogWidget.setCatalog(catalog);
-            }
-        }
-
-        return catalogFragmentView;
+        return view;
     }
 
     @Override
-    public void onCatalogItemClick(int section, int item) {
-        CatalogItem catalogItem = catalog.getGroups().get(section).getItems().get(item);
+    public void onResume() {
+        super.onResume();
 
-        Intent catalogItemDetailsIntent = TravelerUI.getCatalogItemDetailsIntent(catalogItem, getActivityContext());
-        startActivity(catalogItemDetailsIntent);
+        transactionQueue.setSuspended(false);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        transactionQueue.setSuspended(true);
+    }
+
+    private void reloadCatalog() {
+        Bundle args = getArguments();
+
+        if (args == null || !args.containsKey(ARG_CATALOG_QUERY)) {
+            Log.e(TAG, "No CatalogQuery in arguments");
+            return;
+        }
+
+        LoadingFragment loadingFragment = new LoadingFragment();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.catalog_container_layout, loadingFragment);
+
+        transactionQueue.addTransaction(transaction);
+
+        CatalogQuery query = (CatalogQuery) args.get(ARG_CATALOG_QUERY);
+
+        Traveler.fetchCatalog(query, this);
+    }
+
+    @Override
+    public void onCatalogError(Error error) {
+        RetryFragment fragment = new RetryFragment();
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.catalog_container_layout, fragment);
+        transactionQueue.addTransaction(transaction);
+    }
+
+    @Override
+    public void onCatalogSuccess(Catalog catalog) {
+        CatalogResultFragment fragment = CatalogResultFragment.newInstance(catalog);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.catalog_container_layout, fragment);
+        transactionQueue.addTransaction(transaction);
+    }
+
+    @Override
+    public void onRetry() {
+        reloadCatalog();
     }
 }
 

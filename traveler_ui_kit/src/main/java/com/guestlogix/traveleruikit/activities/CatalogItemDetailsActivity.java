@@ -12,6 +12,7 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
+// TODO: Remove everything AndroidX
 public class CatalogItemDetailsActivity extends AppCompatActivity {
 
     public static final String ARG_CATALOG_ITEM = "catalog_item";
@@ -38,6 +39,8 @@ public class CatalogItemDetailsActivity extends AppCompatActivity {
 
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+            setTitle(catalogItem.getTitle());
         } else {
             TravelerLog.e(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, this.getLocalClassName());
             finish();

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".fragments.SearchFlightResultsFragment"
+        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".fragments.FlightSearchResultsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/padding_normal"
         android:paddingRight="@dimen/padding_normal">
 
-    <com.guestlogix.traveler.widgets.FlightCardsRecyclerView
-            android:id="@+id/flightCards_searchFlightResult_addFlights"
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_flightResults"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.guestlogix.traveler.widgets.FlightCardsRecyclerView"
-            tools:itemCount="2"
-            tools:listitem="@layout/item_flight_info_card"/>
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+
+    </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

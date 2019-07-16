@@ -14,11 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AddedFlightsRecyclerViewAdapter extends RecyclerView.Adapter<AddedFlightsRecyclerViewAdapter.ViewHolder> {
+public class FlightsSummaryAdapter extends RecyclerView.Adapter<FlightsSummaryAdapter.ViewHolder> {
+    public interface Listener {
+        void onRemoveFlight(int position);
+        void onClick(int position);
+    }
 
     private List<Flight> flightList = new ArrayList<>();
-    private View.OnClickListener deleteFlightOnClickListener;
-    private View.OnClickListener viewFlightClickListener;
+    private Listener listener;
+
+    public FlightsSummaryAdapter(List<Flight> flights, Listener listener) {
+        this.listener = listener;
+        this.flightList = flights;
+    }
 
     @NonNull
     @Override
@@ -34,30 +42,26 @@ public class AddedFlightsRecyclerViewAdapter extends RecyclerView.Adapter<AddedF
 
         holder.departureIata.setText(item.getDepartureAirport().getCode());
         holder.arrivalIata.setText(item.getArrivalAirport().getCode());
-        holder.deleteFlight.setOnClickListener(deleteFlightOnClickListener);
+        holder.deleteFlight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onRemoveFlight(position);
+            }
+        });
         holder.deleteFlight.setTag(position);
 
         holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(viewFlightClickListener);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return flightList.size();
-    }
-
-    public void update(List<Flight> flights) {
-        flightList.clear();
-        flightList.addAll(flights);
-        notifyDataSetChanged();
-    }
-
-    public void setDeleteFlightOnClickListener(View.OnClickListener deleteFlightOnClickListener) {
-        this.deleteFlightOnClickListener = deleteFlightOnClickListener;
-    }
-
-    public void setViewFlightClickListener(View.OnClickListener viewFlightClickListener) {
-        this.viewFlightClickListener = viewFlightClickListener;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

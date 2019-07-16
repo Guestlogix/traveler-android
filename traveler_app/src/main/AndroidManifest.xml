@@ -21,8 +21,11 @@
                 android:label="Orders">
         </activity>
         <activity
-                android:name=".activities.AddFlightActivity"
+                android:name=".activities.FlightSearchActivity"
                 android:label="Add Flight">
+        </activity>
+        <activity android:name=".activities.FlightActivity"
+                  android:label="Flight">
         </activity>
         <activity android:name=".activities.HomeActivity">
             <intent-filter>

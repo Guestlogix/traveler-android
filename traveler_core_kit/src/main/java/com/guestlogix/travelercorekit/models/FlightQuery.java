@@ -2,9 +2,10 @@ package com.guestlogix.travelercorekit.models;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FlightQuery {
+public class FlightQuery implements Serializable {
     private String number;
     private Date date;
 

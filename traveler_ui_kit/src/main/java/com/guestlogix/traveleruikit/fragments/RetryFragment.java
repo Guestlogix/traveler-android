@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +11,15 @@ import androidx.fragment.app.Fragment;
 import com.guestlogix.traveleruikit.R;
 
 public class RetryFragment extends Fragment {
+    public interface InteractionListener {
+        void onRetry();
+    }
+
     public static final String ARG_ERROR_TITLE = "ARG_ERROR_TITLE";
     public static final String ARG_ERROR_MESSAGE = "ARG_ERROR_MESSAGE";
     public static final String ARG_ERROR_ACTION = "ARG_ERROR_ACTION";
 
-    private RetryFragmentInteractionListener onErrorFragmentInteractionListener = null;
-
-    public RetryFragment() {
-        // Required empty public constructor
-    }
+    private InteractionListener onErrorFragmentInteractionListener = null;
 
     public static RetryFragment newInstance(String title, String message) {
         RetryFragment fragment = new RetryFragment();
@@ -59,7 +60,12 @@ public class RetryFragment extends Fragment {
             }
         }
 
-        actionTextView.setOnClickListener(actionOnClickListener);
+        actionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onErrorFragmentInteractionListener.onRetry();
+            }
+        });
 
         return view;
     }
@@ -71,13 +77,15 @@ public class RetryFragment extends Fragment {
         onErrorFragmentInteractionListener = null;
     }
 
-    public void setOnInteractionListener(RetryFragmentInteractionListener onErrorFragmentInteractionListener) {
-        this.onErrorFragmentInteractionListener = onErrorFragmentInteractionListener;
-    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
-    public interface RetryFragmentInteractionListener {
-        void onRetry();
+        if (context instanceof InteractionListener) {
+            onErrorFragmentInteractionListener = (InteractionListener) context;
+        } else {
+            // TODO: Make sure this pattern (repeated everywhere) adheres to Android convention
+            throw new RuntimeException(context.toString() + " must implement RetryFragment.Interactionlistener");
+        }
     }
-
-    private View.OnClickListener actionOnClickListener = v -> onErrorFragmentInteractionListener.onRetry();
 }

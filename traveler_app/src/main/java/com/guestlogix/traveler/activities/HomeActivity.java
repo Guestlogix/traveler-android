@@ -8,25 +8,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
+import com.guestlogix.traveler.adapters.FlightsSummaryAdapter;
 import com.guestlogix.traveler.callbacks.ProfileFetchCallback;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
+import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.traveleruikit.fragments.CatalogFragment;
+import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
+import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity implements ProfileFetchCallback {
+public class HomeActivity extends AppCompatActivity implements ProfileFetchCallback, FlightsSummaryAdapter.Listener {
     final static int REQUEST_CODE_ADD_FLIGHT = 0;
     final static int REQUEST_CODE_SIGN_IN = 1;
     final static int REQUEST_CODE_PROFILE = 2;
 
     private Profile profile;
+    private ArrayList<Flight> flights = new ArrayList<>();
+    private RecyclerView flightsRecyclerView;
+    private FragmentTransactionQueue transactionQueue = new FragmentTransactionQueue();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +49,20 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
         }
 
         setContentView(R.layout.activity_home);
+
+        flightsRecyclerView = findViewById(R.id.recyclerView_home_flights);
+        flightsRecyclerView.setAdapter(new FlightsSummaryAdapter(flights, this));
+
+        reloadCatalog();
+    }
+
+    private void reloadCatalog() {
+        CatalogQuery query = new CatalogQuery(flights);
+        CatalogFragment fragment = CatalogFragment.newInstance(query);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.catalog_container_layout, fragment);
+
+        transactionQueue.addTransaction(transaction);
     }
 
     @Override
@@ -65,11 +89,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.flight_add_action:
-                Intent addFlightIntent = new Intent(HomeActivity.this, AddFlightActivity.class);
+                Intent addFlightIntent = new Intent(this, FlightSearchActivity.class);
                 startActivityForResult(addFlightIntent, REQUEST_CODE_ADD_FLIGHT);
                 return true;
             case R.id.profile_action:
-                Intent profileIntent = new Intent(HomeActivity.this, ProfileActivity.class);
+                Intent profileIntent = new Intent(this, ProfileActivity.class);
                 profileIntent.putExtra(ProfileActivity.ARG_PROFILE, profile);
                 startActivityForResult(profileIntent, REQUEST_CODE_PROFILE);
                 return true;
@@ -90,6 +114,20 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
     }
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        transactionQueue.setSuspended(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        transactionQueue.setSuspended(true);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_CANCELED) {
             return;
@@ -97,9 +135,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
 
         switch (requestCode) {
             case REQUEST_CODE_ADD_FLIGHT:
-                //Flight flight = (Flight) data.getExtras().get(EXTRA_FLIGHT);
-                //this.flights.add(flight);
-                // update ui
+                Flight flight = (Flight) data.getExtras().get(FlightSearchActivity.EXTRA_FLIGHT);
+                this.flights.add(flight);
+                flightsRecyclerView.getAdapter().notifyDataSetChanged();
+                reloadCatalog();
                 break;
             case REQUEST_CODE_SIGN_IN:
                 GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult();
@@ -121,6 +160,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
                 Profile.clearStoredProfile(this);
                 Traveler.identify(null);
                 invalidateOptionsMenu();
+                reloadCatalog();
         }
     }
 
@@ -130,6 +170,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
         profile.save(this);
         Traveler.identify(profile.getTravelerId());
         invalidateOptionsMenu();
+        reloadCatalog();
     }
 
     @Override
@@ -140,6 +181,23 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
                 .setPositiveButton("Ok", null)
                 .create()
                 .show();
+    }
+
+    // FlightsSummaryAdapter.Listener
+
+    @Override
+    public void onRemoveFlight(int position) {
+        flights.remove(position);
+        flightsRecyclerView.getAdapter().notifyDataSetChanged();
+        reloadCatalog();
+    }
+
+    @Override
+    public void onClick(int position) {
+        Flight flight = flights.get(position);
+        Intent intent = new Intent(this, FlightActivity.class);
+        intent.putExtra(FlightActivity.ARG_FLIGHT, flight);
+        startActivity(intent);
     }
 }
 

@@ -3,6 +3,7 @@ package com.guestlogix.travelercorekit.models;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
@@ -49,6 +50,15 @@ public class Flight implements Serializable {
 
     public Date getArrivalDate() {
         return arrivalDate;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (!(obj instanceof Flight)) {
+            return false;
+        }
+
+        return ((Flight) obj).id.equals(this.id);
     }
 
     static class FlightObjectMappingFactory implements ObjectMappingFactory<Flight> {

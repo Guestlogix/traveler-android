@@ -5,9 +5,10 @@
              android:layout_height="match_parent"
              tools:context=".fragments.CatalogFragment">
 
-    <com.guestlogix.traveleruikit.widgets.CatalogWidget
-            android:id="@+id/catalogWidget_catalogFragment_container"
-            android:visibility="visible"
+    <FrameLayout
+            android:id="@+id/catalog_container_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent">
+
+    </FrameLayout>
 </FrameLayout>
