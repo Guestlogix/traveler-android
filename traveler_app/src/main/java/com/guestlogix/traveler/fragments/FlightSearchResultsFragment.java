@@ -49,15 +49,8 @@ public class FlightSearchResultsFragment extends Fragment implements FlightsAdap
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof InteractionListener) {
-            this.interactionListener = (InteractionListener) context;
-        } else {
-            throw new RuntimeException("Context must implement FlightSearchResultFragment.InteractionListener");
-        }
+    public void setInteractionListener(InteractionListener interactionListener) {
+        this.interactionListener = interactionListener;
     }
 
     public static FlightSearchResultsFragment newInstance(ArrayList<Flight> flights) {
@@ -70,7 +63,8 @@ public class FlightSearchResultsFragment extends Fragment implements FlightsAdap
 
     @Override
     public void onAddFlight(Flight flight) {
-        interactionListener.onAddFlight(flight);
+        if (interactionListener != null)
+            interactionListener.onAddFlight(flight);
     }
 
     @Override

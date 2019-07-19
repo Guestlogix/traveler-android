@@ -58,15 +58,8 @@ public class FlightSearchFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof InteractionListener) {
-            interactionListener = (InteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString() + " must implement FlightSearchFragment.InteractionListener");
-        }
+    public void setInteractionListener(InteractionListener interactionListener) {
+        this.interactionListener = interactionListener;
     }
 
     private void navigateToFlightSearchResults(View view) {
@@ -76,7 +69,8 @@ public class FlightSearchFragment extends Fragment {
         if (isFlightNumberValid(flightNumber)) {
             hideKeyboard(getActivity());
             FlightQuery flightQuery = new FlightQuery(flightNumber, date);
-            interactionListener.onFlightSearch(flightQuery);
+            if (interactionListener != null)
+                interactionListener.onFlightSearch(flightQuery);
         } else {
             validateFlightNumber(flightNumber);
             validateFlightDate(date);

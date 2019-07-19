@@ -42,7 +42,6 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         TextView subTitleTextView = findViewById(R.id.textView_orderConfirmation_subtitle);
         TextView emailValueTextView = findViewById(R.id.textView_orderConfirmation_emailValue);
         Button homeButton = findViewById(R.id.homeButton);
-        homeButton.setOnClickListener(this::navigateHome);
 
         if (receipt.getOrder().getProducts().size() > 0) {
             Product product = receipt.getOrder().getProducts().get(0);
@@ -63,14 +62,4 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    @SuppressWarnings("unused")
-    private void navigateHome(View _v) {
-        Intent i = TravelerUI.getHomeIntent();
-        if (i != null) {
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-        } else {
-            finish();
-        }
-    }
 }

@@ -19,7 +19,7 @@ public class RetryFragment extends Fragment {
     public static final String ARG_ERROR_MESSAGE = "ARG_ERROR_MESSAGE";
     public static final String ARG_ERROR_ACTION = "ARG_ERROR_ACTION";
 
-    private InteractionListener onErrorFragmentInteractionListener = null;
+    private InteractionListener interactionListener = null;
 
     public static RetryFragment newInstance(String title, String message) {
         RetryFragment fragment = new RetryFragment();
@@ -63,29 +63,15 @@ public class RetryFragment extends Fragment {
         actionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onErrorFragmentInteractionListener.onRetry();
+                if (interactionListener != null)
+                    interactionListener.onRetry();
             }
         });
 
         return view;
     }
 
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        onErrorFragmentInteractionListener = null;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof InteractionListener) {
-            onErrorFragmentInteractionListener = (InteractionListener) context;
-        } else {
-            // TODO: Make sure this pattern (repeated everywhere) adheres to Android convention
-            throw new RuntimeException(context.toString() + " must implement RetryFragment.Interactionlistener");
-        }
+    public void setInteractionListener(InteractionListener interactionListener) {
+        this.interactionListener = interactionListener;
     }
 }

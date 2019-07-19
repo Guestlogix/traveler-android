@@ -93,6 +93,15 @@ public class CatalogFragment extends Fragment implements CatalogSearchCallback, 
     }
 
     @Override
+    public void onAttachFragment(Fragment childFragment) {
+        super.onAttachFragment(childFragment);
+
+        if (childFragment instanceof RetryFragment) {
+            ((RetryFragment) childFragment).setInteractionListener(this);
+        }
+    }
+
+    @Override
     public void onRetry() {
         reloadCatalog();
     }

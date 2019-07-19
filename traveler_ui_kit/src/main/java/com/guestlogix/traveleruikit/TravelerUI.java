@@ -4,41 +4,30 @@ import android.content.Context;
 import android.content.Intent;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.CatalogItem;
+import com.guestlogix.travelercorekit.models.Currency;
 import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
 
 public class TravelerUI {
     private static TravelerUI localInstance;
 
     private PaymentProvider mPaymentProvider;
-    private Intent mHomeIntent;
+    private Currency preferredCurrency;
 
-    private TravelerUI(PaymentProvider paymentProvider, Intent homeIntent) {
+    private TravelerUI(PaymentProvider paymentProvider, Currency preferredCurrency) {
         mPaymentProvider = paymentProvider;
-        mHomeIntent = homeIntent;
+        this.preferredCurrency = preferredCurrency;
     }
 
-    public static void initialize(PaymentProvider paymentProvider, Intent homeIntent) {
+    public static void initialize(PaymentProvider paymentProvider) {
+        initialize(paymentProvider, Currency.USD);
+    }
+
+    public static void initialize(PaymentProvider paymentProvider, Currency preferredCurrency) {
         if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
         } else {
-            localInstance = new TravelerUI(paymentProvider, homeIntent);
+            localInstance = new TravelerUI(paymentProvider, preferredCurrency);
         }
-    }
-
-    public static Intent getCatalogItemDetailsIntent(CatalogItem catalogItem, Context context) {
-        if (localInstance == null) {
-            TravelerLog.e("SDK not initialized");
-            return null;
-        }
-
-        if (catalogItem == null) {
-            TravelerLog.e("catalogItem must not be null");
-            return null;
-        }
-
-        Intent i = new Intent(context, CatalogItemDetailsActivity.class);
-        i.putExtra(CatalogItemDetailsActivity.ARG_CATALOG_ITEM, catalogItem);
-        return i;
     }
 
     public static PaymentProvider getPaymentProvider() {
@@ -50,12 +39,21 @@ public class TravelerUI {
         return localInstance.mPaymentProvider;
     }
 
-    public static Intent getHomeIntent() {
+    public static Currency getPreferredCurrency() {
         if (localInstance == null) {
             TravelerLog.e("SDK not initialized");
             return null;
         }
 
-        return localInstance.mHomeIntent;
+        return localInstance.preferredCurrency;
+    }
+
+    public static void setPreferredCurrency(Currency currency) {
+        if (localInstance == null) {
+            TravelerLog.e("SDK not initialized");
+            return;
+        }
+
+        localInstance.preferredCurrency = currency;
     }
 }

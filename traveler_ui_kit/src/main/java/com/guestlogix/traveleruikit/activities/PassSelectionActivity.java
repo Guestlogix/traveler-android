@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.FormHeader;
 import com.guestlogix.traveleruikit.forms.FormMessage;
@@ -29,10 +31,8 @@ import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * Activity which lets the user select an arbitrary amount of Passes for a particular product.
@@ -233,33 +233,31 @@ public class PassSelectionActivity extends AppCompatActivity implements
         Traveler.fetchBookingForm(product, flatPasses, this);
     }
 
-    // TODO: Extract this to a model and make back-end calculate the price
     private void calculatePrice() {
-        double sum = 0.0;
-        String currency = null;
+        Iterator iterator = passQuantities.entrySet().iterator();
+        Price total = null;
 
-        for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
-            if (entry.getValue() != null && entry.getValue() > 0) {
-                sum += entry.getKey().getPrice().getValue() * entry.getValue();
+        while (iterator.hasNext()) {
+            Map.Entry<Pass, Integer> pair = (Map.Entry) iterator.next();
+            Price value = pair.getKey().getPrice().times(pair.getValue().doubleValue());
 
-                if (null == currency) {
-                    currency = entry.getKey().getPrice().getCurrency();
+            try {
+                if (total == null) {
+                    total = value;
                 } else {
-                    if (!currency.equalsIgnoreCase(entry.getKey().getPrice().getCurrency())) {
-                        // TODO: handle adding different currencies.
-                        return;
-                    }
+                    total = total.add(value);
                 }
+            } catch (Price.ExchangeException e) {
+                Log.e(this.getLocalClassName(), "Error performing Price arithmetic");
+                return;
             }
         }
 
-        // If currency is still null use the currency of the product
-        if (currency == null) {
-            currency = product.getPrice().getCurrency();
+        if (total == null) {
+            total = Price.zero();
         }
 
-        Price price = new Price(sum, currency);
-        actionStrip.setValue(price.getFormattedValue());
+        actionStrip.setValue(total.getLocalizedDescription(TravelerUI.getPreferredCurrency()));
     }
 
     @Override
@@ -312,6 +310,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
             outRect.set(MARGIN_IN_DIPS, outRect.top, MARGIN_IN_DIPS, outRect.bottom);
         }
 
+        // TODO: Remove this from here
         @Override
         public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
             c.save();

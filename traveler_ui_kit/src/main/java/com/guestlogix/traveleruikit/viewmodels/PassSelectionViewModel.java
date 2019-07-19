@@ -30,8 +30,6 @@ public class PassSelectionViewModel extends ViewModel implements FetchBookingFor
 
     public void setup(Product product, List<Pass> passes) {
         this.product = product;
-
-        calculatePrice();
         this.passes.setValue(passes);
         this.state.setValue(PassSelectionState.DEFAULT);
     }
@@ -64,7 +62,6 @@ public class PassSelectionViewModel extends ViewModel implements FetchBookingFor
 
     public void updatePassQuantity(Pass p, int quantity) {
         passQuantities.put(p, quantity);
-        calculatePrice();
     }
 
     public void fetchBookingForm() {
@@ -80,33 +77,6 @@ public class PassSelectionViewModel extends ViewModel implements FetchBookingFor
         }
 
         Traveler.fetchBookingForm(product, flatPasses, this);
-    }
-
-    private void calculatePrice() {
-        double sum = 0.0;
-        String currency = null;
-
-        for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
-            if (entry.getValue() != null && entry.getValue() > 0) {
-                sum += entry.getKey().getPrice().getValue() * entry.getValue();
-
-                if (null == currency) {
-                    currency = entry.getKey().getPrice().getCurrency();
-                } else {
-                    if (!currency.equalsIgnoreCase(entry.getKey().getPrice().getCurrency())) {
-                        // TODO: handle adding different currencies.
-                        return;
-                    }
-                }
-            }
-        }
-
-        // If currency is still null use the currency of the product
-        if (currency == null) {
-            currency = product.getPrice().getCurrency();
-        }
-
-        price.postValue(new Price(sum, currency));
     }
 
     @Override

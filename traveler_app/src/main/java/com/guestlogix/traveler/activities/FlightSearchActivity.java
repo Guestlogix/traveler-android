@@ -16,6 +16,7 @@ import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
+import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class FlightSearchActivity extends AppCompatActivity
 
     private FlightQuery query;
     private List<Flight> flightsToExclude;
+    private FragmentTransactionQueue transactionQueue = new FragmentTransactionQueue();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class FlightSearchActivity extends AppCompatActivity
         Fragment searchFragment = new FlightSearchFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.layout_flightSearch_container, searchFragment);
-        transaction.commit();
+        transactionQueue.addTransaction(transaction);
     }
 
     // FlightSearchFragment.InteractionListener
@@ -65,7 +67,7 @@ public class FlightSearchActivity extends AppCompatActivity
         Fragment fragment = new LoadingFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.layout_flightSearch_container, fragment);
-        transaction.commit();
+        transactionQueue.addTransaction(transaction);
 
         Traveler.flightSearch(query, this);
     }
@@ -78,6 +80,33 @@ public class FlightSearchActivity extends AppCompatActivity
             outState.putSerializable(ARG_QUERY, query);
     }
 
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+
+        if (fragment instanceof RetryFragment) {
+            ((RetryFragment) fragment).setInteractionListener(this);
+        } else if (fragment instanceof FlightSearchFragment) {
+            ((FlightSearchFragment) fragment).setInteractionListener(this);
+        } else if (fragment instanceof FlightSearchResultsFragment) {
+            ((FlightSearchResultsFragment) fragment).setInteractionListener(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        transactionQueue.setSuspended(true);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        transactionQueue.setSuspended(false);
+    }
+
     // FlightSearchCallback
 
     @Override
@@ -86,7 +115,7 @@ public class FlightSearchActivity extends AppCompatActivity
         Fragment fragment = FlightSearchResultsFragment.newInstance(flightsArray);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.layout_flightSearch_container, fragment);
-        transaction.commit();
+        transactionQueue.addTransaction(transaction);
     }
 
     @Override
@@ -94,7 +123,7 @@ public class FlightSearchActivity extends AppCompatActivity
         Fragment fragment = new RetryFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.layout_flightSearch_container, fragment);
-        transaction.commit();
+        transactionQueue.addTransaction(transaction);
     }
 
     // FlightSearchCallback, RetryFragment.InteractionListener

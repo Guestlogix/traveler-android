@@ -12,6 +12,7 @@ import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.TravelerUI;
 
 import java.util.HashSet;
 
@@ -78,7 +79,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 OrderItemViewHolder itemHolder = (OrderItemViewHolder) holder;
                 Order order = result.getOrders().get(position);
                 itemHolder.titleTextView.setText(DateHelper.formatDate(order.getCreatedDate()));
-                itemHolder.totalTextView.setText(order.getTotal().getFormattedValue());
+                itemHolder.totalTextView.setText(order.getTotal().getLocalizedDescriptionInBaseCurrency());
                 itemHolder.productsTextView.setText(order.getProductTitlesJoinedBy("\n"));
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

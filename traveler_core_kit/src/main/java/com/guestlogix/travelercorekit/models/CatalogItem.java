@@ -16,12 +16,12 @@ public class CatalogItem implements Product {
     private URL imageURL;
     private Price price;
 
-    private CatalogItem(@NonNull String id, String title, String subTitle, URL imageURL) {
+    private CatalogItem(@NonNull String id, String title, String subTitle, URL imageURL, Price price) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
         this.imageURL = imageURL;
-        this.price = new Price();
+        this.price = price;
     }
 
     @Override
@@ -53,6 +53,7 @@ public class CatalogItem implements Product {
             String title = null;
             String subTitle = null;
             URL thumbnail = null;
+            Price price = null;
 
             reader.beginObject();
 
@@ -79,16 +80,21 @@ public class CatalogItem implements Product {
 
                         thumbnail = new URL(reader.nextString());
                         break;
+                    case "priceStartingAt":
+                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
+                        break;
                     default:
                         reader.skipValue();
+                        break;
                 }
             }
 
             reader.endObject();
 
             Assertion.eval(id != null);
+            Assertion.eval(price != null);
 
-            return new CatalogItem(id, title, subTitle, thumbnail);
+            return new CatalogItem(id, title, subTitle, thumbnail, price);
         }
     }
 }

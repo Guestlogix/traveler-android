@@ -81,7 +81,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements
         }
 
         // Action strip.
-        actionStrip.setValue(order.getTotal().getFormattedValue());
+        actionStrip.setValue(order.getTotal().getLocalizedDescriptionInBaseCurrency());
         actionStrip.setLabel(getString(R.string.label_price));
         actionStrip.setButtonText(getString(R.string.next));
         actionStrip.setActionOnClickListener(this::onActionStripClick);

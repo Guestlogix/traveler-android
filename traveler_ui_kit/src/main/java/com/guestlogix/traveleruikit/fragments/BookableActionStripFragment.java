@@ -15,6 +15,7 @@ import com.guestlogix.travelercorekit.models.Price;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.models.BookingContext;
 import com.guestlogix.traveleruikit.models.PurchaseContext;
@@ -76,7 +77,7 @@ public class BookableActionStripFragment extends PurchaseFragment implements Fet
         Price price = bookingContext.getPrice();
         String checkAvailability = getActivityContext().getString(R.string.button_check_availability);
         String startingAt = getActivityContext().getString(R.string.label_starting_at);
-        String localizedPrice = String.format(Locale.getDefault(), getActivityContext().getString(R.string.label_price_per_person), price.getFormattedValue());
+        String localizedPrice = String.format(Locale.getDefault(), getActivityContext().getString(R.string.label_price_per_person), price.getLocalizedDescription(TravelerUI.getPreferredCurrency()));
 
         actionStrip.setStripValues(checkAvailability, startingAt, localizedPrice);
 

@@ -15,6 +15,7 @@ import com.guestlogix.travelercorekit.models.BookableProduct;
 import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.TravelerUI;
 
 import java.util.List;
 
@@ -125,7 +126,8 @@ public class ProductSummaryFragment extends BaseFragment {
             } else {
                 holder.subtitle.setVisibility(View.GONE);
             }
-            holder.value.setText(pass.getPrice().getFormattedValue());
+
+            holder.value.setText(pass.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
         }
 
         @Override
