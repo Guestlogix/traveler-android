@@ -14,12 +14,14 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.OrdersFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
+import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
 public class OrdersActivity extends AppCompatActivity implements FetchOrdersCallback, RetryFragment.InteractionListener {
     // TODO: Change naming convention to the following throughout the entire project
-    public static String EXTRA_ORDER_QUERY = "EXTRA_ORDER_QUERY";
+    public static String ARG_ORDER_QUERY = "ARG_ORDER_QUERY";
 
     private OrderQuery query;
+    private FragmentTransactionQueue transactionQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,9 @@ public class OrdersActivity extends AppCompatActivity implements FetchOrdersCall
 
         setContentView(R.layout.activity_orders);
 
-        query = (OrderQuery) getIntent().getSerializableExtra(EXTRA_ORDER_QUERY);
+        transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
+
+        query = (OrderQuery) getIntent().getSerializableExtra(ARG_ORDER_QUERY);
 
         if (query == null) {
             Log.e(this.getLocalClassName(), "No OrderQuery in extras");
@@ -42,9 +46,9 @@ public class OrdersActivity extends AppCompatActivity implements FetchOrdersCall
 
     private void reloadOrders() {
         Fragment loadingFragment = new LoadingFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.ordersContainerFrameLayout, loadingFragment);
-        transaction.commit();
+        transactionQueue.addTransaction(transaction);
 
         Traveler.fetchOrders(query, 0, this);
     }
@@ -56,17 +60,17 @@ public class OrdersActivity extends AppCompatActivity implements FetchOrdersCall
     public void onOrdersFetchSuccess(OrderResult result, int identifier) {
         // TODO: all statemachines should follow similar pattern as to this file
         Fragment ordersFragment = OrdersFragment.newInstance(result);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.ordersContainerFrameLayout, ordersFragment);
-        transaction.commit();
+        transactionQueue.addTransaction(transaction);
     }
 
     @Override
     public void onOrdersFetchError(Error error, int identifier) {
         RetryFragment errorFragment = new RetryFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.ordersContainerFrameLayout, errorFragment);
-        transaction.commit();
+        transactionQueue.addTransaction(transaction);
     }
 
     @Override

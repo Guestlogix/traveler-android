@@ -16,7 +16,7 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 class GuestRoute {
 
-    private static final String BASE_URL = "https://yhe4g45qhi.execute-api.ca-central-1.amazonaws.com/dev";
+    private static final String BASE_URL = "https://hklkg7c974.execute-api.ca-central-1.amazonaws.com/dev";
 
     static UrlRequest profile(String requestIdToken) {
         return GuestRequestBuilder.Builder()

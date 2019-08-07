@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), OrdersActivity.class);
-                intent.putExtra(OrdersActivity.EXTRA_ORDER_QUERY, new OrderQuery(0,10,null, new Date()));
+                intent.putExtra(OrdersActivity.ARG_ORDER_QUERY, new OrderQuery(0,10,null, new Date()));
                 startActivity(intent);
             }
         });

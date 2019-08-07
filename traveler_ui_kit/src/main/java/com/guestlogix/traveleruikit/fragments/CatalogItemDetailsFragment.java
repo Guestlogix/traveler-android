@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
@@ -24,51 +27,56 @@ import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
-public class CatalogItemDetailsFragment extends BaseFragment implements ProductPurchaseContainerFragment.PurchaseContextChangedListener {
+public class CatalogItemDetailsFragment extends Fragment {
+    static public String ARG_CATALOG_ITEM_DETAILS = "ARG_CATALOG_ITEM_DETAILS";
+    static private String TAG = "CatalogItemDetailsFragment";
 
-    private NestedScrollView mainNestedScrollView;
     private WrapContentViewPager catalogItemDetailsPager;
-    private TabLayout catalogItemDetailsTabs;
-    private TextView titleTextView;
-    private TextView descriptionTextView;
     private ImageView imageView;
 
-    private ProductPurchaseContainerFragment purchaseContextContainer;
-    private ActionStripContainerFragment actionStripContainer;
-
-    public CatalogItemDetailsFragment() {
+    public static CatalogItemDetailsFragment newInstance(CatalogItemDetails details) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CATALOG_ITEM_DETAILS, details);
+        CatalogItemDetailsFragment fragment = new CatalogItemDetailsFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_catalog_item_details, container, false);
 
-        mainNestedScrollView = view.findViewById(R.id.mainNestedScrollView);
-        titleTextView = view.findViewById(R.id.titleTextView);
-        descriptionTextView = view.findViewById(R.id.descriptionTextView);
+        Bundle args = getArguments();
+
+        if (args == null || !args.containsKey(ARG_CATALOG_ITEM_DETAILS)) {
+            Log.e(TAG, "No CatalogItemDetails in arguments");
+            return null;
+        }
+
+        // TODO: Clean all of this up
+
+        CatalogItemDetails catalogItemDetails = (CatalogItemDetails) args.get(ARG_CATALOG_ITEM_DETAILS);
+
+        if (catalogItemDetails == null) {
+            Log.e(TAG, "No CatalogItemDetails");
+            return view;
+        }
+
+        TextView titleTextView = view.findViewById(R.id.titleTextView);
+        TextView descriptionTextView = view.findViewById(R.id.descriptionTextView);
         imageView = view.findViewById(R.id.imageView);
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
-        catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
+        TabLayout catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
+//
+//        ProductPurchaseContainerFragment purchaseContextContainer = (ProductPurchaseContainerFragment) getChildFragmentManager().
+//                findFragmentById(R.id.fragment_catalogItemDetails_purchaseSelector);
+//        purchaseContextContainer.setPurchaseContextChangedListener(this);
+//
 
-        purchaseContextContainer = (ProductPurchaseContainerFragment) getChildFragmentManager().
-                findFragmentById(R.id.fragment_catalogItemDetails_purchaseSelector);
-        purchaseContextContainer.setPurchaseContextChangedListener(this);
+        ActionStripContainerFragment fragment = ActionStripContainerFragment.newInstance(catalogItemDetails);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        //transaction.replace(R.id.)
 
-        actionStripContainer = (ActionStripContainerFragment) getChildFragmentManager()
-                .findFragmentById(R.id.fragment_catalogItemDetails_actionStrip);
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        CatalogItemDetailsViewModel catalogItemDetailsViewModel = ViewModelProviders.of(getActivityContext()).get(CatalogItemDetailsViewModel.class);
-        catalogItemDetailsViewModel.getObservableCatalogItemDetails().observe(this, this::setView);
-    }
-
-    private void setView(CatalogItemDetails catalogItemDetails) {
         titleTextView.setText(catalogItemDetails.getTitle());
 
         if (null != catalogItemDetails.getImageURLs() && catalogItemDetails.getImageURLs().size() > 0) {
@@ -96,7 +104,7 @@ public class CatalogItemDetailsFragment extends BaseFragment implements ProductP
         }
 
         ItemInformationTabsPagerAdapter adapter =
-                new ItemInformationTabsPagerAdapter(getActivityContext().getSupportFragmentManager(), getActivity());
+                new ItemInformationTabsPagerAdapter(getFragmentManager(), getActivity());
 
         adapter.setContactInfo(catalogItemDetails.getContact());
         adapter.setInformationList(catalogItemDetails.getInformation());
@@ -119,14 +127,9 @@ public class CatalogItemDetailsFragment extends BaseFragment implements ProductP
         adapter.notifyDataSetChanged();
 
         catalogItemDetailsTabs.setupWithViewPager(catalogItemDetailsPager);
+
+
+        return view;
     }
 
-    private void focusOnView(View view) {
-        mainNestedScrollView.post(() -> mainNestedScrollView.smoothScrollTo(0, view.getBottom() + 50));
-    }
-
-    @Override
-    public void onPurchaseContextChanged(PurchaseContext purchaseContext) {
-        actionStripContainer.setPurchaseContext(purchaseContext);
-    }
 }

@@ -8,38 +8,43 @@ import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
 
     private TaskManager taskManager = new TaskManager();
     private Session session;
     private AuthenticatedUrlRequest request;
-    private JsonObjectMapper<T> jsonObjectMapper;
-    private ObjectMappingFactory<T> objectMappingFactory;
+    private NetworkTask.ResponseHandler responseHandler;
     private Error error;
     private T resource;
 
     public AuthenticatedRemoteNetworkRequestTask(Session session, AuthenticatedUrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
         this.session = session;
         this.request = request;
-        this.objectMappingFactory = objectMappingFactory;
 
-        jsonObjectMapper = new JsonObjectMapper<>(this.objectMappingFactory, new JsonObjectMapperCallback<T>() {
-            @Override
-            public void onSuccess(T resource) {
-                AuthenticatedRemoteNetworkRequestTask.this.resource = resource;
-            }
+        if (objectMappingFactory != null) {
+            this.responseHandler = new JsonObjectMapper<>(objectMappingFactory, new JsonObjectMapperCallback<T>() {
+                @Override
+                public void onSuccess(T resource) {
+                    AuthenticatedRemoteNetworkRequestTask.this.resource = resource;
+                }
 
-            @Override
-            public void onError(Error error) {
-                AuthenticatedRemoteNetworkRequestTask.this.error = error;
-            }
-        });
+                @Override
+                public void onError(Error error) {
+                    AuthenticatedRemoteNetworkRequestTask.this.error = error;
+                }
+            });
+        } else {
+            this.responseHandler = null;
+        }
     }
 
     @Override
     public void execute() {
         AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.session.getApiKey(), session.getContext());
-        NetworkTask retryNetworkTask = new NetworkTask(request, jsonObjectMapper);
+        NetworkTask retryNetworkTask = new NetworkTask(request, responseHandler);
 
         BlockTask retryNetworkBlockTask = new BlockTask() {
             @Override
@@ -69,7 +74,7 @@ public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
             }
         };
 
-        NetworkTask networkTask = new NetworkTask(request, jsonObjectMapper);
+        NetworkTask networkTask = new NetworkTask(request, responseHandler);
 
         BlockTask networkBlockTask = new BlockTask() {
             @Override

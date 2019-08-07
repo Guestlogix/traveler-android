@@ -18,6 +18,7 @@ import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightsSummaryAdapter;
 import com.guestlogix.traveler.callbacks.ProfileFetchCallback;
+import com.guestlogix.traveler.fragments.ProgressDialogFragment;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
@@ -36,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
     private Profile profile;
     private ArrayList<Flight> flights = new ArrayList<>();
     private RecyclerView flightsRecyclerView;
-    private FragmentTransactionQueue transactionQueue = new FragmentTransactionQueue();
+    private FragmentTransactionQueue transactionQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
         if (profile != null) {
             Traveler.identify(profile.getTravelerId());
         }
+
+        transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
 
         setContentView(R.layout.activity_home);
 
@@ -59,7 +62,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
     private void reloadCatalog() {
         CatalogQuery query = new CatalogQuery(flights);
         CatalogFragment fragment = CatalogFragment.newInstance(query);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.catalog_container_layout, fragment);
 
         transactionQueue.addTransaction(transaction);
@@ -143,6 +146,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
             case REQUEST_CODE_SIGN_IN:
                 GoogleSignInAccount account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult();
                 if (account != null) {
+                    ProgressDialogFragment fragment = new ProgressDialogFragment();
+                    transactionQueue.addTransaction(fragment.getTransaction(getSupportFragmentManager()));
+
                     Guest.fetchProfile(account, this);
                 } else {
                     new AlertDialog.Builder(this)
@@ -169,18 +175,35 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
         this.profile = profile;
         profile.save(this);
         Traveler.identify(profile.getTravelerId());
+        removeProgressDialogFragment();
         invalidateOptionsMenu();
         reloadCatalog();
     }
 
     @Override
     public void onProfileFetchError(Error error) {
+        removeProgressDialogFragment();
+
+        // TODO: Use fragments and fragment queue
         new AlertDialog.Builder(this)
                 .setMessage("Error fetching profile")
                 .setCancelable(false)
                 .setPositiveButton("Ok", null)
                 .create()
                 .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (ProgressDialogFragment.findExistingFragment(getSupportFragmentManager()) == null)
+            super.onBackPressed();
+    }
+
+    private void removeProgressDialogFragment() {
+        ProgressDialogFragment fragment = ProgressDialogFragment.findExistingFragment(getSupportFragmentManager());
+        FragmentTransaction transaction = transactionQueue.newTransaction();
+        transaction.remove(fragment);
+        transactionQueue.addTransaction(transaction);
     }
 
     // FlightsSummaryAdapter.Listener

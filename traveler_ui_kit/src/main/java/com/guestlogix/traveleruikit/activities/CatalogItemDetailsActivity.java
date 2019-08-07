@@ -1,75 +1,70 @@
 package com.guestlogix.traveleruikit.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.models.CatalogItemDetails;
+import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment;
+import com.guestlogix.traveleruikit.fragments.LoadingFragment;
+import com.guestlogix.traveleruikit.fragments.RetryFragment;
+import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 import com.guestlogix.traveleruikit.viewmodels.StatefulViewModel;
 
-// TODO: Remove everything AndroidX
-public class CatalogItemDetailsActivity extends AppCompatActivity {
+public class CatalogItemDetailsActivity extends AppCompatActivity implements CatalogItemDetailsCallback, RetryFragment.InteractionListener {
 
-    public static final String ARG_CATALOG_ITEM = "catalog_item";
+    public static final String ARG_PRODUCT = "product";
 
-    private CatalogItemDetailsViewModel catalogItemDetailsViewModel;
-    private NavController navController;
-    private CatalogItem catalogItem;
+    private Product product;
+    private FragmentTransactionQueue transactionQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_catalog_item_details);
 
-        Bundle extras = getIntent().getExtras();
+        this.product = (Product) getIntent().getSerializableExtra(ARG_PRODUCT);
 
-        if (null != extras && extras.containsKey(ARG_CATALOG_ITEM)) {
-            navController = Navigation.findNavController(this, R.id.catalogItemDetailsHostFragment);
-
-            catalogItemDetailsViewModel = ViewModelProviders.of(this).get(CatalogItemDetailsViewModel.class);
-            catalogItemDetailsViewModel.getStatus().observe(this, this::onStateChange);
-
-            catalogItem = (CatalogItem) extras.getSerializable(ARG_CATALOG_ITEM);
-            catalogItemDetailsViewModel.setCatalogItem(catalogItem);
-
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-            setTitle(catalogItem.getTitle());
-        } else {
-            TravelerLog.e(getString(R.string.no_argument_exception), ARG_CATALOG_ITEM, this.getLocalClassName());
+        if (product == null) {
+            Log.e(this.getLocalClassName(), "No Product");
             finish();
+            return;
         }
+
+        setTitle(product.getTitle());
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        this.transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
+
+        reloadCatalogItemDetails();
     }
 
-    private void onStateChange(StatefulViewModel.State state) {
-        switch (state) {
-            case LOADING:
-                navController.navigate(R.id.loading_action);
-                break;
-            case SUCCESS:
-                navController.navigate(R.id.catalog_item_details_action);
-                break;
-            case ERROR:
-                Bundle arguments = new Bundle();
-                // TODO: Fix these up right in RetryFragment and not use navigation
-                //arguments.putString(ARG_ERROR_TITLE, getString(R.string.label_sorry));
-                //arguments.putString(ARG_ERROR_MESSAGE, getString(R.string.label_nothing_to_show));
-                //arguments.putString(ARG_ERROR_ACTION, getString(R.string.try_again));
-
-                navController.navigate(R.id.error_action, arguments);
-                break;
-        }
-    }
-
-    // TODO: Fix this
     public void onRetry() {
-        catalogItemDetailsViewModel.setCatalogItem(catalogItem);
+        reloadCatalogItemDetails();
+    }
+
+    private void reloadCatalogItemDetails() {
+        Fragment loadingFragment = new LoadingFragment();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
+        transaction.replace(R.id.catalog_item_details_container, loadingFragment);
+        transactionQueue.addTransaction(transaction);
+
+        Traveler.fetchCatalogItemDetails(product, this);
     }
 
     @Override
@@ -79,5 +74,30 @@ public class CatalogItemDetailsActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+
+        if (fragment instanceof RetryFragment) {
+            ((RetryFragment) fragment).setInteractionListener(this);
+        }
+    }
+
+    @Override
+    public void onCatalogItemDetailsError(Error error) {
+        Fragment fragment = new RetryFragment();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
+        transaction.replace(R.id.catalog_item_details_container, fragment);
+        transactionQueue.addTransaction(transaction);
+    }
+
+    @Override
+    public void onCatalogItemDetailsSuccess(CatalogItemDetails details) {
+        Fragment fragment = CatalogItemDetailsFragment.newInstance(details);
+        FragmentTransaction transaction = transactionQueue.newTransaction();
+        transaction.replace(R.id.catalog_item_details_container, fragment);
+        transactionQueue.addTransaction(transaction);
     }
 }

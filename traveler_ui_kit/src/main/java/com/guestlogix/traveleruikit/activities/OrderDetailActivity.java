@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
+import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -41,6 +43,8 @@ public class OrderDetailActivity extends AppCompatActivity {
         // TODO: Do the price stuff
         //priceTextView.setText();
 
+        OrderDetailActivity self = this;
+
         LinearLayout productsLayout = findViewById(R.id.layout_orderDetail_products);
         for (Product product : order.getProducts()) {
             View productView = getLayoutInflater().inflate(R.layout.item_order_product, null);
@@ -52,11 +56,13 @@ public class OrderDetailActivity extends AppCompatActivity {
             // TODO: Do the secondary description for product and price
             //productDateTextView.setText();
 
-            // TODO: Product detail page
+
             productView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(self, CatalogItemDetailsActivity.class);
+                    intent.putExtra(CatalogItemDetailsActivity.ARG_PRODUCT, product);
+                    startActivity(intent);
                 }
             });
 

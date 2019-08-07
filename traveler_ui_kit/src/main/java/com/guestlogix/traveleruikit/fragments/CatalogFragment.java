@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
@@ -22,9 +23,9 @@ import com.guestlogix.traveleruikit.widgets.CatalogWidget;
 
 public class CatalogFragment extends Fragment implements CatalogSearchCallback, RetryFragment.InteractionListener {
     private final static String TAG = "CatalogFragment";
-    private final static String ARG_CATALOG_QUERY = "arg_catalog)_query";
+    private final static String ARG_CATALOG_QUERY = "arg_catalog_query";
 
-    private FragmentTransactionQueue transactionQueue = new FragmentTransactionQueue();
+    private FragmentTransactionQueue transactionQueue;
 
     public static CatalogFragment newInstance(CatalogQuery catalogQuery) {
         Bundle args = new Bundle();
@@ -41,6 +42,13 @@ public class CatalogFragment extends Fragment implements CatalogSearchCallback, 
         reloadCatalog();
 
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        transactionQueue = new FragmentTransactionQueue(getChildFragmentManager());
     }
 
     @Override
@@ -66,7 +74,7 @@ public class CatalogFragment extends Fragment implements CatalogSearchCallback, 
         }
 
         LoadingFragment loadingFragment = new LoadingFragment();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.catalog_container_layout, loadingFragment);
 
         transactionQueue.addTransaction(transaction);
@@ -79,7 +87,7 @@ public class CatalogFragment extends Fragment implements CatalogSearchCallback, 
     @Override
     public void onCatalogError(Error error) {
         RetryFragment fragment = new RetryFragment();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.catalog_container_layout, fragment);
         transactionQueue.addTransaction(transaction);
     }
@@ -87,7 +95,7 @@ public class CatalogFragment extends Fragment implements CatalogSearchCallback, 
     @Override
     public void onCatalogSuccess(Catalog catalog) {
         CatalogResultFragment fragment = CatalogResultFragment.newInstance(catalog);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.catalog_container_layout, fragment);
         transactionQueue.addTransaction(transaction);
     }

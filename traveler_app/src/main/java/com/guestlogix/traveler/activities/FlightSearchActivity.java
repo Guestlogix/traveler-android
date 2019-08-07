@@ -34,7 +34,7 @@ public class FlightSearchActivity extends AppCompatActivity
 
     private FlightQuery query;
     private List<Flight> flightsToExclude;
-    private FragmentTransactionQueue transactionQueue = new FragmentTransactionQueue();
+    private FragmentTransactionQueue transactionQueue;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,10 +50,12 @@ public class FlightSearchActivity extends AppCompatActivity
             flightsToExclude = new ArrayList<>();
         }
 
+        transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
+
         setContentView(R.layout.activity_flight_search);
 
         Fragment searchFragment = new FlightSearchFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.layout_flightSearch_container, searchFragment);
         transactionQueue.addTransaction(transaction);
     }
@@ -65,7 +67,7 @@ public class FlightSearchActivity extends AppCompatActivity
         this.query = query;
 
         Fragment fragment = new LoadingFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.layout_flightSearch_container, fragment);
         transactionQueue.addTransaction(transaction);
 
@@ -113,7 +115,7 @@ public class FlightSearchActivity extends AppCompatActivity
     public void onFlightSearchSuccess(List<Flight> flights) {
         ArrayList<Flight> flightsArray = new ArrayList<>(flights);
         Fragment fragment = FlightSearchResultsFragment.newInstance(flightsArray);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.layout_flightSearch_container, fragment);
         transactionQueue.addTransaction(transaction);
     }
@@ -121,7 +123,7 @@ public class FlightSearchActivity extends AppCompatActivity
     @Override
     public void onFlightSearchError(Error error) {
         Fragment fragment = new RetryFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.layout_flightSearch_container, fragment);
         transactionQueue.addTransaction(transaction);
     }

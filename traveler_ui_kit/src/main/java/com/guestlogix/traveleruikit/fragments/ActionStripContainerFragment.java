@@ -22,12 +22,19 @@ import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
 /**
  * Fragment to contain Action strip based on Purchased Strategy
  */
-public class ActionStripContainerFragment extends BaseFragment {
+public class ActionStripContainerFragment extends Fragment {
+    public static final String ARG_ITEM_DETAILS = "ARG_ITEM_DETAILS";
+
     private PurchaseContext purchaseContext;
     private PurchaseFragment fragment;
 
-    public ActionStripContainerFragment() {
-        // Do nothing.
+    public static ActionStripContainerFragment newInstance(CatalogItemDetails itemDetails) {
+        ActionStripContainerFragment fragment = new ActionStripContainerFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ITEM_DETAILS, itemDetails);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     @Override
@@ -40,22 +47,4 @@ public class ActionStripContainerFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void setPurchaseContext(PurchaseContext purchaseContext) {
-        // If this context is null have a fragment transaction.
-        if (this.purchaseContext == null) {
-            FragmentTransaction fragmentTransaction = getActivityContext().getSupportFragmentManager().beginTransaction();
-
-            // TODO: Add more fragment types here.
-            if (purchaseContext instanceof BookingContext) {
-                fragment = BookableActionStripFragment.getInstance((BookingContext) purchaseContext);
-            }
-
-            fragmentTransaction.replace(R.id.actionStripContainerFrameLayout, fragment);
-            fragmentTransaction.commit();
-        } else {
-            fragment.setPurchaseContext(purchaseContext);
-        }
-
-        this.purchaseContext = purchaseContext;
-    }
 }

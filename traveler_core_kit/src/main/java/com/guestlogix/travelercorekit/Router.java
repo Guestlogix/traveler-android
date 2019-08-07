@@ -21,7 +21,7 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 
 public class Router {
-    private static final String BASE_URL = "https://traveler.guestlogix.io/v1";
+    private static final String BASE_URL = "https://traveler.rc.guestlogix.io/v1";
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return RequestBuilder.Builder()
@@ -67,11 +67,11 @@ public class Router {
     }
 
     // /product/{id}
-    public static AuthenticatedUrlRequest product(Session session, CatalogItem catalogItem, Context context) {
+    public static AuthenticatedUrlRequest product(Session session, Product product, Context context) {
         return RequestBuilder.Builder()
                 .method(Method.GET)
                 .url(BASE_URL)
-                .path("/product/" + catalogItem.getId())
+                .path("/product/" + product.getId())
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
                 .build(session.getToken().getValue());
@@ -194,7 +194,6 @@ public class Router {
                 .build(session.getToken().getValue());
     }
 
-    // /order/all
     public static AuthenticatedUrlRequest orders(OrderQuery query, Session session, Context context) {
         RequestBuilder rb = RequestBuilder.Builder()
                 .method(Method.GET)
@@ -213,6 +212,37 @@ public class Router {
                 .apiKey(session.getApiKey());
 
         return rb.build(session.getToken().getValue());
+    }
+
+    public static AuthenticatedUrlRequest cancellationQuote(Order order, Session session, Context context) {
+        return RequestBuilder.Builder()
+                .method(Method.GET)
+                .url(BASE_URL)
+                .path("/order/" + order.getId() + "/cancellation")
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey())
+                .build(session.getToken().getValue());
+    }
+
+    public static AuthenticatedUrlRequest cancelOrder(CancellationQuote quote, Session session, Context context) {
+        return RequestBuilder.Builder()
+                .method(Method.PATCH)
+                .url(BASE_URL)
+                .path("/order/" + quote.getOrder().getId() + "/cancellation/" + quote.getId())
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey())
+                .build(session.getToken().getValue());
+    }
+
+    public static AuthenticatedUrlRequest emailOrderConfirmation(Order order, Session session, Context context) {
+        // TODO: DRY out the headers and api key and token stuff
+        return RequestBuilder.Builder()
+                .method(Method.PATCH)
+                .url(BASE_URL)
+                .path("/order/" + order.getId() + "/ticket")
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey())
+                .build(session.getToken().getValue());
     }
 
     /**

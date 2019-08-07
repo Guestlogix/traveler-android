@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 public interface PurchaseContext extends Serializable {
     Price getPrice();
-
     State getState();
 
     enum State implements Serializable {

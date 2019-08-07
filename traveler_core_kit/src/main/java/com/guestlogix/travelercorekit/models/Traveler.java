@@ -13,6 +13,7 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -162,7 +163,7 @@ public class Traveler {
      * @param catalogItem                the product for which to fetch details
      * @param catalogItemDetailsCallback callback methods to be executed once the fetch is complete.
      */
-    public static void fetchCatalogItemDetails(CatalogItem catalogItem, CatalogItemDetailsCallback catalogItemDetailsCallback) {
+    public static void fetchCatalogItemDetails(Product catalogItem, CatalogItemDetailsCallback catalogItemDetailsCallback) {
         if (null == localInstance) {
             catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
@@ -430,6 +431,82 @@ public class Traveler {
 
         localInstance.taskManager.addTask(fetchTask);
         localInstance.orderSerialTaskManager.addTask(mergeTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
+    }
+
+    public static void fetchCancellationQuote(Order order, CancellationQuoteCallback callback) {
+        // TODO: Better check and logging for localInstances
+        if (localInstance == null) {
+            return;
+        }
+
+        AuthenticatedUrlRequest request = Router.cancellationQuote(order, localInstance.session, localInstance.session.getContext());
+        AuthenticatedRemoteNetworkRequestTask<CancellationQuote.Response> fetchTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new CancellationQuote.Response.ResponseObjectMappingFactory());
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (fetchTask.getError() != null) {
+                    callback.onCancellationQuoteError(fetchTask.getError());
+                } else {
+                    CancellationQuote quote = new CancellationQuote(fetchTask.getResource(), order);
+                    callback.onCancellationQuoteSuccess(quote);
+                }
+            }
+        };
+
+        blockTask.addDependency(fetchTask);
+
+        localInstance.taskManager.addTask(fetchTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
+    }
+
+    public static void cancelOrder(CancellationQuote quote, CancellationCallback callback) {
+        // TODO: Better check and logging for localInstances
+        if (localInstance == null) {
+            return;
+        }
+
+        AuthenticatedUrlRequest request = Router.cancelOrder(quote, localInstance.session, localInstance.session.getContext());
+        AuthenticatedRemoteNetworkRequestTask<Order> fetchTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (fetchTask.getError() != null) {
+                    callback.onCancellationError(fetchTask.getError());
+                } else {
+                    callback.onCancellationSuccess(fetchTask.getResource());
+                }
+            }
+        };
+
+        blockTask.addDependency(fetchTask);
+
+        localInstance.taskManager.addTask(fetchTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
+    }
+
+    public static void emailOrderConfirmation(Order order, EmailOrderConfirmationCallback callback) {
+        // TODO: Better check and logging for localInstances
+        if (localInstance == null) {
+            return;
+        }
+
+        AuthenticatedUrlRequest request = Router.emailOrderConfirmation(order, localInstance.session, localInstance.session.getContext());
+        AuthenticatedRemoteNetworkRequestTask requestTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, null);
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (requestTask.getError() != null) {
+                    callback.onEmailError(requestTask.getError());
+                } else {
+                    callback.onEmailSuccess();
+                }
+            }
+        };
+
+        blockTask.addDependency(requestTask);
+
+        localInstance.taskManager.addTask(requestTask);
         TaskManager.getMainTaskManager().addTask(blockTask);
     }
 }

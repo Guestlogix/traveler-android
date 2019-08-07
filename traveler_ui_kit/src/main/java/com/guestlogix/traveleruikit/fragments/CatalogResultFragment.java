@@ -65,7 +65,7 @@ public class CatalogResultFragment extends Fragment implements CatalogSectionAda
     public void onCatalogItemClick(int sectionId, int itemId) {
         Intent intent = new Intent(this.getContext(), CatalogItemDetailsActivity.class);
         CatalogItem item = catalog.getGroups().get(sectionId).getItems().get(itemId);
-        intent.putExtra(CatalogItemDetailsActivity.ARG_CATALOG_ITEM, item);
+        intent.putExtra(CatalogItemDetailsActivity.ARG_PRODUCT, item);
         startActivity(intent);
     }
 }
