@@ -16,6 +16,7 @@ import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.fragments.ActionStripContainerFragment;
 import com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment;
 import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
@@ -99,5 +100,12 @@ public class CatalogItemDetailsActivity extends AppCompatActivity implements Cat
         FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.catalog_item_details_container, fragment);
         transactionQueue.addTransaction(transaction);
+
+        // ActionStrip
+
+        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(details);
+        FragmentTransaction stripTransaction = transactionQueue.newTransaction();
+        transaction.replace(R.id.actionStripContainerFrameLayout, stripContainerFragment);
+        transactionQueue.addTransaction(stripTransaction);
     }
 }

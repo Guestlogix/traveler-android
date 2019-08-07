@@ -2,6 +2,7 @@ package com.guestlogix.traveleruikit.fragments;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -24,9 +25,7 @@ import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
  */
 public class ActionStripContainerFragment extends Fragment {
     public static final String ARG_ITEM_DETAILS = "ARG_ITEM_DETAILS";
-
-    private PurchaseContext purchaseContext;
-    private PurchaseFragment fragment;
+    public static final String TAG = "ActionStripContainer";
 
     public static ActionStripContainerFragment newInstance(CatalogItemDetails itemDetails) {
         ActionStripContainerFragment fragment = new ActionStripContainerFragment();
@@ -39,12 +38,28 @@ public class ActionStripContainerFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_action_strip_container, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_action_strip_container, container, false);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
+        if (getArguments() == null || !getArguments().containsKey(ARG_ITEM_DETAILS)) {
+            Log.e(TAG, "No CatalogItemDetails in arguments");
+            return view;
+        }
 
+        CatalogItemDetails itemDetails = (CatalogItemDetails) getArguments().get(ARG_ITEM_DETAILS);
+
+        Fragment fragment;
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+
+        if (itemDetails.getPurchaseStrategy() == PurchaseStrategy.Bookable) {
+            fragment = BookableActionStripFragment.newInstance(new BookingContext(itemDetails));
+        } else {
+            // TODO: This is not done yet
+            fragment = new BuyableActionStripFragment();
+        }
+
+        transaction.replace(R.id.actionStripContainerFrameLayout, fragment);
+        transaction.commit();
+
+        return view;
+    }
 }

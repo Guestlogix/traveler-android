@@ -73,9 +73,7 @@ public class CatalogItemDetailsFragment extends Fragment {
 //        purchaseContextContainer.setPurchaseContextChangedListener(this);
 //
 
-        ActionStripContainerFragment fragment = ActionStripContainerFragment.newInstance(catalogItemDetails);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        //transaction.replace(R.id.)
+
 
         titleTextView.setText(catalogItemDetails.getTitle());
 

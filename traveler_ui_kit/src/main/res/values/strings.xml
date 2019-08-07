@@ -12,6 +12,7 @@
     <string name="label_price">Price</string>
     <string name="button_check_availability">Check Availability</string>
     <string name="button_buy_now">Buy Now</string>
+    <string name="button_next">Next</string>
     <string name="unexpected_error">Unexpected Error</string>
     <string name="unknown_error_message">Unfortunately something went wrong, please try again</string>
     <string name="ok">OK</string>

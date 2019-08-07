@@ -3,11 +3,13 @@ package com.guestlogix.traveleruikit.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.models.Pass;
@@ -28,79 +30,52 @@ import java.util.Locale;
 /**
  * Fragment to handle Bookable item actions
  */
-public class BookableActionStripFragment extends PurchaseFragment implements FetchPassesCallback {
-    public static final String BOOKING_CONTEXT_ARG = "arg_booking_context";
+public class BookableActionStripFragment extends Fragment {
+    public static final String ARG_BOOKING_CONTEXT = "ARG_BOOKING_CONTEXT";
+    public static final String TAG = "BookableActionStrip";
 
-    // Views
-    private ActionStrip actionStrip;
-
-    // Data
-    private BookingContext bookingContext;
-
-    public BookableActionStripFragment() {
-        // Do nothing.
-    }
-
-    public static BookableActionStripFragment getInstance(BookingContext bookingContext) {
+    public static BookableActionStripFragment newInstance(BookingContext bookingContext) {
         BookableActionStripFragment f = new BookableActionStripFragment();
         Bundle args = new Bundle();
-        args.putSerializable(BOOKING_CONTEXT_ARG, bookingContext);
+        args.putSerializable(ARG_BOOKING_CONTEXT, bookingContext);
         f.setArguments(args);
         return f;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_bookable_action_strip, container, false);
+
         Bundle args = getArguments();
 
-        View view = inflater.inflate(R.layout.fragment_bookable_action_strip, container, false);
-        actionStrip = view.findViewById(R.id.action_container);
-        actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
-        actionStrip.setActionOnClickListener(this::onActionStripClick);
-
-        if (args != null && args.containsKey(BOOKING_CONTEXT_ARG)) {
-            bookingContext = (BookingContext) args.getSerializable(BOOKING_CONTEXT_ARG);
-            setup();
+        if (args == null || !args.containsKey(ARG_BOOKING_CONTEXT)) {
+            Log.e(TAG, "No BookingContext");
+            return view;
         }
+
+        ActionStrip actionStrip = view.findViewById(R.id.action_container);
+        actionStrip.setActionOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        BookingContext bookingContext = (BookingContext) args.get(ARG_BOOKING_CONTEXT);
+
+        // Set Price
+        Price price = bookingContext.getPrice();
+        String checkAvailability = getContext().getString(R.string.button_next);
+        String startingAt = getContext().getString(R.string.label_starting_at);
+        String localizedPrice = String.format(Locale.getDefault(), getContext().getString(R.string.label_price_per_person), price.getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+
+        actionStrip.setStripValues(checkAvailability, startingAt, localizedPrice);
 
         return view;
     }
 
-    @Override
-    void setPurchaseContext(PurchaseContext purchaseContext) {
-        bookingContext = (BookingContext) purchaseContext;
-        setup();
-    }
 
-    private void setup() {
-        // Set Price
-        Price price = bookingContext.getPrice();
-        String checkAvailability = getActivityContext().getString(R.string.button_check_availability);
-        String startingAt = getActivityContext().getString(R.string.label_starting_at);
-        String localizedPrice = String.format(Locale.getDefault(), getActivityContext().getString(R.string.label_price_per_person), price.getLocalizedDescription(TravelerUI.getPreferredCurrency()));
-
-        actionStrip.setStripValues(checkAvailability, startingAt, localizedPrice);
-
-        // Set state
-        PurchaseContext.State state = bookingContext.getState();
-        switch (state) {
-            case LOADING:
-                actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
-                break;
-            case AVAILABLE:
-                actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-                break;
-            case OPTION_REQUIRED:
-            case NOT_AVAILABLE:
-            case DEFAULT:
-                actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
-                break;
-            default:
-                TravelerLog.w("State not Handled: %s", state.toString());
-                break;
-        }
-    }
-
+    /*
     // Submit traveler.
     private void onActionStripClick(View _view) {
         actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
@@ -154,4 +129,5 @@ public class BookableActionStripFragment extends PurchaseFragment implements Fet
                 break;
         }
     }
+    */
 }
