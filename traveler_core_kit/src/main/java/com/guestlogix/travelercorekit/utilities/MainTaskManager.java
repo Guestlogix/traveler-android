@@ -11,11 +11,6 @@ class MainTaskManager extends TaskManager implements Task.Performer {
 
     private Executor mainExecutor;
 
-    MainTaskManager() {
-        super();
-        mainExecutor = new MainThreadExecutor();
-    }
-
     @Override
     public void addTask(Task task) {
         task.setPerformer(this);
@@ -24,6 +19,9 @@ class MainTaskManager extends TaskManager implements Task.Performer {
 
     @Override
     public void onPerform(final Task task) {
+        if (null == mainExecutor) {
+            mainExecutor = new MainThreadExecutor();
+        }
         mainExecutor.execute(task::execute);
     }
 
