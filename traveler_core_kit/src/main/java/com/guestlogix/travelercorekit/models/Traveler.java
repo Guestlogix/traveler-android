@@ -13,18 +13,19 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.ExistsOnlyForTesting;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Traveler {
-    private static String TAG = "Traveler";
+public final class Traveler {
+    private static final String TAG = "Traveler";
     private static Traveler localInstance;
 
-    private TaskManager taskManager = new TaskManager();
-    private TaskManager orderSerialTaskManager = new TaskManager(TaskManager.Mode.SERIAL);
+    private TaskManager taskManager;
+    private TaskManager orderSerialTaskManager;
     private Session session;
 
     /**
@@ -37,11 +38,25 @@ public class Traveler {
         if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
         } else {
-            localInstance = new Traveler(apiKey, applicationContext);
+            localInstance = new Traveler(apiKey, applicationContext,
+                    new TaskManager(),
+                    new TaskManager(TaskManager.Mode.SERIAL));
         }
     }
 
-    private Traveler(String apiKey, Context context) {
+    @ExistsOnlyForTesting
+    public static Traveler initializeForTesting(String apiKey, Context applicationContext,
+                                                TaskManager taskManager, TaskManager orderSerialTaskManager) {
+        localInstance = new Traveler(apiKey, applicationContext,
+                taskManager,
+                orderSerialTaskManager);
+        return localInstance;
+    }
+
+    private Traveler(String apiKey, Context context, TaskManager taskManager,
+                     TaskManager orderSerialTaskManager) {
+        this.taskManager = taskManager;
+        this.orderSerialTaskManager = orderSerialTaskManager;
         this.session = new Session(apiKey, context);
 
         //read token from disk
@@ -105,11 +120,15 @@ public class Traveler {
      */
     public static void flightSearch(FlightQuery flightQuery, FlightSearchCallback flightSearchCallback) {
         if (null == localInstance) {
-            flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
+            flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED,
+                    "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedUrlRequest request = Router.searchFlight(localInstance.session, flightQuery, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.searchFlight(localInstance.session, flightQuery,
+                    localInstance.session.getContext());
 
-            AuthenticatedRemoteNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedRemoteNetworkRequestTask<List<Flight>> searchFlightTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request,
+                            new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
