@@ -320,7 +320,9 @@ public class Router {
                     }
                 }
 
-                return new URL(sb.toString());
+                URL result = new URL(sb.toString());
+                return result;
+                //ALVTAG I want this new URL to be a mock
             } catch (MalformedURLException e) {
                 TravelerLog.e("Bad URL: %s", url + path);
                 return null;

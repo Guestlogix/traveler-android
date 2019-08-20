@@ -84,7 +84,7 @@ public class NetworkTask extends Task {
 
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-
+            //ALVTAG: this url should be a mock, its openConnection should also be a mock
             // Headers
 
             Map<String, String> headers = request.getHeaders();

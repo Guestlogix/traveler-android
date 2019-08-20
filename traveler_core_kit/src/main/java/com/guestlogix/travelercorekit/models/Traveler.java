@@ -46,11 +46,13 @@ public final class Traveler {
     }
 
     @ExistsOnlyForTesting
-    public static Traveler initializeForTesting(String apiKey, Context applicationContext,
-                                                TaskManager taskManager, TaskManager orderSerialTaskManager) {
+    public static Traveler initializeForTesting(String apiKey,
+                                                Context applicationContext,
+                                                Session session) {
         localInstance = new Traveler(apiKey, applicationContext,
-                taskManager,
-                orderSerialTaskManager);
+                new TaskManager(),
+                new TaskManager(TaskManager.Mode.SERIAL));
+        localInstance.session = session;
         return localInstance;
     }
 
