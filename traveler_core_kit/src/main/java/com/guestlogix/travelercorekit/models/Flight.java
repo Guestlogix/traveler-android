@@ -61,6 +61,18 @@ public class Flight implements Serializable {
         return ((Flight) obj).id.equals(this.id);
     }
 
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id='" + id + '\'' +
+                ", number='" + number + '\'' +
+                ", departureAirport=" + departureAirport +
+                ", arrivalAirport=" + arrivalAirport +
+                ", departureDate=" + departureDate +
+                ", arrivalDate=" + arrivalDate +
+                '}';
+    }
+
     static class FlightObjectMappingFactory implements ObjectMappingFactory<Flight> {
         @Override
         public Flight instantiate(JsonReader reader) throws Exception {
