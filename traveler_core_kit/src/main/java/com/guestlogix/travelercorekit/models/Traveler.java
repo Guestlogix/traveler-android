@@ -14,7 +14,6 @@ import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.ExistsOnlyForTesting;
-import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -46,14 +45,12 @@ public final class Traveler {
     }
 
     @ExistsOnlyForTesting
-    public static Traveler initializeForTesting(String apiKey,
-                                                Context applicationContext,
-                                                Session session) {
-        localInstance = new Traveler(apiKey, applicationContext,
-                new TaskManager(),
-                new TaskManager(TaskManager.Mode.SERIAL));
-        localInstance.session = session;
-        return localInstance;
+    static boolean isTokenReady(){
+        if (null == localInstance || null == localInstance.session || null == localInstance.session.getToken()) {
+            return false;
+        } else {
+            return !TextUtils.isEmpty(localInstance.session.getToken().getValue());
+        }
     }
 
     private Traveler(String apiKey, Context context, TaskManager taskManager,
