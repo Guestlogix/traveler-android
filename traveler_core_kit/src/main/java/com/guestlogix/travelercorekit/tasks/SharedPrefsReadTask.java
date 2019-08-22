@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 public class SharedPrefsReadTask extends SharedPrefsTask {
 
@@ -24,7 +25,7 @@ public class SharedPrefsReadTask extends SharedPrefsTask {
 
     @Override
     public void execute() {
-        if (isEmpty(key)) {
+        if (TextUtils.isEmpty(key)) {
             error = new SharedPrefsReadError();
             finish();
             return;
@@ -32,7 +33,7 @@ public class SharedPrefsReadTask extends SharedPrefsTask {
 
         String value = sharedPreferences.getString(key, "");
 
-        if (isEmpty(value)) {
+        if (TextUtils.isEmpty(value)) {
             error = new SharedPrefsReadError(); // Add somethign here
             finish();
             return;
@@ -41,9 +42,5 @@ public class SharedPrefsReadTask extends SharedPrefsTask {
         result = value;
 
         finish();
-    }
-
-    public static boolean isEmpty(CharSequence str) {
-        return str == null || str.length() == 0;
     }
 }
