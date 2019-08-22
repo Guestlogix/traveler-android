@@ -5,11 +5,11 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +32,7 @@ public class TravelerTest{
     }
 
     @Test
-    public void initTravellerTest() throws InterruptedException {
-        // Verify that the received data is correct.
+    public void flightSearchTest() throws Exception {
 
         Date date =  Calendar.getInstance().getTime();
         FlightQuery query = new FlightQuery("AC100", date);
@@ -43,18 +42,28 @@ public class TravelerTest{
         }
 
         CountDownLatch latch = new CountDownLatch(1);
+        final List<Error> errorList = new ArrayList<>();
 
         Traveler.flightSearch(query, new FlightSearchCallback() {
             @Override
             public void onFlightSearchSuccess(List<Flight> flights) {
+                System.out.println("TravelerTest::onFlightSearchSuccess");
+                for (Flight flight:flights) {
+                    System.out.println(flight.toString());
+                }
+
                 latch.countDown();
             }
 
             @Override
             public void onFlightSearchError(Error error) {
+                System.out.println("TravelerTest::onFlightSearchError");
+                error.printStackTrace();
+                errorList.add(error);
                 latch.countDown();
             }
         });
         latch.await();
+        Assert.assertEquals(0, errorList.size());
     }
 }
