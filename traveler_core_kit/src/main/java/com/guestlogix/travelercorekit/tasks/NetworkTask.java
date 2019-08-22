@@ -84,6 +84,7 @@ public class NetworkTask extends Task {
 
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
+
             // Headers
 
             Map<String, String> headers = request.getHeaders();
