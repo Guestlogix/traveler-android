@@ -47,7 +47,6 @@ public class TravelerTest{
                 for (Flight flight:flights) {
                     System.out.println(flight.toString());
                 }
-
                 latch.countDown();
             }
 
