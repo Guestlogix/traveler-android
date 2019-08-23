@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit;
+package com.guestlogix.travelercorekit.router;
 
 import java.net.URL;
 import java.util.Map;

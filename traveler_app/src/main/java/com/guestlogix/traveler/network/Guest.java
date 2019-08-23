@@ -1,10 +1,9 @@
 package com.guestlogix.traveler.network;
 
-import android.content.Context;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.guestlogix.traveler.callbacks.ProfileFetchCallback;
 import com.guestlogix.traveler.models.Profile;
-import com.guestlogix.travelercorekit.UrlRequest;
+import com.guestlogix.travelercorekit.router.UrlRequest;
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.RemoteNetworkRequestTask;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
