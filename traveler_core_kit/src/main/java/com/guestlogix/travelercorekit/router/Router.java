@@ -1,4 +1,5 @@
-package com.guestlogix.travelercorekit;
+
+package com.guestlogix.travelercorekit.router;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,6 +7,7 @@ import android.os.Build;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.tasks.NetworkTask.Request.Method;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -13,12 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
-
-import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
-
 
 public class Router {
     private static final String BASE_URL = "https://traveler.rc.guestlogix.io/v1";
@@ -33,17 +30,37 @@ public class Router {
                 .build();
     }
 
+    private static AuthenticatedUrlRequest buildAuthenticatedRequest(Session session, Context context, Method method,
+                                                                     String path,
+                                                                     @Nullable HashMap<String, String> params,
+                                                                     @Nullable HashMap<String, List<String>> paramArrays) {
+        RequestBuilder requestBuilder = RequestBuilder.Builder();
+
+        requestBuilder.method(method)
+                .url(BASE_URL)
+                .path(path)
+                .headers(buildHeaders(context))
+                .apiKey(session.getApiKey());
+        if (null != paramArrays) {
+            for (String key : paramArrays.keySet()) {
+                requestBuilder.paramArray(key, paramArrays.get(key));
+            }
+        }
+        if (null != params) {
+            for (String key : params.keySet()) {
+                requestBuilder.param(key, params.get(key));
+            }
+        }
+        return requestBuilder.build(session.getToken().getValue());
+    }
+
     // /flight?flight-number=xxx&departure-date=xxx
     public static AuthenticatedUrlRequest searchFlight(Session session, FlightQuery query, Context context) {
-        return RequestBuilder.Builder()
-                .method(Method.GET)
-                .url(BASE_URL)
-                .path("/flight")
-                .param("flight-number", query.getNumber())
-                .param("departure-date", DateHelper.formatDateToISO8601(query.getDate()))
-                .headers(buildHeaders(context))
-                .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+        HashMap<String, String> params = new HashMap<>();
+        params.put("flight-number", query.getNumber());
+        params.put("departure-date", DateHelper.formatDateToISO8601(query.getDate()));
+
+        return buildAuthenticatedRequest(session, context, Method.GET, "/flight", params, null);
     }
 
     // /catalog?flight-ids=xxx&flight-ids=yyy...
@@ -55,15 +72,10 @@ public class Router {
                 flightIds.add(flight.getId());
             }
         }
+        HashMap<String, List<String>> paramArrays = new HashMap<>();
+        paramArrays.put("flight-ids", flightIds);
 
-        return RequestBuilder.Builder()
-                .method(Method.GET)
-                .url(BASE_URL)
-                .path("/catalog")
-                .paramArray("flight-ids", flightIds) // catalogQuery.getFlights().stream().map(item -> item.getId()).collect(Collectors.toList());
-                .headers(buildHeaders(context))
-                .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+        return buildAuthenticatedRequest(session, context, Method.GET, "/catalog", null, paramArrays);
     }
 
     // /product/{id}
@@ -280,149 +292,6 @@ public class Router {
             return context.getResources().getConfiguration().getLocales().get(0);
         } else {
             return context.getResources().getConfiguration().locale;
-        }
-    }
-
-    private static class RequestBuilder {
-        private Method method;
-        private String path;
-        private String url;
-        private JSONPayloadProvider payload = null;
-        private String apiKey;
-        private Map<String, String> headers;
-        private List<String> params;
-
-        private RequestBuilder() {
-        }
-
-        private static RequestBuilder Builder() {
-            return new RequestBuilder();
-        }
-
-        static URL createURL(String url, String path, List<String> queryParams) {
-            try {
-                StringBuilder sb = new StringBuilder();
-
-                sb.append(url);
-                sb.append(path);
-
-                if (queryParams != null) {
-                    sb.append("?");
-
-                    Iterator<String> paramIterator = queryParams.listIterator();
-
-                    while (paramIterator.hasNext()) {
-                        sb.append(paramIterator.next());
-
-                        if (paramIterator.hasNext()) {
-                            sb.append("&");
-                        }
-                    }
-                }
-
-                return new URL(sb.toString());
-            } catch (MalformedURLException e) {
-                TravelerLog.e("Bad URL: %s", url + path);
-                return null;
-            }
-        }
-
-        static URL createURL(String url, String path) {
-            return createURL(url, path, null);
-        }
-
-        RequestBuilder method(Method method) {
-            this.method = method;
-            return this;
-        }
-
-        RequestBuilder path(String path) {
-            this.path = path;
-            return this;
-        }
-
-        RequestBuilder url(String url) {
-            this.url = url;
-            return this;
-        }
-
-        RequestBuilder param(String key, String value) {
-            if (params == null) {
-                params = new ArrayList<>();
-            }
-
-            params.add(String.format("%s=%s", urlEncodeUTF8(key), urlEncodeUTF8(value)));
-            return this;
-        }
-
-        public RequestBuilder payload(JSONPayloadProvider payload) {
-            this.payload = payload;
-            return this;
-        }
-
-        RequestBuilder paramArray(String key, List<String> values) {
-            if (params == null) {
-                params = new ArrayList<>();
-            }
-
-            for (String value : values) {
-                params.add(String.format("%s=%s", urlEncodeUTF8(key), urlEncodeUTF8(value)));
-            }
-            return this;
-        }
-
-        RequestBuilder headers(Map<String, String> headers) {
-            this.headers = headers;
-            return this;
-        }
-
-        RequestBuilder apiKey(String key) {
-            this.apiKey = key;
-            return this;
-        }
-
-        AuthenticatedUrlRequest build(String token) {
-            URL url;
-            if (params == null) {
-                url = createURL(this.url, path);
-            } else {
-                url = createURL(this.url, path, params);
-            }
-
-            if (payload == null) {
-                return new AuthenticatedUrlRequest(method, url, apiKey, token, headers);
-            }
-
-            return new AuthenticatedUrlRequest(method, url, apiKey, token, headers) {
-                @Override
-                public JSONObject getJSONPayload() {
-                    return payload.getJsonPayload();
-                }
-            };
-        }
-
-        UnauthenticatedUrlRequest build() {
-            URL url;
-            if (params == null) {
-                url = createURL(this.url, path);
-            } else {
-                url = createURL(this.url, path, params);
-            }
-
-            if (payload == null) {
-                return new UnauthenticatedUrlRequest(method, url, apiKey, headers);
-            }
-
-            return new UnauthenticatedUrlRequest(method, url, apiKey, headers) {
-                @Override
-                public JSONObject getJSONPayload() {
-                    return payload.getJsonPayload();
-                }
-            };
-        }
-
-        interface JSONPayloadProvider {
-            JSONObject getJsonPayload();
         }
     }
 }
