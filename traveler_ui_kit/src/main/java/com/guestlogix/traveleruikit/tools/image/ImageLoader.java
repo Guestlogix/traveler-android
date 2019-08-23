@@ -1,7 +1,7 @@
 package com.guestlogix.traveleruikit.tools.image;
 
 import android.graphics.Bitmap;
-import com.guestlogix.travelercorekit.UrlRequest;
+import com.guestlogix.travelercorekit.router.UrlRequest;
 import com.guestlogix.travelercorekit.tasks.DownloadImageTask;
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
