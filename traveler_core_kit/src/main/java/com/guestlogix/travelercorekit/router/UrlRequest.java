@@ -1,4 +1,4 @@
-package com.guestlogix.travelercorekit;
+package com.guestlogix.travelercorekit.router;
 
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import org.json.JSONObject;

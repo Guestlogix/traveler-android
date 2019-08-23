@@ -1,6 +1,6 @@
 package com.guestlogix.travelercorekit.tasks;
 
-import com.guestlogix.travelercorekit.UrlRequest;
+import com.guestlogix.travelercorekit.router.UrlRequest;
 import com.guestlogix.travelercorekit.utilities.*;
 
 public class RemoteNetworkRequestTask<T> extends Task {

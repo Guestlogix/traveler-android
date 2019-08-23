@@ -4,8 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.Nullable;
-import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
-import com.guestlogix.travelercorekit.Router;
+import com.guestlogix.travelercorekit.router.AuthenticatedUrlRequest;
+import com.guestlogix.travelercorekit.router.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.*;
 import com.guestlogix.travelercorekit.tasks.AuthTokenFetchTask;
@@ -13,7 +13,6 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;

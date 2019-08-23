@@ -2,14 +2,11 @@ package com.guestlogix.travelercorekit.tasks;
 
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.models.Session;
-import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
+import com.guestlogix.travelercorekit.router.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
 

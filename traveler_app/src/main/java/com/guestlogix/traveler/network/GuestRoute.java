@@ -2,7 +2,7 @@ package com.guestlogix.traveler.network;
 
 import androidx.annotation.NonNull;
 import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.UrlRequest;
+import com.guestlogix.travelercorekit.router.UrlRequest;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import org.json.JSONObject;
 
