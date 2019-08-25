@@ -28,7 +28,7 @@ public class Availability implements Serializable {
         this.bookingOptionSet = bookingOptionSet;
     }
 
-    Date getDate() {
+    public Date getDate() {
         return date;
     }
 

@@ -81,6 +81,14 @@ public class Traveler {
         taskManager.addTask(authTokenFetchBlockTask);
     }
 
+    private static Traveler getInstance() {
+        if (localInstance == null) {
+            Log.e(TAG, "SDK Not initialized");
+        }
+
+        return localInstance;
+    }
+
     public static void identify(String identifier) {
         if (null == localInstance) {
             Log.e(TAG, "SDK Not initialized.");
@@ -199,13 +207,28 @@ public class Traveler {
      * @param checkAvailabilityCallback callback methods to be executed once the availability fetch is complete.
      */
     public static void fetchAvailabilities(Product product, Date startDate, Date endDate, FetchAvailabilitiesCallback checkAvailabilityCallback) {
-        if (null == localInstance) {
-            checkAvailabilityCallback.onAvailabilityError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
-        } else {
-            AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, product, startDate, endDate, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<List<Availability>> fetchAvailabilitiesTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
+        if (getInstance() == null) {
+            return;
+        }
 
-            BlockTask fetchBlockTask = new BlockTask() {
+        if (endDate.before(startDate)) {
+            Log.e(TAG, "endDate should be after startDate");
+            return;
+        }
+
+        if (endDate.before(new Date())) {
+            checkAvailabilityCallback.onAvailabilitySuccess(new ArrayList<>());
+            return;
+        }
+
+        Date date = startDate;
+        if (startDate.before(new Date())) {
+            date = new Date();
+        }
+
+        AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, product, date, endDate, localInstance.session.getContext());
+        AuthenticatedRemoteNetworkRequestTask<List<Availability>> fetchAvailabilitiesTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
+        BlockTask fetchBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
                     if (null != fetchAvailabilitiesTask.getError()) {
@@ -215,12 +238,11 @@ public class Traveler {
                         checkAvailabilityCallback.onAvailabilitySuccess(fetchAvailabilitiesTask.getResource());
                     }
                 }
-            };
+        };
 
-            fetchBlockTask.addDependency(fetchAvailabilitiesTask);
-            localInstance.taskManager.addTask(fetchAvailabilitiesTask);
-            TaskManager.getMainTaskManager().addTask(fetchBlockTask);
-        }
+        fetchBlockTask.addDependency(fetchAvailabilitiesTask);
+        localInstance.taskManager.addTask(fetchAvailabilitiesTask);
+        TaskManager.getMainTaskManager().addTask(fetchBlockTask);
     }
 
     /**

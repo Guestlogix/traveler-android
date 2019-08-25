@@ -71,9 +71,9 @@ public class BookingProductFragment extends BaseFragment implements FetchAvailab
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        datePicker = view.findViewById(R.id.datePickerCell);
+        //datePicker = view.findViewById(R.id.datePickerCell);
         datePicker.setHint(getString(R.string.hint_select_date));
-        flavourPicker = view.findViewById(R.id.timePickerCell);
+        //flavourPicker = view.findViewById(R.id.timePickerCell);
         flavourPicker.setHint(getString(R.string.hint_select_time));
         flavourPicker.setVisibility(View.GONE);
 

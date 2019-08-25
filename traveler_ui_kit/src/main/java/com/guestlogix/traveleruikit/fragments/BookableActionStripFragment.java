@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.models.Pass;
@@ -18,6 +19,7 @@ import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
+import com.guestlogix.traveleruikit.activities.AvailabilityActivity;
 import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.models.BookingContext;
 import com.guestlogix.traveleruikit.models.PurchaseContext;
@@ -34,6 +36,8 @@ public class BookableActionStripFragment extends Fragment {
     public static final String ARG_BOOKING_CONTEXT = "ARG_BOOKING_CONTEXT";
     public static final String TAG = "BookableActionStrip";
 
+    private int containerId;
+
     public static BookableActionStripFragment newInstance(BookingContext bookingContext) {
         BookableActionStripFragment f = new BookableActionStripFragment();
         Bundle args = new Bundle();
@@ -46,6 +50,8 @@ public class BookableActionStripFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bookable_action_strip, container, false);
 
+        containerId = container.getId();
+
         Bundle args = getArguments();
 
         if (args == null || !args.containsKey(ARG_BOOKING_CONTEXT)) {
@@ -53,15 +59,19 @@ public class BookableActionStripFragment extends Fragment {
             return view;
         }
 
+
+        BookingContext bookingContext = (BookingContext) args.get(ARG_BOOKING_CONTEXT);
+
         ActionStrip actionStrip = view.findViewById(R.id.action_container);
         actionStrip.setActionOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(BookableActionStripFragment.this.getContext(), AvailabilityActivity.class);
+                intent.putExtra(AvailabilityActivity.ARG_PRODUCT, bookingContext.getProduct());
+                startActivity(intent);
             }
         });
 
-        BookingContext bookingContext = (BookingContext) args.get(ARG_BOOKING_CONTEXT);
 
         // Set Price
         Price price = bookingContext.getPrice();

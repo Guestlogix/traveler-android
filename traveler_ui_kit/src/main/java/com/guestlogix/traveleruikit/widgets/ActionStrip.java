@@ -59,6 +59,10 @@ public class ActionStrip extends FrameLayout {
             actionLabel = view.findViewById(R.id.actionLabel);
             actionProgressBar = view.findViewById(R.id.actionProgressBar);
 
+            actionButton.setText(attrs.getAttributeValue("http://www.guestlogix.com","buttonText"));
+            actionValue.setText(attrs.getAttributeValue("http://www.guestlogix.com", "valueText"));
+            actionLabel.setText(attrs.getAttributeValue("http://www.guestlogix.com", "labelText"));
+
             state = ActionStripState.ENABLED; // Default behaviour.
             onStateChange();
         }
