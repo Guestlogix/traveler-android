@@ -13,7 +13,6 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.ExistsOnlyForTesting;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -41,15 +40,6 @@ public final class Traveler {
             localInstance = new Traveler(apiKey, applicationContext,
                     new TaskManager(),
                     new TaskManager(TaskManager.Mode.SERIAL));
-        }
-    }
-
-    @ExistsOnlyForTesting
-    static boolean isTokenReady(){
-        if (null == localInstance || null == localInstance.session || null == localInstance.session.getToken()) {
-            return false;
-        } else {
-            return !TextUtils.isEmpty(localInstance.session.getToken().getValue());
         }
     }
 
