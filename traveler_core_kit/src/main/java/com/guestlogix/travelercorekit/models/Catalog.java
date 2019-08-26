@@ -20,6 +20,13 @@ public class Catalog implements Serializable {
         return groups;
     }
 
+    @Override
+    public String toString() {
+        return "Catalog{" +
+                "groups=" + groups +
+                '}';
+    }
+
     static class CatalogObjectMappingFactory implements ObjectMappingFactory<Catalog> {
         @Override
         public Catalog instantiate(JsonReader reader) throws Exception {
