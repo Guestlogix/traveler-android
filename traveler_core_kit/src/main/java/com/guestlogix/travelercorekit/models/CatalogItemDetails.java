@@ -76,6 +76,10 @@ public class CatalogItemDetails implements Product {
         return information;
     }
 
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
     static class CatalogItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
         @Override
         public CatalogItemDetails instantiate(JsonReader reader) throws Exception {

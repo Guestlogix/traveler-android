@@ -69,6 +69,7 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
 
     private void onQuestionFormCompleted(BookingForm bookingForm) {
         form.setFormCompletedListener(null);
+        // TODO: Must show a spinner or something UI blocking until this is done
         Traveler.createOrder(bookingForm, this);
     }
 

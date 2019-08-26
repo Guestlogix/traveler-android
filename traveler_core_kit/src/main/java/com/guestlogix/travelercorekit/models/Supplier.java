@@ -18,6 +18,14 @@ public class Supplier implements Serializable {
         this.trademark = trademark;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Trademark getTrademark() {
+        return trademark;
+    }
+
     public static class SupplierObjectMappingFactory implements ObjectMappingFactory<Supplier> {
         @Override
         public Supplier instantiate(JsonReader reader) throws Exception {

@@ -126,6 +126,23 @@ public class CatalogItemDetailsFragment extends Fragment {
 
         catalogItemDetailsTabs.setupWithViewPager(catalogItemDetailsPager);
 
+        if (catalogItemDetails.getSupplier().getTrademark() != null) {
+            TextView supplierTextView = view.findViewById(R.id.textView_catalogItemDetails_supplier);
+            supplierTextView.setText(catalogItemDetails.getSupplier().getTrademark().getCopyright());
+
+            ImageView imageView = view.findViewById(R.id.imageView_catalogItemDetails_supplier);
+            AssetManager.getInstance().loadImage(catalogItemDetails.getSupplier().getTrademark().getIconURL(), imageView.getWidth(), imageView.getHeight(), imageView.getId(), new ImageLoader.ImageLoaderCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    imageView.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onError() {
+
+                }
+            });
+        }
 
         return view;
     }

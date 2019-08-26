@@ -1,6 +1,8 @@
 package com.guestlogix.travelercorekit.models;
 
-public class PaymentInfo {
+import java.io.Serializable;
+
+public class PaymentInfo implements Serializable {
     private String detail;
 
     PaymentInfo(String detail) {
