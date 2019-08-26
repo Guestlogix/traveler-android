@@ -19,6 +19,8 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:${gradle_version}"
         classpath "android.arch.navigation:navigation-safe-args-gradle-plugin:${android_navigation_controller_version}"
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
     }
 }
 
