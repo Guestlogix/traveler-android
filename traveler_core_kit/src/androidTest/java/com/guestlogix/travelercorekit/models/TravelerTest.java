@@ -32,7 +32,6 @@ public class TravelerTest {
     @BeforeClass
     public static void setupOnce() {
         Context instrumentationContext = InstrumentationRegistry.getInstrumentation().getContext();
-
         Traveler.initialize(TRAVELER_API_KEY, instrumentationContext);
     }
 
