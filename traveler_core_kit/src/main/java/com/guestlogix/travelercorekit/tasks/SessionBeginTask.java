@@ -28,7 +28,7 @@ public class SessionBeginTask extends Task {
             protected void main() {
                 if (null != sharedPrefsReadTask.getError()) {
                     sharedPrefsReadTask.getError().printStackTrace();
-                    //TODO: ALVTAG in case of error, shall the (likely to be null) task.getResult still be written?)
+                    return;
                 }
                 session.setToken(new Token(sharedPrefsReadTask.getResult()));
                 //session.getAuthToken().setValue(sharedPrefsReadTask.getResult());
