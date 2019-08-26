@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.content.Context;
+import androidx.annotation.Nullable;
 
 /**
  * Session holds the api key, context, token and user Id.
@@ -16,6 +17,7 @@ public class Session {
         this.apiKey = apiKey;
     }
 
+    @Nullable
     public Token getToken() {
         return token;
     }
