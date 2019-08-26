@@ -23,8 +23,8 @@ public final class Traveler {
     private static final String TAG = "Traveler";
     private static Traveler localInstance;
 
-    private TaskManager taskManager;
-    private TaskManager orderSerialTaskManager;
+    private TaskManager taskManager = new TaskManager();
+    private TaskManager orderSerialTaskManager = new TaskManager(TaskManager.Mode.SERIAL);
     private Session session;
 
     /**
@@ -37,16 +37,11 @@ public final class Traveler {
         if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
         } else {
-            localInstance = new Traveler(apiKey, applicationContext,
-                    new TaskManager(),
-                    new TaskManager(TaskManager.Mode.SERIAL));
+            localInstance = new Traveler(apiKey, applicationContext);
         }
     }
 
-    private Traveler(String apiKey, Context context, TaskManager taskManager,
-                     TaskManager orderSerialTaskManager) {
-        this.taskManager = taskManager;
-        this.orderSerialTaskManager = orderSerialTaskManager;
+    private Traveler(String apiKey, Context context) {
         this.session = new Session(apiKey, context);
 
         //read token from disk
