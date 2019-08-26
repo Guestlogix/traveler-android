@@ -37,10 +37,6 @@ public class TravelerTest{
         Date date =  Calendar.getInstance().getTime();
         FlightQuery query = new FlightQuery("AC100", date);
 
-        while(!Traveler.isTokenReady()){
-            Thread.sleep(1000);
-        }
-
         CountDownLatch latch = new CountDownLatch(1);
         final List<Error> errorList = new ArrayList<>();
 
