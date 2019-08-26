@@ -20,6 +20,12 @@ import java.util.*;
 public class Router {
     private static final String BASE_URL = "https://traveler.rc.guestlogix.io/v1";
 
+    @Nullable
+    private static String getSessionToken(Session session) {
+        Token token = session.getToken();
+        return (null == token) ? null : token.getValue();
+    }
+
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return RequestBuilder.Builder()
                 .method(Method.GET)
@@ -51,7 +57,7 @@ public class Router {
                 requestBuilder.param(key, params.get(key));
             }
         }
-        return requestBuilder.build(session.getToken().getValue());
+        return requestBuilder.build(getSessionToken(session));
     }
 
     // /flight?flight-number=xxx&departure-date=xxx
@@ -86,7 +92,7 @@ public class Router {
                 .path("/product/" + product.getId())
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     // /product/{id}/schedule
@@ -99,7 +105,7 @@ public class Router {
                 .param("to", DateHelper.formatDateToISO8601(to))
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     // /product/{id}/pass
@@ -118,7 +124,7 @@ public class Router {
             rb.param("option-id", availability.getId());
         }
 
-        return rb.build(session.getToken().getValue());
+        return rb.build(getSessionToken(session));
     }
 
     // /product/{id}/question?&passes=xxx&passes=yyy&passes=zzz...
@@ -136,7 +142,7 @@ public class Router {
                 .paramArray("pass-ids", passIds)
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest orderCreate(Session session, List<BookingForm> forms, Context context) {
@@ -192,7 +198,7 @@ public class Router {
 
                     return null;
                 })
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest orderProcess(Session session, Order order, Payment payment, Context context) {
@@ -203,7 +209,7 @@ public class Router {
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
                 .payload(payment::getSecurePayload)
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest orders(OrderQuery query, Session session, Context context) {
@@ -223,7 +229,7 @@ public class Router {
         rb.headers(buildHeaders(context))
                 .apiKey(session.getApiKey());
 
-        return rb.build(session.getToken().getValue());
+        return rb.build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest cancellationQuote(Order order, Session session, Context context) {
@@ -233,7 +239,7 @@ public class Router {
                 .path("/order/" + order.getId() + "/cancellation")
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest cancelOrder(CancellationQuote quote, Session session, Context context) {
@@ -243,7 +249,7 @@ public class Router {
                 .path("/order/" + quote.getOrder().getId() + "/cancellation/" + quote.getId())
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest emailOrderConfirmation(Order order, Session session, Context context) {
@@ -254,7 +260,7 @@ public class Router {
                 .path("/order/" + order.getId() + "/ticket")
                 .headers(buildHeaders(context))
                 .apiKey(session.getApiKey())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     /**
