@@ -1,14 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 
 public class Flight implements Serializable {
