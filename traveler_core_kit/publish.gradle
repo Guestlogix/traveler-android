@@ -8,8 +8,10 @@ publishing {
     publications {
         Production(MavenPublication) {
             artifact("$buildDir/outputs/aar/traveler_core_kit-release.aar")
+            artifact sourcesJar
+            artifact javadocJar
             groupId
-            artifactId 'core'
+            artifactId 'traveler_core_kit'
             version this.version
 
             pom.withXml {
@@ -38,7 +40,7 @@ bintray {
     override = true
     pkg {
         repo = 'Guestlogix'
-        name = 'core'
+        name = 'traveler_core_kit'
         description = "SDK to enable rapid go-to-market Android apps for Guestlogix partners."
         publish = true
         publicDownloadNumbers = true
