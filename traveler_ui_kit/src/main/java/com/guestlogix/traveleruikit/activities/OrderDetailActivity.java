@@ -60,8 +60,8 @@ public class OrderDetailActivity extends AppCompatActivity {
             productView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(self, CatalogItemDetailsActivity.class);
-                    intent.putExtra(CatalogItemDetailsActivity.ARG_PRODUCT, product);
+                    Intent intent = new Intent(self, ProductDetailsActivity.class);
+                    intent.putExtra(ProductDetailsActivity.ARG_PRODUCT, product);
                     startActivity(intent);
                 }
             });
