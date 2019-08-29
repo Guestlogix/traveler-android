@@ -11,6 +11,9 @@ buildscript {
     ext.android_support_component_version = '28.0.0'
     ext.app_center_sdk_version = '1.11.0'
     ext.stripe_sdk_version = '8.3.0'
+    ext.traveler_core_version = '0.0.1'
+    ext.traveler_ui_version = '0.0.1'
+    ext.traveler_stripe_payment_version = '0.0.1'
 
     repositories {
         google()
