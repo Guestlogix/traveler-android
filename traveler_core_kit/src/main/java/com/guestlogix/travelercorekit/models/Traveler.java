@@ -63,7 +63,8 @@ public final class Traveler {
         BlockTask sessionBeginBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                if (!TextUtils.isEmpty(sessionBeginTask.getSession().getToken().getValue())) {
+                Token token = sessionBeginTask.getSession().getToken();
+                if (null != token && !TextUtils.isEmpty(token.getValue())) {
                     authTokenFetchTask.cancel();
                     authTokenFetchBlockTask.cancel();
                 }
