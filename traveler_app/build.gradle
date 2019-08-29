@@ -56,9 +56,9 @@ android {
 dependencies {
 
     // Traveler SDK
-    implementation project(path: ':traveler_core_kit')
-    implementation project(path: ':traveler_ui_kit')
-    implementation project(path: ':traveler_stripe_payment_provider')
+    implementation "com.guestlogix:traveler_core_kit:${traveler_core_version}"
+    implementation "com.guestlogix:traveler_ui_kit:${traveler_ui_version}"
+    implementation "com.guestlogix:traveler_stripe_payment_provider:${traveler_stripe_payment_version}"
 
     // Android support dependencies
     implementation "com.android.support:appcompat-v7:${android_support_version}"
