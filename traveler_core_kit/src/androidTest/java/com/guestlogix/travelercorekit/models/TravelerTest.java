@@ -48,9 +48,6 @@ public class TravelerTest {
             @Override
             public void onFlightSearchSuccess(List<Flight> flights) {
                 Log.v("TravelerTest", "TravelerTest::onFlightSearchSuccess");
-                for (Flight flight : flights) {
-                    Log.v("TravelerTest", flight.toString());
-                }
 
                 Assert.assertTrue(flights.size() >= 1);
                 latch.countDown();
@@ -74,20 +71,19 @@ public class TravelerTest {
         CountDownLatch latch = new CountDownLatch(1);
         List<Flight> flights = new ArrayList<>();
         final List<Error> errorList = new ArrayList<>();
-        flights.add(getMockedFlight());
 
         CatalogQuery catalogueQuery = new CatalogQuery(flights);
         Traveler.fetchCatalog(catalogueQuery, new CatalogSearchCallback() {
             @Override
             public void onCatalogSuccess(Catalog catalog) {
-                Log.v("TravelerTest", "TravelerTestflight::SearchTestWithCatalogueTest::onCatalogSuccess");
+                Log.v("TravelerTest", "catalogueTest::onCatalogSuccess");
                 Log.v("TravelerTest", catalog.toString());
                 latch.countDown();
             }
 
             @Override
             public void onCatalogError(Error error) {
-                Log.e("TravelerTest", "TravelerTest::flightSearchTestWithCatalogueTest::onCatalogError");
+                Log.e("TravelerTest", "catalogueTest::onCatalogError");
                 error.printStackTrace();
                 errorList.add(error);
                 latch.countDown();
@@ -98,7 +94,61 @@ public class TravelerTest {
         Assert.assertEquals(0, errorList.size());
     }
 
-    private static Flight getMockedFlight() {
+    /**
+     * This test can only succeed if flightSearchTest had retrieved a valid flight ID
+     */
+    @Test
+    public void flightSearchWithCatalogueTest() throws Exception {
+        Date date = Calendar.getInstance().getTime();
+        FlightQuery query = new FlightQuery("AC100", date);
+
+        CountDownLatch latch = new CountDownLatch(1);
+        final List<Error> errorList = new ArrayList<>();
+
+        Traveler.flightSearch(query, new FlightSearchCallback() {
+            @Override
+            public void onFlightSearchSuccess(List<Flight> flights) {
+                Log.v("TravelerTest", "flightSearchWithCatalogueTest::onFlightSearchSuccess");
+                Assert.assertTrue(flights.size() >= 1);
+
+                CatalogQuery catalogueQuery = new CatalogQuery(flights);
+                Traveler.fetchCatalog(catalogueQuery, new CatalogSearchCallback() {
+                    @Override
+                    public void onCatalogSuccess(Catalog catalog) {
+                        Log.v("TravelerTest", "flightSearchWithCatalogueTest::onCatalogSuccess");
+                        Log.v("TravelerTest", catalog.toString());
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onCatalogError(Error error) {
+                        Log.e("TravelerTest", "flightSearchWithCatalogueTest::onCatalogError");
+                        error.printStackTrace();
+                        errorList.add(error);
+                        latch.countDown();
+                    }
+                });
+            }
+
+            @Override
+            public void onFlightSearchError(Error error) {
+                Log.e("TravelerTest", "flightSearchWithCatalogueTest::onFlightSearchError");
+                error.printStackTrace();
+                errorList.add(error);
+                latch.countDown();
+            }
+        });
+
+        latch.await();
+        Assert.assertEquals(0, errorList.size());
+    }
+
+    /**
+     * Unused method to demonstrate how an parameter object can be mocked
+     * @param flightId
+     */
+    private Flight getMockedFlight(String flightId) {
+
         Airport mockDepartureAirport = mock(Airport.class);
         when(mockDepartureAirport.getCity()).thenReturn("Toronto");
         when(mockDepartureAirport.getCode()).thenReturn("YYZ");
@@ -110,7 +160,7 @@ public class TravelerTest {
         Date date = Calendar.getInstance().getTime();
 
         Flight mockFlight = mock(Flight.class);
-        when(mockFlight.getId()).thenReturn("1234567890987654321");
+        when(mockFlight.getId()).thenReturn(flightId);
         when(mockFlight.getNumber()).thenReturn("AC100");
         when(mockFlight.getArrivalAirport()).thenReturn(mockArrivalAirport);
         when(mockFlight.getDepartureAirport()).thenReturn(mockDepartureAirport);
