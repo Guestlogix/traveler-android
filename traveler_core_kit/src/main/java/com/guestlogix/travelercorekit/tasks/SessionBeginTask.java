@@ -1,11 +1,13 @@
 package com.guestlogix.travelercorekit.tasks;
 
+import android.util.Log;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 public class SessionBeginTask extends Task {
+    private static String TAG = "SessionBeginTask";
 
     private TaskManager taskManager = new TaskManager();
     private Session session;
@@ -27,6 +29,7 @@ public class SessionBeginTask extends Task {
             @Override
             protected void main() {
                 if (null != sharedPrefsReadTask.getError()) {
+                    Log.e(TAG, "Error reading shared prefs: " + sharedPrefsReadTask.getError().getMessage());
                     sharedPrefsReadTask.getError().printStackTrace();
                     return;
                 }
