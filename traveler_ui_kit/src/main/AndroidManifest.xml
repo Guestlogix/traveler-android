@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".activities.AvailabilityActivity"/>
         <activity android:name=".activities.ProductDetailsActivity"/>
+        <activity android:name=".activities.CancelOrderActivity"/>
     </application>
 
 </manifest>

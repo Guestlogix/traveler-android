@@ -35,6 +35,22 @@ public class CancellationQuote implements Serializable {
         return id;
     }
 
+    public Price getTotalRefund() {
+        return totalRefund;
+    }
+
+    public Price getCancellationCharge() {
+        return cancellationCharge;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public List<ProductCancellationQuote> getProducts() {
+        return products;
+    }
+
     static class Response {
         String id;
         Price totalRefund;

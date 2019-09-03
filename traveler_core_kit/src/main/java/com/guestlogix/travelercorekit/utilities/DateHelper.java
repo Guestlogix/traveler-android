@@ -7,9 +7,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DateHelper {
-    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss"; //ISO 8601
+    // Theres an issue in Java with parsing ISO 8601, so two formats need to be checked for parsing strings
+    private static final String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ"; //ISO 8601
+    private static final String DATE_TIME_PATTERN_WITHOUT_ZONE = "yyyy-MM-dd'T'HH:mm:ss";
+
     private static final String DATE_PATTERN = "yyyy-MM-dd";
-    private static final String PRETTY_DATE_PATTERN = "dd MMM yyyy";
+    private static final String PRETTY_DATE_PATTERN = "MMM dd, yyyy";
     private static final String TIME_PATTERN = "HH:mm";
     private static final Calendar calendar = Calendar.getInstance();
 
@@ -26,7 +29,11 @@ public class DateHelper {
     }
 
     public static Date parseISO8601(String dateString) throws ParseException {
-        return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).parse(dateString);
+        try {
+            return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).parse(dateString);
+        } catch (ParseException e) {
+            return new SimpleDateFormat(DATE_TIME_PATTERN_WITHOUT_ZONE, Locale.getDefault()).parse(dateString);
+        }
     }
 
     public static Date parseDate(String dateString) throws ParseException {

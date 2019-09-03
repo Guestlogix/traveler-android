@@ -42,6 +42,8 @@ public class Supplier implements Serializable {
                 } else if (key.equals("trademark")) {
                     if (reader.peek() != JsonToken.NULL)
                         trademark = new Trademark.TrademarkObjectMappingFactory().instantiate(reader);
+                    else
+                        reader.skipValue();
                 } else {
                     reader.skipValue();
                 }

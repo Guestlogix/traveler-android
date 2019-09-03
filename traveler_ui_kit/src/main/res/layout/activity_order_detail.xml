@@ -1,60 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_height="match_parent"
+<LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView
+            android:layout_weight="1"
+            android:layout_height="0dp"
             android:layout_width="match_parent"
             xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:padding="@dimen/margin_default">
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView_orderDetail_title"
-                android:text="OrderNumber (Status)"
-                style="@style/BodyHeaderTextView"
-                android:textSize="@dimen/text_view_large"/>
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView_orderDetail_date"
-                android:text="Apr 18, 2019"
-                style="@style/BodyLabelTextView"
-                android:textSize="@dimen/text_view_default"
-                android:layout_marginTop="@dimen/margin_small"/>
-        <TextView android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:text="$484.65"
-                  android:id="@+id/textView_orderDetail_price"
-                  style="@style/BodyHeaderTextView"
-                  android:textSize="@dimen/text_view_xlarge"
-                  android:layout_marginTop="@dimen/margin_large"/>
-        <View android:layout_width="match_parent"
-              android:layout_height="1dp"
-              android:background="@color/gray"
-              android:layout_marginTop="@dimen/margin_default"
-              android:layout_marginBottom="@dimen/margin_default"/>
         <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:orientation="vertical"
-                      android:id="@+id/layout_orderDetail_products">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/margin_default">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView_orderDetail_title"
+                    android:text="OrderNumber (Status)"
+                    style="@style/BodyHeaderTextView"
+                    android:textSize="@dimen/text_view_large"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView_orderDetail_date"
+                    android:text="Apr 18, 2019"
+                    style="@style/BodyLabelTextView"
+                    android:textSize="@dimen/text_view_default"
+                    android:layout_marginTop="@dimen/margin_small"/>
+            <TextView android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="$484.65"
+                    android:id="@+id/textView_orderDetail_price"
+                    style="@style/BodyHeaderTextView"
+                    android:textSize="@dimen/text_view_xlarge"
+                    android:layout_marginTop="@dimen/margin_large"/>
+            <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/gray"
+                    android:layout_marginTop="@dimen/margin_default"
+                    android:layout_marginBottom="@dimen/margin_default"/>
+            <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/layout_orderDetail_products">
 
+            </LinearLayout>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:id="@+id/button_orderDetail_emailTickets"
+                    android:text="@string/button_email_tickets"/>
+
+            <TextView android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_billing_info"
+                    android:layout_marginTop="@dimen/margin_xxlarge"
+                    style="@style/BodyHeaderTextView"
+                    android:textSize="@dimen/text_view_large"/>
+            <TextView android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/BodyLabelTextView"
+                    android:text="Visa ending in 4242"
+                    android:layout_marginTop="@dimen/margin_default"
+                    android:layout_marginBottom="@dimen/margin_default"/>
         </LinearLayout>
-        <Button android:layout_width="match_parent"
+    </ScrollView>
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_default">
+        <Button
+                android:id="@+id/button_orderDetail_cancel"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/button_orderDetail_emailTickets"
-                android:text="@string/button_email_tickets"/>
-
-        <TextView android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:text="@string/label_billing_info"
-                  android:layout_marginTop="@dimen/margin_xxlarge"
-                  style="@style/BodyHeaderTextView"
-                  android:textSize="@dimen/text_view_large"/>
-        <TextView android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  style="@style/BodyLabelTextView"
-                  android:text="Visa ending in 4242"
-                  android:layout_marginTop="@dimen/margin_default"
-                  android:layout_marginBottom="@dimen/margin_default"/>
-    </LinearLayout>
-</ScrollView>
+                android:text="Cancel order"/>
+    </FrameLayout>
+</LinearLayout>

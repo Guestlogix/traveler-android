@@ -5,6 +5,7 @@ import com.guestlogix.travelercorekit.utilities.*;
 import android.util.JsonToken;
 
 
+import java.util.Date;
 import java.util.List;
 
 class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
@@ -15,6 +16,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         String purchaseStrategy = null;
         String title = null;
         List<Pass> passes = null;
+        Date eventDate = null;
 
         reader.beginObject();
 
@@ -37,6 +39,9 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
                 case "passes":
                     passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(reader);
                     break;
+                case "experienceDate":
+                    eventDate = DateHelper.parseISO8601(reader.nextString());
+                    break;
                 default:
                     reader.skipValue();
                     break;
@@ -51,7 +56,9 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         Assertion.eval(title != null);
 
         if (purchaseStrategy.equalsIgnoreCase("bookable")) {
-            return new BookableProduct(id, price, passes, title);
+            Assertion.eval(eventDate != null);
+
+            return new BookableProduct(id, price, passes, title, eventDate);
         } else {
             throw new RuntimeException("Unknown product type");
         }

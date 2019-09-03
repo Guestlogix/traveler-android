@@ -101,10 +101,10 @@ public class OrderResult implements Serializable {
                     case "from":
                         String dateString = JsonReaderHelper.nextNullableString(reader);
                         if (dateString != null)
-                            fromDate = DateHelper.parseDate(dateString);
+                            fromDate = DateHelper.parseISO8601(dateString);
                         break;
                     case "to":
-                        fromDate = DateHelper.parseDate(reader.nextString());
+                        fromDate = DateHelper.parseISO8601(reader.nextString());
                         break;
                     case "total":
                         total = reader.nextInt();

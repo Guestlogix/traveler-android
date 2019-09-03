@@ -80,6 +80,7 @@ public class AvailabilityFragment extends Fragment
 
 
                 } else {
+                    // TODO: Use add transactions instead of holding on to container ids
                     Fragment fragment = OptionsFragment.getInstance(product, selectedAvailability);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(containerId, fragment);

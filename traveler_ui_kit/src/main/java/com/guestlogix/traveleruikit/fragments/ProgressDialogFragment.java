@@ -1,4 +1,4 @@
-package com.guestlogix.traveler.fragments;
+package com.guestlogix.traveleruikit.fragments;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import com.guestlogix.traveler.R;
+import com.guestlogix.traveleruikit.R;
 
 import java.util.List;
 

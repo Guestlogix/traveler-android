@@ -18,7 +18,7 @@ import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightsSummaryAdapter;
 import com.guestlogix.traveler.callbacks.ProfileFetchCallback;
-import com.guestlogix.traveler.fragments.ProgressDialogFragment;
+import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.models.CatalogQuery;

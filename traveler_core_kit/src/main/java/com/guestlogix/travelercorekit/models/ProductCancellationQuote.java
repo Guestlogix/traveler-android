@@ -21,6 +21,18 @@ public class ProductCancellationQuote implements Serializable {
         this.cancellationCharge = cancellationCharge;
     }
 
+    public Price getTotalRefund() {
+        return totalRefund;
+    }
+
+    public Price getCancellationCharge() {
+        return cancellationCharge;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
     static class ProductCancellationQuoteObjectMappingFactory implements ObjectMappingFactory<ProductCancellationQuote> {
         @Override
         public ProductCancellationQuote instantiate(JsonReader reader) throws Exception {

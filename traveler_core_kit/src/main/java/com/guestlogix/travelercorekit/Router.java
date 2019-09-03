@@ -351,7 +351,7 @@ public class Router {
                 params = new ArrayList<>();
             }
 
-            params.add(String.format("%s=%s", urlEncodeUTF8(key), urlEncodeUTF8(value)));
+            params.add(String.format("%s=%s", urlEncodeUTF8(key), value));
             return this;
         }
 

@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,18 +9,32 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
+
+import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
+import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
+import com.guestlogix.travelercorekit.models.BookableProduct;
+import com.guestlogix.travelercorekit.models.CancellationQuote;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.OrderStatus;
+import com.guestlogix.travelercorekit.models.Price;
 import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
+
 import org.w3c.dom.Text;
 
-public class OrderDetailActivity extends AppCompatActivity {
+public class OrderDetailActivity extends AppCompatActivity implements CancellationQuoteCallback, EmailOrderConfirmationCallback {
     public static String ARG_ORDER = "ARG_ORDER";
+
+    private static int REQUEST_CODE_CANCEL = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +55,11 @@ public class OrderDetailActivity extends AppCompatActivity {
 
         titleTextView.setText(order.getId());
         dateTextView.setText(DateHelper.formatToMonthDayYear(order.getCreatedDate()));
-        // TODO: Do the price stuff
-        //priceTextView.setText();
+        priceTextView.setText(order.getTotal().getLocalizedDescriptionInBaseCurrency());
 
         OrderDetailActivity self = this;
+
+        // TODO: Set title?
 
         LinearLayout productsLayout = findViewById(R.id.layout_orderDetail_products);
         for (Product product : order.getProducts()) {
@@ -53,9 +69,16 @@ public class OrderDetailActivity extends AppCompatActivity {
             TextView productPriceTextView = productView.findViewById(R.id.textView_productPrice);
 
             productTitleTextView.setText(product.getTitle());
-            // TODO: Do the secondary description for product and price
-            //productDateTextView.setText();
 
+            if (product instanceof BookableProduct) {
+                BookableProduct bookableProduct = (BookableProduct) product;
+                String date = DateHelper.formatToMonthDayYear(bookableProduct.getEventDate());
+                String dateTime = date + "\n" + DateHelper.formatTime(bookableProduct.getEventDate());
+
+                productDateTextView.setText(dateTime);
+
+                productPriceTextView.setText(bookableProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
+            }
 
             productView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -73,8 +96,80 @@ public class OrderDetailActivity extends AppCompatActivity {
         emailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Email tickets
+                new ProgressDialogFragment()
+                        .getTransaction(getSupportFragmentManager())
+                        .commit();
+
+                Traveler.emailOrderConfirmation(order, OrderDetailActivity.this);
             }
         });
+
+        Button cancelButton = findViewById(R.id.button_orderDetail_cancel);
+        if (order.getStatus() instanceof OrderStatus.Cancelled) {
+            cancelButton.setVisibility(View.INVISIBLE);
+        } else {
+            cancelButton.setVisibility(View.VISIBLE);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new ProgressDialogFragment()
+                            .getTransaction(getSupportFragmentManager())
+                            .commit();
+
+                    Traveler.fetchCancellationQuote(order, OrderDetailActivity.this);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onCancellationQuoteError(Error error) {
+        // TODO: Should this be safe guarded? This is never called without the dialog present
+        ProgressDialogFragment.findExistingFragment(getSupportFragmentManager())
+                .dismiss();
+
+        // TODO: Better error messaging
+
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("Something went wrong")
+                .setNeutralButton("OK", null)
+                .show();
+    }
+
+    @Override
+    public void onCancellationQuoteSuccess(CancellationQuote quote) {
+        ProgressDialogFragment.findExistingFragment(getSupportFragmentManager())
+                .dismiss();
+
+        Intent intent = new Intent(getApplicationContext(), CancelOrderActivity.class);
+        intent.putExtra(CancelOrderActivity.ARG_CANCELLATION_QUOTE, quote);
+        startActivityForResult(intent, REQUEST_CODE_CANCEL);
+    }
+
+    @Override
+    public void onEmailError(Error error) {
+        ProgressDialogFragment.findExistingFragment(getSupportFragmentManager())
+                .dismiss();
+
+        // TODO: Better error messaging
+
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage("Something went wrong")
+                .setNeutralButton("OK", null)
+                .show();
+    }
+
+    @Override
+    public void onEmailSuccess() {
+        ProgressDialogFragment.findExistingFragment(getSupportFragmentManager())
+                .dismiss();
+
+        new AlertDialog.Builder(this)
+                .setTitle("Success")
+                .setMessage("Your tickets have been emailed.")
+                .setNeutralButton("OK", null)
+                .show();
     }
 }
