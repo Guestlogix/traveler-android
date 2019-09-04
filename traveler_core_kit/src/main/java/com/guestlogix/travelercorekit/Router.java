@@ -21,7 +21,7 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 
 public class Router {
-    private static final String BASE_URL = "https://traveler.rc.guestlogix.io/v1";
+    private static final String BASE_URL = BuildConfig.API_ENDPOINT;
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return RequestBuilder.Builder()
