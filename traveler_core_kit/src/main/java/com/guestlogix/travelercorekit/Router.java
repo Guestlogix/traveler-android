@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
@@ -20,7 +21,7 @@ import java.util.*;
 
 
 public class Router {
-    private static final String BASE_URL = "https://traveler.rc.guestlogix.io/v1";
+    private static final String DEFAULT_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";
     private static String TAG = "Traveler";
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
@@ -244,10 +245,11 @@ public class Router {
         }
 
         private URL getURL() {
+            SharedPreferences sharedPreferences = context.getSharedPreferences("TRAVELER_PREFS", Context.MODE_PRIVATE);
+            String travelerSDKEndpoint = sharedPreferences.getString("TRAVELER_SDK_ENDPOINT", DEFAULT_ENDPOINT);
             try {
                 StringBuilder sb = new StringBuilder();
-
-                sb.append(BASE_URL);
+                sb.append(travelerSDKEndpoint);
                 sb.append(path);
 
                 if (!params.isEmpty()) {
@@ -269,7 +271,7 @@ public class Router {
 
                 return new URL(sb.toString());
             } catch (MalformedURLException e) {
-                Log.e("RouteBuilder", "Bad URL: " + BASE_URL + path);
+                Log.e("RouteBuilder", "Bad URL: " + travelerSDKEndpoint + path);
                 return null;
             }
         }
