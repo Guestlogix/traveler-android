@@ -43,7 +43,7 @@ public class ImageLoader {
         } else {
             final Bitmap[] loadedBitmap = new Bitmap[1];
 
-            DownloadImageTask imageDownloadTask = new DownloadImageTask(new UrlRequest(NetworkTask.Request.Method.GET, url), width, height);
+            DownloadImageTask imageDownloadTask = new DownloadImageTask(new UrlRequest(NetworkTask.Route.Method.GET, url), width, height);
             BlockTask cacheImageTask = new BlockTask() {
                 @Override
                 protected void main() {

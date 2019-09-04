@@ -65,7 +65,7 @@ public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
                     //TODO: rewrite header new token
                     session.setToken(authTokenFetchTask.getAuthToken());
                     request.setToken(session.getToken().getValue());
-                    retryNetworkTask.setRequest(request);
+                    retryNetworkTask.setRoute(request);
                 } else {
                     retryNetworkTask.cancel();
                     retryNetworkBlockTask.cancel();
@@ -79,9 +79,9 @@ public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
         BlockTask networkBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                NetworkTaskError error = networkTask.getError();
+                Error error = networkTask.getError();
 
-                if (error == null || NetworkTaskError.Code.UNAUTHORIZED != error.getCode()) {
+                if (error == null || !(error instanceof NetworkTaskError) || NetworkTaskError.Code.UNAUTHORIZED != ((NetworkTaskError)error).getCode()) {
                     authTokenFetchTask.cancel();
                     authTokenFetchBlockTask.cancel();
                     retryNetworkTask.cancel();

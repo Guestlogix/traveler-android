@@ -14,14 +14,14 @@ import java.io.InputStream;
 public class DownloadImageTask extends Task {
 
     private TaskManager mTaskManager = new TaskManager();
-    private NetworkTask.Request imageRequest;
+    private NetworkTask.Route imageRequest;
     private Error mError;
     private Bitmap resource;
     private int height;
     private int width;
 
 
-    public DownloadImageTask(NetworkTask.Request imageRequest, int reqWidth, int reqHeight) {
+    public DownloadImageTask(NetworkTask.Route imageRequest, int reqWidth, int reqHeight) {
         this.imageRequest = imageRequest;
         this.height = reqHeight;
         this.width = reqWidth;

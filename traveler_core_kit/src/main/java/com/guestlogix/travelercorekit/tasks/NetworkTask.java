@@ -14,65 +14,65 @@ import java.util.Map;
 
 public class NetworkTask extends Task {
 
-    private Request request;
-    private NetworkTaskError error;
+    private Route route;
+    private Error error;
     private ResponseHandler responseHandler;
 
-    public interface Request {
+    public interface Route {
         enum Method {
             GET, POST, PUT, DELETE, PATCH
         }
 
         Method getMethod();
-
         URL getURL() throws MalformedURLException;
-
         Map<String, String> getHeaders();
-
         void onProvidePayload(OutputStream stream);
+        Error transformError(NetworkTaskError error);
     }
 
     public interface ResponseHandler {
         void onHandleResponse(InputStream stream) throws IOException;
     }
 
-    public void setRequest(Request mRequest) {
-        this.request = mRequest;
+    public void setRoute(Route route) {
+        this.route = route;
     }
 
-    public NetworkTask(Request request, ResponseHandler responseHandler) {
-        this.request = request;
+    public NetworkTask(Route route, ResponseHandler responseHandler) {
+        this.route = route;
         this.responseHandler = responseHandler;
     }
 
-    public NetworkTaskError getError() {
+    public Error getError() {
         return error;
     }
 
     @Override
     public void execute() {
-        if (request == null) {
-            error = new NetworkTaskError(NetworkTaskError.Code.NO_REQUEST);
+        if (route == null) {
+            this.error = new NetworkTaskError(NetworkTaskError.Code.NO_ROUTE);
             finish();
             return;
         }
 
+        NetworkTaskError error = null;
+
         URL url = null;
         try {
-            url = request.getURL();
+            url = route.getURL();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
         if (url == null) {
-            error = new NetworkTaskError(NetworkTaskError.Code.BAD_URL);
+            this.error = new NetworkTaskError(NetworkTaskError.Code.BAD_URL);
             finish();
             return;
         }
 
         String protocol = url.getProtocol();
         if (protocol == null || !(protocol.equalsIgnoreCase("http") || protocol.equalsIgnoreCase("https"))) {
-            error = new NetworkTaskError(NetworkTaskError.Code.BAD_URL);
+            this.error = new NetworkTaskError(NetworkTaskError.Code.BAD_URL);
             finish();
             return;
         }
@@ -87,7 +87,7 @@ public class NetworkTask extends Task {
 
             // Headers
 
-            Map<String, String> headers = request.getHeaders();
+            Map<String, String> headers = route.getHeaders();
 
             if (headers != null) {
                 for (Map.Entry<String, String> header :
@@ -101,7 +101,7 @@ public class NetworkTask extends Task {
 
             // HTTP Method
 
-            switch (request.getMethod()) {
+            switch (route.getMethod()) {
                 case GET:
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setDoOutput(false);
@@ -109,17 +109,17 @@ public class NetworkTask extends Task {
                 case PUT:
                     urlConnection.setRequestMethod("PUT");
                     urlConnection.setDoOutput(true);
-                    request.onProvidePayload(urlConnection.getOutputStream());
+                    route.onProvidePayload(urlConnection.getOutputStream());
                     break;
                 case POST:
                     urlConnection.setRequestMethod("POST");
                     urlConnection.setDoOutput(true);
-                    request.onProvidePayload(urlConnection.getOutputStream());
+                    route.onProvidePayload(urlConnection.getOutputStream());
                     break;
                 case PATCH:
                     urlConnection.setRequestMethod("PATCH");
                     urlConnection.setDoOutput(true);
-                    request.onProvidePayload(urlConnection.getOutputStream());
+                    route.onProvidePayload(urlConnection.getOutputStream());
                     break;
                 case DELETE:
                     urlConnection.setRequestMethod("DELETE");
@@ -169,6 +169,10 @@ public class NetworkTask extends Task {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
+        }
+
+        if (error != null) {
+            this.error = route.transformError(error);
         }
 
         finish();

@@ -2,7 +2,7 @@ package com.guestlogix.travelercorekit.tasks;
 
 public class NetworkTaskError extends Error {
     public enum Code {
-        BAD_URL, CONNECTION_ERROR, NO_REQUEST, FORBIDDEN, UNAUTHORIZED, SERVER_ERROR
+        BAD_URL, CONNECTION_ERROR, NO_ROUTE, FORBIDDEN, UNAUTHORIZED, SERVER_ERROR
     }
 
     private Code code;
@@ -40,8 +40,8 @@ public class NetworkTaskError extends Error {
                 return "Malformed URL";
             case FORBIDDEN:
                 return "Access Denied";
-            case NO_REQUEST:
-                return "No Request";
+            case NO_ROUTE:
+                return "No Route";
             case SERVER_ERROR:
                 return "Server Error";
             case UNAUTHORIZED:

@@ -1,34 +1,26 @@
 package com.guestlogix.travelercorekit;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AuthenticatedUrlRequest extends UrlRequest {
-
     private String mToken;
-    private String apiKey;
 
-    AuthenticatedUrlRequest(Method method, URL URL, String apiKey, String token, Map<String, String> headers) {
+    AuthenticatedUrlRequest(Method method, URL URL, Map<String, String> headers, String token) {
         super(method, URL, headers);
 
         this.mToken = token;
-        this.apiKey = apiKey;
-    }
-
-    AuthenticatedUrlRequest(Method method, URL url, String apiKey, Map<String, String> headers, String token) {
-        this(method, url, apiKey, token, headers);
-    }
-
-    @Override
-    public Map<String, String> getHeaders() {
-        headers.put("x-api-key", this.apiKey);
-        headers.put("Authorization", String.format("Bearer %s", this.mToken));
-
-        return headers;
     }
 
     public void setToken(String mToken) {
         this.mToken = mToken;
     }
 
+    @Override
+    public Map<String, String> getHeaders() {
+        HashMap<String, String> headers = new HashMap<>(super.getHeaders());
+        headers.put("Authorization", String.format("Bearer %s", mToken));
+        return headers;
+    }
 }

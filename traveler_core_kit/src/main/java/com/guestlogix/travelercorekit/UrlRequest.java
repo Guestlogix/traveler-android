@@ -1,6 +1,8 @@
 package com.guestlogix.travelercorekit;
 
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
+import com.guestlogix.travelercorekit.tasks.NetworkTaskError;
+
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -12,7 +14,7 @@ import java.util.Map;
 /**
  * Simple Network Request
  */
-public class UrlRequest implements NetworkTask.Request {
+public class UrlRequest implements NetworkTask.Route {
     protected Method method;
     protected URL url;
     Map<String, String> headers;
@@ -30,7 +32,7 @@ public class UrlRequest implements NetworkTask.Request {
     }
 
     @Override
-    public NetworkTask.Request.Method getMethod() {
+    public NetworkTask.Route.Method getMethod() {
         return this.method;
     }
 
@@ -57,6 +59,11 @@ public class UrlRequest implements NetworkTask.Request {
         } catch (IOException e) {
             // TODO: Handle error
         }
+    }
+
+    @Override
+    public Error transformError(NetworkTaskError error) {
+        return error;
     }
 
     public JSONObject getJSONPayload() {

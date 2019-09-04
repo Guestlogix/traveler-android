@@ -13,6 +13,7 @@ import java.util.*;
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 // TODO: Redo this class
+// Model after Router in Core
 
 class GuestRoute {
 
@@ -20,7 +21,7 @@ class GuestRoute {
 
     static UrlRequest profile(String requestIdToken) {
         return GuestRequestBuilder.Builder()
-                .method(NetworkTask.Request.Method.GET)
+                .method(NetworkTask.Route.Method.GET)
                 .url(BASE_URL)
                 .path("/login")
                 .headers(buildHeaders(requestIdToken))
@@ -42,7 +43,7 @@ class GuestRoute {
     }
 
     private static class GuestRequestBuilder {
-        private NetworkTask.Request.Method method;
+        private NetworkTask.Route.Method method;
         private String path;
         private String url;
         private GuestRequestBuilder.JSONPayloadProvider payload = null;
@@ -88,7 +89,7 @@ class GuestRoute {
             return createURL(url, path, null);
         }
 
-        public GuestRequestBuilder method(NetworkTask.Request.Method method) {
+        public GuestRequestBuilder method(NetworkTask.Route.Method method) {
             this.method = method;
             return this;
         }

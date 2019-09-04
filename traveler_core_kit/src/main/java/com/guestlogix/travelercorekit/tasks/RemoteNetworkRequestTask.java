@@ -6,14 +6,14 @@ import com.guestlogix.travelercorekit.utilities.*;
 public class RemoteNetworkRequestTask<T> extends Task {
 
     private TaskManager taskManager = new TaskManager();
-    private UrlRequest request;
+    private NetworkTask.Route route;
     private JsonObjectMapper<T> jsonObjectMapper;
     private ObjectMappingFactory<T> objectMappingFactory;
     private Error error;
     private T resource;
 
-    public RemoteNetworkRequestTask(UrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
-        this.request = request;
+    public RemoteNetworkRequestTask(NetworkTask.Route route, ObjectMappingFactory<T> objectMappingFactory) {
+        this.route = route;
         this.objectMappingFactory = objectMappingFactory;
 
         jsonObjectMapper = new JsonObjectMapper<>(this.objectMappingFactory, new JsonObjectMapperCallback<T>() {
@@ -32,7 +32,7 @@ public class RemoteNetworkRequestTask<T> extends Task {
     @Override
     public void execute() {
 
-        NetworkTask retryNetworkTask = new NetworkTask(request, jsonObjectMapper);
+        NetworkTask retryNetworkTask = new NetworkTask(route, jsonObjectMapper);
 
         BlockTask retryNetworkBlockTask = new BlockTask() {
             @Override
@@ -43,14 +43,14 @@ public class RemoteNetworkRequestTask<T> extends Task {
             }
         };
 
-        NetworkTask networkTask = new NetworkTask(request, jsonObjectMapper);
+        NetworkTask networkTask = new NetworkTask(route, jsonObjectMapper);
 
         BlockTask networkBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                NetworkTaskError error = networkTask.getError();
+                Error error = networkTask.getError();
 
-                if (error == null || NetworkTaskError.Code.UNAUTHORIZED != error.getCode()) {
+                if (error == null || !(error instanceof NetworkTaskError) || NetworkTaskError.Code.UNAUTHORIZED != ((NetworkTaskError) error).getCode()) {
                     retryNetworkTask.cancel();
                     retryNetworkBlockTask.cancel();
                 }
