@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.activities.TermsAndConditionsActivity;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
 import com.guestlogix.traveleruikit.models.PurchaseContext;
 import com.guestlogix.traveleruikit.tools.AssetManager;
@@ -143,6 +146,17 @@ public class CatalogItemDetailsFragment extends Fragment {
                 }
             });
         }
+
+        Button termsAndConditionsButton = view.findViewById(R.id.button_catalogItemDetails_termsAndConditions);
+        termsAndConditionsButton.setVisibility(catalogItemDetails.getTermsAndConditions() == null ? View.INVISIBLE : View.VISIBLE);
+        termsAndConditionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CatalogItemDetailsFragment.this.getContext(), TermsAndConditionsActivity.class);
+                intent.putExtra(TermsAndConditionsActivity.ARG_CONTENT, catalogItemDetails.getTermsAndConditions());
+                startActivity(intent);
+            }
+        });
 
         return view;
     }

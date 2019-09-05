@@ -82,6 +82,10 @@ public class CatalogItemDetails implements Product {
         return supplier;
     }
 
+    public String getTermsAndConditions() {
+        return termsAndConditions;
+    }
+
     static class CatalogItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
         @Override
         public CatalogItemDetails instantiate(JsonReader reader) throws Exception {
