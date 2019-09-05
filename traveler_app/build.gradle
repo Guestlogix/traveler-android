@@ -15,12 +15,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "TRAVELER_API_KEY", traveler_key_release
+            buildConfigField("String", "TRAVELER_API_KEY", "\""+getReleaseTravelerAPIKey()+"\"")
             buildConfigField "String", "GOOGL_SIGN_IN_CLIENT_ID", google_sign_in_client_id_release
         }
 
         debug {
-            buildConfigField "String", "TRAVELER_API_KEY", traveler_key_debug
+            buildConfigField("String", "TRAVELER_API_KEY", "\""+getDebugTravelerAPIKey()+"\"")
             buildConfigField "String", "GOOGL_SIGN_IN_CLIENT_ID", google_sign_in_client_id_debug
         }
     }
@@ -51,6 +51,26 @@ android {
         }
     }
     */
+}
+
+def getReleaseTravelerAPIKey() {
+    if (System.getenv("TRAVELER_API_KEY_RELEASE") != null) {
+        return System.getenv("TRAVELER_API_KEY_RELEASE")
+    } else {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        return properties.getProperty('traveler_api_key_release')
+    }
+}
+
+def getDebugTravelerAPIKey() {
+    if (System.getenv("TRAVELER_API_KEY_DEBUG") != null) {
+        return System.getenv("TRAVELER_API_KEY_DEBUG")
+    } else {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        return properties.getProperty('traveler_key_debug')
+    }
 }
 
 dependencies {
