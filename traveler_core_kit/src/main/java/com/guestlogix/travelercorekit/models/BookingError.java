@@ -2,7 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 public class BookingError extends Error {
     public enum Code {
-        NO_DATE, BAD_DATE, NO_OPTION, NO_PASSES, VERY_OLD_TRAVELER, ADULT_AGE_INVALID, BELLOW_MIN_UNITS, UNACCOMPANIED_CHILDREN
+        NO_DATE, BAD_DATE, NO_OPTION, NO_PASSES, VERY_OLD_TRAVELER, ADULT_AGE_INVALID, BELLOW_MIN_UNITS, UNACCOMPANIED_CHILDREN, PASSES_UNAVAILABLE
     }
 
     private Code code;
@@ -34,6 +34,8 @@ public class BookingError extends Error {
                 return "Traveler too old";
             case UNACCOMPANIED_CHILDREN:
                 return "Unaccompanied children";
+            case PASSES_UNAVAILABLE:
+                return "Number of passes unavailable";
                 default:
                     return super.getMessage();
         }

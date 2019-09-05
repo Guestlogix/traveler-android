@@ -355,7 +355,7 @@ public class Router {
 
             switch (code) {
                 case 2006:
-                    return new BookingError(BookingError.Code.NO_PASSES);
+                    return new BookingError(BookingError.Code.PASSES_UNAVAILABLE);
                 case 2007:
                     return new BookingError(BookingError.Code.VERY_OLD_TRAVELER);
                 case 2012:
@@ -365,6 +365,8 @@ public class Router {
                     return new BookingError(BookingError.Code.BELLOW_MIN_UNITS);
                 case 2018:
                     return new BookingError(BookingError.Code.UNACCOMPANIED_CHILDREN);
+                case 6001:
+                    return new PaymentError(PaymentError.Code.PROCESSING_ERROR);
                 default:
                     Log.e("ErrorMapping", "Unknown error code: " + code);
                     return error;

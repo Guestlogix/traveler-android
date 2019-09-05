@@ -197,7 +197,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
     public void onBookingFormFetchError(Error error) {
         actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
         new AlertDialog.Builder(this)
-                .setMessage(R.string.unexpected_error)
+                .setMessage(error.getMessage())
                 .show();
     }
 

@@ -293,6 +293,11 @@ public class Traveler {
      * @param fetchBookingFormCallback callback methods which will be executed after creation is complete.
      */
     public static void fetchBookingForm(Product product, List<Pass> passes, FetchBookingFormCallback fetchBookingFormCallback) {
+        if (passes.size() == 0) {
+            fetchBookingFormCallback.onBookingFormFetchError(new BookingError(BookingError.Code.NO_PASSES));
+            return;
+        }
+
         if (null == localInstance) {
             fetchBookingFormCallback.onBookingFormFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {

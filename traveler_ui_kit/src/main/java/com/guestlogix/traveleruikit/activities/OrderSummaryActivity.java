@@ -147,7 +147,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     @Override
     public void onOrderProcessError(Error error) {
         new AlertDialog.Builder(this)
-                .setMessage(R.string.unexpected_error)
+                .setMessage(error.getMessage())
                 .show();
 
         actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
