@@ -24,8 +24,9 @@ public class CatalogItemDetails implements Product {
     private PurchaseStrategy purchaseStrategy;
     private List<Attribute> information;
     private Supplier supplier;
+    private String termsAndConditions;
 
-    private CatalogItemDetails(@NonNull String id, String title, String description, @NonNull List<URL> imageURLs, ContactInfo contact, @NonNull List<Location> locations, @NonNull Price priceStartingAt, @NonNull PurchaseStrategy purchaseStrategy, List<Attribute> information, @NonNull Supplier supplier) {
+    private CatalogItemDetails(@NonNull String id, String title, String description, @NonNull List<URL> imageURLs, ContactInfo contact, @NonNull List<Location> locations, @NonNull Price priceStartingAt, @NonNull PurchaseStrategy purchaseStrategy, List<Attribute> information, @NonNull Supplier supplier, String termsAndConditions) {
         this.title = title;
         this.description = description;
         this.imageURLs = imageURLs;
@@ -36,6 +37,7 @@ public class CatalogItemDetails implements Product {
         this.purchaseStrategy = purchaseStrategy;
         this.information = information;
         this.supplier = supplier;
+        this.termsAndConditions = termsAndConditions;
     }
 
     @Override
@@ -93,6 +95,7 @@ public class CatalogItemDetails implements Product {
             PurchaseStrategy purchaseStrategy = null;
             List<Attribute> information = null;
             Supplier supplier = null;
+            String termsAndConditions = null;
 
             reader.beginObject();
 
@@ -146,6 +149,9 @@ public class CatalogItemDetails implements Product {
                     case "supplier":
                         supplier = new Supplier.SupplierObjectMappingFactory().instantiate(reader);
                         break;
+                    case "termsAndConditions":
+                        termsAndConditions = JsonReaderHelper.nextNullableString(reader);
+                        break;
                     default:
                         reader.skipValue();
                         break;
@@ -161,7 +167,7 @@ public class CatalogItemDetails implements Product {
             Assertion.eval(purchaseStrategy != null);
             Assertion.eval(supplier != null);
 
-            return new CatalogItemDetails(id, title, description, imageURLs, contact, locations, priceStartingAt, purchaseStrategy, information, supplier);
+            return new CatalogItemDetails(id, title, description, imageURLs, contact, locations, priceStartingAt, purchaseStrategy, information, supplier, termsAndConditions);
         }
     }
 }
