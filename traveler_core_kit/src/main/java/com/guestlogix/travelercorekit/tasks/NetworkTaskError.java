@@ -2,7 +2,7 @@ package com.guestlogix.travelercorekit.tasks;
 
 public class NetworkTaskError extends Error {
     public enum Code {
-        BAD_URL, CONNECTION_ERROR, NO_ROUTE, FORBIDDEN, UNAUTHORIZED, SERVER_ERROR
+        BAD_URL, CONNECTION_ERROR, NO_ROUTE, FORBIDDEN, UNAUTHORIZED, SERVER_ERROR, CLIENT_ERROR
     }
 
     private Code code;
@@ -24,11 +24,6 @@ public class NetworkTaskError extends Error {
         return String.format("%s %s", getCodeValue(), super.toString());
     }
 
-    @Override
-    public String getMessage() {
-        return String.format("%s %s", getCodeValue(), super.getMessage());
-    }
-
     public Code getCode() {
         return code;
     }
@@ -48,6 +43,8 @@ public class NetworkTaskError extends Error {
                 return "Not Authorized";
             case CONNECTION_ERROR:
                 return "Connection Failed";
+            case CLIENT_ERROR:
+                return "Client Error";
         }
         return "Unknown Error";
     }

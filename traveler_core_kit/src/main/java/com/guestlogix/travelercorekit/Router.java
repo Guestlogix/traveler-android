@@ -307,31 +307,6 @@ public class Router {
             return this;
         }
 
-        /*
-        RequestBuilder paramArray(String key, List<String> values) {
-            if (params == null) {
-                params = new ArrayList<>();
-            }
-
-            for (String value : values) {
-                params.add(String.format("%s=%s", urlEncodeUTF8(key), urlEncodeUTF8(value)));
-            }
-            return this;
-        }
-
-        /*
-        RequestBuilder headers(Map<String, String> headers) {
-            this.headers = headers;
-            return this;
-        }
-
-        RequestBuilder apiKey(String key) {
-            this.apiKey = key;
-            return this;
-        }
-
-         */
-
         AuthenticatedUrlRequest build(String token) {
             return new AuthenticatedUrlRequest(method, getURL(), headers, token) {
                 @Override
@@ -341,7 +316,7 @@ public class Router {
 
                 @Override
                 public Error transformError(NetworkTaskError error) {
-                    return super.transformError(error);
+                    return Router.transformError(error);
                 }
             };
         }
@@ -355,13 +330,48 @@ public class Router {
 
                 @Override
                 public Error transformError(NetworkTaskError error) {
-                    return super.transformError(error);
+                    return Router.transformError(error);
                 }
             };
         }
 
         interface JSONPayloadProvider {
             JSONObject getJsonPayload();
+        }
+    }
+
+    private static Error transformError(Error error) {
+        if (!(error instanceof NetworkTaskError))
+            return error;
+
+        NetworkTaskError networkTaskError = (NetworkTaskError) error;
+
+        if (networkTaskError.getCode() != NetworkTaskError.Code.CLIENT_ERROR)
+            return error;
+
+        try {
+            JSONObject json = new JSONObject(networkTaskError.getMessage());
+            int code = json.getInt("errorCode");
+
+            switch (code) {
+                case 2006:
+                    return new BookingError(BookingError.Code.NO_PASSES);
+                case 2007:
+                    return new BookingError(BookingError.Code.VERY_OLD_TRAVELER);
+                case 2012:
+                case 2013:
+                    return new CancellationError(CancellationError.Code.NOT_CANCELLABLE);
+                case 2014:
+                    return new BookingError(BookingError.Code.BELLOW_MIN_UNITS);
+                case 2018:
+                    return new BookingError(BookingError.Code.UNACCOMPANIED_CHILDREN);
+                default:
+                    Log.e("ErrorMapping", "Unknown error code: " + code);
+                    return error;
+            }
+        } catch (JSONException e) {
+            Log.e("ErrorMapping", "Bad JSON from error response: \n" + networkTaskError.getMessage());
+            return error;
         }
     }
 }

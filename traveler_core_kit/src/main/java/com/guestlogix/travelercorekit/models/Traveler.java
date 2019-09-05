@@ -488,6 +488,11 @@ public class Traveler {
             return;
         }
 
+        if (quote.getExpirationDate().after(new Date())) {
+            callback.onCancellationError(new CancellationError(CancellationError.Code.EXPIRED_QUOTE));
+            return;
+        }
+
         AuthenticatedUrlRequest request = Router.cancelOrder(quote, localInstance.session, localInstance.session.getContext());
         AuthenticatedRemoteNetworkRequestTask<Order> fetchTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
         BlockTask blockTask = new BlockTask() {

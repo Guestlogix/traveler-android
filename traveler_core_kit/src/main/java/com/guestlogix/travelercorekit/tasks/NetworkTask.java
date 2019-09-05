@@ -146,7 +146,10 @@ public class NetworkTask extends Task {
                 error = new NetworkTaskError(NetworkTaskError.Code.FORBIDDEN);
             } else if (statusCode >= 500) {
                 error = new NetworkTaskError(NetworkTaskError.Code.SERVER_ERROR,
-                        InputStreamHelper.getStringFromInputStream(urlConnection.getInputStream()));
+                        InputStreamHelper.getStringFromInputStream(urlConnection.getErrorStream()));
+            } else if (statusCode >= 400) {
+                error = new NetworkTaskError(NetworkTaskError.Code.CLIENT_ERROR,
+                        InputStreamHelper.getStringFromInputStream(urlConnection.getErrorStream()));
             } else {
                 InputStream is = urlConnection.getInputStream();
 
