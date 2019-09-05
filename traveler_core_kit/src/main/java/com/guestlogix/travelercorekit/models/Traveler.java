@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
+import com.guestlogix.travelercorekit.BuildConfig;
 import com.guestlogix.travelercorekit.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.*;
@@ -27,6 +28,19 @@ public class Traveler {
     private TaskManager taskManager = new TaskManager();
     private TaskManager orderSerialTaskManager = new TaskManager(TaskManager.Mode.SERIAL);
     private Session session;
+
+    /**
+     * Initializes the SDK.
+     *
+     * @param applicationContext application context where the sdk is running.
+     */
+    public static void initialize(Context applicationContext) {
+        if (localInstance != null) {
+            TravelerLog.e("SDK already initialized");
+        } else {
+            localInstance = new Traveler(BuildConfig.TRAVELER_API_KEY, applicationContext);
+        }
+    }
 
     /**
      * Initializes the SDK.
