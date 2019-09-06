@@ -3,6 +3,8 @@ package com.guestlogix.travelercorekit.models;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.IOException;
@@ -72,6 +74,11 @@ public final class Order implements Serializable {
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return (obj instanceof Order && ((Order) obj).id.equals(this.id));
     }
 
     static class OrderMappingFactory implements ObjectMappingFactory<Order> {

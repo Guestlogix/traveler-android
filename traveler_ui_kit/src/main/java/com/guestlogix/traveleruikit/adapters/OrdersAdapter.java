@@ -15,6 +15,8 @@ import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements FetchOrdersCallback {
     private final static int ORDER_VIEW_TYPE = 0;
@@ -34,6 +36,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView titleTextView;
         TextView totalTextView;
         TextView productsTextView;
+        TextView cancelledTextView;
 
         OrderItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -41,6 +44,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             titleTextView = itemView.findViewById(R.id.textView_orderItem_dateOrdered);
             totalTextView = itemView.findViewById(R.id.textView_orderItem_totalAmount);
             productsTextView = itemView.findViewById(R.id.textView_orderItem_products);
+            cancelledTextView = itemView.findViewById(R.id.textView_orderItem_cancelled);
         }
     }
 
@@ -81,6 +85,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 itemHolder.titleTextView.setText(DateHelper.formatDate(order.getCreatedDate()));
                 itemHolder.totalTextView.setText(order.getTotal().getLocalizedDescriptionInBaseCurrency());
                 itemHolder.productsTextView.setText(order.getProductTitlesJoinedBy("\n"));
+                itemHolder.cancelledTextView.setVisibility(order.getStatus() instanceof OrderStatus.Cancelled ? View.VISIBLE : View.INVISIBLE);
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -161,5 +166,17 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public OrderResult getPreviousResult(int identifier) {
         return _volatileResult;
+    }
+
+    public void updateOrder(Order order) {
+        Iterator iterator = result.getOrders().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Order> pair = (Map.Entry<Integer, Order>) iterator.next();
+
+            if (pair.getValue().equals(order)) {
+                result.getOrders().put(pair.getKey(), order);
+                return;
+            }
+        }
     }
 }

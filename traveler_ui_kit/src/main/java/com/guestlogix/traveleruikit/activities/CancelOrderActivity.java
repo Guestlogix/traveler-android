@@ -29,6 +29,7 @@ import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 
 public class CancelOrderActivity extends AppCompatActivity implements CancellationCallback {
     public static String ARG_CANCELLATION_QUOTE = "ARG_CANCELLATION_QUOTE";
+    public static String ARG_ORDER = "ARG_ORDER";
     static String TAG = "CancelOrderActivity";
 
     @Override
@@ -89,11 +90,9 @@ public class CancelOrderActivity extends AppCompatActivity implements Cancellati
                 .findExistingFragment(getSupportFragmentManager())
                 .dismiss();
 
-        // TODO: Better messaging
-
         new AlertDialog.Builder(this)
                 .setTitle("Error")
-                .setMessage("Something went wrong")
+                .setMessage(error.getMessage())
                 .setNeutralButton("OK", null)
                 .show();
     }
@@ -104,9 +103,15 @@ public class CancelOrderActivity extends AppCompatActivity implements Cancellati
                 .findExistingFragment(getSupportFragmentManager())
                 .dismiss();
 
+        Intent data = new Intent();
+        data.putExtra(ARG_ORDER, order);
+        setResult(RESULT_OK, data);
+
+        ((ViewGroup) findViewById(R.id.container_cancelOrder)).removeAllViews();
+
         Fragment fragment = CancelSuccessFragment.getInstance(order);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(fragment, null);
+        transaction.replace(R.id.container_cancelOrder, fragment);
         transaction.commit();
     }
 }

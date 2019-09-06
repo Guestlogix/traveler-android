@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,8 +23,10 @@ import java.util.ArrayList;
 
 public class OrdersFragment extends Fragment implements OrdersAdapter.OnItemClickListener {
     public static final String ARG_ORDER_RESULT = "ARG_ORDER_RESULT";
+    private static final int REQUEST_CODE_DETAILS = 1;
 
     private OrderResult orderResult;
+    private OrdersAdapter adapter;
 
     public OrdersFragment() {
         // Required empty public constructor
@@ -63,7 +66,8 @@ public class OrdersFragment extends Fragment implements OrdersAdapter.OnItemClic
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_ordersFragment_orders);
 
         if (orderResult != null) {
-            recyclerView.setAdapter(new OrdersAdapter(orderResult, this));
+            adapter = new OrdersAdapter(orderResult, this);
+            recyclerView.setAdapter(adapter);
         } else {
             Log.e(this.getClass().getName(), "No OrderResult");
         }
@@ -78,6 +82,17 @@ public class OrdersFragment extends Fragment implements OrdersAdapter.OnItemClic
         Intent intent = new Intent(getContext(), OrderDetailActivity.class);
         intent.putExtra(OrderDetailActivity.ARG_ORDER, order);
 
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_DETAILS);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_DETAILS && resultCode == Activity.RESULT_OK) {
+            Order order = (Order) data.getSerializableExtra(OrderDetailActivity.ARG_ORDER);
+            adapter.updateOrder(order);
+            adapter.notifyDataSetChanged();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

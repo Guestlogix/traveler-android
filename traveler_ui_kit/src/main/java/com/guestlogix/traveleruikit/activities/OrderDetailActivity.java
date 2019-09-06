@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -105,21 +106,23 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
         });
 
         Button cancelButton = findViewById(R.id.button_orderDetail_cancel);
-        if (order.getStatus() instanceof OrderStatus.Cancelled) {
-            cancelButton.setVisibility(View.INVISIBLE);
-        } else {
-            cancelButton.setVisibility(View.VISIBLE);
-            cancelButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new ProgressDialogFragment()
-                            .getTransaction(getSupportFragmentManager())
-                            .commit();
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ProgressDialogFragment()
+                        .getTransaction(getSupportFragmentManager())
+                        .commit();
 
-                    Traveler.fetchCancellationQuote(order, OrderDetailActivity.this);
-                }
-            });
-        }
+                Traveler.fetchCancellationQuote(order, OrderDetailActivity.this);
+            }
+        });
+
+        reloadState(order);
+    }
+
+    private void reloadState(Order order) {
+        Button cancelButton = findViewById(R.id.button_orderDetail_cancel);
+        cancelButton.setVisibility(order.getStatus() instanceof OrderStatus.Cancelled ? View.INVISIBLE : View.VISIBLE);
     }
 
     @Override
@@ -128,11 +131,9 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
         ProgressDialogFragment.findExistingFragment(getSupportFragmentManager())
                 .dismiss();
 
-        // TODO: Better error messaging
-
         new AlertDialog.Builder(this)
                 .setTitle("Error")
-                .setMessage("Something went wrong")
+                .setMessage(error.getMessage())
                 .setNeutralButton("OK", null)
                 .show();
     }
@@ -171,5 +172,20 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
                 .setMessage("Your tickets have been emailed.")
                 .setNeutralButton("OK", null)
                 .show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_CANCEL && resultCode == RESULT_OK) {
+            Order order = (Order) data.getSerializableExtra(CancelOrderActivity.ARG_ORDER);
+
+            reloadState(order);
+
+            Intent newData = new Intent();
+            newData.putExtra(ARG_ORDER, order);
+            setResult(RESULT_OK, newData);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

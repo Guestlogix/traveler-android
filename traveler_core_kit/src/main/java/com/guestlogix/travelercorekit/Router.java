@@ -311,6 +311,9 @@ public class Router {
             return new AuthenticatedUrlRequest(method, getURL(), headers, token) {
                 @Override
                 public JSONObject getJSONPayload() {
+                    if (payload == null)
+                        return null;
+
                     return payload.getJsonPayload();
                 }
 
@@ -325,6 +328,9 @@ public class Router {
             return new UnauthenticatedUrlRequest(method, getURL(), headers) {
                 @Override
                 public JSONObject getJSONPayload() {
+                    if (payload == null)
+                        return null;
+
                     return payload.getJsonPayload();
                 }
 
