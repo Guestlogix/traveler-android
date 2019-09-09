@@ -15,8 +15,8 @@ do
             echo "Updating version to: $NEW_VERSION_NAME"
 
             echo "Running sed on file: $FILE_NAME"
-            sed -i "" -e "s/versionCode [0-9]*/versionCode $NEW_VERSION_CODE/" $FILE_NAME
-            sed -i "" -e "s/versionName \"[0-9]*.[0-9]*.*[0-9]*\"/versionName \"$NEW_VERSION_NAME\"/" $FILE_NAME
+            sed -i -e "s/versionCode [0-9]*/versionCode $NEW_VERSION_CODE/" ./$FILE_NAME
+            sed -i -e "s/versionName \"[0-9]*.[0-9]*.*[0-9]*\"/versionName \"$NEW_VERSION_NAME\"/" ./$FILE_NAME
         fi
     done
 done
