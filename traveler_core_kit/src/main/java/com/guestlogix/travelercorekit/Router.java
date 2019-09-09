@@ -1,14 +1,10 @@
 package com.guestlogix.travelercorekit;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Pair;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
@@ -18,17 +14,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
-
 
 public class Router {
     private static final String BASE_URL = "https://traveler.rc.guestlogix.io/v1";
-
+    private static String TAG = "Traveler";
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return new RouteBuilder(context, apiKey)
@@ -44,7 +37,7 @@ public class Router {
                 .path("/flight")
                 .param("flight-number", query.getNumber())
                 .param("departure-date", DateHelper.formatDateToISO8601(query.getDate()))
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     // /catalog?flight-ids=xxx&flight-ids=yyy...
@@ -58,7 +51,7 @@ public class Router {
         }
 
         return routeBuilder
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     // /product/{id}
@@ -66,7 +59,7 @@ public class Router {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
                 .path("/product/" + product.getId())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     // /product/{id}/schedule
@@ -76,7 +69,7 @@ public class Router {
                 .path("/product/" + product.getId() + "/schedule")
                 .param("from", DateHelper.formatDateToISO8601(from))
                 .param("to", DateHelper.formatDateToISO8601(to))
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     // /product/{id}/pass
@@ -89,7 +82,7 @@ public class Router {
         if (option != null)
             rb.param("option-id", option.getId());
 
-        return rb.build(session.getToken().getValue());
+        return rb.build(getSessionToken(session));
     }
 
     // /product/{id}/question?&passes=xxx&passes=yyy&passes=zzz...
@@ -103,7 +96,7 @@ public class Router {
         }
 
         return routeBuilder
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest orderCreate(Session session, List<BookingForm> forms, Context context) {
@@ -156,7 +149,7 @@ public class Router {
 
                     return null;
                 })
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest orderProcess(Session session, Order order, Payment payment, Context context) {
@@ -169,7 +162,7 @@ public class Router {
                         return payment.getSecurePayload();
                     }
                 })
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest orders(OrderQuery query, Session session, Context context) {
@@ -184,31 +177,29 @@ public class Router {
         if (query.getFromDate() != null)
             rb.param("from", DateHelper.formatDateToISO8601(query.getFromDate()));
 
-        return rb.build(session.getToken().getValue());
+        return rb.build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest cancellationQuote(Order order, Session session, Context context) {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
                 .path("/order/" + order.getId() + "/cancellation")
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest cancelOrder(CancellationQuote quote, Session session, Context context) {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.PATCH)
                 .path("/order/" + quote.getOrder().getId() + "/cancellation/" + quote.getId())
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
 
     public static AuthenticatedUrlRequest emailOrderConfirmation(Order order, Session session, Context context) {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.PATCH)
                 .path("/order/" + order.getId() + "/ticket")
-                .build(session.getToken().getValue());
+                .build(getSessionToken(session));
     }
-
-
 
     private static class RouteBuilder {
         private NetworkTask.Route.Method method;
@@ -381,5 +372,13 @@ public class Router {
             Log.e("ErrorMapping", "Bad JSON from error response: \n" + networkTaskError.getMessage());
             return error;
         }
+    }
+
+    private static String getSessionToken(Session session) {
+        Token token = session.getToken();
+        if (null == token) {
+            Log.w(TAG, "Session token is null");
+        }
+        return (null != token) ? token.getValue() : null;
     }
 }
