@@ -14,7 +14,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        buildConfigField("String", "TRAVELER_API_KEY", "\""+getTravelerAPIKey()+"\"")
     }
 
     buildTypes {
@@ -30,6 +30,15 @@ android {
 
 }
 
+def getTravelerAPIKey() {
+    if (System.getenv("TRAVELER_API_KEY") != null) {
+        return System.getenv("TRAVELER_API_KEY")
+    } else {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        return properties.getProperty('traveler_api_key', 'testtesttesttesttest')
+    }
+}
 
 dependencies {
 

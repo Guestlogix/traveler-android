@@ -27,7 +27,7 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(AndroidJUnit4.class)
 public class TravelerTest{
     private static final String TAG = "TravelerTest";
-    private static final String TRAVELER_API_KEY = "testtesttesttesttest";
+    private static final String TRAVELER_API_KEY =  BuildConfig.TRAVELER_API_KEY;
 
     @BeforeClass
     public static void setupOnce() {
