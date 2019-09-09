@@ -17,6 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.guestlogix.travelercorekit.BuildConfig.TRAVELER_API_KEY;
+
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -25,7 +27,6 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class TravelerTest{
     private static final String TAG = "TravelerTest";
-    private static final String TRAVELER_API_KEY = "testtesttesttesttest";
 
     @BeforeClass
     public static void setupOnce() {
