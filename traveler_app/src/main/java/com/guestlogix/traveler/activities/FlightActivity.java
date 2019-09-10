@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import com.guestlogix.traveler.R;
 import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 
 public class FlightActivity extends Activity {
     public static String ARG_FLIGHT = "ARG_FLIGHT";
@@ -37,9 +38,9 @@ public class FlightActivity extends Activity {
 
         departureCityTextView.setText(flight.getDepartureAirport().getCity());
         departureIATATextView.setText(flight.getDepartureAirport().getCode());
-        // TODO: Departure date the way iOS is doing it
+        departureTimeTextView.setText(flight.getDepartureDateDescription(DateHelper.getTimeFormat()));
         arrivalCityTextView.setText(flight.getArrivalAirport().getCity());
         arrivalIATATextView.setText(flight.getArrivalAirport().getCode());
-        // TODO: Arrival date the way iOS is doing it
+        arrivalTimeTextView.setText(flight.getArrivalDateDescription(DateHelper.getTimeFormat()));
     }
 }
