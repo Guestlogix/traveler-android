@@ -44,10 +44,10 @@ public class FlightsAdapter extends RecyclerView.Adapter<FlightsAdapter.ViewHold
 
         holder.departureCityTextView.setText(f.getDepartureAirport().getCity());
         holder.departureIataTextView.setText(f.getDepartureAirport().getCode());
-        holder.departureTimeTextView.setText(DateHelper.formatTime(f.getDepartureDate()));
+        holder.departureTimeTextView.setText(f.getDepartureDateDescription(DateHelper.getTimeFormat()));
         holder.arrivalCityTextView.setText(f.getArrivalAirport().getCity());
         holder.arrivalIataTextView.setText(f.getArrivalAirport().getCode());
-        holder.arrivalTimeTextView.setText(DateHelper.formatTime(f.getArrivalDate()));
+        holder.arrivalTimeTextView.setText(f.getArrivalDateDescription(DateHelper.getTimeFormat()));
 
         boolean isFlightAddingEnabled = listener.canAddFlight(f);
 

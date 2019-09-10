@@ -9,6 +9,7 @@ import com.guestlogix.travelercorekit.utilities.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Flight implements Serializable {
@@ -52,6 +53,16 @@ public class Flight implements Serializable {
         return arrivalDate;
     }
 
+    public String getDepartureDateDescription(SimpleDateFormat format) {
+        format.setTimeZone(departureAirport.getTimeZone());
+        return format.format(departureDate);
+    }
+
+    public String getArrivalDateDescription(SimpleDateFormat format) {
+        format.setTimeZone(arrivalAirport.getTimeZone());
+        return format.format(arrivalDate);
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (!(obj instanceof Flight)) {
@@ -68,8 +79,8 @@ public class Flight implements Serializable {
             String number = null;
             Airport origin = null;
             Airport destination = null;
-            Date departure = null;
-            Date arrival = null;
+            String departureDateString = null;
+            String arrivalDateString = null;
 
             reader.beginObject();
 
@@ -90,10 +101,10 @@ public class Flight implements Serializable {
                         destination = new Airport.AirportObjectMappingFactory().instantiate(reader);
                         break;
                     case "departureTime":
-                        departure = DateHelper.parseISO8601(reader.nextString());
+                        departureDateString = reader.nextString();
                         break;
                     case "arrivalTime":
-                        arrival = DateHelper.parseISO8601(reader.nextString());
+                        arrivalDateString = reader.nextString();
                         break;
                     default:
                         reader.skipValue();
@@ -103,10 +114,14 @@ public class Flight implements Serializable {
 
             reader.endObject();
 
-            Assertion.eval(id != null);
-            Assertion.eval(number != null);
             Assertion.eval(origin != null);
             Assertion.eval(destination != null);
+
+            Date departure = DateHelper.parseISO8601(departureDateString, origin.getTimeZone());
+            Date arrival = DateHelper.parseISO8601(arrivalDateString, destination.getTimeZone());
+
+            Assertion.eval(id != null);
+            Assertion.eval(number != null);
             Assertion.eval(departure != null);
             Assertion.eval(arrival != null);
 

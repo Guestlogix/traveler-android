@@ -1,10 +1,12 @@
 package com.guestlogix.travelercorekit.utilities;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateHelper {
     // Theres an issue in Java with parsing ISO 8601, so two formats need to be checked for parsing strings
@@ -36,12 +38,28 @@ public class DateHelper {
         }
     }
 
+    public static Date parseISO8601(String dateString, TimeZone zone) throws ParseException {
+        try {
+            DateFormat dateFormat = new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault());
+            dateFormat.setTimeZone(zone);
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            DateFormat dateFormat = new SimpleDateFormat(DATE_TIME_PATTERN_WITHOUT_ZONE, Locale.getDefault());
+            dateFormat.setTimeZone(zone);
+            return dateFormat.parse(dateString);
+        }
+    }
+
     public static Date parseDate(String dateString) throws ParseException {
         return new SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(dateString);
     }
 
     public static String formatTime(Date date) {
         return new SimpleDateFormat(TIME_PATTERN, Locale.getDefault()).format(date);
+    }
+
+    public static SimpleDateFormat getTimeFormat() {
+        return new SimpleDateFormat(TIME_PATTERN);
     }
 
     public static String formatTime(Long rowItem) {
