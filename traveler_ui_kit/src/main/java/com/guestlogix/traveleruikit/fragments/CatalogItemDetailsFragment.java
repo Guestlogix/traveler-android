@@ -13,21 +13,19 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.TermsAndConditionsActivity;
+import com.guestlogix.traveleruikit.adapters.ImageURLAdapter;
 import com.guestlogix.traveleruikit.adapters.ItemInformationTabsPagerAdapter;
-import com.guestlogix.traveleruikit.models.PurchaseContext;
 import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
-import com.guestlogix.traveleruikit.viewmodels.CatalogItemDetailsViewModel;
+import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
 public class CatalogItemDetailsFragment extends Fragment {
@@ -35,7 +33,7 @@ public class CatalogItemDetailsFragment extends Fragment {
     static private String TAG = "CatalogItemDetailsFragment";
 
     private WrapContentViewPager catalogItemDetailsPager;
-    private ImageView imageView;
+    private CarouselView carouselView;
 
     public static CatalogItemDetailsFragment newInstance(CatalogItemDetails details) {
         Bundle args = new Bundle();
@@ -67,7 +65,7 @@ public class CatalogItemDetailsFragment extends Fragment {
 
         TextView titleTextView = view.findViewById(R.id.titleTextView);
         TextView descriptionTextView = view.findViewById(R.id.descriptionTextView);
-        imageView = view.findViewById(R.id.imageView);
+        carouselView = view.findViewById(R.id.carouselView);
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         TabLayout catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
 //
@@ -75,27 +73,11 @@ public class CatalogItemDetailsFragment extends Fragment {
 //                findFragmentById(R.id.fragment_catalogItemDetails_purchaseSelector);
 //        purchaseContextContainer.setPurchaseContextChangedListener(this);
 //
-
-
-
         titleTextView.setText(catalogItemDetails.getTitle());
 
         if (null != catalogItemDetails.getImageURLs() && catalogItemDetails.getImageURLs().size() > 0) {
-            AssetManager.getInstance().loadImage(catalogItemDetails.getImageURLs().get(0),
-                    (int) getResources().getDimension(R.dimen.thumbnail_width),
-                    (int) getResources().getDimension(R.dimen.thumbnail_height),
-                    imageView.getId(),
-                    new ImageLoader.ImageLoaderCallback() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap) {
-                            imageView.setImageBitmap(bitmap);
-                        }
-
-                        @Override
-                        public void onError() {
-                            imageView.setImageResource(R.color.colorPrimary);
-                        }
-                    });
+            RecyclerView.Adapter adapter = new ImageURLAdapter(catalogItemDetails.getImageURLs());
+            carouselView.setAdapter(adapter);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

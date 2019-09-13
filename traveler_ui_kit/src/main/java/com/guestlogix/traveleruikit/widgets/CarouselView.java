@@ -3,6 +3,7 @@ package com.guestlogix.traveleruikit.widgets;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
@@ -36,6 +37,7 @@ public class CarouselView extends FrameLayout {
         // we need to create a set of params
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(recyclerView, params);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
         // android.support.v7.widget.LinearSnapHelper is available without androidX, see
         // http://androidappcoders.blogspot.com/2018/06/using-snaphelper-in-recyclerview.html
