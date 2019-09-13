@@ -1,7 +1,6 @@
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-version '0.0.1'
 group 'com.guestlogix'
 
 publishing {
@@ -12,7 +11,7 @@ publishing {
             artifact javadocJar
             groupId
             artifactId 'traveler_core_kit'
-            version this.version
+            version android.defaultConfig.versionName
 
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -47,10 +46,10 @@ bintray {
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/Guestlogix/traveler-android'
         version {
-            name = this.version
+            name = android.defaultConfig.versionName
             desc = "Version ${this.version}"
             released = new Date()
-            vcsTag = this.version
+            vcsTag = android.defaultConfig.versionName
         }
     }
 }
