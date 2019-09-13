@@ -16,4 +16,7 @@
     <color name="off_white">#EEEEEE</color>
     <color name="catalogOverlay">#40000000</color>
     <color name="dialogTitle">#262827</color>
+
+    <color name="catalog_item_detail_indicator_inactive">@color/lightGray</color>
+    <color name="catalog_item_detail_indicator_active">@color/off_white</color>
 </resources>

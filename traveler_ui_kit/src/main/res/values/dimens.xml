@@ -29,4 +29,10 @@
 
     <dimen name="separator_height_stroke">1dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="catalog_item_detail_image_height">424dp</dimen>
+    <dimen name="catalog_item_detail_indicator_height">16dp</dimen>
+    <dimen name="catalog_item_detail_stroke_width">4dp</dimen>
+    <dimen name="catalog_item_detail_item_width">4dp</dimen>
+    <dimen name="catalog_item_detail_item_padding">8dp</dimen>
 </resources>
