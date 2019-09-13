@@ -32,15 +32,15 @@ determine_bump_from_commits() {
 
     log=$(git log $1..HEAD)
     # Check commit bodies for "BREAKING CHANGE"
-    if [[ "$log" =~ (BREAKING CHANGE(\($2\):|:)) ]]; then
+    if [[ "$log" =~ (BREAKING CHANGE\($2\):) ]]; then
         MAJOR=1
     fi
 
     # Check commit heading for commit type
     for commit in $(git log --format="%s" $1..HEAD); do
-        if [[ "$commit" =~ feat(\($2\):|:) ]]; then
+        if [[ "$commit" =~ feat\($2\): ]]; then
             MINOR=1
-        elif [[ "$commit" =~ (fix|chore|docs|perf|refactor|test|style)(\($2\):|:) ]]; then
+        elif [[ "$commit" =~ (fix|chore|docs|perf|refactor|test|style)\($2\): ]]; then
             PATCH=1
         fi
     done
