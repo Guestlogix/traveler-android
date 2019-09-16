@@ -11,10 +11,12 @@ import java.io.Serializable;
 public class BookingOption implements Serializable {
     private final String id;
     private String value;
+    private String disclaimer;
 
-    private BookingOption(@NonNull String id, @NonNull String value) {
+    private BookingOption(@NonNull String id, @NonNull String value, String disclaimer) {
         this.id = id;
         this.value = value;
+        this.disclaimer = disclaimer;
     }
 
     public String getId() {
@@ -25,12 +27,17 @@ public class BookingOption implements Serializable {
         return value;
     }
 
+    public String getDisclaimer() {
+        return disclaimer;
+    }
+
     static class BookingOptionObjectMappingFactory implements ObjectMappingFactory<BookingOption> {
 
         @Override
         public BookingOption instantiate(JsonReader reader) throws Exception {
             String id = null;
             String value = null;
+            String disclaimer = null;
 
             reader.beginObject();
 
@@ -44,6 +51,9 @@ public class BookingOption implements Serializable {
                     case "optionLabel":
                         value = JsonReaderHelper.nextNullableString(reader);
                         break;
+                    case "disclaimer":
+                        disclaimer = JsonReaderHelper.nextNullableString(reader);
+                        break;
                     default:
                         reader.skipValue();
                 }
@@ -54,7 +64,7 @@ public class BookingOption implements Serializable {
             Assertion.eval(id != null);
             Assertion.eval(value != null);
 
-            return new BookingOption(id, value);
+            return new BookingOption(id, value, disclaimer);
         }
     }
 }
