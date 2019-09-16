@@ -2,15 +2,18 @@ package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
 import android.util.JsonToken;
-import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import androidx.annotation.NonNull;
+
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.util.JsonToken.BEGIN_ARRAY;
 import static android.util.JsonToken.NULL;
 
 public class CatalogItemDetails implements Product {
@@ -25,8 +28,20 @@ public class CatalogItemDetails implements Product {
     private List<Attribute> information;
     private Supplier supplier;
     private String termsAndConditions;
+    private String disclaimer;
 
-    private CatalogItemDetails(@NonNull String id, String title, String description, @NonNull List<URL> imageURLs, ContactInfo contact, @NonNull List<Location> locations, @NonNull Price priceStartingAt, @NonNull PurchaseStrategy purchaseStrategy, List<Attribute> information, @NonNull Supplier supplier, String termsAndConditions) {
+    private CatalogItemDetails(@NonNull String id,
+                               String title,
+                               String description,
+                               @NonNull List<URL> imageURLs,
+                               ContactInfo contact,
+                               @NonNull List<Location> locations,
+                               @NonNull Price priceStartingAt,
+                               @NonNull PurchaseStrategy purchaseStrategy,
+                               List<Attribute> information,
+                               @NonNull Supplier supplier,
+                               String termsAndConditions,
+                               String disclaimer) {
         this.title = title;
         this.description = description;
         this.imageURLs = imageURLs;
@@ -38,6 +53,7 @@ public class CatalogItemDetails implements Product {
         this.information = information;
         this.supplier = supplier;
         this.termsAndConditions = termsAndConditions;
+        this.disclaimer = disclaimer;
     }
 
     @Override
@@ -86,6 +102,10 @@ public class CatalogItemDetails implements Product {
         return termsAndConditions;
     }
 
+    public String getDisclaimer() {
+        return disclaimer;
+    }
+
     static class CatalogItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
         @Override
         public CatalogItemDetails instantiate(JsonReader reader) throws Exception {
@@ -100,6 +120,7 @@ public class CatalogItemDetails implements Product {
             List<Attribute> information = null;
             Supplier supplier = null;
             String termsAndConditions = null;
+            String disclaimer = null;
 
             reader.beginObject();
 
@@ -156,6 +177,9 @@ public class CatalogItemDetails implements Product {
                     case "termsAndConditions":
                         termsAndConditions = JsonReaderHelper.nextNullableString(reader);
                         break;
+                    case "disclaimer":
+                        disclaimer = JsonReaderHelper.nextNullableString(reader);
+                        break;
                     default:
                         reader.skipValue();
                         break;
@@ -171,7 +195,18 @@ public class CatalogItemDetails implements Product {
             Assertion.eval(purchaseStrategy != null);
             Assertion.eval(supplier != null);
 
-            return new CatalogItemDetails(id, title, description, imageURLs, contact, locations, priceStartingAt, purchaseStrategy, information, supplier, termsAndConditions);
+            return new CatalogItemDetails(id,
+                    title,
+                    description,
+                    imageURLs,
+                    contact,
+                    locations,
+                    priceStartingAt,
+                    purchaseStrategy,
+                    information,
+                    supplier,
+                    termsAndConditions,
+                    disclaimer);
         }
     }
 }
