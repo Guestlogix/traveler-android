@@ -59,11 +59,13 @@ public abstract class RadioAdapter<T> extends RecyclerView.Adapter<RadioAdapter.
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private RadioButton mRadio;
-        TextView mText;
+        TextView mLabel;
+        TextView mDisclaimer;
 
         ViewHolder(final View inflate) {
             super(inflate);
-            mText = (TextView) inflate.findViewById(R.id.text);
+            mLabel = (TextView) inflate.findViewById(R.id.label);
+            mDisclaimer = (TextView) inflate.findViewById(R.id.disclaimer);
             mRadio = (RadioButton) inflate.findViewById(R.id.radio);
             View.OnClickListener clickListener = new View.OnClickListener() {
                 @Override
