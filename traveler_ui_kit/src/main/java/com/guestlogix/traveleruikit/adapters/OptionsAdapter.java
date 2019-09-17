@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.adapters;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ public class OptionsAdapter extends RadioAdapter<BookingOption> {
 
         BookingOption option = mItems.get(i);
 
-        viewHolder.mText.setText(option.getValue());
+        viewHolder.mLabel.setText(option.getValue());
+        viewHolder.mDisclaimer.setText(Html.fromHtml(option.getDisclaimer()));
     }
 }
