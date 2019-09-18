@@ -41,7 +41,9 @@ public abstract class RadioAdapter<T> extends RecyclerView.Adapter<RadioAdapter.
 
     @Override
     public void onBindViewHolder(RadioAdapter.ViewHolder viewHolder, final int i) {
-        viewHolder.mRadio.setChecked(i == mSelectedItem);
+        boolean isChecked = i == mSelectedItem;
+        viewHolder.mDisclaimer.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        viewHolder.mRadio.setChecked(isChecked);
     }
 
     @Override
