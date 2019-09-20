@@ -1,7 +1,6 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import android.content.Context;
-import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.Router;

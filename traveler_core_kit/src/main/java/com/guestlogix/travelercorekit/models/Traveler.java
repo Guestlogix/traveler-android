@@ -427,7 +427,6 @@ public class Traveler {
             return;
         }
 
-        // TODO: Investigate if context needs to be part of Session or just localInstance
         AuthenticatedUrlRequest request = Router.orders(query, localInstance.session, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<OrderResult> fetchTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
