@@ -3,6 +3,10 @@
     <string name="add_flight_message">Enter your flight details below to receive the latest updates and personalize your
         experience
     </string>
+    <string name="sdk_endpoint_setting">Endpoint for Traveler API</string>
+    <string name="auth_endpoint_setting">Endpoint for authentication API</string>
+    <string name="sdk_endpoint">SDK Endpoint</string>
+    <string name="auth_endpoint">Auth Endpoint</string>
     <string name="flight_search_error">Invalid flight number</string>
     <string name="flight_number">Flight Number</string>
     <string name="departure_date">Departure Date</string>

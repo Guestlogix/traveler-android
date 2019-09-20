@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:key="traveler_sdk_category"
+            android:title="@string/sdk_endpoint">
+
+        <com.guestlogix.traveler.settings.EditUrlPreference
+                android:key="TRAVELER_SDK_ENDPOINT"
+                android:title="@string/sdk_endpoint_setting" />
+
+        <Preference
+                android:key="reset_sdk_endpoint"
+                android:title="Reset SDK Endpoint" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+            android:key="auth_category"
+            android:title="@string/auth_endpoint">
+
+        <com.guestlogix.traveler.settings.EditUrlPreference
+                android:key="TRAVELER_AUTH_ENDPOINT"
+                android:title="@string/auth_endpoint_setting" />
+
+
+        <Preference
+                android:key="reset_auth_endpoint"
+                android:title="Reset AUTH Endpoint" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
