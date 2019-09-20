@@ -77,6 +77,7 @@ public class Airport implements Serializable {
                         int offsetValue = sign * ((hoursPortion * 100) + minutesPortion);
                         String customID = String.format(Locale.US, "GMT%+d", offsetValue);
                         timeZone = TimeZone.getTimeZone(customID);
+                        break;
                     default:
                         reader.skipValue();
                         break;
