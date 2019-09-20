@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-
 public class Router {
     private static final String DEFAULT_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";
 
@@ -50,8 +49,7 @@ public class Router {
             routeBuilder.param("flight-ids", flight.getId());
         }
 
-        return routeBuilder
-                .build(session.getToken());
+        return routeBuilder.build(session.getToken());
     }
 
     // /product/{id}
@@ -95,8 +93,7 @@ public class Router {
             routeBuilder.param("pass-ids", pass.getId());
         }
 
-        return routeBuilder
-                .build(session.getToken());
+        return routeBuilder.build(session.getToken());
     }
 
     public static AuthenticatedUrlRequest orderCreate(Session session, List<BookingForm> forms, Context context) {
@@ -202,14 +199,13 @@ public class Router {
     }
 
     private static class RouteBuilder {
+        private static String travelerSDKEndpoint = null;
+
         private NetworkTask.Route.Method method;
         private String path;
-        private String url;
         private JSONPayloadProvider payload = null;
-        private String apiKey;
         private Map<String, String> headers;
         private List<Pair<String, String>> params;
-        private Context context;
 
         private RouteBuilder(Context context, String apiKey) {
             this.params = new ArrayList<>();
@@ -240,12 +236,14 @@ public class Router {
             this.headers.put("x-application-id", applicationId);
             this.headers.put("x-timezone", "UTC");
             this.headers.put("x-api-key", apiKey);
-            this.context = context;
+
+            if (null == travelerSDKEndpoint){
+                SharedPreferences sharedPreferences = context.getSharedPreferences("TRAVELER_PREFS", Context.MODE_PRIVATE);
+                travelerSDKEndpoint = sharedPreferences.getString("TRAVELER_SDK_ENDPOINT", DEFAULT_ENDPOINT);
+            }
         }
 
         private URL getURL() {
-            SharedPreferences sharedPreferences = context.getSharedPreferences("TRAVELER_PREFS", Context.MODE_PRIVATE);
-            String travelerSDKEndpoint = sharedPreferences.getString("TRAVELER_SDK_ENDPOINT", DEFAULT_ENDPOINT);
             try {
                 StringBuilder sb = new StringBuilder();
                 sb.append(travelerSDKEndpoint);
