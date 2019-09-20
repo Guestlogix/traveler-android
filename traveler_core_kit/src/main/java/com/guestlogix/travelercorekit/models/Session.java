@@ -7,9 +7,11 @@ public class Session {
     private String apiKey;
     private Token token = null;
     private String identity = null;
+    private boolean isSandboxMode;
 
-    Session(String apiKey) {
+    Session(String apiKey, boolean isSandboxMode) {
         this.apiKey = apiKey;
+        this.isSandboxMode = isSandboxMode;
     }
 
     public Token getToken() {
@@ -30,5 +32,9 @@ public class Session {
 
     public String getIdentity() {
         return identity;
+    }
+
+    public boolean isSandboxMode() {
+        return isSandboxMode;
     }
 }

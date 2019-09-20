@@ -34,16 +34,20 @@ public class Traveler {
      * @param apiKey             key provided by the Guestlogix platform. Invalid keys will result in forbidden response codes.
      * @param applicationContext application context where the sdk is running.
      */
-    public static void initialize(String apiKey, Context applicationContext) {
+    public static void initialize(String apiKey, Context applicationContext, boolean isSandboxMode) {
         if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
         } else {
-            localInstance = new Traveler(apiKey, applicationContext);
+            localInstance = new Traveler(apiKey, applicationContext, isSandboxMode);
         }
     }
 
-    private Traveler(String apiKey, Context applicationContext) {
-        this.session = new Session(apiKey);
+    public static void initialize(String apiKey, Context applicationContext) {
+        initialize(apiKey, applicationContext, false);
+    }
+
+    private Traveler(String apiKey, Context applicationContext, boolean isSandboxMode) {
+        this.session = new Session(apiKey, isSandboxMode);
         this.applicationContext = applicationContext;
 
         //read token from disk
