@@ -13,7 +13,6 @@ import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTas
 import com.guestlogix.travelercorekit.tasks.BlockTask;
 import com.guestlogix.travelercorekit.tasks.SessionBeginTask;
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ public class Traveler {
     private TaskManager taskManager = new TaskManager();
     private TaskManager orderSerialTaskManager = new TaskManager(TaskManager.Mode.SERIAL);
     private Session session;
+    private Context applicationContext;
 
     /**
      * Initializes the SDK.
@@ -42,13 +42,14 @@ public class Traveler {
         }
     }
 
-    private Traveler(String apiKey, Context context) {
-        this.session = new Session(apiKey, context);
+    private Traveler(String apiKey, Context applicationContext) {
+        this.session = new Session(apiKey);
+        this.applicationContext = applicationContext;
 
         //read token from disk
-        SessionBeginTask sessionBeginTask = new SessionBeginTask(this.session);
+        SessionBeginTask sessionBeginTask = new SessionBeginTask(this.session, applicationContext);
         //fetch token from backend if disk does not have one
-        AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.session.getApiKey(), session.getContext());
+        AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.session.getApiKey(), applicationContext);
 
         BlockTask authTokenFetchBlockTask = new BlockTask() {
             @Override
@@ -108,9 +109,11 @@ public class Traveler {
         if (null == localInstance) {
             flightSearchCallback.onFlightSearchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedUrlRequest request = Router.searchFlight(localInstance.session, flightQuery, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.searchFlight(localInstance.session, flightQuery, localInstance.applicationContext);
 
-            AuthenticatedRemoteNetworkRequestTask<List<Flight>> searchFlightTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
+            AuthenticatedRemoteNetworkRequestTask<List<Flight>> searchFlightTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
+                            new ArrayMappingFactory<>(new Flight.FlightObjectMappingFactory()));
 
             BlockTask searchFlightBlockTask = new BlockTask() {
                 @Override
@@ -143,9 +146,11 @@ public class Traveler {
         if (null == localInstance) {
             catalogSearchCallback.onCatalogError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedUrlRequest request = Router.catalog(localInstance.session, catalogQuery, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.catalog(localInstance.session, catalogQuery, localInstance.applicationContext);
 
-            AuthenticatedRemoteNetworkRequestTask<Catalog> searchGroupTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Catalog.CatalogObjectMappingFactory());
+            AuthenticatedRemoteNetworkRequestTask<Catalog> searchGroupTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                            request, new Catalog.CatalogObjectMappingFactory());
 
             BlockTask searchGroupBlockTask = new BlockTask() {
                 @Override
@@ -175,8 +180,10 @@ public class Traveler {
         if (null == localInstance) {
             catalogItemDetailsCallback.onCatalogItemDetailsError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedUrlRequest request = Router.product(localInstance.session, catalogItem, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+            AuthenticatedUrlRequest request = Router.product(localInstance.session, catalogItem, localInstance.applicationContext);
+            AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                            request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
 
             BlockTask catalogItemDetailsBlockTask = new BlockTask() {
                 @Override
@@ -226,8 +233,10 @@ public class Traveler {
             date = new Date();
         }
 
-        AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, product, date, endDate, localInstance.session.getContext());
-        AuthenticatedRemoteNetworkRequestTask<List<Availability>> fetchAvailabilitiesTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
+        AuthenticatedUrlRequest request = Router.productSchedule(localInstance.session, product, date, endDate, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<List<Availability>> fetchAvailabilitiesTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
+                        new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
         BlockTask fetchBlockTask = new BlockTask() {
                 @Override
                 protected void main() {
@@ -261,8 +270,10 @@ public class Traveler {
             fetchPassesCallback.onPassFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
 
-            AuthenticatedUrlRequest request = Router.productPass(localInstance.session, product, availability, option, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<List<Pass>> fetchPassesTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
+            AuthenticatedUrlRequest request = Router.productPass(localInstance.session, product, availability, option, localInstance.applicationContext);
+            AuthenticatedRemoteNetworkRequestTask<List<Pass>> fetchPassesTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
+                            new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()));
 
             BlockTask fetchPassBlockTask = new BlockTask() {
                 @Override
@@ -302,8 +313,10 @@ public class Traveler {
             fetchBookingFormCallback.onBookingFormFetchError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
 
-            AuthenticatedUrlRequest request = Router.productQuestion(localInstance.session, product, passes, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchBookingFormTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
+            AuthenticatedUrlRequest request = Router.productQuestion(localInstance.session, product, passes, localInstance.applicationContext);
+            AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchBookingFormTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                            request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
@@ -335,8 +348,10 @@ public class Traveler {
         } else {
             ArrayList<BookingForm> forms = new ArrayList<>();
             forms.add(bookingForm);
-            AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.session.getContext());
-            AuthenticatedRemoteNetworkRequestTask<Order> createOrderTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
+            AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.applicationContext);
+            AuthenticatedRemoteNetworkRequestTask<Order> createOrderTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                            request, new Order.OrderMappingFactory());
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
@@ -367,9 +382,11 @@ public class Traveler {
         if (null == localInstance) {
             processOrderCallback.onOrderProcessError(new TravelerError(TravelerErrorCode.SDK_NOT_INITIALIZED, "SDK not initialized, Initialize by calling Traveler.initialize();"));
         } else {
-            AuthenticatedUrlRequest request = Router.orderProcess(localInstance.session, order, payment, localInstance.session.getContext());
+            AuthenticatedUrlRequest request = Router.orderProcess(localInstance.session, order, payment, localInstance.applicationContext);
 
-            AuthenticatedRemoteNetworkRequestTask<Order> processOrderTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
+            AuthenticatedRemoteNetworkRequestTask<Order> processOrderTask =
+                    new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                            request, new Order.OrderMappingFactory());
 
             BlockTask fetchBlockTask = new BlockTask() {
                 @Override
@@ -411,9 +428,10 @@ public class Traveler {
         }
 
         // TODO: Investigate if context needs to be part of Session or just localInstance
-        AuthenticatedUrlRequest request = Router.orders(query, localInstance.session, localInstance.session.getContext());
+        AuthenticatedUrlRequest request = Router.orders(query, localInstance.session, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<OrderResult> fetchTask =
-                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new OrderResult.OrderResultMappingFactory());
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new OrderResult.OrderResultMappingFactory());
 
         class ResultWrapper {
             OrderResult result;
@@ -467,8 +485,10 @@ public class Traveler {
             return;
         }
 
-        AuthenticatedUrlRequest request = Router.cancellationQuote(order, localInstance.session, localInstance.session.getContext());
-        AuthenticatedRemoteNetworkRequestTask<CancellationQuote.Response> fetchTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new CancellationQuote.Response.ResponseObjectMappingFactory());
+        AuthenticatedUrlRequest request = Router.cancellationQuote(order, localInstance.session, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<CancellationQuote.Response> fetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new CancellationQuote.Response.ResponseObjectMappingFactory());
         BlockTask blockTask = new BlockTask() {
             @Override
             protected void main() {
@@ -498,8 +518,10 @@ public class Traveler {
             return;
         }
 
-        AuthenticatedUrlRequest request = Router.cancelOrder(quote, localInstance.session, localInstance.session.getContext());
-        AuthenticatedRemoteNetworkRequestTask<Order> fetchTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, new Order.OrderMappingFactory());
+        AuthenticatedUrlRequest request = Router.cancelOrder(quote, localInstance.session, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<Order> fetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new Order.OrderMappingFactory());
         BlockTask blockTask = new BlockTask() {
             @Override
             protected void main() {
@@ -522,9 +544,9 @@ public class Traveler {
         if (localInstance == null) {
             return;
         }
-
-        AuthenticatedUrlRequest request = Router.emailOrderConfirmation(order, localInstance.session, localInstance.session.getContext());
-        AuthenticatedRemoteNetworkRequestTask requestTask = new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, request, null);
+        AuthenticatedUrlRequest request = Router.emailOrderConfirmation(order, localInstance.session, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask requestTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request, null);
         BlockTask blockTask = new BlockTask() {
             @Override
             protected void main() {

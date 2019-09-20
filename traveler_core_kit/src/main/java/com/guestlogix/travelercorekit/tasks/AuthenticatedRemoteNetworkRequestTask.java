@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.tasks;
 
+import android.content.Context;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
@@ -8,20 +9,19 @@ import com.guestlogix.travelercorekit.utilities.JsonObjectMapper;
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
 
     private TaskManager taskManager = new TaskManager();
     private Session session;
+    private Context context;
     private AuthenticatedUrlRequest request;
     private NetworkTask.ResponseHandler responseHandler;
     private Error error;
     private T resource;
 
-    public AuthenticatedRemoteNetworkRequestTask(Session session, AuthenticatedUrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
+    public AuthenticatedRemoteNetworkRequestTask(Session session, Context context, AuthenticatedUrlRequest request, ObjectMappingFactory<T> objectMappingFactory) {
         this.session = session;
+        this.context = context;
         this.request = request;
 
         if (objectMappingFactory != null) {
@@ -43,7 +43,7 @@ public class AuthenticatedRemoteNetworkRequestTask<T> extends Task {
 
     @Override
     public void execute() {
-        AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(this.session.getApiKey(), session.getContext());
+        AuthTokenFetchTask authTokenFetchTask = new AuthTokenFetchTask(session.getApiKey(), context);
         NetworkTask retryNetworkTask = new NetworkTask(request, responseHandler);
 
         BlockTask retryNetworkBlockTask = new BlockTask() {

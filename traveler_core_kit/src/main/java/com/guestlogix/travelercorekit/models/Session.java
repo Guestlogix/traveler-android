@@ -1,18 +1,14 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.content.Context;
-
 /**
  * Session holds the api key, context, token and user Id.
  */
 public class Session {
     private String apiKey;
-    private Context context;
     private Token token = null;
     private String identity = null;
 
-    Session(String apiKey, Context context) {
-        this.context = context;
+    Session(String apiKey) {
         this.apiKey = apiKey;
     }
 
@@ -26,10 +22,6 @@ public class Session {
 
     public String getApiKey() {
         return apiKey;
-    }
-
-    public Context getContext() {
-        return context;
     }
 
     public void setIdentity(String identity) {
