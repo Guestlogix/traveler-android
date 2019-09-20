@@ -17,4 +17,10 @@
             android:orderInCategory="100"
             app:showAsAction="ifRoom"
             android:title="@string/add_flight"/>
+    <item
+            android:id="@+id/settings_action"
+            android:orderInCategory="100"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_settings_white_24dp"
+            android:title="@string/settings"/>
 </menu>

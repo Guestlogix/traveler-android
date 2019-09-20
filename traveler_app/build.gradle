@@ -107,6 +107,7 @@ dependencies {
     // Android support dependencies
     implementation "com.android.support:appcompat-v7:${android_support_version}"
     implementation "com.android.support:recyclerview-v7:${android_support_version}"
+    implementation "com.android.support:preference-v7:${android_support_version}"
     implementation "com.android.support.constraint:constraint-layout:${android_support_component_version}"
     implementation "android.arch.lifecycle:extensions:${android_support_component_version}"
     implementation "android.arch.navigation:navigation-fragment:${android_navigation_controller_version}"

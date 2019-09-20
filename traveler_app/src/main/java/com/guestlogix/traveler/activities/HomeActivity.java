@@ -111,6 +111,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN);
                 return true;
+            case R.id.settings_action:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
             default:
                 return false;
         }

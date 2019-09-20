@@ -27,6 +27,9 @@
         <activity android:name=".activities.FlightActivity"
                   android:label="Flight">
         </activity>
+        <activity android:name=".activities.SettingsActivity"
+                  android:label="Settings">
+        </activity>
         <activity android:name=".activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
