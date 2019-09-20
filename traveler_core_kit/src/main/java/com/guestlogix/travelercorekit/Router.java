@@ -22,7 +22,6 @@ import java.util.*;
 
 public class Router {
     private static final String DEFAULT_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";
-    private static String TAG = "Traveler";
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return new RouteBuilder(context, apiKey)

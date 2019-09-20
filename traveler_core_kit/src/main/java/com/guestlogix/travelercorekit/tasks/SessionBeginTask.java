@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.tasks;
 
+import android.content.Context;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.utilities.Task;
@@ -9,9 +10,12 @@ public class SessionBeginTask extends Task {
 
     private TaskManager taskManager = new TaskManager();
     private Session session;
+    private Context context;
+    private SharedPrefsReadTask sharedPrefsReadTask;
 
-    public SessionBeginTask(Session session) {
+    public SessionBeginTask(Session session, Context context) {
         this.session = session;
+        this.context = context;
     }
 
     public Session getSession() {
@@ -20,14 +24,14 @@ public class SessionBeginTask extends Task {
 
     @Override
     public void execute() {
-        //read encrypted data from shared prefs
-        SharedPrefsReadTask sharedPrefsReadTask = new SharedPrefsReadTask(session.getContext(), session.getApiKey());
+
+        // Read encrypted data from shared prefs
+        sharedPrefsReadTask = new SharedPrefsReadTask(context, session.getApiKey());
 
         BlockTask sharedPrefsReadBlockTask = new BlockTask() {
             @Override
             protected void main() {
                 session.setToken(new Token(sharedPrefsReadTask.getResult()));
-                //session.getAuthToken().setValue(sharedPrefsReadTask.getResult());
             }
         };
 

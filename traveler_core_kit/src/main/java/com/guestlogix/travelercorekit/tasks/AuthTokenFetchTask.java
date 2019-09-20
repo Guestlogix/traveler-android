@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import android.content.Context;
+import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.utilities.JsonObjectMapperCallback;
 import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.Router;
@@ -11,14 +12,14 @@ import com.guestlogix.travelercorekit.utilities.TaskManager;
 public class AuthTokenFetchTask extends Task {
 
     private TaskManager taskManager = new TaskManager();
-    private Context context;
-    private String apiKey;
     private Token token;
+    private String apiKey;
+    private Context context;
     private Error error;
 
     public AuthTokenFetchTask(String apiKey, Context context) {
-        this.context = context;
         this.apiKey = apiKey;
+        this.context = context;
     }
 
     public Token getAuthToken() {
@@ -31,17 +32,14 @@ public class AuthTokenFetchTask extends Task {
 
     @Override
     public void execute() {
-        //Writing encrypted token to shared prefs
+        // Writing encrypted token to shared prefs
         SharedPrefsWriteTask sharedPrefsWriteTask = new SharedPrefsWriteTask(context, apiKey);
+        NetworkTask.Route route = Router.authenticate(apiKey, context);
 
-        //Encrypting token
-        //KeystoreEncryptTask keystoreEncryptTask = new KeystoreEncryptTask(apiKey);
-
-        //Fetch token from backend
-        NetworkTask fetchTokenNetworkTask = new NetworkTask(Router.authenticate(apiKey, context), new JsonObjectMapper<>(new Token.AuthTokenObjectMappingFactory(), new JsonObjectMapperCallback<Token>() {
+        // Fetch token from backend
+        NetworkTask fetchTokenNetworkTask = new NetworkTask(route, new JsonObjectMapper<>(new Token.AuthTokenObjectMappingFactory(), new JsonObjectMapperCallback<Token>() {
             @Override
             public void onSuccess(Token token) {
-                //keystoreEncryptTask.setData(token.getValue().getBytes());
                 sharedPrefsWriteTask.setData(token.getValue());
                 AuthTokenFetchTask.this.token = token;
             }
