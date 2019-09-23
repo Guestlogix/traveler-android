@@ -153,7 +153,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
                     ProgressDialogFragment fragment = new ProgressDialogFragment();
                     transactionQueue.addTransaction(fragment.getTransaction(getSupportFragmentManager()));
 
-                    Guest.fetchProfile(account, this);
+                    Guest.fetchProfile(account, this, getApplicationContext());
                 } else {
                     new AlertDialog.Builder(this)
                             .setMessage("Error signing in with Google")
