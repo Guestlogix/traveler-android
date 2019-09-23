@@ -1,16 +1,18 @@
 package com.guestlogix.travelercorekit;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.Pair;
+
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import com.guestlogix.travelercorekit.tasks.NetworkTaskError;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.TravelerPrefs;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,8 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
+import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELER_SDK_ENDPOINT;
 
 public class Router {
     private static final String DEFAULT_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";
@@ -254,8 +258,8 @@ public class Router {
             this.headers.put("x-api-key", apiKey);
 
             if (null == travelerSDKEndpoint){
-                SharedPreferences sharedPreferences = context.getSharedPreferences("TRAVELER_PREFS", Context.MODE_PRIVATE);
-                travelerSDKEndpoint = sharedPreferences.getString("TRAVELER_SDK_ENDPOINT", DEFAULT_ENDPOINT);
+                TravelerPrefs travelerPrefs = TravelerPrefs.getInstance(context);
+                travelerSDKEndpoint = travelerPrefs.get(TRAVELER_SDK_ENDPOINT, DEFAULT_ENDPOINT);
             }
         }
 
