@@ -22,10 +22,11 @@ public class Guest {
      * <p>
      * @param account         google account of user.
      * @param profileCallback Callback methods which will be executed after the user is fetched.
+     * @param applicationContext application context where the sdk is running.
      */
-    public static void fetchProfile(GoogleSignInAccount account, ProfileFetchCallback profileCallback) {
+    public static void fetchProfile(GoogleSignInAccount account, ProfileFetchCallback profileCallback, Context applicationContext) {
 
-        UrlRequest request = GuestRoute.profile(account.getIdToken());
+        UrlRequest request = GuestRoute.profile(account.getIdToken(), applicationContext);
 
         RemoteNetworkRequestTask<Profile> fetchProfileTask = new RemoteNetworkRequestTask<>(request, new Profile.ProfileObjectMappingFactory());
 

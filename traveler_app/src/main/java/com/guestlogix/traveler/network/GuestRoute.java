@@ -1,45 +1,30 @@
 package com.guestlogix.traveler.network;
 
-import androidx.annotation.NonNull;
+import android.content.Context;
+
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.UrlRequest;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
+import com.guestlogix.travelercorekit.utilities.TravelerPrefs;
+
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
+import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELER_AUTH_ENDPOINT;
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
-
-// TODO: Redo this class
-// Model after Router in Core
 
 class GuestRoute {
 
-    private static final String BASE_URL = "https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev";
+    private static final String DEFAULT_AUTH_URL = "https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev";
 
-    static UrlRequest profile(String requestIdToken) {
-        return GuestRequestBuilder.Builder()
+    static UrlRequest profile(String requestIdToken, Context context) {
+        return new GuestRequestBuilder(context, requestIdToken)
                 .method(NetworkTask.Route.Method.GET)
-                .url(BASE_URL)
                 .path("/login")
-                .headers(buildHeaders(requestIdToken))
                 .build();
-    }
-
-    /**
-     * Generates headers with required fields.
-     *
-     * @return Map of headers containing device info.
-     */
-    private static Map<String, String> buildHeaders(@NonNull String requestIdToken) {
-        Map<String, String> headers = new HashMap<>();
-
-        headers.put("Content-Type", "application/json");
-        headers.put("Accept", "application/json");
-        headers.put("x-access-token", requestIdToken);
-        return headers;
     }
 
     private static class GuestRequestBuilder {
@@ -49,19 +34,24 @@ class GuestRoute {
         private GuestRequestBuilder.JSONPayloadProvider payload = null;
         private Map<String, String> headers;
         private List<String> params;
+        private TravelerPrefs travelerPrefs;
 
-        private GuestRequestBuilder() {
+        private GuestRequestBuilder(Context context, String requestIdToken) {
+            this.params = new ArrayList<>();
+
+            this.headers = new HashMap<>();
+            this.headers.put("Content-Type", "application/json");
+            this.headers.put("Accept", "application/json");
+            this.headers.put("x-access-token", requestIdToken);
+            this.travelerPrefs = TravelerPrefs.getInstance(context);
         }
 
-        public static GuestRequestBuilder Builder() {
-            return new GuestRequestBuilder();
-        }
+        private URL createURL(String path, List<String> queryParams) {
+            String travelerSDKEndpoint = travelerPrefs.get(TRAVELER_AUTH_ENDPOINT, DEFAULT_AUTH_URL);
 
-        static URL createURL(String url, String path, List<String> queryParams) {
             try {
                 StringBuilder sb = new StringBuilder();
-
-                sb.append(url);
+                sb.append(travelerSDKEndpoint);
                 sb.append(path);
 
                 if (queryParams != null) {
@@ -85,26 +75,21 @@ class GuestRoute {
             }
         }
 
-        static URL createURL(String url, String path) {
-            return createURL(url, path, null);
+        private URL createURL(String path) {
+            return createURL(path, null);
         }
 
-        public GuestRequestBuilder method(NetworkTask.Route.Method method) {
+        GuestRequestBuilder method(NetworkTask.Route.Method method) {
             this.method = method;
             return this;
         }
 
-        public GuestRequestBuilder path(String path) {
+        GuestRequestBuilder path(String path) {
             this.path = path;
             return this;
         }
 
-        public GuestRequestBuilder url(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public GuestRequestBuilder param(String key, String value) {
+        GuestRequestBuilder param(String key, String value) {
             if (params == null) {
                 params = new ArrayList<>();
             }
@@ -129,17 +114,12 @@ class GuestRoute {
             return this;
         }
 
-        public GuestRequestBuilder headers(Map<String, String> headers) {
-            this.headers = headers;
-            return this;
-        }
-
-        public UrlRequest build() {
+        UrlRequest build() {
             URL url;
             if (params == null) {
-                url = createURL(this.url, path);
+                url = createURL(path);
             } else {
-                url = createURL(this.url, path, params);
+                url = createURL(path, params);
             }
 
             if (payload == null) {
