@@ -399,12 +399,16 @@ public class Router {
                     return new BookingError(BookingError.Code.BELLOW_MIN_UNITS);
                 case 2018:
                     return new BookingError(BookingError.Code.UNACCOMPANIED_CHILDREN);
+                case 2032:
+                    return new NetworkTaskError(NetworkTaskError.Code.ITEM_UNAVAILABLE);
                 case 2027:
                     return new PaymentError(PaymentError.Code.CONFIRMATION_REQUIRED,
                             json.getJSONObject("errorData")
                                     .getString("confirmationKey"));
                 case 6001:
                     return new PaymentError(PaymentError.Code.PROCESSING_ERROR, null);
+                case 8001:
+                    return new NetworkTaskError(NetworkTaskError.Code.ALREADY_WISHLISTED);
                 default:
                     Log.e("ErrorMapping", "Unknown error code: " + code);
                     return error;
