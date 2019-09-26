@@ -37,6 +37,8 @@ public class Traveler {
     public static void initialize(String apiKey, Context applicationContext, boolean isSandboxMode) {
         if (localInstance != null) {
             TravelerLog.e("SDK already initialized");
+        } else if (TextUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase("null")) {
+            TravelerLog.e("SDK cannot be initialized with an empty API key!");
         } else {
             localInstance = new Traveler(apiKey, applicationContext, isSandboxMode);
         }

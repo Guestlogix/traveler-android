@@ -69,7 +69,7 @@ def getDebugTravelerAPIKey() {
     } else {
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
-        return properties.getProperty('traveler_key_debug')
+        return properties.getProperty('traveler_api_key_debug')
     }
 }
 
