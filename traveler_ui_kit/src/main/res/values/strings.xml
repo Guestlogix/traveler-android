@@ -51,4 +51,5 @@
     <string name="title_activity_order_detail">OrderDetail</string>
     <string name="label_billing_info">Billing Information</string>
     <string name="button_email_tickets">EMAIL TICKETS</string>
+    <string name="toggle_wishlist_contentdescription">Toggle Wishlist</string>
 </resources>
