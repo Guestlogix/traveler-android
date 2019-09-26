@@ -538,4 +538,33 @@ public class Traveler {
         localInstance.taskManager.addTask(requestTask);
         TaskManager.getMainTaskManager().addTask(blockTask);
     }
+
+    public static void addToWishlist(Product product, WishlistAddCallback callback) {
+        if (!isInitialized()) return;
+        if (localInstance.session.getIdentity() == null) {
+            callback.onWishlistAddError(new WishlistResultError(WishlistResultError.Code.UNIDENTIFIED_TRAVELER));
+            return;
+        }
+
+        AuthenticatedUrlRequest request = Router.wishlistAdd(product,
+                localInstance.session.getIdentity(), localInstance.session, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> requestTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
+                        new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (requestTask.getError() != null) {
+                    callback.onWishlistAddError(requestTask.getError());
+                } else {
+                    callback.onWishlistAddSuccess(product, requestTask.getResource());
+                }
+            }
+        };
+
+        blockTask.addDependency(requestTask);
+
+        localInstance.taskManager.addTask(requestTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
+    }
 }
