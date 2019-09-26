@@ -9,16 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
+import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
+import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.TermsAndConditionsActivity;
 import com.guestlogix.traveleruikit.adapters.ImageURLAdapter;
@@ -28,12 +28,17 @@ import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
-public class CatalogItemDetailsFragment extends Fragment {
-    static public String ARG_CATALOG_ITEM_DETAILS = "ARG_CATALOG_ITEM_DETAILS";
-    static private String TAG = "CatalogItemDetailsFragment";
+import java.util.ArrayList;
+import java.util.List;
+
+public class CatalogItemDetailsFragment extends Fragment implements WishlistAddCallback{
+    private static final String ARG_CATALOG_ITEM_DETAILS = "ARG_CATALOG_ITEM_DETAILS";
+    private static final String TAG = "CatalogItemDetailsFrag";
 
     private WrapContentViewPager catalogItemDetailsPager;
     private CarouselView carouselView;
+    private ImageButton wishListToggleImageButton;
+    private CatalogItemDetails catalogItemDetails;
 
     public static CatalogItemDetailsFragment newInstance(CatalogItemDetails details) {
         Bundle args = new Bundle();
@@ -56,7 +61,7 @@ public class CatalogItemDetailsFragment extends Fragment {
 
         // TODO: Clean all of this up
 
-        CatalogItemDetails catalogItemDetails = (CatalogItemDetails) args.get(ARG_CATALOG_ITEM_DETAILS);
+        catalogItemDetails = (CatalogItemDetails) args.get(ARG_CATALOG_ITEM_DETAILS);
 
         if (catalogItemDetails == null) {
             Log.e(TAG, "No CatalogItemDetails");
@@ -140,7 +145,30 @@ public class CatalogItemDetailsFragment extends Fragment {
             }
         });
 
+        wishListToggleImageButton = view.findViewById(R.id.imagebutton_wishlist_toggle);
+        wishListToggleImageButton.setSelected(false);
+        wishListToggleImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (wishListToggleImageButton.isSelected()) {
+                    //TODO remove wishlist
+                } else {
+                    Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
+                    wishListToggleImageButton.setSelected(true);
+                }
+            }
+        });
+
         return view;
     }
 
+    @Override
+    public void onWishlistAddSuccess(CatalogItemDetails itemDetails) {
+        catalogItemDetails = itemDetails;
+    }
+
+    @Override
+    public void onWishlistAddError(Error error) {
+        wishListToggleImageButton.setSelected(false);
+    }
 }
