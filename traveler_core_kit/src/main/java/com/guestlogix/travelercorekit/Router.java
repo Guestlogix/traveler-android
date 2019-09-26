@@ -218,6 +218,23 @@ public class Router {
                 .build(session.getToken());
     }
 
+    public static AuthenticatedUrlRequest wishlistAdd(Product product, String travelerId, Session session, Context context) {
+        return new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.POST)
+                .path("/traveler/" + travelerId + "/wishlist")
+                .payload(() -> {
+                    try {
+                        JSONObject payload = new JSONObject();
+                        payload.put("product_id", product.getId());
+                        return payload;
+                    } catch (JSONException e) {
+                        TravelerLog.e("Router.wishlistAdd() could not create JSONPayloadProvider");
+                    }
+                    return null;
+                })
+                .build(session.getToken());
+    }
+
     private static class RouteBuilder {
         private static String travelerSDKEndpoint = null;
 
