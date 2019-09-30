@@ -24,6 +24,8 @@ public class OptionsAdapter extends RadioAdapter<BookingOption> {
         BookingOption option = mItems.get(i);
 
         viewHolder.mLabel.setText(option.getValue());
-        viewHolder.mDisclaimer.setText(Html.fromHtml(option.getDisclaimer()));
+        if (option.getDisclaimer() != null) {
+            viewHolder.mDisclaimer.setText(Html.fromHtml(option.getDisclaimer()));
+        }
     }
 }
