@@ -27,7 +27,7 @@ import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
-public class CatalogItemDetailsFragment extends Fragment implements WishlistAddCallback{
+public class CatalogItemDetailsFragment extends Fragment implements WishlistAddCallback {
     private static final String ARG_CATALOG_ITEM_DETAILS = "ARG_CATALOG_ITEM_DETAILS";
     private static final String TAG = "CatalogItemDetailsFrag";
 
@@ -143,7 +143,7 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
             @Override
             public void onClick(View v) {
                 if (wishListToggleImageButton.isSelected()) {
-                    //TODO remove wishlist
+
                 } else {
                     Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
                     wishListToggleImageButton.setSelected(true);
@@ -154,9 +154,8 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
         return view;
     }
 
-    @Override
     public void onWishlistAddSuccess(CatalogItemDetails itemDetails) {
-            catalogItemDetails = itemDetails;
+        catalogItemDetails = itemDetails;
     }
 
     @Override

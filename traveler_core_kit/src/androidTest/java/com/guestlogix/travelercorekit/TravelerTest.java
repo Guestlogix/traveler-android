@@ -2,11 +2,13 @@ package com.guestlogix.travelercorekit;
 
 import android.content.Context;
 import android.util.Log;
+import androidx.annotation.Nullable;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
+import com.guestlogix.travelercorekit.callbacks.WishlistFetchCallback;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -137,6 +139,7 @@ public class TravelerTest{
      * - Flight Search using AC100 at the current day
      * - Catalog search based on that flight
      * - Adds to wishlist the first product of the first catalog group
+     * - Queries the wishlist and asserts that the product is in wishlist
      */
     @Test
     public void fullIntegrationTest() throws Exception {
@@ -144,12 +147,46 @@ public class TravelerTest{
         Date date = Calendar.getInstance().getTime();
         FlightQuery query = new FlightQuery("AC100", date);
         Expectation expectation = new Expectation();
+        StringBuffer productIdBuffer = new StringBuffer();
+        WishlistFetchCallback wishlistFetchCallback = new WishlistFetchCallback() {
+            @Override
+            public void onWishlistFetchSuccess(WishlistResult result, int identifier) {
+                Log.v("TravelerTest", "fullIntegrationTest::onWishlistQuerySuccess");
+                boolean productInList = false;
+                String targetProductId = productIdBuffer.toString();
+                for(CatalogItem item:result.getItems()){
+                    if(item.getId().equals(targetProductId)){
+                        productInList = true;
+                        break;
+                    }
+                }
+                Assert.assertTrue("product " + targetProductId + " was not found in wishlist query!", productInList);
+                expectation.fulfill();
+            }
+
+            @Override
+            public void onWishlistFetchError(Error error, int identifier) {
+                Log.e("TravelerTest", "fullIntegrationTest::onWishlistToggleError");
+                error.printStackTrace();
+                throw error;
+            }
+
+            @Nullable
+            @Override
+            public WishlistResult getPreviousResult() {
+                return null;
+            }
+
+            @Override
+            public void onWishlistFetchReceive(WishlistResult result, int identifier) {
+                //no-op
+            }
+        };
         WishlistAddCallback wishlistAddCallback = new WishlistAddCallback() {
             @Override
             public void onWishlistAddSuccess(Product item, CatalogItemDetails itemDetails) {
                 Log.v("TravelerTest", "fullIntegrationTest::onWishlistAddSuccess");
-                expectation.fulfill();
-
+                Traveler.fetchWishlist(new WishlistQuery(0, 10, new Date(), new Date()), 0, wishlistFetchCallback);
             }
 
             @Override
@@ -172,6 +209,7 @@ public class TravelerTest{
                 CatalogGroup catalogGroup = catalog.getGroups().get(0);
                 Assert.assertTrue(catalogGroup.getItems().size() >= 1);
                 Product product = catalogGroup.getItems().get(0);
+                productIdBuffer.append(product.getId());
 
                 Traveler.identify(TRAVELLER_ID);
                 Traveler.addToWishlist(product, wishlistAddCallback);
