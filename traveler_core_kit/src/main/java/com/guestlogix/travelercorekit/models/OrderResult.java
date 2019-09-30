@@ -104,7 +104,7 @@ public class OrderResult implements Serializable {
                             fromDate = DateHelper.parseISO8601(dateString);
                         break;
                     case "to":
-                        fromDate = DateHelper.parseISO8601(reader.nextString());
+                        toDate = DateHelper.parseISO8601(reader.nextString());
                         break;
                     case "total":
                         total = reader.nextInt();
