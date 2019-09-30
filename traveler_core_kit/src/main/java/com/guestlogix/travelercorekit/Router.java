@@ -235,6 +235,22 @@ public class Router {
                 .build(session.getToken());
     }
 
+    public static AuthenticatedUrlRequest wishlist(WishlistQuery query, String travelerId, Session session, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/traveler/" + travelerId + "/wishlist")
+                .param("skip", String.valueOf(query.getOffset()))
+                .param("take", String.valueOf(query.getLimit()));
+        if (null != (query.getToDate())) {
+            routeBuilder.param("to", DateHelper.formatDateToISO8601(query.getToDate()));
+        }
+        if (null != (query.getFromDate())) {
+            routeBuilder.param("from", DateHelper.formatDateToISO8601(query.getFromDate()));
+        }
+
+        return routeBuilder.build(session.getToken());
+    }
+
     private static class RouteBuilder {
         private static String travelerSDKEndpoint = null;
 

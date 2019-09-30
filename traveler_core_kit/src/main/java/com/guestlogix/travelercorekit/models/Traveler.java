@@ -567,4 +567,72 @@ public class Traveler {
         localInstance.taskManager.addTask(requestTask);
         TaskManager.getMainTaskManager().addTask(blockTask);
     }
+
+    /**
+     * Fetches an `WishlistResult` corresponding to the given `WishlistQuery`.
+     *
+     * @param query               The `WishlistQuery` to filter
+     * @param identifier          An optional `int` identifying the request. This value is returned back in the callbacks. Use this to distinguish between different requests
+     * @param callback            Callback methods to be executed once the results are ready
+     */
+    public static void fetchWishlist(WishlistQuery query, int identifier, WishlistFetchCallback callback) {
+        if (!isInitialized()) return;
+        if (localInstance.session.getIdentity() == null) {
+            callback.onWishlistFetchError(new WishlistResultError(WishlistResultError.Code.UNIDENTIFIED_TRAVELER), 0);
+            return;
+        }
+
+        AuthenticatedUrlRequest request = Router.wishlist(
+                query,
+                localInstance.session.getIdentity(),
+                localInstance.session,
+                localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<WishlistResult> fetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session,
+                        localInstance.applicationContext,
+                        request, new WishlistResult.WishlistResultMappingFactory());
+
+        class ResultWrapper {
+            WishlistResult result;
+        }
+        final ResultWrapper resultWrapper = new ResultWrapper();
+
+        BlockTask mergeTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (fetchTask.getResource() == null) {
+                    return;
+                }
+
+                WishlistResult previousResult = callback.getPreviousResult();
+                if (previousResult != null) {
+                    resultWrapper.result = previousResult.merge(fetchTask.getResource());
+                }
+
+                if (resultWrapper.result == null){
+                    resultWrapper.result = fetchTask.getResource();
+                }
+
+                callback.onWishlistFetchReceive(resultWrapper.result, identifier);
+            }
+        };
+
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (fetchTask.getError() != null) {
+                    callback.onWishlistFetchError(fetchTask.getError(), identifier);
+                } else {
+                    callback.onWishlistFetchSuccess(fetchTask.getResource(), identifier);
+                }
+            }
+        };
+
+        mergeTask.addDependency(fetchTask);
+        blockTask.addDependency(mergeTask);
+
+        localInstance.taskManager.addTask(fetchTask);
+        localInstance.orderSerialTaskManager.addTask(mergeTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
+    }
 }
