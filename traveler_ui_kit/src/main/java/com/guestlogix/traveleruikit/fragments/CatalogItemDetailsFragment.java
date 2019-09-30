@@ -17,7 +17,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
-import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.TermsAndConditionsActivity;
@@ -27,9 +26,6 @@ import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CatalogItemDetailsFragment extends Fragment implements WishlistAddCallback{
     private static final String ARG_CATALOG_ITEM_DETAILS = "ARG_CATALOG_ITEM_DETAILS";
@@ -73,11 +69,7 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
         carouselView = view.findViewById(R.id.carouselView);
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         TabLayout catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
-//
-//        ProductPurchaseContainerFragment purchaseContextContainer = (ProductPurchaseContainerFragment) getChildFragmentManager().
-//                findFragmentById(R.id.fragment_catalogItemDetails_purchaseSelector);
-//        purchaseContextContainer.setPurchaseContextChangedListener(this);
-//
+
         titleTextView.setText(catalogItemDetails.getTitle());
 
         if (null != catalogItemDetails.getImageURLs() && catalogItemDetails.getImageURLs().size() > 0) {
@@ -164,7 +156,7 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
 
     @Override
     public void onWishlistAddSuccess(CatalogItemDetails itemDetails) {
-        catalogItemDetails = itemDetails;
+            catalogItemDetails = itemDetails;
     }
 
     @Override
