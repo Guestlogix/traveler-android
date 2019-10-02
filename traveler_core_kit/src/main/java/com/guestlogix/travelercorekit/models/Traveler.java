@@ -18,6 +18,8 @@ import com.guestlogix.travelercorekit.utilities.TaskManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 public class Traveler {
     private static String TAG = "Traveler";
@@ -566,6 +568,59 @@ public class Traveler {
 
         localInstance.taskManager.addTask(requestTask);
         TaskManager.getMainTaskManager().addTask(blockTask);
+    }
+
+    /**
+     * @param item The `Product` that needs to be removed from the wishlist
+     * @param originalResult a WishlistResult which should contain every item in productsToRemove
+     *
+     * @return a nullable WishlistResult with productsToRemove eliminated from its item list.
+     *  This immediate return does not represent the state of the server; at a later time
+     *  onWishlistRemoveSuccess could be called to confirm the state; or an error callback
+     *  may be called with the original WishlistResult
+     */
+    public static WishlistResult wishlistRemove(Product item, @Nullable WishlistResult originalResult, WishlistRemoveCallback callback) {
+        if (!isInitialized()) return originalResult;
+        if (localInstance.session.getIdentity() == null) {
+            callback.onWishlistRemoveError(new WishlistResultError(WishlistResultError.Code.UNIDENTIFIED_TRAVELER), null);
+            return originalResult;
+        }
+
+        @Nullable WishlistResult immediateResult = null;
+
+        if (null != originalResult) {
+            Set<CatalogItem> immediateItems = new LinkedHashSet<>(originalResult.getItems());
+            immediateItems.remove(item);
+            immediateResult = new WishlistResult(
+                    originalResult.getSkip(),
+                    originalResult.getTake(),
+                    originalResult.getFromDate(),
+                    originalResult.getToDate(),
+                    originalResult.getTotal(),
+                    immediateItems);
+        }
+
+        AuthenticatedUrlRequest request = Router.wishlistRemove(item, localInstance.session.getIdentity(),
+                localInstance.session, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> requestTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
+                        new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (requestTask.getError() != null) {
+                    callback.onWishlistRemoveError(requestTask.getError(), originalResult);
+                } else {
+                    callback.onWishlistRemoveSuccess(item, requestTask.getResource());
+                }
+            }
+        };
+
+        blockTask.addDependency(requestTask);
+        localInstance.taskManager.addTask(requestTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
+
+        return immediateResult;
     }
 
     /**

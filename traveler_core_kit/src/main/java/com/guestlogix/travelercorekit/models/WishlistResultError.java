@@ -18,9 +18,11 @@ public class WishlistResultError extends Error {
 
     @Override
     public String getMessage() {
-        if (code == Code.UNIDENTIFIED_TRAVELER) {
-            return UNIDENTIFIED_TRAVELER_ERROR;
+        switch (code) {
+            case UNIDENTIFIED_TRAVELER:
+                return UNIDENTIFIED_TRAVELER_ERROR;
+            default:
+                return super.getMessage();
         }
-        return super.getMessage();
     }
 }
