@@ -352,7 +352,7 @@ public class TravelerTest{
      * This test can fail if KENSINGTON_2H_TOUR_PRODUCT_ID changes from GLX partners
      */
     @Test
-    public void addWishlistTest() throws Exception {
+    public void addUnavailableItemToWishlistTest() throws Exception {
         Traveler.identify(TRAVELLER_ID);
         Product product = Mockito.mock(Product.class);
         Mockito.when(product.getId()).thenReturn(KENSINGTON_2H_TOUR_PRODUCT_ID);

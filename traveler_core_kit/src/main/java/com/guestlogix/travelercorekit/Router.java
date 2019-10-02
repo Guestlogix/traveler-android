@@ -3,6 +3,7 @@ package com.guestlogix.travelercorekit;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
@@ -56,12 +57,17 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
-    // /product/{id}
+    // /catalog/item/{id}
     public static AuthenticatedUrlRequest product(Session session, Product product, Context context) {
-        return new RouteBuilder(context, session.getApiKey())
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
-                .path("/product/" + product.getId())
-                .build(session.getToken());
+                .path("/catalog/item/" + product.getId());
+
+        if (!TextUtils.isEmpty(session.getIdentity())) {
+            routeBuilder.param("travelerId", session.getIdentity());
+        }
+
+        return routeBuilder.build(session.getToken());
     }
 
     // /product/{id}/schedule
