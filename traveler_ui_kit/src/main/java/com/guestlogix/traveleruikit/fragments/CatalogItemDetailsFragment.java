@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -16,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
+import com.guestlogix.travelercorekit.callbacks.WishlistRemoveCallback;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.TermsAndConditionsActivity;
 import com.guestlogix.traveleruikit.adapters.ImageURLAdapter;
@@ -27,7 +30,7 @@ import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
-public class CatalogItemDetailsFragment extends Fragment implements WishlistAddCallback {
+public class CatalogItemDetailsFragment extends Fragment implements WishlistAddCallback, WishlistRemoveCallback {
     private static final String ARG_CATALOG_ITEM_DETAILS = "ARG_CATALOG_ITEM_DETAILS";
     private static final String TAG = "CatalogItemDetailsFrag";
 
@@ -138,22 +141,24 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
         });
 
         wishListToggleImageButton = view.findViewById(R.id.imagebutton_wishlist_toggle);
-        wishListToggleImageButton.setSelected(false);
+        wishListToggleImageButton.setSelected(catalogItemDetails.isWishlisted());
         wishListToggleImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (wishListToggleImageButton.isSelected()) {
-
+                if (catalogItemDetails.isWishlisted()) {
+                    //Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
+                    wishListToggleImageButton.setSelected(false);
+                    Traveler.wishlistRemove(catalogItemDetails, null, CatalogItemDetailsFragment.this);
                 } else {
-                    Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
                     wishListToggleImageButton.setSelected(true);
+                    Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
                 }
             }
         });
-
         return view;
     }
 
+    @Override
     public void onWishlistAddSuccess(CatalogItemDetails itemDetails) {
         catalogItemDetails = itemDetails;
     }
@@ -161,5 +166,29 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
     @Override
     public void onWishlistAddError(Error error) {
         wishListToggleImageButton.setSelected(false);
+        new AlertDialog.Builder(getContext())
+                .setTitle("Error")
+                .setMessage(error.getMessage())
+                .setCancelable(false)
+                .setNeutralButton("Ok", null)
+                .create()
+                .show();
+    }
+
+    @Override
+    public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
+        catalogItemDetails = itemDetails;
+    }
+
+    @Override
+    public void onWishlistRemoveError(Error error, WishlistResult result) {
+        wishListToggleImageButton.setSelected(true);
+        new AlertDialog.Builder(getContext())
+                .setTitle("Error")
+                .setMessage(error.getMessage())
+                .setCancelable(false)
+                .setNeutralButton("Ok", null)
+                .create()
+                .show();
     }
 }
