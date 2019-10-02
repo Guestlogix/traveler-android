@@ -26,6 +26,7 @@ public class CatalogItemDetails implements Product {
     private List<Location> locations;
     private PurchaseStrategy purchaseStrategy;
     private List<Attribute> information;
+    private boolean isWishlisted;
     private Supplier supplier;
     private String termsAndConditions;
     private String disclaimer;
@@ -39,6 +40,7 @@ public class CatalogItemDetails implements Product {
                                @NonNull Price priceStartingAt,
                                @NonNull PurchaseStrategy purchaseStrategy,
                                List<Attribute> information,
+                               boolean isWishlisted,
                                @NonNull Supplier supplier,
                                String termsAndConditions,
                                String disclaimer) {
@@ -51,6 +53,7 @@ public class CatalogItemDetails implements Product {
         this.locations = locations;
         this.purchaseStrategy = purchaseStrategy;
         this.information = information;
+        this.isWishlisted = isWishlisted;
         this.supplier = supplier;
         this.termsAndConditions = termsAndConditions;
         this.disclaimer = disclaimer;
@@ -94,6 +97,10 @@ public class CatalogItemDetails implements Product {
         return information;
     }
 
+    public boolean isWishlisted() {
+        return isWishlisted;
+    }
+
     public Supplier getSupplier() {
         return supplier;
     }
@@ -118,6 +125,7 @@ public class CatalogItemDetails implements Product {
             Price priceStartingAt = null;
             PurchaseStrategy purchaseStrategy = null;
             List<Attribute> information = null;
+            boolean isWishlisted = false;
             Supplier supplier = null;
             String termsAndConditions = null;
             String disclaimer = null;
@@ -171,6 +179,14 @@ public class CatalogItemDetails implements Product {
                             information = new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory()).instantiate(reader);
                         }
                         break;
+                    case "isWishlisted":
+                        if (reader.peek() == NULL) {
+                            isWishlisted = false;
+                            reader.skipValue();
+                        } else {
+                            isWishlisted = reader.nextBoolean();
+                        }
+                        break;
                     case "supplier":
                         supplier = new Supplier.SupplierObjectMappingFactory().instantiate(reader);
                         break;
@@ -204,6 +220,7 @@ public class CatalogItemDetails implements Product {
                     priceStartingAt,
                     purchaseStrategy,
                     information,
+                    isWishlisted,
                     supplier,
                     termsAndConditions,
                     disclaimer);
