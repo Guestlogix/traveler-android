@@ -235,6 +235,13 @@ public class Router {
                 .build(session.getToken());
     }
 
+    public static AuthenticatedUrlRequest wishlistRemove(Product product, String travelerId, Session session, Context context) {
+        return new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.DELETE)
+                .path("/traveler/" + travelerId + "/wishlist/"+product.getId())
+                .build(session.getToken());
+    }
+
     public static AuthenticatedUrlRequest wishlist(WishlistQuery query, String travelerId, Session session, Context context) {
         RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
