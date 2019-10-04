@@ -63,6 +63,13 @@
                             android:layout_height="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
+
+            <FrameLayout
+                    android:id="@+id/cancellation_reason_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_default"/>
+
             <Button
                     android:id="@+id/button_cancelOrder_cancel"
                     android:layout_margin="@dimen/margin_default"

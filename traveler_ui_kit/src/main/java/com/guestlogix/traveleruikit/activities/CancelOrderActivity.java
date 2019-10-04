@@ -1,10 +1,7 @@
 package com.guestlogix.traveleruikit.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +17,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.guestlogix.travelercorekit.callbacks.CancellationCallback;
 import com.guestlogix.travelercorekit.models.CancellationQuote;
 import com.guestlogix.travelercorekit.models.Order;
-import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.ProductCancellationQuote;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.CancelSuccessFragment;
+import com.guestlogix.traveleruikit.fragments.CancellationReasonsFragment;
 import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 
 public class CancelOrderActivity extends AppCompatActivity implements CancellationCallback {
@@ -70,6 +67,12 @@ public class CancelOrderActivity extends AppCompatActivity implements Cancellati
 
             productsContainer.addView(productView);
         }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.cancellation_reason_container,
+                        CancellationReasonsFragment.newInstance(quote.getCancellationReasons()))
+                .commit();
 
         Button cancelButton = findViewById(R.id.button_cancelOrder_cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
