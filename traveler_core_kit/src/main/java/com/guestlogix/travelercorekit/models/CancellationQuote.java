@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -16,6 +17,7 @@ public class CancellationQuote implements Serializable {
     private Price cancellationCharge;
     private Date expirationDate;
     private List<ProductCancellationQuote> products;
+    private List<CancellationReason> cancellationReasons;
     private Order order;
 
     CancellationQuote(CancellationQuote.Response response, Order order) {
@@ -25,6 +27,7 @@ public class CancellationQuote implements Serializable {
         this.cancellationCharge = response.cancellationCharge;
         this.expirationDate = response.expirationDate;
         this.products = response.products;
+        this.cancellationReasons = response.cancellationReasons;
     }
 
     public Order getOrder() {
@@ -51,19 +54,30 @@ public class CancellationQuote implements Serializable {
         return products;
     }
 
+    public List<CancellationReason> getCancellationReasons() {
+        return cancellationReasons;
+    }
+
     static class Response {
         String id;
         Price totalRefund;
         Price cancellationCharge;
         Date expirationDate;
         List<ProductCancellationQuote> products;
+        List<CancellationReason> cancellationReasons;
 
-        Response(String id, Price totalRefund, Price cancellationCharge, Date expirationDate, List<ProductCancellationQuote> products) {
+        Response(String id,
+                 Price totalRefund,
+                 Price cancellationCharge,
+                 Date expirationDate,
+                 List<ProductCancellationQuote> products,
+                 List<CancellationReason> cancellationReasons) {
             this.id = id;
             this.totalRefund = totalRefund;
             this.cancellationCharge = cancellationCharge;
             this.expirationDate = expirationDate;
             this.products = products;
+            this.cancellationReasons = cancellationReasons;
         }
 
         static class ResponseObjectMappingFactory implements ObjectMappingFactory<Response> {
@@ -74,6 +88,7 @@ public class CancellationQuote implements Serializable {
                 Price totalRefund = null;
                 Price cancellationCharge = null;
                 List<ProductCancellationQuote> products = null;
+                List<CancellationReason> cancellationReasons = null;
 
                 reader.beginObject();
 
@@ -94,7 +109,10 @@ public class CancellationQuote implements Serializable {
                             cancellationCharge = new Price.PriceObjectMappingFactory().instantiate(reader);
                             break;
                         case "products":
-                            products = new ArrayMappingFactory<ProductCancellationQuote>(new ProductCancellationQuote.ProductCancellationQuoteObjectMappingFactory()).instantiate(reader);
+                            products = new ArrayMappingFactory<>(new ProductCancellationQuote.ProductCancellationQuoteObjectMappingFactory()).instantiate(reader);
+                            break;
+                        case "cancellationReasons":
+                            cancellationReasons = new ArrayMappingFactory<>(new CancellationReason.CancellationReasonsObjectMappingFactory()).instantiate(reader);
                             break;
                         default:
                             reader.skipValue();
@@ -109,8 +127,9 @@ public class CancellationQuote implements Serializable {
                 Assertion.eval(totalRefund != null);
                 Assertion.eval(cancellationCharge != null);
                 Assertion.eval(products != null);
+                Assertion.eval(cancellationReasons != null);
 
-                return new CancellationQuote.Response(id, totalRefund, cancellationCharge, expirationDate, products);
+                return new CancellationQuote.Response(id, totalRefund, cancellationCharge, expirationDate, products, cancellationReasons);
             }
         }
     }
