@@ -159,7 +159,7 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
     }
 
     @Override
-    public void onWishlistAddSuccess(CatalogItemDetails itemDetails) {
+    public void onWishlistAddSuccess(Product item, CatalogItemDetails itemDetails) {
         catalogItemDetails = itemDetails;
     }
 
