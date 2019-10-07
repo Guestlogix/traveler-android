@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +18,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.guestlogix.travelercorekit.callbacks.CancellationCallback;
 import com.guestlogix.travelercorekit.models.CancellationQuote;
+import com.guestlogix.travelercorekit.models.CancellationReason;
+import com.guestlogix.travelercorekit.models.CancellationRequest;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.ProductCancellationQuote;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -82,7 +86,14 @@ public class CancelOrderActivity extends AppCompatActivity implements Cancellati
                         .getTransaction(getSupportFragmentManager())
                         .commit();
 
-                Traveler.cancelOrder(quote, CancelOrderActivity.this);
+                Spinner cancellationReasonSpinner = findViewById(R.id.cancellation_reasons_spinner);
+                TextView cancellationReasonText = findViewById(R.id.cancellation_reason_text);
+                String cancellationReasonExplanation = cancellationReasonText.getText().toString();
+                CancellationRequest cancellationRequest = new CancellationRequest(quote,
+                        (CancellationReason) cancellationReasonSpinner.getSelectedItem(),
+                        cancellationReasonExplanation);
+
+                Traveler.cancelOrder(cancellationRequest, CancelOrderActivity.this);
             }
         });
     }

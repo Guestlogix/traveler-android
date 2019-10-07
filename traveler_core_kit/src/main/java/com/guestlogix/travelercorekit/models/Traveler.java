@@ -482,15 +482,20 @@ public class Traveler {
         TaskManager.getMainTaskManager().addTask(blockTask);
     }
 
-    public static void cancelOrder(CancellationQuote quote, CancellationCallback callback) {
+    public static void cancelOrder(CancellationRequest cancellationRequest, CancellationCallback callback) {
         if (!isInitialized()) return;
 
-        if (quote.getExpirationDate().after(new Date())) {
+        if (cancellationRequest.getCancellationQuote().getExpirationDate().before(new Date())) {
             callback.onCancellationError(new CancellationError(CancellationError.Code.EXPIRED_QUOTE));
             return;
         }
 
-        AuthenticatedUrlRequest request = Router.cancelOrder(quote, localInstance.session, localInstance.applicationContext);
+        if (cancellationRequest.getCancellationReason().isExplanationRequired() && TextUtils.isEmpty(cancellationRequest.getExplanation())) {
+            callback.onCancellationError(new CancellationError(CancellationError.Code.EXPLANATION_REQUIRED));
+            return;
+        }
+
+        AuthenticatedUrlRequest request = Router.cancelOrder(cancellationRequest, localInstance.session, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<Order> fetchTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
                         request, new Order.OrderMappingFactory());

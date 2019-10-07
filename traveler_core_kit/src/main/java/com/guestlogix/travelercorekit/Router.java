@@ -184,11 +184,27 @@ public class Router {
                 .build(session.getToken());
     }
 
-    public static AuthenticatedUrlRequest cancelOrder(CancellationQuote quote, Session session, Context context) {
+    public static AuthenticatedUrlRequest cancelOrder(CancellationRequest cancellationRequest, Session session, Context context) {
+        CancellationQuote quote = cancellationRequest.getCancellationQuote();
+        CancellationReason reason = cancellationRequest.getCancellationReason();
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.PATCH)
                 .path("/order/" + quote.getOrder().getId() + "/cancellation/" + quote.getId())
-                .build(session.getToken());
+                .payload(new RouteBuilder.JSONPayloadProvider() {
+                    @Override
+                    public JSONObject getJsonPayload() {
+                        try {
+                            JSONObject payload = new JSONObject();
+                            payload.put("cancellationReason", reason.getId());
+                            payload.put("cancellationReasonText", cancellationRequest.getExplanation());
+                            return payload;
+                        } catch (JSONException e) {
+                            TravelerLog.e("Router.cancelOrder() could not create JSONPayloadProvider");
+                        }
+
+                        return null;
+                    }
+                }).build(session.getToken());
     }
 
     public static AuthenticatedUrlRequest emailOrderConfirmation(Order order, Session session, Context context) {
