@@ -219,6 +219,7 @@ public class TravelerTest{
         WishlistAddCallback step5WishlistAddCallback = new WishlistAddCallback() {
             @Override
             public void onWishlistAddSuccess(Product item, CatalogItemDetails itemDetails) {
+                Assert.assertTrue(productIdReference.reference.equals(itemDetails.getId()));
                 Log.v("TravelerTest", "fullIntegrationTest::step5WishlistAddCallback::onWishlistAddSuccess");
                 // Call chain 6
                 Traveler.fetchWishlist(new WishlistQuery(0, 10, new Date(), new Date()), 0, step6WishlistFetchCallback);
@@ -236,6 +237,8 @@ public class TravelerTest{
         WishlistRemoveCallback step4WishlistRemoveCallback= new WishlistRemoveCallback() {
             @Override
             public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
+                Assert.assertEquals(productReference.reference.getId(), item.getId());
+                Assert.assertEquals(productReference.reference.getId(), itemDetails.getId());
                 Log.v("TravelerTest", "fullIntegrationTest::step4WishlistRemoveCallback::onWishlistRemoveSuccess");
                 // Call chain 5
                 Traveler.addToWishlist(productReference.reference, step5WishlistAddCallback);
