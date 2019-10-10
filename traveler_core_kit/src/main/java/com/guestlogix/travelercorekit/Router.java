@@ -380,7 +380,7 @@ public class Router {
             this.headers.put("x-timezone", "UTC");
             this.headers.put("x-api-key", apiKey);
 
-            if (null == travelerSDKEndpoint){
+            if (null == travelerSDKEndpoint) {
                 TravelerPrefs travelerPrefs = TravelerPrefs.getInstance(context);
                 travelerSDKEndpoint = travelerPrefs.get(TRAVELER_SDK_ENDPOINT, DEFAULT_ENDPOINT);
             }

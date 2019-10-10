@@ -775,7 +775,7 @@ public class Traveler {
                     resultWrapper.result = previousResult.merge(fetchTask.getResource());
                 }
 
-                if (resultWrapper.result == null){
+                if (resultWrapper.result == null) {
                     resultWrapper.result = fetchTask.getResource();
                 }
 
