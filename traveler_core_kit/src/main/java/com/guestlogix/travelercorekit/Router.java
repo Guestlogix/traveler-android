@@ -390,7 +390,7 @@ public class Router {
             this.headers.put("x-api-key", apiKey);
             this.headers.put("x-sandbox-mode",String.valueOf(isSandboxMode));
 
-            if (null == travelerSDKEndpoint){
+            if (null == travelerSDKEndpoint) {
                 TravelerPrefs travelerPrefs = TravelerPrefs.getInstance(context);
                 travelerSDKEndpoint = travelerPrefs.get(TRAVELER_SDK_ENDPOINT, DEFAULT_ENDPOINT);
             }
