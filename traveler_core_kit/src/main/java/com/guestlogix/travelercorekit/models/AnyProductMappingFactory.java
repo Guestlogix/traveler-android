@@ -1,22 +1,29 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import com.guestlogix.travelercorekit.utilities.*;
-import android.util.JsonToken;
 
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static android.util.JsonToken.NULL;
 
 class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
     @Override
     public Product instantiate(JsonReader reader) throws Exception {
         String id = null;
-        Price price = null;
-        String purchaseStrategy = null;
         String title = null;
+        Price price = null;
         List<Pass> passes = null;
         Date eventDate = null;
+        List<CatalogItemCategory> categories = null;
+        ProductType productType = null;
 
         reader.beginObject();
 
@@ -27,20 +34,28 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
                 case "id":
                     id = reader.nextString();
                     break;
-                case "price":
-                    price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                    break;
                 case "title":
                     title = JsonReaderHelper.nextNullableString(reader);
                     break;
-                case "purchaseStrategy":
-                    purchaseStrategy = reader.nextString();
+                case "price":
+                    price = new Price.PriceObjectMappingFactory().instantiate(reader);
                     break;
                 case "passes":
                     passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(reader);
                     break;
                 case "experienceDate":
                     eventDate = DateHelper.parseISO8601(reader.nextString());
+                    break;
+                case "categories":
+                    if (reader.peek() == NULL) {
+                        categories = new ArrayList<>();
+                        reader.skipValue();
+                    } else {
+                        categories = JsonReaderHelper.readCatalogItemCategoryArray(reader);
+                    }
+                    break;
+                case "purchaseStrategy":
+                    productType = ProductType.fromString(reader.nextString());
                     break;
                 default:
                     reader.skipValue();
@@ -50,15 +65,16 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
 
         reader.endObject();
 
-        Assertion.eval(purchaseStrategy != null);
+        Assertion.eval(title != null);
         Assertion.eval(price != null);
         Assertion.eval(passes != null);
-        Assertion.eval(title != null);
+        Assertion.eval(productType != null);
+        Assertion.eval(categories != null);
 
-        if (purchaseStrategy.equalsIgnoreCase("bookable")) {
+        if (productType == ProductType.BOOKABLE) {
             Assertion.eval(eventDate != null);
 
-            return new BookableProduct(id, price, passes, title, eventDate);
+            return new BookingProduct(id, title, price, passes, eventDate, categories);
         } else {
             throw new RuntimeException("Unknown product type");
         }

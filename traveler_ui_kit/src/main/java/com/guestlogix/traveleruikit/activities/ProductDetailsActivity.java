@@ -8,18 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
+import com.guestlogix.travelercorekit.callbacks.BookingItemDetailsCallback;
+import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.fragments.ActionStripContainerFragment;
-import com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment;
+import com.guestlogix.traveleruikit.fragments.BookingItemDetailsFragment;
 import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
-public class ProductDetailsActivity extends AppCompatActivity implements CatalogItemDetailsCallback, RetryFragment.InteractionListener {
+public class ProductDetailsActivity extends AppCompatActivity implements BookingItemDetailsCallback, RetryFragment.InteractionListener {
     public static final String ARG_PRODUCT = "product";
 
     private Product product;
@@ -59,7 +59,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Catalog
         transaction.replace(R.id.product_details_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
-        Traveler.fetchCatalogItemDetails(product, this);
+        Traveler.fetchProductDetails(product, this);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Catalog
     }
 
     @Override
-    public void onCatalogItemDetailsError(Error error) {
+    public void onBookingItemDetailsError(Error error) {
         Fragment fragment = new RetryFragment();
         FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.product_details_container, fragment);
@@ -89,8 +89,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Catalog
     }
 
     @Override
-    public void onCatalogItemDetailsSuccess(CatalogItemDetails details) {
-        Fragment fragment = CatalogItemDetailsFragment.newInstance(details);
+    public void onBookingItemDetailsSuccess(CatalogItemDetails details) {
+        Fragment fragment = BookingItemDetailsFragment.newInstance((BookingItem) product, details);
         FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.product_details_container, fragment);
         transactionQueue.addTransaction(transaction);

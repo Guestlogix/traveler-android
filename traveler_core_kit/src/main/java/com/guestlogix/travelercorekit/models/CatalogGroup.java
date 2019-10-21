@@ -1,11 +1,14 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
-import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import androidx.annotation.NonNull;
+
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,12 +16,19 @@ public class CatalogGroup implements Serializable {
     private String title;
     private String subTitle;
     private boolean isFeatured;
+    private CatalogItemType itemType;
     private List<CatalogItem> items;
 
-    private CatalogGroup(String title, String subTitle, boolean isFeatured, @NonNull List<CatalogItem> items) {
+    private CatalogGroup(
+            String title,
+            String subTitle,
+            boolean isFeatured,
+            CatalogItemType itemType,
+            @NonNull List<CatalogItem> items) {
         this.title = title;
         this.subTitle = subTitle;
         this.isFeatured = isFeatured;
+        this.itemType = itemType;
         this.items = items;
     }
 
@@ -26,9 +36,17 @@ public class CatalogGroup implements Serializable {
         return title;
     }
 
-    public String getSubTitle() { return subTitle; }
+    public String getSubTitle() {
+        return subTitle;
+    }
 
-    public boolean isFeatured() { return isFeatured; }
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public CatalogItemType getItemType() {
+        return itemType;
+    }
 
     public List<CatalogItem> getItems() {
         return items;
@@ -40,6 +58,7 @@ public class CatalogGroup implements Serializable {
             String title = null;
             String subTitle = null;
             boolean featured = false;
+            CatalogItemType itemType = null;
             List<CatalogItem> items = null;
 
             reader.beginObject();
@@ -57,8 +76,21 @@ public class CatalogGroup implements Serializable {
                     case "featured":
                         featured = reader.nextBoolean();
                         break;
+                    case "type":
+                        itemType = CatalogItemType.fromString(JsonReaderHelper.nextNullableString(reader));
+                        break;
                     case "items":
-                        items = new ArrayMappingFactory<>(new CatalogItem.CatalogItemObjectMappingFactory()).instantiate(reader);
+                        Assertion.eval(itemType != null);
+                        switch (itemType) {
+                            case ITEM:
+                                items = new ArrayMappingFactory<>(new AnyItemMappingFactory())
+                                        .instantiate(reader);
+                                break;
+                            case QUERY:
+                                items = new ArrayMappingFactory<>(new QueryItem.QueryItemMappingFactory())
+                                        .instantiate(reader);
+                                break;
+                        }
                         break;
                     default:
                         reader.skipValue();
@@ -70,7 +102,7 @@ public class CatalogGroup implements Serializable {
 
             Assertion.eval(items != null);
 
-            return new CatalogGroup(title, subTitle, featured, items);
+            return new CatalogGroup(title, subTitle, featured, itemType, items);
         }
     }
 }

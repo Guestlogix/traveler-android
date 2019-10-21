@@ -1,0 +1,323 @@
+package com.guestlogix.travelercorekit.models;
+
+import android.util.JsonReader;
+import android.util.JsonToken;
+
+import androidx.annotation.NonNull;
+
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.util.JsonToken.NULL;
+
+public class ParkingItemDetails implements CatalogItemDetails {
+    private String id;
+    private String title;
+    private String subtitle;
+    private String description;
+    private List<Attribute> information;
+    private URL thumbnailURL;
+    private List<URL> imageURLs;
+    private List<Location> locations;
+    private ContactInfo contact;
+    private Supplier supplier;
+    private String disclaimer;
+    private String termsAndConditions;
+    private Price price;
+    private Price priceToPayOnline;
+    private Price priceToPayOnsite;
+    private ProductType productType;
+    private List<CatalogItemCategory> categories;
+    private boolean isWishlisted;
+    private ProviderTranslationAttribution providerTranslationAttribution;
+
+    private ParkingItemDetails(
+            @NonNull String id,
+            String title,
+            String subtitle,
+            String description,
+            List<Attribute> information,
+            @NonNull URL thumbnailURL,
+            @NonNull List<URL> imageURLs,
+            @NonNull List<Location> locations,
+            ContactInfo contact,
+            @NonNull Supplier supplier,
+            String disclaimer,
+            String termsAndConditions,
+            @NonNull Price price,
+            @NonNull Price priceToPayOnline,
+            @NonNull Price priceToPayOnsite,
+            @NonNull ProductType productType,
+            @NonNull List<CatalogItemCategory> categories,
+            @NonNull boolean isWishlisted,
+            ProviderTranslationAttribution providerTranslationAttribution) {
+        this.id = id;
+        this.title = title;
+        this.subtitle = subtitle;
+        this.description = description;
+        this.information = information;
+        this.thumbnailURL = thumbnailURL;
+        this.imageURLs = imageURLs;
+        this.locations = locations;
+        this.contact = contact;
+        this.supplier = supplier;
+        this.disclaimer = disclaimer;
+        this.termsAndConditions = termsAndConditions;
+        this.price = price;
+        this.priceToPayOnline = priceToPayOnline;
+        this.priceToPayOnsite = priceToPayOnsite;
+        this.productType = productType;
+        this.categories = categories;
+        this.isWishlisted = isWishlisted;
+        this.providerTranslationAttribution = providerTranslationAttribution;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public List<Attribute> getInformation() {
+        return information;
+    }
+
+    public URL getThumbnailURL() {
+        return thumbnailURL;
+    }
+
+    @Override
+    public List<URL> getImageURLs() {
+        return imageURLs;
+    }
+
+    @Override
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    @Override
+    public ContactInfo getContact() {
+        return contact;
+    }
+
+    @Override
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    @Override
+    public String getDisclaimer() {
+        return disclaimer;
+    }
+
+    @Override
+    public String getTermsAndConditions() {
+        return termsAndConditions;
+    }
+
+    public Price getPrice() {
+        return price;
+    }
+
+    public Price getPriceToPayOnline() {
+        return priceToPayOnline;
+    }
+
+    public Price getPriceToPayOnsite() {
+        return priceToPayOnsite;
+    }
+
+    public ProductType getProductType() {
+        return productType;
+    }
+
+    public List<CatalogItemCategory> getCategories() {
+        return categories;
+    }
+
+    public boolean isWishlisted() {
+        return isWishlisted;
+    }
+
+    public ProviderTranslationAttribution getProviderTranslationAttribution() {
+        return providerTranslationAttribution;
+    }
+
+    static class ParkingItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
+        @Override
+        public ParkingItemDetails instantiate(JsonReader reader) throws Exception {
+            String id = null;
+            String title = null;
+            String subtitle = null;
+            String description = null;
+            List<Attribute> information = null;
+            URL thumbnailURL = null;
+            List<URL> imageURLs = null;
+            List<Location> locations = null;
+            ContactInfo contact = null;
+            Supplier supplier = null;
+            String disclaimer = null;
+            String termsAndConditions = null;
+            Price price = null;
+            Price priceToPayOnline = null;
+            Price priceToPayOnsite = null;
+            ProductType productType = null;
+            List<CatalogItemCategory> categories = null;
+            boolean isWishlisted = false;
+            ProviderTranslationAttribution providerTranslationAttribution = null;
+
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                switch (key) {
+                    case "id":
+                        id = reader.nextString();
+                        break;
+                    case "title":
+                        title = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "subTitle":
+                        subtitle = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "description":
+                        description = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "information":
+                        if (reader.peek() == NULL) {
+                            information = new ArrayList<>();
+                            reader.skipValue();
+                        } else {
+                            information = new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory())
+                                    .instantiate(reader);
+                        }
+                        break;
+                    case "thumbnail":
+                        JsonToken token = reader.peek();
+
+                        if (token == JsonToken.NULL) {
+                            reader.skipValue();
+                            break;
+                        }
+
+                        thumbnailURL = new URL(reader.nextString());
+                        break;
+                    case "imageUrls":
+                        if (reader.peek() != JsonToken.NULL) {
+                            imageURLs = JsonReaderHelper.readURLArray(reader);
+                        } else {
+                            imageURLs = new ArrayList<>();
+                            reader.skipValue();
+                        }
+                        break;
+                    case "locations":
+                        if (reader.peek() == NULL)
+                            reader.skipValue();
+                        else
+                            locations = new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader);
+                        break;
+                    case "contact":
+                        if (reader.peek() == NULL)
+                            reader.skipValue();
+                        else
+                            contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "supplier":
+                        supplier = new Supplier.SupplierObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "disclaimer":
+                        disclaimer = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "termsAndConditions":
+                        termsAndConditions = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "priceStartingAt":
+                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "priceToPayOnline":
+                        priceToPayOnline = new Price.PriceObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "priceToPayOnsite":
+                        priceToPayOnsite = new Price.PriceObjectMappingFactory().instantiate(reader);
+                        break;
+                    case "purchaseStrategy":
+                        productType = ProductType.fromString(reader.nextString());
+                        break;
+                    case "categories":
+                        if (reader.peek() == NULL) {
+                            categories = new ArrayList<>();
+                            reader.skipValue();
+                        } else {
+                            categories = JsonReaderHelper.readCatalogItemCategoryArray(reader);
+                        }
+                        break;
+                    case "isWishlisted":
+                        isWishlisted = reader.nextBoolean();
+                        break;
+                    case "providerTranslationAttribution":
+                        providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
+                                instantiate(reader);
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
+                }
+            }
+
+            reader.endObject();
+
+            Assertion.eval(id != null);
+            Assertion.eval(thumbnailURL != null);
+            Assertion.eval(imageURLs != null);
+            Assertion.eval(locations != null);
+            Assertion.eval(supplier != null);
+            Assertion.eval(price != null);
+            Assertion.eval(priceToPayOnline != null);
+            Assertion.eval(priceToPayOnsite != null);
+            Assertion.eval(productType != null);
+            Assertion.eval(categories != null);
+
+            return new ParkingItemDetails(
+                    id,
+                    title,
+                    subtitle,
+                    description,
+                    information,
+                    thumbnailURL,
+                    imageURLs,
+                    locations,
+                    contact,
+                    supplier,
+                    disclaimer,
+                    termsAndConditions,
+                    price,
+                    priceToPayOnline,
+                    priceToPayOnsite,
+                    productType,
+                    categories,
+                    isWishlisted,
+                    providerTranslationAttribution);
+        }
+    }
+}

@@ -10,17 +10,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistRemoveCallback;
+import com.guestlogix.travelercorekit.models.BookingItem;
+import com.guestlogix.travelercorekit.models.BookingItemDetails;
+import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
+import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
-import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.WishlistResult;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.TermsAndConditionsActivity;
 import com.guestlogix.traveleruikit.adapters.ImageURLAdapter;
@@ -30,19 +39,22 @@ import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
-public class CatalogItemDetailsFragment extends Fragment implements WishlistAddCallback, WishlistRemoveCallback {
-    private static final String ARG_CATALOG_ITEM_DETAILS = "ARG_CATALOG_ITEM_DETAILS";
-    private static final String TAG = "CatalogItemDetailsFrag";
+public class BookingItemDetailsFragment extends Fragment implements WishlistAddCallback, WishlistRemoveCallback {
+    private static String ARG_BOOKING_ITEM = "ARG_BOOKING_ITEM";
+    private static String ARG_BOOKING_ITEM_DETAILS = "ARG_BOOKING_ITEM_DETAILS";
+    private static String TAG = "BookingItemDetailsFragment";
 
     private WrapContentViewPager catalogItemDetailsPager;
     private CarouselView carouselView;
     private ImageButton wishListToggleImageButton;
-    private CatalogItemDetails catalogItemDetails;
+    private BookingItemDetails bookingItemDetails;
+    private BookingItem bookingItem;
 
-    public static CatalogItemDetailsFragment newInstance(CatalogItemDetails details) {
+    public static BookingItemDetailsFragment newInstance(BookingItem item, CatalogItemDetails details) {
         Bundle args = new Bundle();
-        args.putSerializable(ARG_CATALOG_ITEM_DETAILS, details);
-        CatalogItemDetailsFragment fragment = new CatalogItemDetailsFragment();
+        args.putSerializable(ARG_BOOKING_ITEM, item);
+        args.putSerializable(ARG_BOOKING_ITEM_DETAILS, details);
+        BookingItemDetailsFragment fragment = new BookingItemDetailsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,16 +65,22 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
 
         Bundle args = getArguments();
 
-        if (args == null || !args.containsKey(ARG_CATALOG_ITEM_DETAILS)) {
+        if (args == null || !args.containsKey(ARG_BOOKING_ITEM_DETAILS)) {
+            Log.e(TAG, "No CatalogItem in arguments");
+            return null;
+        }
+
+        if (args == null || !args.containsKey(ARG_BOOKING_ITEM_DETAILS)) {
             Log.e(TAG, "No CatalogItemDetails in arguments");
             return null;
         }
 
         // TODO: Clean all of this up
 
-        catalogItemDetails = (CatalogItemDetails) args.get(ARG_CATALOG_ITEM_DETAILS);
+        bookingItem = (BookingItem) args.get(ARG_BOOKING_ITEM);
+        bookingItemDetails = (BookingItemDetails) args.get(ARG_BOOKING_ITEM_DETAILS);
 
-        if (catalogItemDetails == null) {
+        if (bookingItemDetails == null) {
             Log.e(TAG, "No CatalogItemDetails");
             return view;
         }
@@ -72,26 +90,25 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
         carouselView = view.findViewById(R.id.carouselView);
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);
         TabLayout catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
+        titleTextView.setText(bookingItemDetails.getTitle());
 
-        titleTextView.setText(catalogItemDetails.getTitle());
-
-        if (null != catalogItemDetails.getImageURLs() && catalogItemDetails.getImageURLs().size() > 0) {
-            RecyclerView.Adapter adapter = new ImageURLAdapter(catalogItemDetails.getImageURLs());
+        if (null != bookingItemDetails.getImageURLs() && bookingItemDetails.getImageURLs().size() > 0) {
+            RecyclerView.Adapter adapter = new ImageURLAdapter(bookingItemDetails.getImageURLs());
             carouselView.setAdapter(adapter);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            descriptionTextView.setText(Html.fromHtml(catalogItemDetails.getDescription(), Html.FROM_HTML_MODE_COMPACT));
+            descriptionTextView.setText(Html.fromHtml(bookingItemDetails.getDescription(), Html.FROM_HTML_MODE_COMPACT));
         } else {
-            descriptionTextView.setText(Html.fromHtml(catalogItemDetails.getDescription()));
+            descriptionTextView.setText(Html.fromHtml(bookingItemDetails.getDescription()));
         }
 
         ItemInformationTabsPagerAdapter adapter =
                 new ItemInformationTabsPagerAdapter(getFragmentManager(), getActivity());
 
-        adapter.setContactInfo(catalogItemDetails.getContact());
-        adapter.setInformationList(catalogItemDetails.getInformation());
-        adapter.setLocationsList(catalogItemDetails.getLocations());
+        adapter.setContactInfo(bookingItemDetails.getContact());
+        adapter.setInformationList(bookingItemDetails.getInformation());
+        adapter.setLocationsList(bookingItemDetails.getLocations());
         catalogItemDetailsPager.setAdapter(adapter);
         catalogItemDetailsPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -111,12 +128,12 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
 
         catalogItemDetailsTabs.setupWithViewPager(catalogItemDetailsPager);
 
-        if (catalogItemDetails.getSupplier().getTrademark() != null) {
+        if (bookingItemDetails.getSupplier().getTrademark() != null) {
             TextView supplierTextView = view.findViewById(R.id.textView_catalogItemDetails_supplier);
-            supplierTextView.setText(catalogItemDetails.getSupplier().getTrademark().getCopyright());
+            supplierTextView.setText(bookingItemDetails.getSupplier().getTrademark().getCopyright());
 
             ImageView imageView = view.findViewById(R.id.imageView_catalogItemDetails_supplier);
-            AssetManager.getInstance().loadImage(catalogItemDetails.getSupplier().getTrademark().getIconURL(), imageView.getWidth(), imageView.getHeight(), imageView.getId(), new ImageLoader.ImageLoaderCallback() {
+            AssetManager.getInstance().loadImage(bookingItemDetails.getSupplier().getTrademark().getIconURL(), imageView.getWidth(), imageView.getHeight(), imageView.getId(), new ImageLoader.ImageLoaderCallback() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
                     imageView.setImageBitmap(bitmap);
@@ -130,28 +147,28 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
         }
 
         Button termsAndConditionsButton = view.findViewById(R.id.button_catalogItemDetails_termsAndConditions);
-        termsAndConditionsButton.setVisibility(catalogItemDetails.getTermsAndConditions() == null ? View.INVISIBLE : View.VISIBLE);
+        termsAndConditionsButton.setVisibility(bookingItemDetails.getTermsAndConditions() == null ? View.INVISIBLE : View.VISIBLE);
         termsAndConditionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CatalogItemDetailsFragment.this.getContext(), TermsAndConditionsActivity.class);
-                intent.putExtra(TermsAndConditionsActivity.ARG_CONTENT, catalogItemDetails.getTermsAndConditions());
+                Intent intent = new Intent(BookingItemDetailsFragment.this.getContext(), TermsAndConditionsActivity.class);
+                intent.putExtra(TermsAndConditionsActivity.ARG_CONTENT, bookingItemDetails.getTermsAndConditions());
                 startActivity(intent);
             }
         });
 
         wishListToggleImageButton = view.findViewById(R.id.imagebutton_wishlist_toggle);
-        wishListToggleImageButton.setSelected(catalogItemDetails.isWishlisted());
+        wishListToggleImageButton.setSelected(bookingItemDetails.isWishlisted());
         wishListToggleImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (catalogItemDetails.isWishlisted()) {
+                if (bookingItemDetails.isWishlisted()) {
                     //Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
                     wishListToggleImageButton.setSelected(false);
-                    Traveler.wishlistRemove(catalogItemDetails, null, CatalogItemDetailsFragment.this);
+                    Traveler.wishlistRemove(bookingItem, null, BookingItemDetailsFragment.this);
                 } else {
                     wishListToggleImageButton.setSelected(true);
-                    Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
+                    Traveler.addToWishlist(bookingItem, BookingItemDetailsFragment.this);
                 }
             }
         });
@@ -160,7 +177,8 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
 
     @Override
     public void onWishlistAddSuccess(Product item, CatalogItemDetails itemDetails) {
-        catalogItemDetails = itemDetails;
+        bookingItem = (BookingItem) item;
+        bookingItemDetails = (BookingItemDetails) itemDetails;
     }
 
     @Override
@@ -177,7 +195,8 @@ public class CatalogItemDetailsFragment extends Fragment implements WishlistAddC
 
     @Override
     public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
-        catalogItemDetails = itemDetails;
+        bookingItem = (BookingItem) item;
+        bookingItemDetails = (BookingItemDetails) itemDetails;
     }
 
     @Override

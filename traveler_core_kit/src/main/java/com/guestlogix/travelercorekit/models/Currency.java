@@ -28,7 +28,7 @@ public enum Currency {
         }
     }
 
-    static String getCode(Currency currency) {
+    public static String getCode(Currency currency) {
         switch (currency) {
             case USD:
                 return "USD";

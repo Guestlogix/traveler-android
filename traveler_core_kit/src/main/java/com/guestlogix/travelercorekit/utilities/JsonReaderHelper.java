@@ -3,6 +3,8 @@ package com.guestlogix.travelercorekit.utilities;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
+import com.guestlogix.travelercorekit.models.CatalogItemCategory;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,5 +54,23 @@ public class JsonReaderHelper {
         }
         reader.endArray();
         return urls;
+    }
+
+    /**
+     * Performs a URL Array read from the reader object.
+     *
+     * @param reader Reader object to read from
+     * @return CatalogItemCategory Array or empty array
+     * @throws IOException If reading cannot be performed.
+     */
+    public static List<CatalogItemCategory> readCatalogItemCategoryArray(JsonReader reader) throws IOException {
+        ArrayList<CatalogItemCategory> categories = new ArrayList<>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            categories.add(CatalogItemCategory.fromString(reader.nextString()));
+        }
+        reader.endArray();
+        return categories;
     }
 }

@@ -127,7 +127,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     }
 
     private void navigateToCatalogItemDetails() {
-        Intent i = new Intent(this, CatalogItemDetailsActivity.class);
+        Intent i = new Intent(this, BookingItemDetailsActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }

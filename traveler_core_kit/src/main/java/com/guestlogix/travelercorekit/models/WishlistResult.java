@@ -103,7 +103,7 @@ public class WishlistResult implements Serializable {
                         break;
                     case "result":
                         items = new LinkedHashSet<>(new ArrayMappingFactory<>(
-                                new CatalogItem.CatalogItemObjectMappingFactory()).instantiate(reader));
+                                new AnyItemMappingFactory()).instantiate(reader));
                         break;
                     default:
                         reader.skipValue();
