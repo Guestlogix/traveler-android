@@ -3,22 +3,17 @@
           package="com.guestlogix.traveleruikit">
 
     <application android:theme="@style/AppTheme">
-        <activity android:name=".activities.OrderDetailActivity">
-        </activity>
-        <activity android:name=".activities.OrderConfirmationActivity">
-        </activity>
-        <activity android:name=".activities.OrderSummaryActivity">
-        </activity>
-        <activity android:name=".activities.QuestionsActivity">
-        </activity>
-        <activity android:name=".activities.PassSelectionActivity">
-        </activity>
+        <activity android:name=".activities.OrderDetailActivity"/>
+        <activity android:name=".activities.OrderConfirmationActivity"/>
+        <activity android:name=".activities.OrderSummaryActivity"/>
+        <activity android:name=".activities.QuestionsActivity"/>
+        <activity android:name=".activities.PassSelectionActivity"/>
         <activity
                 android:name=".activities.BookingItemDetailsActivity"
                 android:launchMode="singleTop">
         </activity>
-        <activity android:name=".activities.OrdersActivity">
-        </activity>
+        <activity android:name=".activities.OrdersActivity"/>
+        <activity android:name=".activities.WishlistActivity"/>
         <activity android:name=".activities.AvailabilityActivity"/>
         <activity android:name=".activities.ProductDetailsActivity"/>
         <activity android:name=".activities.CancelOrderActivity"/>
