@@ -50,6 +50,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements Boo
         reloadCatalogItemDetails();
     }
 
+    @Override
     public void onRetry() {
         reloadCatalogItemDetails();
     }
