@@ -21,6 +21,10 @@
                 android:label="Orders">
         </activity>
         <activity
+                android:name="com.guestlogix.traveleruikit.activities.WishlistActivity"
+                android:label="Saved Items">
+        </activity>
+        <activity
                 android:name=".activities.FlightSearchActivity"
                 android:label="Add Flight">
         </activity>
