@@ -38,6 +38,7 @@ public class TravelerTest{
     private static final String TAG = "TravelerTest";
     private static final String TRAVELLER_ID = "eefda674-bb01-4c6c-b0fa-46f30341bf4f";
     private static final String KENSINGTON_2H_TOUR_PRODUCT_ID = "ite_hkVh9VhhvV11nk_";
+    private static final int PAGINATION_LIMIT = 1000;
 
     @BeforeClass
     public static void setupOnce() {
@@ -326,7 +327,7 @@ public class TravelerTest{
                 Assert.assertNotNull(bookingItem);
                 productIdReference.reference = bookingItem.getId();
 
-                Traveler.fetchWishlist(new WishlistQuery(0, 10, new Date(), new Date()), 0, step3WishlistFetchCallback);
+                Traveler.fetchWishlist(new WishlistQuery(0, PAGINATION_LIMIT, new Date(), new Date()), 0, step3WishlistFetchCallback);
             }
 
             @Override
