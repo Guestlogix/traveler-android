@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0097d1</color>
-    <color name="colorPrimaryDark">#0074a1</color>
+    <color name="colorPrimary">#0097D1</color>
+    <color name="colorPrimaryDark">#0074A1</color>
     <color name="colorAccent">#69BB48</color>
     <color name="colorSecondary">#FC9B44</color>
     <color name="colorWarn">#f44336</color>
     <color name="red">#E76C6B</color>
     <color name="green">#69BB48</color>
-    <color name="black">#000000</color>
-    <color name="separator">#c8c7cc</color>
-    <color name="darkGray">#505050</color>
-    <color name="gray">#9c9c9c</color>
-    <color name="lightGray">#CECECE</color>
+    <color name="separator">#C8C7CC</color>
     <color name="white">#FFFFFF</color>
     <color name="off_white">#EEEEEE</color>
+    <color name="lightGray">#CECECE</color>
+    <color name="gray">#9C9C9C</color>
+    <color name="darkGray">#505050</color>
+    <color name="black">#000000</color>
+
     <color name="catalogOverlay">#40000000</color>
     <color name="dialogTitle">#262827</color>
 
+    <color name="profile_title_text_color">#DE000000</color>
+    <color name="profile_subtitle_text_color">#8A000000</color>
     <color name="catalog_item_detail_indicator_inactive">@color/lightGray</color>
     <color name="catalog_item_detail_indicator_active">@color/off_white</color>
+
+    <color name="saveditem_remove_button_text_color">#0DA2D4</color>
 </resources>
