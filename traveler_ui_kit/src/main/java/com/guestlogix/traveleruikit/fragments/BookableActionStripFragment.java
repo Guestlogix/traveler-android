@@ -8,27 +8,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
-import com.guestlogix.travelercorekit.models.Pass;
+
 import com.guestlogix.travelercorekit.models.Price;
-import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.activities.AvailabilityActivity;
-import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.models.BookingContext;
-import com.guestlogix.traveleruikit.models.PurchaseContext;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
-import java.io.Serializable;
-import java.util.List;
 import java.util.Locale;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
@@ -72,7 +63,7 @@ public class BookableActionStripFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BookableActionStripFragment.this.getContext(), AvailabilityActivity.class);
-                intent.putExtra(AvailabilityActivity.ARG_PRODUCT, bookingContext.getProduct());
+                intent.putExtra(AvailabilityActivity.ARG_PRODUCT, bookingContext.getBookingItem());
                 startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
             }
         });

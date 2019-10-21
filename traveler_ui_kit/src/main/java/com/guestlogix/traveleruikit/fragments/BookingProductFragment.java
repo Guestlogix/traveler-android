@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
+
 import com.guestlogix.travelercorekit.callbacks.FetchAvailabilitiesCallback;
 import com.guestlogix.travelercorekit.models.Availability;
+import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.BookingOption;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -42,10 +45,10 @@ public class BookingProductFragment extends BaseFragment implements FetchAvailab
         // Do nothing
     }
 
-    public static BookingProductFragment getInstance(Product product) {
+    public static BookingProductFragment getInstance(BookingItem bookingItem) {
         BookingProductFragment f = new BookingProductFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PRODUCT, product);
+        args.putSerializable(ARG_PRODUCT, bookingItem);
         f.setArguments(args);
         return f;
     }
@@ -55,8 +58,8 @@ public class BookingProductFragment extends BaseFragment implements FetchAvailab
         Bundle args = getArguments();
 
         if (args != null && args.containsKey(ARG_PRODUCT)) {
-            Product product = (Product) args.getSerializable(ARG_PRODUCT);
-            bookingContext = new BookingContext(product);
+            BookingItem bookingItem = (BookingItem) args.getSerializable(ARG_PRODUCT);
+            bookingContext = new BookingContext(bookingItem);
             bookingContext.setUpdateListener(this);
 
             if (this.bookingContextChangedListener != null) {
@@ -118,7 +121,7 @@ public class BookingProductFragment extends BaseFragment implements FetchAvailab
     // Set current date and fetch data from api.
     private void onDateSelected(Calendar calendar) {
         bookingContext.setState(PurchaseContext.State.LOADING);
-        Traveler.fetchAvailabilities(bookingContext.getProduct(), calendar.getTime(), calendar.getTime(), this);
+        Traveler.fetchAvailabilities((Product) bookingContext, calendar.getTime(), calendar.getTime(), this);
     }
 
     private void onFlavourSelected(int pos) {

@@ -44,11 +44,11 @@ public class Router {
                 .build(session.getToken());
     }
 
-    // /catalog?flight-ids=xxx&flight-ids=yyy...
+    // /catalog-group?flight-ids=xxx&flight-ids=yyy...
     public static AuthenticatedUrlRequest catalog(Session session, CatalogQuery catalogQuery, Context context) {
         RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
-                .path("/catalog");
+                .path("/catalog-group");
 
         for (Flight flight : catalogQuery.getFlights()) {
             routeBuilder.param("flight-ids", flight.getId());
@@ -57,15 +57,24 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
-    // /catalog/item/{id}
-    public static AuthenticatedUrlRequest product(Session session, Product product, Context context) {
+    // /booking/{id}
+    public static AuthenticatedUrlRequest bookingItem(Session session, Product product, Context context) {
         RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
-                .path("/catalog/item/" + product.getId());
+                .path("/booking/" + product.getId());
 
-        if (!TextUtils.isEmpty(session.getIdentity())) {
-            routeBuilder.param("travelerId", session.getIdentity());
-        }
+        if (!TextUtils.isEmpty(session.getIdentity())) routeBuilder.param("travelerId", session.getIdentity());
+
+        return routeBuilder.build(session.getToken());
+    }
+
+    // /parking/{id}
+    public static AuthenticatedUrlRequest parkingItem(Session session, Product product, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/parking/" + product.getId());
+
+        if (!TextUtils.isEmpty(session.getIdentity())) routeBuilder.param("travelerId", session.getIdentity());
 
         return routeBuilder.build(session.getToken());
     }

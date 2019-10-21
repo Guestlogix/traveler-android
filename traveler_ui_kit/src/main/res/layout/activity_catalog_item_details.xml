@@ -6,7 +6,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context=".activities.CatalogItemDetailsActivity">
+            tools:context=".activities.BookingItemDetailsActivity">
 
     <FrameLayout
                 android:id="@+id/catalog_item_details_container"

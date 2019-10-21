@@ -6,16 +6,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogItem;
-import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
+import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
 import com.guestlogix.traveleruikit.adapters.CatalogSectionAdapter;
 
 public class CatalogResultFragment extends Fragment implements CatalogSectionAdapter.CatalogSectionAdapterCallback {
@@ -63,9 +65,11 @@ public class CatalogResultFragment extends Fragment implements CatalogSectionAda
 
     @Override
     public void onCatalogItemClick(int sectionId, int itemId) {
-        Intent intent = new Intent(this.getContext(), CatalogItemDetailsActivity.class);
         CatalogItem item = catalog.getGroups().get(sectionId).getItems().get(itemId);
-        intent.putExtra(CatalogItemDetailsActivity.ARG_PRODUCT, item);
-        startActivity(intent);
+        if (item instanceof BookingItem) {
+            Intent intent = new Intent(this.getContext(), BookingItemDetailsActivity.class);
+            intent.putExtra(BookingItemDetailsActivity.ARG_PRODUCT, item);
+            startActivity(intent);
+        }
     }
 }

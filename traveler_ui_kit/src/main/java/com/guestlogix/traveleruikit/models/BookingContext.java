@@ -1,15 +1,16 @@
 package com.guestlogix.traveleruikit.models;
 
 import androidx.annotation.Nullable;
+
 import com.guestlogix.travelercorekit.models.Availability;
+import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.BookingOption;
 import com.guestlogix.travelercorekit.models.Price;
-import com.guestlogix.travelercorekit.models.Product;
 
 import java.util.List;
 
 public class BookingContext implements PurchaseContext {
-    private Product product;
+    private BookingItem bookingItem;
 
     private Availability availability;
     private BookingOption option;
@@ -20,8 +21,8 @@ public class BookingContext implements PurchaseContext {
 
     transient private BookingContextUpdateListener updateListener;
 
-    public BookingContext(Product product) {
-        this.product = product;
+    public BookingContext(BookingItem bookingItem) {
+        this.bookingItem = bookingItem;
         state = State.DEFAULT;
     }
 
@@ -41,8 +42,8 @@ public class BookingContext implements PurchaseContext {
         }
     }
 
-    public Product getProduct() {
-        return product;
+    public BookingItem getBookingItem() {
+        return bookingItem;
     }
 
     public List<BookingOption> getOptions() {
@@ -56,7 +57,7 @@ public class BookingContext implements PurchaseContext {
     @Nullable
     @Override
     public Price getPrice() {
-        return product != null ? product.getPrice() : null;
+        return bookingItem != null ? bookingItem.getPrice() : null;
     }
 
     @Override

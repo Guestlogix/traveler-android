@@ -12,7 +12,7 @@
     </fragment>
     <fragment
             android:id="@+id/catalog_item_details_destination"
-            android:name="com.guestlogix.traveleruikit.fragments.CatalogItemDetailsFragment"
+            android:name="com.guestlogix.traveleruikit.fragments.BookingItemDetailsFragment"
             android:label="@string/app_name"
             tools:layout="@layout/fragment_catalog_item_details">
         <argument android:name="CATALOG_ITEM" app:argType="com.guestlogix.travelercorekit.models.CatalogItem"/>

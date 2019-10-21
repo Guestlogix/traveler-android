@@ -1,36 +1,28 @@
 package com.guestlogix.traveleruikit.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import android.view.View;
 
 import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
 import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
-import com.guestlogix.travelercorekit.models.BookableProduct;
+import com.guestlogix.travelercorekit.models.BookingProduct;
 import com.guestlogix.travelercorekit.models.CancellationQuote;
-import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderStatus;
-import com.guestlogix.travelercorekit.models.Price;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
-
-import org.w3c.dom.Text;
 
 public class OrderDetailActivity extends AppCompatActivity implements CancellationQuoteCallback, EmailOrderConfirmationCallback {
     public static String ARG_ORDER = "ARG_ORDER";
@@ -71,14 +63,14 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
 
             productTitleTextView.setText(product.getTitle());
 
-            if (product instanceof BookableProduct) {
-                BookableProduct bookableProduct = (BookableProduct) product;
-                String date = DateHelper.formatToMonthDayYear(bookableProduct.getEventDate());
-                String dateTime = date + "\n" + DateHelper.formatTime(bookableProduct.getEventDate());
+            if (product instanceof BookingProduct) {
+                BookingProduct bookingProduct = (BookingProduct) product;
+                String date = DateHelper.formatToMonthDayYear(bookingProduct.getEventDate());
+                String dateTime = date + "\n" + DateHelper.formatTime(bookingProduct.getEventDate());
 
                 productDateTextView.setText(dateTime);
 
-                productPriceTextView.setText(bookableProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
+                productPriceTextView.setText(bookingProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
             }
 
             productView.setOnClickListener(new View.OnClickListener() {

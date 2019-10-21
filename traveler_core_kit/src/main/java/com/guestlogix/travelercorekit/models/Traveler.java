@@ -3,7 +3,9 @@ package com.guestlogix.travelercorekit.models;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
 import androidx.annotation.Nullable;
+
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
@@ -173,33 +175,51 @@ public class Traveler {
     /**
      * Fetches the details of a catalog item.
      *
-     * @param catalogItem                the product for which to fetch details
-     * @param catalogItemDetailsCallback callback methods to be executed once the fetch is complete.
+     * @param product                the product for which to fetch details
+     * @param productDetailsCallback callback methods to be executed once the fetch is complete.
      */
-    public static void fetchCatalogItemDetails(Product catalogItem, CatalogItemDetailsCallback catalogItemDetailsCallback) {
+    public static void fetchProductDetails(Product product, BookingItemDetailsCallback productDetailsCallback) {
         if (!isInitialized()) return;
 
-        AuthenticatedUrlRequest request = Router.product(localInstance.session, catalogItem, localInstance.applicationContext);
-        AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask =
-                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
-                        request, new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+        AuthenticatedUrlRequest request;
+        AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = null;
 
-        BlockTask catalogItemDetailsBlockTask = new BlockTask() {
+        switch (product.getProductType()) {
+            case BOOKABLE:
+                request = Router.bookingItem(localInstance.session, product, localInstance.applicationContext);
+                catalogItemDetailsTask = new AuthenticatedRemoteNetworkRequestTask<>(
+                        localInstance.session,
+                        localInstance.applicationContext,
+                        request,
+                        new BookingItemDetails.BookingItemDetailsObjectMappingFactory());
+                break;
+            case PARKING:
+                request = Router.parkingItem(localInstance.session, product, localInstance.applicationContext);
+                catalogItemDetailsTask = new AuthenticatedRemoteNetworkRequestTask<>(
+                        localInstance.session,
+                        localInstance.applicationContext,
+                        request,
+                        new ParkingItemDetails.ParkingItemDetailsObjectMappingFactory());
+                break;
+        }
+
+        AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> finalCatalogItemDetailsTask = catalogItemDetailsTask;
+        BlockTask bookingItemDetailsBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                if (null != catalogItemDetailsTask.getError()) {
-                    catalogItemDetailsCallback.onCatalogItemDetailsError(catalogItemDetailsTask.getError());
+                if (null != finalCatalogItemDetailsTask.getError()) {
+                    productDetailsCallback.onBookingItemDetailsError(finalCatalogItemDetailsTask.getError());
                     // TODO: Stop using TravelerLog completely
-                    TravelerLog.e(catalogItemDetailsTask.getError().getMessage());
+                    TravelerLog.e(finalCatalogItemDetailsTask.getError().getMessage());
                 } else {
-                    catalogItemDetailsCallback.onCatalogItemDetailsSuccess(catalogItemDetailsTask.getResource());
+                    productDetailsCallback.onBookingItemDetailsSuccess(finalCatalogItemDetailsTask.getResource());
                 }
             }
         };
 
-        catalogItemDetailsBlockTask.addDependency(catalogItemDetailsTask);
+        bookingItemDetailsBlockTask.addDependency(catalogItemDetailsTask);
         localInstance.taskManager.addTask(catalogItemDetailsTask);
-        TaskManager.getMainTaskManager().addTask(catalogItemDetailsBlockTask);
+        TaskManager.getMainTaskManager().addTask(bookingItemDetailsBlockTask);
     }
 
     /**
@@ -234,15 +254,15 @@ public class Traveler {
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
                         new ArrayMappingFactory<>(new Availability.AvailabilityObjectMappingFactory()));
         BlockTask fetchBlockTask = new BlockTask() {
-                @Override
-                protected void main() {
-                    if (null != fetchAvailabilitiesTask.getError()) {
-                        checkAvailabilityCallback.onAvailabilityError(fetchAvailabilitiesTask.getError());
-                        TravelerLog.e(fetchAvailabilitiesTask.getError().getMessage());
-                    } else {
-                        checkAvailabilityCallback.onAvailabilitySuccess(fetchAvailabilitiesTask.getResource());
-                    }
+            @Override
+            protected void main() {
+                if (null != fetchAvailabilitiesTask.getError()) {
+                    checkAvailabilityCallback.onAvailabilityError(fetchAvailabilitiesTask.getError());
+                    TravelerLog.e(fetchAvailabilitiesTask.getError().getMessage());
+                } else {
+                    checkAvailabilityCallback.onAvailabilitySuccess(fetchAvailabilitiesTask.getResource());
                 }
+            }
         };
 
         fetchBlockTask.addDependency(fetchAvailabilitiesTask);
@@ -552,7 +572,7 @@ public class Traveler {
                 localInstance.session.getIdentity(), localInstance.session, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> requestTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
-                        new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+                        new BookingItemDetails.BookingItemDetailsObjectMappingFactory());
         BlockTask blockTask = new BlockTask() {
             @Override
             protected void main() {
@@ -604,7 +624,7 @@ public class Traveler {
                 localInstance.session, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> requestTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
-                        new CatalogItemDetails.CatalogItemDetailsObjectMappingFactory());
+                        new BookingItemDetails.BookingItemDetailsObjectMappingFactory());
         BlockTask blockTask = new BlockTask() {
             @Override
             protected void main() {
