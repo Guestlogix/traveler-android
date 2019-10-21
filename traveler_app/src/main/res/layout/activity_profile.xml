@@ -2,17 +2,82 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".activities.ProfileActivity"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".activities.ProfileActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content">
+    <LinearLayout
+            android:id="@+id/layout_profileSavedList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal">
+
+        <ImageView
+                android:id="@+id/imageView_profile_saved_list_icon"
+                android:layout_width="24dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/padding_xlarge"
+                android:clickable="false"
+                android:contentDescription="@string/saved_list"
+                android:focusable="false"
+                android:src="@drawable/favorite_false"/>
+
+        <TextView
+                android:id="@+id/textView_profile_saved_list_title"
+                style="@style/TextButton.Profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:padding="@dimen/padding_small"
+                android:text="@string/saved_list"
+                android:textSize="@dimen/text_view_small"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/layout_profileOrders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal">
+
+        <ImageView
+                android:id="@+id/imageView_profileOrders_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/padding_xlarge"
+                android:clickable="false"
+                android:contentDescription="@string/orders"
+                android:focusable="false"
+                android:src="@drawable/ic_shopping_cart_6a_24dp"/>
+
+        <TextView
+                android:id="@+id/textView_orders_title"
+                style="@style/TextButton.Profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="false"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:text="@string/orders"
+                android:textSize="@dimen/text_view_small"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/linearlayout_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <ImageView
                 android:id="@+id/imageView_profileItem_icon"
@@ -20,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/padding_xlarge"
+                android:contentDescription="@string/email"
                 android:src="@drawable/ic_email_24dp"/>
 
         <LinearLayout
@@ -29,77 +95,35 @@
                 android:padding="@dimen/padding_large">
             <TextView
                     android:id="@+id/textView_profileItem_title"
-                    android:textSize="@dimen/text_view_xsmall"
-                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Email"/>
+                    android:gravity="center_vertical"
+                    android:text="@string/email"
+                    android:textColor="@color/profile_title_text_color"
+                    android:textSize="@dimen/text_view_xsmall"/>
 
             <TextView
                     android:id="@+id/textView_profileItem_value"
-                    android:textSize="@dimen/text_view_small"
-                    android:textColor="@color/black"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:textColor="@color/profile_subtitle_text_color"
+                    android:textSize="@dimen/text_view_small"
                     tools:text="gorlami_forever@guestlogix.com"/>
         </LinearLayout>
-
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/layout_profileOrders"
-                  android:clickable="true"
-                  android:focusable="true">
+    <LinearLayout
+            android:id="@+id/layout_profileSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <ImageView
-                android:id="@+id/imageView_profileOrders_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="@dimen/padding_xlarge"
-                android:src="@drawable/ic_shopping_cart_c8_24dp"
-                android:clickable="false"
-                android:focusable="false"/>
-
-        <LinearLayout
+        <Button
+                android:id="@+id/button_profile_logout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_small"
-                android:clickable="false"
-                android:focusable="false">
-            <TextView
-                    android:id="@+id/textView_orders_title"
-                    android:textSize="@dimen/text_view_small"
-                    style="@style/TextButton"
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Orders"
-                    android:clickable="false"
-                    android:focusable="false"/>
-
-        </LinearLayout>
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/margin_default"
+                android:text="@string/log_out"/>
 
     </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:orientation="horizontal"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/layout_profileSettings">
-
-        <Button android:layout_width="match_parent" android:layout_height="50dp"
-        android:layout_margin="@dimen/margin_default"
-        android:text="Log out"
-        android:id="@+id/button_profile_logout"/>
-
-    </LinearLayout>
-
-
 </LinearLayout>
