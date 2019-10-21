@@ -35,8 +35,6 @@ import com.guestlogix.travelercorekit.utilities.TaskManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.LinkedHashSet;
 
 public class Traveler {
     private static final String TAG = "Traveler";
@@ -699,7 +697,7 @@ public class Traveler {
         @Nullable WishlistResult immediateResult = null;
 
         if (null != originalResult) {
-            Set<CatalogItem> immediateItems = new LinkedHashSet<>(originalResult.getItems());
+            List<CatalogItem> immediateItems = originalResult.getItems();
             immediateItems.remove(item);
             immediateResult = new WishlistResult(
                     originalResult.getSkip(),

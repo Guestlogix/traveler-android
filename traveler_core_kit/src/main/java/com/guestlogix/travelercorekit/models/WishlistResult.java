@@ -4,8 +4,11 @@ import android.util.JsonReader;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.Serializable;
-import java.util.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 public class WishlistResult implements Serializable {
     private int skip;
@@ -13,9 +16,9 @@ public class WishlistResult implements Serializable {
     @Nullable private Date fromDate;
     private Date toDate;
     private int total;
-    private Set<CatalogItem> items;
+    private List<CatalogItem> items;
 
-    public WishlistResult(int skip, int take, Date fromDate, Date toDate, int total, Set<CatalogItem> items) {
+    WishlistResult(int skip, int take, @Nullable Date fromDate, Date toDate, int total, List<CatalogItem> items) {
         this.skip = skip;
         this.take = take;
         this.fromDate = fromDate;
@@ -44,7 +47,7 @@ public class WishlistResult implements Serializable {
         return total;
     }
 
-    public Set<CatalogItem> getItems() {
+    public List<CatalogItem> getItems() {
         return items;
     }
 
@@ -61,11 +64,35 @@ public class WishlistResult implements Serializable {
             return null;
         }
 
-        LinkedHashSet<CatalogItem> items = new LinkedHashSet<>(this.items);
+        List<CatalogItem> items = new ArrayList<>(this.items);
 
         items.addAll(wishlistResult.items);
 
-        return new WishlistResult(this.skip, this.take, this.fromDate, this.toDate, this.total, this.items);
+        return new WishlistResult(this.skip, this.take, this.fromDate, this.toDate, this.total, items);
+    }
+
+    /**
+     * @param product item to remove
+     * @return index that product was removed from; -1 if item is not found
+     */
+    public int remove(Product product) {
+        Iterator<CatalogItem> iterator = items.iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            CatalogItem item = iterator.next();
+            if (((BookingItem)item).getId().equals(product.getId())) {
+                items.remove(item);
+                total--;
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    public void add(CatalogItem item, int index) {
+        items.add(index, item);
+        total++;
     }
 
     static class WishlistResultMappingFactory implements ObjectMappingFactory<WishlistResult> {
@@ -76,7 +103,7 @@ public class WishlistResult implements Serializable {
             Date fromDate = null;
             Date toDate = null;
             int total = -1;
-            LinkedHashSet<CatalogItem> items = null;
+            List<CatalogItem> items = null;
 
             reader.beginObject();
             while (reader.hasNext()) {
@@ -102,7 +129,7 @@ public class WishlistResult implements Serializable {
                         total = reader.nextInt();
                         break;
                     case "result":
-                        items = new LinkedHashSet<>(new ArrayMappingFactory<>(
+                        items = new ArrayList<>(new ArrayMappingFactory<>(
                                 new AnyItemMappingFactory()).instantiate(reader));
                         break;
                     default:
