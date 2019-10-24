@@ -16,6 +16,8 @@ import com.guestlogix.traveleruikit.TravelerUI;
 public class OrderConfirmationActivity extends AppCompatActivity {
 
     public static final String ARG_RECEIPT = "ARG_RECEIPT";
+    public static final int RESULT_OK_ORDER_CONFIRMED = -2;
+    public static final int REQUEST_CODE_ORDER_FLOW = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,14 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         TextView titleTextView = findViewById(R.id.textView_orderConfirmation_title);
         TextView subTitleTextView = findViewById(R.id.textView_orderConfirmation_subtitle);
         TextView emailValueTextView = findViewById(R.id.textView_orderConfirmation_emailValue);
-        Button homeButton = findViewById(R.id.homeButton);
+        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_OK_ORDER_CONFIRMED);
+                finish();
+            }
+        });
+
 
         if (receipt.getOrder().getProducts().size() > 0) {
             Product product = receipt.getOrder().getProducts().get(0);

@@ -1,5 +1,7 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +28,9 @@ import com.guestlogix.traveleruikit.calendarpicker.CalendarPicker;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.util.*;
+
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 public class AvailabilityFragment extends Fragment
         implements FetchAvailabilitiesCallback, CalendarPicker.CalendarPickerListener, FetchPassesCallback {
@@ -193,7 +198,7 @@ public class AvailabilityFragment extends Fragment
         Intent intent = new Intent(AvailabilityFragment.this.getContext(), PassSelectionActivity.class);
         intent.putExtra(PassSelectionActivity.EXTRA_PASSES, new ArrayList<>(pass));
         intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, product);
-        startActivity(intent);
+        getActivity().startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
     }
 
     @Override
@@ -211,5 +216,16 @@ public class AvailabilityFragment extends Fragment
 
     static long getDaysSinceEpoch(Date date) {
        return date.getTime() / 86400000;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Activity activity = getActivity();
+        if (requestCode == REQUEST_CODE_ORDER_FLOW && resultCode == RESULT_OK_ORDER_CONFIRMED && activity != null) {
+            activity.setResult(RESULT_OK_ORDER_CONFIRMED);
+            activity.finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

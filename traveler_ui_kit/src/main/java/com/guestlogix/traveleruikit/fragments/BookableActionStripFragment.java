@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.fragments;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -28,6 +30,9 @@ import com.guestlogix.traveleruikit.widgets.ActionStrip;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
+
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 /**
  * Fragment to handle Bookable item actions
@@ -68,7 +73,7 @@ public class BookableActionStripFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(BookableActionStripFragment.this.getContext(), AvailabilityActivity.class);
                 intent.putExtra(AvailabilityActivity.ARG_PRODUCT, bookingContext.getProduct());
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
             }
         });
 
@@ -84,60 +89,14 @@ public class BookableActionStripFragment extends Fragment {
         return view;
     }
 
-
-    /*
-    // Submit traveler.
-    private void onActionStripClick(View _view) {
-        actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
-        Traveler.fetchPasses(bookingContext.getProduct(), bookingContext.getAvailability(), bookingContext.getOption(), this);
-    }
-
     @Override
-    public void onPassFetchSuccess(List<Pass> pass) {
-        Product p = bookingContext.getProduct();
-        String flavour = null;
-
-        if (bookingContext.getOption() != null) {
-            flavour = bookingContext.getOption().getValue();
-        }
-
-        Intent i = new Intent(getActivityContext(), PassSelectionActivity.class);
-        i.putExtra(PassSelectionActivity.EXTRA_PRODUCT, p);
-        i.putExtra(PassSelectionActivity.EXTRA_PASSES, (Serializable) pass);
-        i.putExtra(PassSelectionActivity.EXTRA_FLAVOUR, flavour);
-        startActivity(i);
-    }
-
-    @Override
-    public void onPassFetchError(Error error) {
-        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-        new AlertDialog.Builder(getActivityContext())
-                .setTitle(R.string.unexpected_error)
-                .setMessage(error.getMessage())
-                .show();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        PurchaseContext.State state = bookingContext.getState();
-        switch (state) {
-            case LOADING:
-                actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
-                break;
-            case AVAILABLE:
-                actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-                break;
-            case OPTION_REQUIRED:
-            case NOT_AVAILABLE:
-            case DEFAULT:
-                actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
-                break;
-            default:
-                TravelerLog.w("State not Handled: %s", state.toString());
-                break;
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Activity activity = getActivity();
+        if (requestCode == REQUEST_CODE_ORDER_FLOW && resultCode == RESULT_OK_ORDER_CONFIRMED && activity != null) {
+            activity.setResult(RESULT_OK_ORDER_CONFIRMED);
+            activity.finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
-    */
 }
