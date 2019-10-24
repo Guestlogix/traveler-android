@@ -34,6 +34,9 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
 
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
+
 /**
  * Activity which lets the user select an arbitrary amount of Passes for a particular product.
  * <p>
@@ -190,7 +193,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
     public void onBookingFormFetchSuccess(BookingForm bookingForm) {
         Intent intent = new Intent(this, QuestionsActivity.class);
         intent.putExtra(QuestionsActivity.EXTRA_BOOKING_FORM, bookingForm);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
     }
 
     @Override
@@ -268,6 +271,16 @@ public class PassSelectionActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         enableActionStrip();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_ORDER_FLOW && resultCode == RESULT_OK_ORDER_CONFIRMED) {
+            setResult(RESULT_OK_ORDER_CONFIRMED);
+            finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void enableActionStrip() {

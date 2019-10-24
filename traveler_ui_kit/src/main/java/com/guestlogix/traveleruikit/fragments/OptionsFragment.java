@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,12 +20,14 @@ import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.adapters.OptionsAdapter;
 import com.guestlogix.traveleruikit.adapters.RadioAdapter;
-import com.guestlogix.traveleruikit.models.BookingContext;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 public class OptionsFragment extends Fragment implements RadioAdapter.Listener, FetchPassesCallback {
     public static String TAG = "OptionsFragment";
@@ -115,6 +118,17 @@ public class OptionsFragment extends Fragment implements RadioAdapter.Listener, 
         Intent intent = new Intent(this.getContext(), PassSelectionActivity.class);
         intent.putExtra(PassSelectionActivity.EXTRA_PASSES, new ArrayList<>(pass));
         intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, product);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        Activity activity = getActivity();
+        if (requestCode == REQUEST_CODE_ORDER_FLOW && resultCode == RESULT_OK_ORDER_CONFIRMED && activity != null) {
+            activity.setResult(RESULT_OK_ORDER_CONFIRMED);
+            activity.finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

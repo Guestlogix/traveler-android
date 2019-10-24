@@ -14,7 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import com.guestlogix.travelercorekit.TravelerLog;
+
 import com.guestlogix.travelercorekit.callbacks.PaymentConfirmationCallback;
 import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
 import com.guestlogix.travelercorekit.models.Order;
@@ -29,6 +29,8 @@ import com.guestlogix.traveleruikit.fragments.ProductSummaryFragment;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.ARG_RECEIPT;
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 public class OrderSummaryActivity extends AppCompatActivity implements
         ProcessOrderCallback,
@@ -136,7 +138,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
         Intent orderConfirmationIntent = new Intent(this, OrderConfirmationActivity.class);
         orderConfirmationIntent.putExtra(ARG_RECEIPT, receipt);
-        startActivity(orderConfirmationIntent);
+        startActivityForResult(orderConfirmationIntent, REQUEST_CODE_ORDER_FLOW);
     }
 
     @Override
@@ -186,9 +188,14 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
         TravelerUI.getPaymentProvider().onPaymentConfirmationActivityResult(this, requestCode, data, this);
+
+        if (requestCode == REQUEST_CODE_ORDER_FLOW && resultCode == RESULT_OK_ORDER_CONFIRMED) {
+            setResult(RESULT_OK_ORDER_CONFIRMED);
+            finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

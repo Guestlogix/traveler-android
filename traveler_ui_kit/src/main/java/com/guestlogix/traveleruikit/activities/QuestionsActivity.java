@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +21,9 @@ import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.widgets.BookingFormWidget;
+
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
+import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 public class QuestionsActivity extends AppCompatActivity implements OrderCreateCallback {
     public static final String EXTRA_BOOKING_FORM = "EXTRA_QUESTIONS_ACTIVITY_BOOKING_FORM";
@@ -83,7 +87,7 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
     public void onOrderCreateSuccess(Order order) {
         Intent intent = new Intent(this, OrderSummaryActivity.class);
         intent.putExtra(OrderSummaryActivity.EXTRA_ORDER, order);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
     }
 
     @Override
@@ -142,5 +146,15 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
         }
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_ORDER_FLOW && resultCode == RESULT_OK_ORDER_CONFIRMED) {
+            setResult(RESULT_OK_ORDER_CONFIRMED);
+            finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
