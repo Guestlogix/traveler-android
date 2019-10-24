@@ -172,6 +172,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
                 Traveler.identify(null);
                 invalidateOptionsMenu();
                 reloadCatalog();
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
