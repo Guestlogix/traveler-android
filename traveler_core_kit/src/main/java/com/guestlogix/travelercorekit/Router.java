@@ -8,7 +8,9 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
+
 import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.Currency;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import com.guestlogix.travelercorekit.tasks.NetworkTaskError;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -57,6 +59,40 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
+    // /booking
+    public static AuthenticatedUrlRequest searchBookingItems(Session session, BookingItemQuery bookingItemQuery, Context context) {
+        RouteBuilder rb = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/booking/")
+                .param("text", bookingItemQuery.getQueryText())
+                .param("skip", String.valueOf(bookingItemQuery.getOffset()))
+                .param("take", String.valueOf(bookingItemQuery.getLimit()));
+
+
+        for (ProductItemCategory category : bookingItemQuery.getCategories()) {
+            rb.param("categories", category.toString());
+        }
+
+        if (bookingItemQuery.getPriceRangeFilter() != null) {
+            PriceRangeFilter priceRangeFilter = bookingItemQuery.getPriceRangeFilter();
+            rb.param("min-price", String.valueOf(priceRangeFilter.getRange().getLower()));
+            rb.param("max-price", String.valueOf(priceRangeFilter.getRange().getUpper()));
+            rb.param("currency", Currency.getCode(priceRangeFilter.getCurrency()));
+        }
+
+        if (bookingItemQuery.getBoundingBox() != null) {
+            BoundingBox boundingBox = bookingItemQuery.getBoundingBox();
+            Coordinate topLeftCoordinate = boundingBox.getTopLeftCoordinate();
+            Coordinate bottomRightCoordinate = boundingBox.getBottomRightCoordinate();
+            rb.param("top-left-latitude", String.valueOf(topLeftCoordinate.getLatitude()));
+            rb.param("top-left-longitude", String.valueOf(topLeftCoordinate.getLongitude()));
+            rb.param("bottom-right-latitude", String.valueOf(bottomRightCoordinate.getLatitude()));
+            rb.param("bottom-right-longitude", String.valueOf(bottomRightCoordinate.getLongitude()));
+        }
+
+        return rb.build(session.getToken());
+    }
+
     // /booking/{id}
     public static AuthenticatedUrlRequest bookingItem(Session session, Product product, Context context) {
         RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
@@ -66,6 +102,30 @@ public class Router {
         if (!TextUtils.isEmpty(session.getIdentity())) routeBuilder.param("travelerId", session.getIdentity());
 
         return routeBuilder.build(session.getToken());
+    }
+
+    // /parking
+    public static AuthenticatedUrlRequest searchParkingItems(Session session, ParkingItemQuery parkingItemQuery, Context context) {
+        RouteBuilder rb = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/parking/")
+                .param("airport", parkingItemQuery.getAirportIATA())
+                .param("to", DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getUpper()))
+                .param("from", DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getLower()))
+                .param("skip", String.valueOf(parkingItemQuery.getOffset()))
+                .param("take", String.valueOf(parkingItemQuery.getLimit()));
+
+        if (parkingItemQuery.getBoundingBox() != null) {
+            BoundingBox boundingBox = parkingItemQuery.getBoundingBox();
+            Coordinate topLeftCoordinate = boundingBox.getTopLeftCoordinate();
+            Coordinate bottomRightCoordinate = boundingBox.getBottomRightCoordinate();
+            rb.param("top-left-latitude", String.valueOf(topLeftCoordinate.getLatitude()));
+            rb.param("top-left-longitude", String.valueOf(topLeftCoordinate.getLongitude()));
+            rb.param("bottom-right-latitude", String.valueOf(bottomRightCoordinate.getLatitude()));
+            rb.param("bottom-right-longitude", String.valueOf(bottomRightCoordinate.getLongitude()));
+        }
+
+        return rb.build(session.getToken());
     }
 
     // /parking/{id}

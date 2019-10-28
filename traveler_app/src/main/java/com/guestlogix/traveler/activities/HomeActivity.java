@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -18,13 +20,14 @@ import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler.R;
 import com.guestlogix.traveler.adapters.FlightsSummaryAdapter;
 import com.guestlogix.traveler.callbacks.ProfileFetchCallback;
-import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 import com.guestlogix.traveler.models.Profile;
 import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.traveleruikit.activities.BookingSearchActivity;
 import com.guestlogix.traveleruikit.fragments.CatalogFragment;
+import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
 import java.util.ArrayList;
@@ -91,6 +94,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.search_action:
+                Intent searchIntent = new Intent(this, BookingSearchActivity.class);
+                startActivity(searchIntent);
+                return true;
             case R.id.flight_add_action:
                 Intent addFlightIntent = new Intent(this, FlightSearchActivity.class);
                 startActivityForResult(addFlightIntent, REQUEST_CODE_ADD_FLIGHT);

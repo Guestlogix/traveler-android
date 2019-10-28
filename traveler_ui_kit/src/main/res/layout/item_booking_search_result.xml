@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_xlarge"
+        card_view:cardCornerRadius="4dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <ImageView
+                android:id="@+id/booking_search_item_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/booking_search_item_thumbnail_height"
+                android:scaleType="centerCrop"
+                android:src="@color/lightGray"
+                android:tint="@color/catalogOverlay" />
+
+        <TextView
+                android:id="@+id/booking_search_item_title"
+                style="@style/ListItem.Text.Value"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/text_view_xxlarge"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_small"
+                tools:text="Booking Item Title" />
+
+        <TextView
+                android:id="@+id/booking_search_item_subtitle"
+                style="@style/ListItem.Text.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/text_view_xxlarge"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_xsmall"
+                tools:text="Booking Item Subtitle" />
+
+        <TextView
+                android:id="@+id/booking_search_item_price"
+                style="@style/ActionBar.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_small"
+                android:gravity="end"
+                android:maxLines="1"
+                tools:text="$999" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

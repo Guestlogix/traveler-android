@@ -28,7 +28,7 @@ public class BookingItemDetails implements CatalogItemDetails {
     private String termsAndConditions;
     private Price price;
     private ProductType productType;
-    private List<CatalogItemCategory> categories;
+    private List<ProductItemCategory> categories;
     private boolean isWishlisted;
     private ProviderTranslationAttribution providerTranslationAttribution;
 
@@ -45,7 +45,7 @@ public class BookingItemDetails implements CatalogItemDetails {
             String termsAndConditions,
             @NonNull Price price,
             @NonNull ProductType productType,
-            @NonNull List<CatalogItemCategory> categories,
+            @NonNull List<ProductItemCategory> categories,
             @NonNull boolean isWishlisted,
             ProviderTranslationAttribution providerTranslationAttribution) {
         this.id = id;
@@ -122,7 +122,7 @@ public class BookingItemDetails implements CatalogItemDetails {
         return productType;
     }
 
-    public List<CatalogItemCategory> getCategories() {
+    public List<ProductItemCategory> getCategories() {
         return categories;
     }
 
@@ -149,10 +149,9 @@ public class BookingItemDetails implements CatalogItemDetails {
             String termsAndConditions = null;
             Price price = null;
             ProductType productType = null;
-            List<CatalogItemCategory> categories = null;
+            List<ProductItemCategory> categories = null;
             boolean isWishlisted = false;
             ProviderTranslationAttribution providerTranslationAttribution = null;
-
 
             reader.beginObject();
 

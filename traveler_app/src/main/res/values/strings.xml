@@ -21,6 +21,7 @@
     <string name="something_went_wrong">Unfortunately something went wrong :(</string>
     <string name="ok">OK</string>
     <string name="add_flight">Add Flight</string>
+    <string name="search">Search</string>
     <string name="cancel">Cancel</string>
     <string name="sign_in">Sign In</string>
     <string name="support">Support</string>

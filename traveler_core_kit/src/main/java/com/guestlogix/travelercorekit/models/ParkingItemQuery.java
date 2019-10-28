@@ -2,14 +2,14 @@ package com.guestlogix.travelercorekit.models;
 
 import java.util.Date;
 
-public class ParkingQuery implements SearchQuery {
+public class ParkingItemQuery implements SearchQuery {
     private String airportIATA;
     private Range<Date> dateRange;
     private BoundingBox boundingBox;
     private int offset;
     private int limit;
 
-    public ParkingQuery(
+    public ParkingItemQuery(
             String airportIATA,
             Range<Date> dateRange,
             BoundingBox boundingBox,
@@ -22,7 +22,7 @@ public class ParkingQuery implements SearchQuery {
         this.limit = limit;
     }
 
-    public ParkingQuery(ParkingSearchParameters parameters) {
+    public ParkingItemQuery(ParkingItemSearchParameters parameters) {
         this.airportIATA = parameters.getAirportIATA();
         this.dateRange = parameters.getDateRange();
         this.boundingBox = parameters.getBoundingBox();
