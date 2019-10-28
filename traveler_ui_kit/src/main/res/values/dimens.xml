@@ -35,4 +35,7 @@
     <dimen name="catalog_item_detail_stroke_width">4dp</dimen>
     <dimen name="catalog_item_detail_item_width">4dp</dimen>
     <dimen name="catalog_item_detail_item_padding">8dp</dimen>
+
+    <dimen name="booking_search_result_width">328dp</dimen>
+    <dimen name="booking_search_item_thumbnail_height">164dp</dimen>
 </resources>

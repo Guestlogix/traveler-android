@@ -1,6 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
-public enum CatalogItemCategory {
+public enum ProductItemCategory {
     ACTIVITY("Activity"),
     TOUR("Tour"),
     SHOW("Show"),
@@ -9,11 +9,11 @@ public enum CatalogItemCategory {
 
     private final String category;
 
-    CatalogItemCategory(String category) {
+    ProductItemCategory(String category) {
         this.category = category;
     }
 
-    public static CatalogItemCategory fromString(String value) throws IllegalArgumentException {
+    public static ProductItemCategory fromString(String value) throws IllegalArgumentException {
         switch (value) {
             case "Activity":
                 return ACTIVITY;
@@ -26,7 +26,8 @@ public enum CatalogItemCategory {
             case "Nightlife":
                 return NIGHTLIFE;
             default:
-                throw new IllegalArgumentException("Unknown CatalogItemCategory");
+                return null;
+//                throw new IllegalArgumentException("Unknown ProductItemCategory");
         }
     }
 

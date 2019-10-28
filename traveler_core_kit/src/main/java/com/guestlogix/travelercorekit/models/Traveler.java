@@ -9,7 +9,23 @@ import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.Router;
 import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.callbacks.*;
+import com.guestlogix.travelercorekit.callbacks.BookingItemDetailsCallback;
+import com.guestlogix.travelercorekit.callbacks.BookingSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.CancellationCallback;
+import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
+import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchAvailabilitiesCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
+import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
+import com.guestlogix.travelercorekit.callbacks.ParkingSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
+import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
+import com.guestlogix.travelercorekit.callbacks.WishlistFetchCallback;
+import com.guestlogix.travelercorekit.callbacks.WishlistRemoveCallback;
 import com.guestlogix.travelercorekit.tasks.AuthTokenFetchTask;
 import com.guestlogix.travelercorekit.tasks.AuthenticatedRemoteNetworkRequestTask;
 import com.guestlogix.travelercorekit.tasks.BlockTask;
@@ -169,6 +185,70 @@ public class Traveler {
 
         searchGroupBlockTask.addDependency(searchGroupTask);
         localInstance.taskManager.addTask(searchGroupTask);
+        TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+    }
+
+    /**
+     * Fetches bookings bases on the provided search criteria
+     *
+     * @param bookingItemQuery      Search query for which to fetch the bookings
+     * @param bookingSearchCallback Callback methods which will be executed after the data is fetched.
+     */
+    public static void searchBookingItems(BookingItemQuery bookingItemQuery, BookingSearchCallback bookingSearchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.searchBookingItems(localInstance.session, bookingItemQuery, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<BookingItemSearchResult> searchBookingTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new BookingItemSearchResult.BookingItemSearchResultObjectMappingFactory());
+
+        BlockTask searchGroupBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != searchBookingTask.getError()) {
+                    bookingSearchCallback.onBookingSearchError(searchBookingTask.getError());
+                    TravelerLog.e(searchBookingTask.getError().getMessage());
+                } else {
+                    bookingSearchCallback.onBookingSearchSuccess(searchBookingTask.getResource());
+                }
+            }
+        };
+
+        searchGroupBlockTask.addDependency(searchBookingTask);
+        localInstance.taskManager.addTask(searchBookingTask);
+        TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
+    }
+
+    /**
+     * Fetches bookings bases on the provided search criteria
+     *
+     * @param parkingItemQuery      Search query for which to fetch the bookings
+     * @param parkingSearchCallback Callback methods which will be executed after the data is fetched.
+     */
+    public static void searchParkingItems(ParkingItemQuery parkingItemQuery, ParkingSearchCallback parkingSearchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.searchParkingItems(localInstance.session, parkingItemQuery, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<ParkingItemSearchResult> searchBookingTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new ParkingItemSearchResult.ParkingItemSearchResultObjectMappingFactory());
+
+        BlockTask searchGroupBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != searchBookingTask.getError()) {
+                    parkingSearchCallback.onParkingSearchError(searchBookingTask.getError());
+                    TravelerLog.e(searchBookingTask.getError().getMessage());
+                } else {
+                    parkingSearchCallback.onParkingSearchSuccess(searchBookingTask.getResource());
+                }
+            }
+        };
+
+        searchGroupBlockTask.addDependency(searchBookingTask);
+        localInstance.taskManager.addTask(searchBookingTask);
         TaskManager.getMainTaskManager().addTask(searchGroupBlockTask);
     }
 

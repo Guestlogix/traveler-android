@@ -33,7 +33,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
     private Price priceToPayOnline;
     private Price priceToPayOnsite;
     private ProductType productType;
-    private List<CatalogItemCategory> categories;
+    private List<ProductItemCategory> categories;
     private boolean isWishlisted;
     private ProviderTranslationAttribution providerTranslationAttribution;
 
@@ -54,7 +54,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
             @NonNull Price priceToPayOnline,
             @NonNull Price priceToPayOnsite,
             @NonNull ProductType productType,
-            @NonNull List<CatalogItemCategory> categories,
+            @NonNull List<ProductItemCategory> categories,
             @NonNull boolean isWishlisted,
             ProviderTranslationAttribution providerTranslationAttribution) {
         this.id = id;
@@ -151,7 +151,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
         return productType;
     }
 
-    public List<CatalogItemCategory> getCategories() {
+    public List<ProductItemCategory> getCategories() {
         return categories;
     }
 
@@ -182,7 +182,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
             Price priceToPayOnline = null;
             Price priceToPayOnsite = null;
             ProductType productType = null;
-            List<CatalogItemCategory> categories = null;
+            List<ProductItemCategory> categories = null;
             boolean isWishlisted = false;
             ProviderTranslationAttribution providerTranslationAttribution = null;
 

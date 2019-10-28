@@ -9,12 +9,12 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ParkingSearchParameters implements Serializable {
+public class ParkingItemSearchParameters implements Serializable {
     private String airportIATA;
     private Range<Date> dateRange;
     private BoundingBox boundingBox;
 
-    private ParkingSearchParameters(
+    private ParkingItemSearchParameters(
             String airportIATA,
             Range<Date> dateRange,
             BoundingBox boundingBox) {
@@ -37,9 +37,9 @@ public class ParkingSearchParameters implements Serializable {
     }
 
 
-    public static class ParkingSearchParametersObjectMappingFactory implements ObjectMappingFactory<ParkingSearchParameters> {
+    public static class ParkingItemSearchParametersObjectMappingFactory implements ObjectMappingFactory<ParkingItemSearchParameters> {
         @Override
-        public ParkingSearchParameters instantiate(JsonReader reader) throws Exception {
+        public ParkingItemSearchParameters instantiate(JsonReader reader) throws Exception {
             String airportIATA = null;
             String startTime = null;
             String endTime = null;
@@ -90,7 +90,7 @@ public class ParkingSearchParameters implements Serializable {
             Coordinate bottomRightCoordinate = new Coordinate(bottomRightLatitude, bottomRightLongitude);
             boundingBox = new BoundingBox(topLeftCoordinate, bottomRightCoordinate);
 
-            return new ParkingSearchParameters(airportIATA, dateRange, boundingBox);
+            return new ParkingItemSearchParameters(airportIATA, dateRange, boundingBox);
         }
     }
 }

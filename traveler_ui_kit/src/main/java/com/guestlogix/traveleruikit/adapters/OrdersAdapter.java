@@ -5,14 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
-import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.OrderQuery;
+import com.guestlogix.travelercorekit.models.OrderResult;
+import com.guestlogix.travelercorekit.models.OrderStatus;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.TravelerUI;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,12 +50,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             totalTextView = itemView.findViewById(R.id.textView_orderItem_totalAmount);
             productsTextView = itemView.findViewById(R.id.textView_orderItem_products);
             cancelledTextView = itemView.findViewById(R.id.textView_orderItem_cancelled);
-        }
-    }
-
-    class LoadingItemViewHolder extends RecyclerView.ViewHolder {
-        LoadingItemViewHolder(@NonNull View itemView) {
-            super(itemView);
         }
     }
 

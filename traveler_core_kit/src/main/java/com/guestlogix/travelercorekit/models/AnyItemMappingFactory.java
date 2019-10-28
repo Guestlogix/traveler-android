@@ -19,7 +19,7 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
         String subTitle = null;
         URL thumbnail = null;
         Price price = null;
-        List<CatalogItemCategory> categories = null;
+        List<ProductItemCategory> categories = null;
         ProductType productType = null;
         Coordinate coordinate = null;
         ProviderTranslationAttribution providerTranslationAttribution = null;
@@ -61,7 +61,7 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                     reader.beginArray();
 
                     while (reader.hasNext()) {
-                        categories.add(CatalogItemCategory.fromString(reader.nextString()));
+                        categories.add(ProductItemCategory.fromString(reader.nextString()));
                     }
 
                     reader.endArray();

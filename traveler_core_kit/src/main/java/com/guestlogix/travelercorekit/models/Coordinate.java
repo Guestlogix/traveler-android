@@ -7,10 +7,10 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import java.io.Serializable;
 
 public class Coordinate implements Serializable {
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
 
-    public Coordinate(double latitude, double longitude){
+    public Coordinate(Double latitude, Double longitude){
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -27,8 +27,8 @@ public class Coordinate implements Serializable {
 
         @Override
         public Coordinate instantiate(JsonReader reader) throws Exception {
-            double latitude = 0;
-            double longitude = 0;
+            Double latitude = null;
+            Double longitude = null;
 
             reader.beginObject();
 

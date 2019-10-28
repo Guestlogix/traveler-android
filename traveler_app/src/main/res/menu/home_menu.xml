@@ -12,6 +12,12 @@
             app:showAsAction="always"
             android:title="@string/sign_in"/>
     <item
+            android:id="@+id/search_action"
+            android:icon="@drawable/ic_search_white_24dp"
+            android:orderInCategory="100"
+            app:showAsAction="ifRoom"
+            android:title="@string/search"/>
+    <item
             android:id="@+id/flight_add_action"
             android:icon="@drawable/ic_add_white_24dp"
             android:orderInCategory="100"

@@ -22,7 +22,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         Price price = null;
         List<Pass> passes = null;
         Date eventDate = null;
-        List<CatalogItemCategory> categories = null;
+        List<ProductItemCategory> categories = null;
         ProductType productType = null;
 
         reader.beginObject();

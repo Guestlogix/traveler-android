@@ -20,7 +20,7 @@ public class BookingItem implements CatalogItem, Product {
     private URL imageURL;
     private Price price;
     private ProductType productType;
-    private List<CatalogItemCategory> categories;
+    private List<ProductItemCategory> categories;
     private Coordinate coordinate;
     private ProviderTranslationAttribution providerTranslationAttribution;
 
@@ -31,7 +31,7 @@ public class BookingItem implements CatalogItem, Product {
             URL imageURL,
             Price price,
             ProductType productType,
-            List<CatalogItemCategory> categories,
+            List<ProductItemCategory> categories,
             Coordinate coordinate,
             ProviderTranslationAttribution providerTranslationAttribution) {
         this.id = id;
@@ -77,7 +77,7 @@ public class BookingItem implements CatalogItem, Product {
     }
 
     @Override
-    public List<CatalogItemCategory> getCategories() {
+    public List<ProductItemCategory> getCategories() {
         return categories;
     }
 
@@ -98,7 +98,7 @@ public class BookingItem implements CatalogItem, Product {
             URL thumbnail = null;
             Price price = null;
             ProductType productType = null;
-            List<CatalogItemCategory> categories = null;
+            List<ProductItemCategory> categories = null;
             Coordinate coordinate = null;
             ProviderTranslationAttribution providerTranslationAttribution = null;
 
@@ -139,7 +139,7 @@ public class BookingItem implements CatalogItem, Product {
                         reader.beginArray();
 
                         while (reader.hasNext()) {
-                            categories.add(CatalogItemCategory.fromString(reader.nextString()));
+                            categories.add(ProductItemCategory.fromString(reader.nextString()));
                         }
 
                         reader.endArray();
