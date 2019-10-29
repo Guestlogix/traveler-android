@@ -2,19 +2,21 @@ package com.guestlogix.traveler_stripe_payment_provider;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.guestlogix.travelercorekit.models.Payment;
+import com.stripe.android.ApiResultCallback;
 import com.stripe.android.Stripe;
-import com.stripe.android.TokenCallback;
 import com.stripe.android.model.Card;
-import com.stripe.android.model.Token;
+import com.stripe.android.model.PaymentMethod;
+import com.stripe.android.model.PaymentMethodCreateParams;
 import com.stripe.android.view.CardInputWidget;
 
 public class PaymentCollectionActivity extends AppCompatActivity {
@@ -60,28 +62,32 @@ public class PaymentCollectionActivity extends AppCompatActivity {
 
         cardInputWidget.setEnabled(false);
 
-        stripe.createToken(card, new TokenCallback() {
-            @Override
-            public void onError(Exception error) {
-                doneButton.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-                cardInputWidget.setEnabled(true);
+        stripe.createPaymentMethod(PaymentMethodCreateParams.create(card.toPaymentMethodParamsCard()),
+                new ApiResultCallback<PaymentMethod>() {
+                    @Override
+                    public void onSuccess(@NonNull PaymentMethod result) {
+                        Payment payment = new StripePayment(result);
 
-                Toast.makeText(getApplicationContext(), getString(R.string.could_not_process_cc), Toast.LENGTH_LONG).show();
-            }
+                        Intent i = new Intent();
+                        i.putExtra(RESULT_INTENT_EXTRA_PAYMENT_KEY, payment);
 
-            @Override
-            public void onSuccess(Token token) {
-                Payment payment = new StripePayment(token);
+                        setResult(RESULT_OK, i);
 
-                Intent i = new Intent();
-                i.putExtra(RESULT_INTENT_EXTRA_PAYMENT_KEY, payment);
+                        finish();
+                    }
 
-                setResult(RESULT_OK, i);
+                    @Override
+                    public void onError(@NonNull Exception e) {
+                        doneButton.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        cardInputWidget.setEnabled(true);
 
-                finish();
-            }
-        });
+                        Toast.makeText(getApplicationContext(),
+                                getString(R.string.could_not_process_cc) + " :\n" + e.getLocalizedMessage(),
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
     }
 
     @Override
