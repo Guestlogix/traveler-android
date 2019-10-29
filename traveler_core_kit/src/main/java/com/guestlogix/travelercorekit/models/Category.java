@@ -20,7 +20,7 @@ public enum Category {
                 return SHOW;
             case "Event":
                 return EVENT;
-            case "Transfer":
+            case "Transfers":
                 return TRANSFER;
             case "Parking":
                 return PARKING;

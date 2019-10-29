@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.callbacks;
 
+import com.guestlogix.travelercorekit.models.Payment;
 import com.guestlogix.travelercorekit.models.Receipt;
 
 public interface ProcessOrderCallback {
