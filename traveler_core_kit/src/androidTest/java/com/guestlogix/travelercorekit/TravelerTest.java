@@ -48,7 +48,7 @@ public class TravelerTest{
     @Test
     public void flightSearchTest() throws InterruptedException{
         Date date =  Calendar.getInstance().getTime();
-        FlightQuery query = new FlightQuery("AC100", date);
+        FlightQuery query = new FlightQuery("AC80", date);
         Expectation expectation = new Expectation();
 
         Traveler.flightSearch(query, new FlightSearchCallback() {
@@ -99,7 +99,7 @@ public class TravelerTest{
      * Therefore a flightSearch call is chained before the catalog call.
      *
      * Makes a chain of calls:
-     * 1 Flight Search using AC100 at the current day
+     * 1 Flight Search using AC80 at the current day
      * 2 Catalog search based on that flight. We will test using the first product of the first catalog group
      * 3 Query for wishlist.
      * 4 if product is in wishlist, remove it; else add the product to wishlist
@@ -113,7 +113,7 @@ public class TravelerTest{
         //given
         Traveler.identify(TRAVELLER_ID);
         Date date = Calendar.getInstance().getTime();
-        FlightQuery query = new FlightQuery("AC100", date);
+        FlightQuery query = new FlightQuery("AC80", date);
         class StringReference { String reference;}
         class ProductReference { Product reference;}
         final StringReference productIdReference = new StringReference();
