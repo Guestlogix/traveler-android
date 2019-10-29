@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.guestlogix.traveler"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 8
         versionName "0.0.8"
@@ -13,13 +13,14 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "TRAVELER_API_KEY", "\""+getReleaseTravelerAPIKey()+"\"")
             buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\""+getReleaseGoogleSignInClientID()+"\"")
         }
 
         debug {
+            minifyEnabled true
             buildConfigField("String", "TRAVELER_API_KEY", "\""+getDebugTravelerAPIKey()+"\"")
             buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\""+getDebugGoogleSignInClientID()+"\"")
         }
@@ -94,6 +95,9 @@ def getDebugGoogleSignInClientID() {
 }
 
 dependencies {
+    // This is a temporary solution to the huge bloat introduced by Stripe
+    // An issue is filed under their android github page.
+    implementation 'com.android.support:multidex:1.0.3'
 
     // Traveler SDK
     implementation project(path: ':traveler_core_kit')
