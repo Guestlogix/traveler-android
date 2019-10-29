@@ -1,11 +1,7 @@
 package com.guestlogix.traveleruikit;
 
-import android.content.Context;
-import android.content.Intent;
 import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.Currency;
-import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
 
 public class TravelerUI {
     private static TravelerUI localInstance;
