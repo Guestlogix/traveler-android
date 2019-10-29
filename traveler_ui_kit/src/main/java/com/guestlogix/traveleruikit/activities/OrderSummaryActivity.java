@@ -3,21 +3,27 @@ package com.guestlogix.traveleruikit.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.guestlogix.travelercorekit.TravelerLog;
+import com.guestlogix.travelercorekit.callbacks.PaymentConfirmationCallback;
 import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Payment;
+import com.guestlogix.travelercorekit.models.PaymentError;
 import com.guestlogix.travelercorekit.models.Receipt;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.fragments.BillingInformationCollectionFragment;
 import com.guestlogix.traveleruikit.fragments.ProductSummaryFragment;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
@@ -26,14 +32,14 @@ import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.
 
 public class OrderSummaryActivity extends AppCompatActivity implements
         ProcessOrderCallback,
-        BillingInformationCollectionFragment.OnPaymentMethodChangeListener {
+        BillingInformationCollectionFragment.OnPaymentMethodChangeListener,
+        PaymentConfirmationCallback {
 
+    private static final String TAG = "OrderSummaryActivity";
     public static final String EXTRA_ORDER = "ORDER_SUMMARY_ACTIVITY_EXTRA_ORDER";
     public static final int CARD_REQUEST = 233;
 
     private ActionStrip actionStrip;
-
-    // Data
     private Payment payment;
     private Order order;
 
@@ -44,18 +50,12 @@ public class OrderSummaryActivity extends AppCompatActivity implements
         Bundle extras = getIntent().getExtras();
 
         if (extras == null || !extras.containsKey(EXTRA_ORDER)) {
-            TravelerLog.e("OrderSummaryActivity requires an Order object.");
+            Log.e(TAG, "No Order");
             finish();
             return;
         }
 
         order = (Order) extras.getSerializable(EXTRA_ORDER);
-
-        if (order == null) {
-            TravelerLog.e("OrderSummaryActivity requires an Order object.");
-            finish();
-            return;
-        }
 
         // Product Summary.
         ProductSummaryFragment productSummaryFragment =
@@ -63,12 +63,6 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
         BillingInformationCollectionFragment billingInformationCollectionFragment =
                 (BillingInformationCollectionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_orderSummary_billingInformation);
-
-        if (productSummaryFragment == null || billingInformationCollectionFragment == null) {
-            TravelerLog.e("ProductSummaryFragment or BillingInformationCollectionFragment was not inflated correctly.");
-            finish();
-            return;
-        }
 
         actionStrip = findViewById(R.id.actionStrip_orderSummary);
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
@@ -138,19 +132,35 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
     @Override
     public void onOrderProcessSuccess(Receipt receipt) {
+        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+
         Intent orderConfirmationIntent = new Intent(this, OrderConfirmationActivity.class);
         orderConfirmationIntent.putExtra(ARG_RECEIPT, receipt);
         startActivity(orderConfirmationIntent);
-        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
     }
 
     @Override
     public void onOrderProcessError(Error error) {
+        if (TravelerUI.getPaymentProvider() == null) {
+            Log.e(TAG, "No PaymentProvider");
+            return;
+        }
+
+        // Confirm payment if it is required
+
+        if (error instanceof PaymentError && ((PaymentError) error).getCode() == PaymentError.Code.CONFIRMATION_REQUIRED) {
+            TravelerUI.getPaymentProvider().confirmPayment(((PaymentError) error).getData(), this);
+            return;
+        }
+
+        // Otherwise display error message
+
+        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+
         new AlertDialog.Builder(this)
                 .setMessage(error.getMessage())
                 .show();
 
-        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
     }
 
     @Override
@@ -172,5 +182,26 @@ public class OrderSummaryActivity extends AppCompatActivity implements
         if (payment != null && order != null) {
             Traveler.processOrder(order, payment, this);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        TravelerUI.getPaymentProvider().onPaymentConfirmationActivityResult(this, requestCode, data, this);
+    }
+
+    @Override
+    public void onPaymentConfirmationSuccess() {
+        Traveler.processOrder(order, payment, this);
+    }
+
+    @Override
+    public void onPaymentConfirmationError(Error error) {
+        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+
+        new AlertDialog.Builder(this)
+                .setMessage(error.getMessage())
+                .show();
     }
 }
