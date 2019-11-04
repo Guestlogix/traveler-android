@@ -122,7 +122,7 @@ public class OrderResult implements Serializable {
             reader.endObject();
 
             Assertion.eval(total >= 0);
-            Assertion.eval(fromDate != null);
+            Assertion.eval(toDate != null);
             Assertion.eval(ordersArray != null);
 
             HashMap<Integer, Order> orders = new HashMap<>();
