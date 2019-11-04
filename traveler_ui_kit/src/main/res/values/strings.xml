@@ -52,4 +52,6 @@
     <string name="label_billing_info">Billing Information</string>
     <string name="button_email_tickets">EMAIL TICKETS</string>
     <string name="toggle_wishlist_contentdescription">Toggle Wishlist</string>
+    <string name="cancel_order">Cancel order</string>
+    <string name="non_refundable">Non Refundable</string>
 </resources>

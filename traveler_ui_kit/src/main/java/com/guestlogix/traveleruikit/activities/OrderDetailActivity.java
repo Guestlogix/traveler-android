@@ -24,6 +24,8 @@ import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 
+import static com.guestlogix.travelercorekit.models.BookingProduct.CANCELLATION_POLICY_NON_REFUNDABLE;
+
 public class OrderDetailActivity extends AppCompatActivity implements CancellationQuoteCallback, EmailOrderConfirmationCallback {
     public static String ARG_ORDER = "ARG_ORDER";
 
@@ -45,6 +47,7 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
         TextView titleTextView = findViewById(R.id.textView_orderDetail_title);
         TextView dateTextView = findViewById(R.id.textView_orderDetail_date);
         TextView priceTextView = findViewById(R.id.textView_orderDetail_price);
+        Button cancelButton = findViewById(R.id.button_orderDetail_cancel);
 
         titleTextView.setText(order.getId());
         dateTextView.setText(DateHelper.formatToMonthDayYear(order.getCreatedDate()));
@@ -71,6 +74,10 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
                 productDateTextView.setText(dateTime);
 
                 productPriceTextView.setText(bookingProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
+
+                boolean isRefundable = !CANCELLATION_POLICY_NON_REFUNDABLE.equals(bookingProduct.getCancellationPolicy());
+                cancelButton.setEnabled(isRefundable);
+                cancelButton.setText(isRefundable ? R.string.cancel_order : R.string.non_refundable);
             }
 
             productView.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +104,6 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
             }
         });
 
-        Button cancelButton = findViewById(R.id.button_orderDetail_cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
