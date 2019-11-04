@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.List;
 
 public interface CatalogItemDetails extends Serializable {
+    String getId();
     String getTitle();
     String getDescription();
     List<Attribute> getInformation();
