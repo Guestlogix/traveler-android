@@ -90,11 +90,15 @@ public class QueryItem implements CatalogItem {
                         Assertion.eval(type != null);
                         switch (type) {
                             case BOOKING:
-                                BookingItemSearchParameters bookingItemSearchParameters = new BookingItemSearchParameters.BookingItemSearchParametersObjectMappingFactory().instantiate(reader);
+                                BookingItemSearchParameters bookingItemSearchParameters =
+                                        new BookingItemSearchParameters.BookingItemSearchParametersObjectMappingFactory()
+                                                .instantiate(reader);
                                 searchQuery = new BookingItemQuery(bookingItemSearchParameters);
                                 break;
                             case PARKING:
-                                ParkingItemSearchParameters parkingItemSearchParameters = new ParkingItemSearchParameters.ParkingItemSearchParametersObjectMappingFactory().instantiate(reader);
+                                ParkingItemSearchParameters parkingItemSearchParameters =
+                                        new ParkingItemSearchParameters.ParkingItemSearchParametersObjectMappingFactory()
+                                                .instantiate(reader);
                                 searchQuery = new ParkingItemQuery(parkingItemSearchParameters);
                                 break;
                         }

@@ -24,6 +24,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         Date eventDate = null;
         List<ProductItemCategory> categories = null;
         ProductType productType = null;
+        String cancellationPolicy = null;
 
         reader.beginObject();
 
@@ -39,6 +40,9 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
                     break;
                 case "price":
                     price = new Price.PriceObjectMappingFactory().instantiate(reader);
+                    break;
+                case "cancellationPolicy":
+                    cancellationPolicy = reader.nextString();
                     break;
                 case "passes":
                     passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(reader);
@@ -73,8 +77,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
 
         if (productType == ProductType.BOOKABLE) {
             Assertion.eval(eventDate != null);
-
-            return new BookingProduct(id, title, price, passes, eventDate, categories);
+            return new BookingProduct(id, title, price, passes, eventDate, categories, cancellationPolicy);
         } else {
             throw new RuntimeException("Unknown product type");
         }

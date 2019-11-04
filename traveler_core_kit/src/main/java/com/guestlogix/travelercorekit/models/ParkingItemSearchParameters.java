@@ -43,10 +43,10 @@ public class ParkingItemSearchParameters implements Serializable {
             String airportIATA = null;
             String startTime = null;
             String endTime = null;
-            double topLeftLatitude = 0;
-            double topLeftLongitude = 0;
-            double bottomRightLatitude = 0;
-            double bottomRightLongitude = 0;
+            Double topLeftLatitude = null;
+            Double topLeftLongitude = null;
+            Double bottomRightLatitude = null;
+            Double bottomRightLongitude = null;
             BoundingBox boundingBox = null;
 
             reader.beginObject();
@@ -59,16 +59,16 @@ public class ParkingItemSearchParameters implements Serializable {
                         airportIATA = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "topLeftLatitude":
-                        topLeftLatitude = reader.nextDouble();
+                        topLeftLatitude = JsonReaderHelper.nextNullableDouble(reader);
                         break;
                     case "topLeftLongitude":
-                        topLeftLongitude = reader.nextDouble();
+                        topLeftLongitude = JsonReaderHelper.nextNullableDouble(reader);
                         break;
                     case "bottomRightLatitude":
-                        bottomRightLatitude = reader.nextDouble();
+                        bottomRightLatitude = JsonReaderHelper.nextNullableDouble(reader);
                         break;
                     case "bottomRightLongitude":
-                        bottomRightLongitude = reader.nextDouble();
+                        bottomRightLongitude = JsonReaderHelper.nextNullableDouble(reader);
                         break;
                     case "startTime":
                         startTime = JsonReaderHelper.nextNullableString(reader);

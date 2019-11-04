@@ -129,8 +129,8 @@ public class TravelerTest{
                 String targetProductId = productIdReference.reference;
                 Product targetProduct = null;
                 for (CatalogItem item : result.getItems()) {
-                    if (item.getId().equals(targetProductId)) {
-                        targetProduct = item;
+                    if (item instanceof BookingItem && ((BookingItem) item).getId().equals(targetProductId)) {
+                        targetProduct = (BookingItem) item;
                         break;
                     }
                 }
@@ -183,8 +183,8 @@ public class TravelerTest{
                 String targetProductId = productIdReference.reference;
                 Product targetProduct = null;
                 for (CatalogItem item : result.getItems()) {
-                    if (item.getId().equals(targetProductId)) {
-                        targetProduct = item;
+                    if (item instanceof BookingItem && ((BookingItem) item).getId().equals(targetProductId)) {
+                        targetProduct = (BookingItem) item;
                         break;
                     }
                 }
@@ -263,21 +263,21 @@ public class TravelerTest{
             public void onWishlistFetchSuccess(WishlistResult result, int identifier) {
                 Log.v("TravelerTest", "fullIntegrationTest::step3WishlistFetchCallback::onWishlistQuerySuccess");
                 String targetProductId = productIdReference.reference;
-                Product targetProduct = null;
+                BookingItem bookingItem = null;
                 for (CatalogItem item : result.getItems()) {
-                    if (item.getId().equals(targetProductId)) {
-                        targetProduct = item;
+                    if (item instanceof BookingItem && ((BookingItem) item).getId().equals(targetProductId)) {
+                        bookingItem = (BookingItem) item;
                         break;
                     }
                 }
 
                 //if product is in wishlist, remove it(4); else add the product to wishlist(5)
-                if (null != targetProduct) {
-                    productReference.reference = targetProduct;
-                    WishlistResult immediateResult = Traveler.wishlistRemove(targetProduct, result, step4WishlistRemoveCallback);
+                if (null != bookingItem) {
+                    productReference.reference = bookingItem;
+                    WishlistResult immediateResult = Traveler.wishlistRemove(bookingItem, result, step4WishlistRemoveCallback);
                     Assert.assertNotNull(immediateResult);
                     Assert.assertNotNull(immediateResult.getItems());
-                    Assert.assertFalse(immediateResult.getItems().contains(targetProduct));
+                    Assert.assertFalse(immediateResult.getItems().contains(bookingItem));
                 } else {
                     Product mockProduct = mock(Product.class);
                     when(mockProduct.getId()).thenReturn(targetProductId);
@@ -311,11 +311,20 @@ public class TravelerTest{
             public void onCatalogSuccess(Catalog catalog) {
                 Log.v("TravelerTest", "fullIntegrationTest::step2CatalogSearchCallback::onCatalogSuccess");
                 Assert.assertTrue(catalog.getGroups().size() >= 1);
-                CatalogGroup catalogGroup = catalog.getGroups().get(0);
+
+                CatalogGroup catalogGroup = null;
+                for (CatalogGroup cg : catalog.getGroups()) {
+                    if ("Item".equalsIgnoreCase(cg.getItemType().name())) {
+                        catalogGroup = cg;
+                        break;
+                    }
+                }
+                Assert.assertNotNull(catalogGroup);
                 Assert.assertTrue(catalogGroup.getItems().size() >= 1);
-                Product product = catalogGroup.getItems().get(0);
-                Assert.assertNotNull(product);
-                productIdReference.reference = product.getId();
+
+                BookingItem bookingItem = (BookingItem) catalogGroup.getItems().get(0);
+                Assert.assertNotNull(bookingItem);
+                productIdReference.reference = bookingItem.getId();
 
                 Traveler.fetchWishlist(new WishlistQuery(0, 10, new Date(), new Date()), 0, step3WishlistFetchCallback);
             }
