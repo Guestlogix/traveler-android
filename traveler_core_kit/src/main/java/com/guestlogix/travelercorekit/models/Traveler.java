@@ -79,7 +79,10 @@ public class Traveler {
             @Override
             protected void main() {
                 if (authTokenFetchTask.getError() != null) {
-                    throw new RuntimeException(String.format("Could not initialize Traveler SDK. %s ", authTokenFetchTask.getError()));
+                    // Auth token failed, effectively means initialization never happened.
+                    Traveler.this.session = null;
+                    Traveler.this.applicationContext = null;
+                    localInstance = null;
                 } else {
                     session.setToken(authTokenFetchTask.getAuthToken());
                 }
