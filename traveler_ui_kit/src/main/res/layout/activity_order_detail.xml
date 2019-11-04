@@ -73,6 +73,6 @@
                 android:id="@+id/button_orderDetail_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Cancel order"/>
+                android:text="@string/cancel_order"/>
     </FrameLayout>
 </LinearLayout>
