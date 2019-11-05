@@ -69,8 +69,9 @@ public class Traveler {
     }
 
     private Traveler(String apiKey, Context applicationContext, boolean isSandboxMode) {
-        this.session = new Session(apiKey, isSandboxMode);
+        this.session = new Session(apiKey);
         this.applicationContext = applicationContext;
+        Router.setSandBoxMode(isSandboxMode);
 
         //read token from disk
         SessionBeginTask sessionBeginTask = new SessionBeginTask(this.session, applicationContext);
