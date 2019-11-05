@@ -58,7 +58,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
 
         flightsRecyclerView = findViewById(R.id.recyclerView_home_flights);
         flightsRecyclerView.setAdapter(new FlightsSummaryAdapter(flights, this));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         reloadCatalog();
     }
 
