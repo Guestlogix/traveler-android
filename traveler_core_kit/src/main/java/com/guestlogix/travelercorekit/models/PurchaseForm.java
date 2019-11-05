@@ -7,9 +7,9 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * A BookingForm contains all the information required to book an experience.
+ * A PurchaseForm contains all the information required to book an experience.
  */
-public class BookingForm implements Serializable {
+public class PurchaseForm implements Serializable {
     private Product product;
     private List<Pass> passes;
     private List<QuestionGroup> questionGroups;
@@ -17,7 +17,7 @@ public class BookingForm implements Serializable {
 
     private HashSet<String> questionIds;
 
-    BookingForm(Product product, List<Pass> passes, List<QuestionGroup> questionGroups) {
+    PurchaseForm(Product product, List<Pass> passes, List<QuestionGroup> questionGroups) {
         this.passes = passes;
         this.questionGroups = questionGroups;
         this.product = product;
@@ -37,11 +37,11 @@ public class BookingForm implements Serializable {
      * Adds an answer for a question.
      *
      * @param answer answer for a question
-     * @throws BookingFormError if the answer does not relate to any question
+     * @throws PurchaseFormError if the answer does not relate to any question
      */
-    public void addAnswer(Answer answer) throws BookingFormError {
+    public void addAnswer(Answer answer) throws PurchaseFormError {
         if (!questionIds.contains(answer.questionId)) {
-            throw new BookingFormError(BookingFormErrorCode.INVALID_QUESTION);
+            throw new PurchaseFormError(PurchaseFormErrorCode.INVALID_QUESTION);
         }
 
         answers.put(answer.questionId, answer);
@@ -52,12 +52,12 @@ public class BookingForm implements Serializable {
      *
      * @param question question for which to get an answer
      * @return answer for a question if it exists, null otherwise
-     * @throws BookingFormError if the question is not part of the booking form
+     * @throws PurchaseFormError if the question is not part of the booking form
      */
     @Nullable
-    public Answer getAnswer(Question question) throws BookingFormError {
+    public Answer getAnswer(Question question) throws PurchaseFormError {
         if (!questionIds.contains(question.getId())) {
-            throw new BookingFormError(BookingFormErrorCode.INVALID_QUESTION);
+            throw new PurchaseFormError(PurchaseFormErrorCode.INVALID_QUESTION);
         }
 
         return answers.get(question.getId());
@@ -107,8 +107,8 @@ public class BookingForm implements Serializable {
      * @return ordered list of errors in the form
      */
     @NonNull
-    public List<BookingFormError> validate() {
-        List<BookingFormError> errors = new ArrayList<>();
+    public List<PurchaseFormError> validate() {
+        List<PurchaseFormError> errors = new ArrayList<>();
 
         for (int i = 0; i < questionGroups.size(); i++) {
             for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
@@ -118,7 +118,7 @@ public class BookingForm implements Serializable {
                 if (question.getValidationRules() != null) {
                     for (ValidationRule r : question.getValidationRules()) {
                         if (!r.validate(answer)) {
-                            errors.add(new BookingFormError(i, j, r.error));
+                            errors.add(new PurchaseFormError(i, j, r.error));
                         }
                     }
                 }
@@ -131,28 +131,28 @@ public class BookingForm implements Serializable {
     /**
      * Types of errors which can be encountered while validating the form.
      */
-    public enum BookingFormErrorCode {
+    public enum PurchaseFormErrorCode {
         INVALID_QUESTION, INVALID_ANSWER
     }
 
     /**
-     * Booking form errors.
+     * Purchase form errors.
      * Contains the relative position in the form of the question which contains errors.
      */
-    public class BookingFormError extends Error {
+    public class PurchaseFormError extends Error {
         private int groupId;
         private int questionId;
         private ValidationError error;
-        private BookingFormErrorCode type;
+        private PurchaseFormErrorCode type;
 
-        private BookingFormError(int groupId, int questionId, ValidationError error) {
+        private PurchaseFormError(int groupId, int questionId, ValidationError error) {
             this.groupId = groupId;
             this.questionId = questionId;
             this.error = error;
-            type = BookingFormErrorCode.INVALID_ANSWER;
+            type = PurchaseFormErrorCode.INVALID_ANSWER;
         }
 
-        BookingFormError(BookingFormErrorCode type) {
+        PurchaseFormError(PurchaseFormErrorCode type) {
             this.type = type;
         }
 
@@ -168,7 +168,7 @@ public class BookingForm implements Serializable {
             return error;
         }
 
-        public BookingFormErrorCode getType() {
+        public PurchaseFormErrorCode getType() {
             return type;
         }
     }
