@@ -16,54 +16,54 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
-import com.guestlogix.travelercorekit.models.BookingForm;
+import com.guestlogix.travelercorekit.models.PurchaseForm;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.widgets.BookingFormWidget;
+import com.guestlogix.traveleruikit.widgets.PurchaseFormWidget;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 public class QuestionsActivity extends AppCompatActivity implements OrderCreateCallback {
-    public static final String EXTRA_BOOKING_FORM = "EXTRA_QUESTIONS_ACTIVITY_BOOKING_FORM";
+    public static final String EXTRA_PURCHASE_FORM = "EXTRA_QUESTIONS_ACTIVITY_PURCHASE_FORM";
 
     // Views
-    private BookingFormWidget form;
+    private PurchaseFormWidget form;
 
     // Data
-    private BookingForm bookingForm;
+    private PurchaseForm purchaseForm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questions);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_BOOKING_FORM)) {
-            bookingForm = (BookingForm) savedInstanceState.getSerializable(EXTRA_BOOKING_FORM);
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_PURCHASE_FORM)) {
+            purchaseForm = (PurchaseForm) savedInstanceState.getSerializable(EXTRA_PURCHASE_FORM);
         }
 
-        if (bookingForm == null) {
+        if (purchaseForm == null) {
             Bundle extras = getIntent().getExtras();
 
-            if (extras == null || !extras.containsKey(EXTRA_BOOKING_FORM)) {
-                TravelerLog.e("QuestionsActivity requires a BookingForm to operate.");
+            if (extras == null || !extras.containsKey(EXTRA_PURCHASE_FORM)) {
+                TravelerLog.e("QuestionsActivity requires a PurchaseForm to operate.");
                 finish();
                 return;
             }
 
-            bookingForm = (BookingForm) extras.getSerializable(EXTRA_BOOKING_FORM);
+            purchaseForm = (PurchaseForm) extras.getSerializable(EXTRA_PURCHASE_FORM);
         }
 
 
-        if (bookingForm == null) {
-            TravelerLog.e("QuestionsActivity requires a BookingForm to operate.");
+        if (purchaseForm == null) {
+            TravelerLog.e("QuestionsActivity requires a PurchaseForm to operate.");
             finish();
             return;
         }
 
         form = findViewById(R.id.questionForm_questionsActivity);
-        form.setBookingForm(bookingForm);
+        form.setPurchaseForm(purchaseForm);
         form.setLayoutManager(new LinearLayoutManager(this));
         form.setFormCompletedListener(this::onQuestionFormCompleted);
 
@@ -71,15 +71,15 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
-    private void onQuestionFormCompleted(BookingForm bookingForm) {
+    private void onQuestionFormCompleted(PurchaseForm purchaseForm) {
         form.setFormCompletedListener(null);
         // TODO: Must show a spinner or something UI blocking until this is done
-        Traveler.createOrder(bookingForm, this);
+        Traveler.createOrder(purchaseForm, this);
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putSerializable(EXTRA_BOOKING_FORM, bookingForm);
+        outState.putSerializable(EXTRA_PURCHASE_FORM, purchaseForm);
         super.onSaveInstanceState(outState);
     }
 

@@ -175,7 +175,7 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
-    public static AuthenticatedUrlRequest orderCreate(Session session, List<BookingForm> forms, Context context) {
+    public static AuthenticatedUrlRequest orderCreate(Session session, List<PurchaseForm> forms, Context context) {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.POST)
                 .path("/order")
@@ -184,7 +184,7 @@ public class Router {
                         JSONObject payload = new JSONObject();
                         JSONArray products = new JSONArray();
 
-                        for (BookingForm form : forms) {
+                        for (PurchaseForm form : forms) {
                             JSONObject product = new JSONObject();
                             JSONArray passes = new JSONArray();
                             JSONArray answers = new JSONArray();
@@ -487,16 +487,16 @@ public class Router {
 
             switch (code) {
                 case 2006:
-                    return new BookingError(BookingError.Code.PASSES_UNAVAILABLE);
+                    return new PurchaseError(PurchaseError.Code.PASSES_UNAVAILABLE);
                 case 2007:
-                    return new BookingError(BookingError.Code.VERY_OLD_TRAVELER);
+                    return new PurchaseError(PurchaseError.Code.VERY_OLD_TRAVELER);
                 case 2012:
                 case 2013:
                     return new CancellationError(CancellationError.Code.NOT_CANCELLABLE);
                 case 2014:
-                    return new BookingError(BookingError.Code.BELLOW_MIN_UNITS);
+                    return new PurchaseError(PurchaseError.Code.BELLOW_MIN_UNITS);
                 case 2018:
-                    return new BookingError(BookingError.Code.UNACCOMPANIED_CHILDREN);
+                    return new PurchaseError(PurchaseError.Code.UNACCOMPANIED_CHILDREN);
                 case 2032:
                     return new NetworkTaskError(NetworkTaskError.Code.ITEM_UNAVAILABLE);
                 case 2027:

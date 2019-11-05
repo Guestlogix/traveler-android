@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <com.guestlogix.traveleruikit.widgets.BookingFormWidget
+    <com.guestlogix.traveleruikit.widgets.PurchaseFormWidget
             android:id="@+id/questionForm_questionsActivity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

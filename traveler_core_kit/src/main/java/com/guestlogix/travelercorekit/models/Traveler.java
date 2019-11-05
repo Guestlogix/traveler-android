@@ -16,7 +16,7 @@ import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchAvailabilitiesCallback;
-import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
@@ -394,49 +394,49 @@ public class Traveler {
      *
      * @param product                  product for which to create a booking form
      * @param passes                   selected passes
-     * @param fetchBookingFormCallback callback methods which will be executed after creation is complete.
+     * @param fetchPurchaseFormCallback callback methods which will be executed after creation is complete.
      */
-    public static void fetchBookingForm(Product product, List<Pass> passes, FetchBookingFormCallback fetchBookingFormCallback) {
+    public static void fetchPurchaseForm(Product product, List<Pass> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
         if (!isInitialized()) return;
 
         if (passes.size() == 0) {
-            fetchBookingFormCallback.onBookingFormFetchError(new BookingError(BookingError.Code.NO_PASSES));
+            fetchPurchaseFormCallback.onPurchaseFormFetchError(new PurchaseError(PurchaseError.Code.NO_PASSES));
             return;
         }
 
         AuthenticatedUrlRequest request = Router.productQuestion(localInstance.session, product, passes, localInstance.applicationContext);
-        AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchBookingFormTask =
+        AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
                         request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
 
         BlockTask fetchBlockTask = new BlockTask() {
             @Override
             protected void main() {
-                if (null != fetchBookingFormTask.getError()) {
-                    fetchBookingFormCallback.onBookingFormFetchError(fetchBookingFormTask.getError());
-                    TravelerLog.e(fetchBookingFormTask.getError().getMessage());
+                if (null != fetchPurchaseFormTask.getError()) {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
+                    TravelerLog.e(fetchPurchaseFormTask.getError().getMessage());
                 } else {
-                    fetchBookingFormCallback.onBookingFormFetchSuccess(new BookingForm(product, passes, fetchBookingFormTask.getResource()));
+                    fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, passes, fetchPurchaseFormTask.getResource()));
                 }
             }
         };
 
-        fetchBlockTask.addDependency(fetchBookingFormTask);
-        localInstance.taskManager.addTask(fetchBookingFormTask);
+        fetchBlockTask.addDependency(fetchPurchaseFormTask);
+        localInstance.taskManager.addTask(fetchPurchaseFormTask);
         TaskManager.getMainTaskManager().addTask(fetchBlockTask);
     }
 
     /**
      * Creates an order using a booking form.
      *
-     * @param bookingForm         A completed booking form
+     * @param purchaseForm         A completed purchase form
      * @param orderCreateCallback callback methods which to be executed once the order creation is processed.
      */
-    public static void createOrder(BookingForm bookingForm, OrderCreateCallback orderCreateCallback) {
+    public static void createOrder(PurchaseForm purchaseForm, OrderCreateCallback orderCreateCallback) {
         if (!isInitialized()) return;
 
-        ArrayList<BookingForm> forms = new ArrayList<>();
-        forms.add(bookingForm);
+        ArrayList<PurchaseForm> forms = new ArrayList<>();
+        forms.add(purchaseForm);
         AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<Order> createOrderTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,

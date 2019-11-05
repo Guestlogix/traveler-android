@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.TravelerLog;
-import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
@@ -32,7 +32,6 @@ import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
@@ -47,7 +46,7 @@ import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.
 public class PassSelectionActivity extends AppCompatActivity implements
         Form.DataSource,
         Form.FormValueChangedListener,
-        FetchBookingFormCallback {
+        FetchPurchaseFormCallback {
 
     /**
      * Expects a list of Pass objects.
@@ -190,14 +189,14 @@ public class PassSelectionActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onBookingFormFetchSuccess(BookingForm bookingForm) {
+    public void onPurchaseFormFetchSuccess(PurchaseForm purchaseForm) {
         Intent intent = new Intent(this, QuestionsActivity.class);
-        intent.putExtra(QuestionsActivity.EXTRA_BOOKING_FORM, bookingForm);
+        intent.putExtra(QuestionsActivity.EXTRA_PURCHASE_FORM, purchaseForm);
         startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
     }
 
     @Override
-    public void onBookingFormFetchError(Error error) {
+    public void onPurchaseFormFetchError(Error error) {
         actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
         new AlertDialog.Builder(this)
                 .setMessage(error.getMessage())
@@ -228,7 +227,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
             }
         }
 
-        Traveler.fetchBookingForm(product, flatPasses, this);
+        Traveler.fetchPurchaseForm(product, flatPasses, this);
     }
 
     private void calculatePrice() {

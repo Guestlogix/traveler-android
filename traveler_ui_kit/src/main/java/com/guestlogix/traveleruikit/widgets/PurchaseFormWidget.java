@@ -13,7 +13,6 @@ import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.models.*;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -22,34 +21,34 @@ import java.util.List;
  * <p>
  * Implement {@link FormCompletedListener} to get notified whenever the form is successfully built.
  */
-public class BookingFormWidget extends Form implements
+public class PurchaseFormWidget extends Form implements
         Form.DataSource,
         Form.FormValueChangedListener,
         Form.FormClickListener {
 
     // Data
-    private BookingForm bookingForm;
-    private BookingForm.BookingFormError currentError;
+    private PurchaseForm purchaseForm;
+    private PurchaseForm.PurchaseFormError currentError;
 
     /**
-     * Listener used to dispatch BookingForm completion events.
+     * Listener used to dispatch PurchaseForm completion events.
      */
     private FormCompletedListener formCompletedListener;
 
-    public BookingFormWidget(@NonNull Context context) {
+    public PurchaseFormWidget(@NonNull Context context) {
         super(context);
     }
 
-    public BookingFormWidget(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PurchaseFormWidget(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public BookingFormWidget(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public PurchaseFormWidget(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public void setBookingForm(@NonNull BookingForm bookingForm) {
-        this.bookingForm = bookingForm;
+    public void setPurchaseForm(@NonNull PurchaseForm purchaseForm) {
+        this.purchaseForm = purchaseForm;
         super.setDataSource(this);
         super.setFormValueChangedListener(this);
         super.setFormClickListener(this);
@@ -66,26 +65,26 @@ public class BookingFormWidget extends Form implements
 
     @Override
     public int getSectionCount() {
-        return bookingForm.getQuestionGroups().size() + 1;
+        return purchaseForm.getQuestionGroups().size() + 1;
     }
 
     @Override
     public int getFieldCount(int sectionId) {
-        if (sectionId == bookingForm.getQuestionGroups().size()) {
+        if (sectionId == purchaseForm.getQuestionGroups().size()) {
             return 1;
         }
 
-        return bookingForm.getQuestionGroups().get(sectionId).getQuestions().size();
+        return purchaseForm.getQuestionGroups().get(sectionId).getQuestions().size();
     }
 
     @NonNull
     @Override
     public FormModel getModel(int sectionId, int fieldId) {
-        if (sectionId == bookingForm.getQuestionGroups().size()) {
+        if (sectionId == purchaseForm.getQuestionGroups().size()) {
             return new ButtonFormModel(getContext().getString(R.string.next));
         }
 
-        Question question = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
+        Question question = purchaseForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
 
         if (question.getType() instanceof QuestionType.Quantity) {
             return new QuantityFormModel(question.getTitle(), question.getDescription(), 10, 0);
@@ -108,11 +107,11 @@ public class BookingFormWidget extends Form implements
 
     @Override
     public FormFieldType getFieldType(int sectionId, int fieldId) {
-        if (sectionId == bookingForm.getQuestionGroups().size()) {
+        if (sectionId == purchaseForm.getQuestionGroups().size()) {
             return FormFieldType.BUTTON;
         }
 
-        Question q = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
+        Question q = purchaseForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
 
         if (q.getType() instanceof QuestionType.Quantity) {
             return FormFieldType.QUANTITY;
@@ -128,11 +127,11 @@ public class BookingFormWidget extends Form implements
     @Nullable
     @Override
     public FormHeader getSectionHeader(int sectionId) {
-        if (sectionId == bookingForm.getQuestionGroups().size()) {
+        if (sectionId == purchaseForm.getQuestionGroups().size()) {
             return null;
         }
 
-        QuestionGroup questionGroup = bookingForm.getQuestionGroups().get(sectionId);
+        QuestionGroup questionGroup = purchaseForm.getQuestionGroups().get(sectionId);
 
         if (questionGroup.getTitle() != null || questionGroup.getDisclaimer() != null) {
             return new FormHeader(questionGroup.getTitle(), questionGroup.getDisclaimer());
@@ -171,12 +170,12 @@ public class BookingFormWidget extends Form implements
     @Nullable
     @Override
     public Object getValue(int sectionId, int fieldId) {
-        if (sectionId == bookingForm.getQuestionGroups().size()) {
+        if (sectionId == purchaseForm.getQuestionGroups().size()) {
             return null;
         }
 
-        Question question = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
-        Answer answer = bookingForm.getAnswer(question);
+        Question question = purchaseForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
+        Answer answer = purchaseForm.getAnswer(question);
 
         if (answer == null) {
             return null;
@@ -195,11 +194,11 @@ public class BookingFormWidget extends Form implements
 
     @Override
     public void onFormValueChanged(int sectionId, int fieldId, Object value) {
-        if (sectionId == bookingForm.getQuestionGroups().size()) {
+        if (sectionId == purchaseForm.getQuestionGroups().size()) {
             return;
         }
 
-        Question question = bookingForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
+        Question question = purchaseForm.getQuestionGroups().get(sectionId).getQuestions().get(fieldId);
         Answer answer = null;
 
         if (question.getType() instanceof QuestionType.Date) {
@@ -212,17 +211,17 @@ public class BookingFormWidget extends Form implements
             answer = new TextualAnswer(value.toString(), question);
         }
 
-        bookingForm.addAnswer(answer);
+        purchaseForm.addAnswer(answer);
     }
 
     @Override
     public void onFormClick(int sectionId, int fieldId) {
-        if (bookingForm == null) {
+        if (purchaseForm == null) {
             return;
         }
 
-        if (sectionId == bookingForm.getQuestionGroups().size()) {
-            List<BookingForm.BookingFormError> errors = bookingForm.validate();
+        if (sectionId == purchaseForm.getQuestionGroups().size()) {
+            List<PurchaseForm.PurchaseFormError> errors = purchaseForm.validate();
 
             if (!errors.isEmpty()) {
                 // Hide current error if its not null
@@ -240,20 +239,20 @@ public class BookingFormWidget extends Form implements
                     currentError = null;
                 }
 
-                formCompletedListener.onFormCompleted(bookingForm); // Notify activity form is done
+                formCompletedListener.onFormCompleted(purchaseForm); // Notify activity form is done
             }
         }
     }
 
     /**
-     * Interface definition for a callback to be invoked whenever the {@link BookingForm} is ready to submit.
+     * Interface definition for a callback to be invoked whenever the {@link PurchaseForm} is ready to submit.
      */
     public interface FormCompletedListener {
         /**
-         * Called whenever the {@link BookingForm} is ready to submit.
+         * Called whenever the {@link PurchaseForm} is ready to submit.
          *
-         * @param bookingForm Filled BookingForm
+         * @param purchaseForm Filled PurchaseForm
          */
-        void onFormCompleted(BookingForm bookingForm);
+        void onFormCompleted(PurchaseForm purchaseForm);
     }
 }
