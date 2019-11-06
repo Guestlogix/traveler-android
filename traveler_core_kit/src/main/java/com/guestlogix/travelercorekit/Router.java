@@ -27,7 +27,7 @@ import java.util.*;
 import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELER_SDK_ENDPOINT;
 
 public class Router {
-    private static final String DEFAULT_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";
+    public static final String DEFAULT_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";
 
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return new RouteBuilder(context, apiKey)
@@ -331,6 +331,10 @@ public class Router {
         }
 
         return routeBuilder.build(session.getToken());
+    }
+
+    public static void clearSdkEndpoint() {
+        RouteBuilder.travelerSDKEndpoint = null;
     }
 
     private static class RouteBuilder {
