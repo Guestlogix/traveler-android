@@ -16,9 +16,13 @@ import java.util.*;
 import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELER_AUTH_ENDPOINT;
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
-class GuestRoute {
+public class GuestRoute {
     private static final String TAG = "GuestRoute";
-    private static final String DEFAULT_AUTH_URL = "https://9th3dtgfg3.execute-api.ca-central-1.amazonaws.com/dev";
+    public static final String DEFAULT_AUTH_URL = "https://9th3dtgfg3.execute-api.ca-central-1.amazonaws.com/dev";
+
+    private GuestRoute() {
+        // prevent instantiation
+    }
 
     static UrlRequest profile(String requestIdToken, Context context) {
         return new GuestRequestBuilder(context, requestIdToken)
