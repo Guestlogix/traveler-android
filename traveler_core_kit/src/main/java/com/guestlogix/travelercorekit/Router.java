@@ -28,7 +28,7 @@ import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELE
 
 public class Router {
     private static final String TAG = "Router";
-    private static final String DEFAULT_ENDPOINT = "https://traveler.guestlogix.io/v1";
+    public static final String DEFAULT_ENDPOINT = "https://traveler.guestlogix.io/v1";
 
     public static void setSandBoxMode(boolean isSandboxMode) {
         RouteBuilder.setSandboxMode(isSandboxMode);
@@ -343,6 +343,10 @@ public class Router {
         }
 
         return routeBuilder.build(session.getToken());
+    }
+
+    public static void clearSdkEndpoint() {
+        RouteBuilder.travelerSDKEndpoint = null;
     }
 
     private static class RouteBuilder {
