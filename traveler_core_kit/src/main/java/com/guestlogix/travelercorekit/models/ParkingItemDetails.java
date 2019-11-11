@@ -7,11 +7,13 @@ import androidx.annotation.NonNull;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.util.JsonToken.NULL;
@@ -19,7 +21,7 @@ import static android.util.JsonToken.NULL;
 public class ParkingItemDetails implements CatalogItemDetails {
     private String id;
     private String title;
-    private String subtitle;
+    private String subTitle;
     private String description;
     private List<Attribute> information;
     private URL thumbnailURL;
@@ -36,11 +38,12 @@ public class ParkingItemDetails implements CatalogItemDetails {
     private List<ProductItemCategory> categories;
     private boolean isWishlisted;
     private ProviderTranslationAttribution providerTranslationAttribution;
+    private Range<Date> dateRange;
 
     private ParkingItemDetails(
             @NonNull String id,
             String title,
-            String subtitle,
+            String subTitle,
             String description,
             List<Attribute> information,
             @NonNull URL thumbnailURL,
@@ -56,10 +59,11 @@ public class ParkingItemDetails implements CatalogItemDetails {
             @NonNull ProductType productType,
             @NonNull List<ProductItemCategory> categories,
             @NonNull boolean isWishlisted,
-            ProviderTranslationAttribution providerTranslationAttribution) {
+            ProviderTranslationAttribution providerTranslationAttribution,
+            Range<Date> dateRange) {
         this.id = id;
         this.title = title;
-        this.subtitle = subtitle;
+        this.subTitle = subTitle;
         this.description = description;
         this.information = information;
         this.thumbnailURL = thumbnailURL;
@@ -76,6 +80,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
         this.categories = categories;
         this.isWishlisted = isWishlisted;
         this.providerTranslationAttribution = providerTranslationAttribution;
+        this.dateRange = dateRange;
     }
 
     public String getId() {
@@ -87,8 +92,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
         return title;
     }
 
-    public String getSubtitle() {
-        return subtitle;
+    public String getSubTitle() {
+        return subTitle;
     }
 
     @Override
@@ -163,6 +168,10 @@ public class ParkingItemDetails implements CatalogItemDetails {
         return providerTranslationAttribution;
     }
 
+    public Range<Date> getDateRange() {
+        return dateRange;
+    }
+
     static class ParkingItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
         @Override
         public ParkingItemDetails instantiate(JsonReader reader) throws Exception {
@@ -185,6 +194,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
             List<ProductItemCategory> categories = null;
             boolean isWishlisted = false;
             ProviderTranslationAttribution providerTranslationAttribution = null;
+            String startTime = null;
+            String endTime = null;
 
             reader.beginObject();
 
@@ -279,6 +290,12 @@ public class ParkingItemDetails implements CatalogItemDetails {
                         providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
                                 instantiate(reader);
                         break;
+                    case "startTime":
+                        startTime = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "endTime":
+                        endTime = JsonReaderHelper.nextNullableString(reader);
+                        break;
                     default:
                         reader.skipValue();
                         break;
@@ -297,6 +314,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
             Assertion.eval(priceToPayOnsite != null);
             Assertion.eval(productType != null);
             Assertion.eval(categories != null);
+
+            Range<Date> dateRange = new Range<>(DateHelper.parseISO8601(startTime), DateHelper.parseISO8601(endTime));
 
             return new ParkingItemDetails(
                     id,
@@ -317,7 +336,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
                     productType,
                     categories,
                     isWishlisted,
-                    providerTranslationAttribution);
+                    providerTranslationAttribution,
+                    dateRange);
         }
     }
 }

@@ -33,7 +33,7 @@ public class BookingItem implements CatalogItem, Product {
             ProductType productType,
             List<ProductItemCategory> categories,
             Coordinate coordinate,
-            ProviderTranslationAttribution providerTranslationAttribution) {
+            ProviderTranslationAttribution providerTranslationAttribution, boolean isAvailable) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
@@ -76,7 +76,6 @@ public class BookingItem implements CatalogItem, Product {
         return productType;
     }
 
-    @Override
     public List<ProductItemCategory> getCategories() {
         return categories;
     }
@@ -101,6 +100,7 @@ public class BookingItem implements CatalogItem, Product {
             List<ProductItemCategory> categories = null;
             Coordinate coordinate = null;
             ProviderTranslationAttribution providerTranslationAttribution = null;
+            boolean isAvailable = false;
 
             reader.beginObject();
 
@@ -152,6 +152,9 @@ public class BookingItem implements CatalogItem, Product {
                         providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
                                 instantiate(reader);
                         break;
+                    case "isAvailable":
+                        isAvailable = reader.nextBoolean();
+                        break;
                     default:
                         reader.skipValue();
                         break;
@@ -173,7 +176,8 @@ public class BookingItem implements CatalogItem, Product {
                     productType,
                     categories,
                     coordinate,
-                    providerTranslationAttribution);
+                    providerTranslationAttribution,
+                    isAvailable);
         }
     }
 }

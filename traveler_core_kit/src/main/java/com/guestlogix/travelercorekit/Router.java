@@ -162,16 +162,24 @@ public class Router {
         return rb.build(session.getToken());
     }
 
-    // /product/{id}/question?&passes=xxx&passes=yyy&passes=zzz...
-    public static AuthenticatedUrlRequest productQuestion(Session session, Product product, List<Pass> passes, Context context) {
+    // /booking/{id}/question?&passes=xxx&passes=yyy&passes=zzz...
+    public static AuthenticatedUrlRequest bookingQuestions(Session session, Product product, List<Pass> passes, Context context) {
         RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
-                .path("/product/" + product.getId() + "/question");
+                .path("/booking/" + product.getId() + "/question");
 
         for (Pass pass : passes) {
             routeBuilder.param("pass-ids", pass.getId());
         }
 
+        return routeBuilder.build(session.getToken());
+    }
+
+    // /product/{id}/question?&passes=xxx&passes=yyy&passes=zzz...
+    public static AuthenticatedUrlRequest parkingQuestions(Session session, Product product, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/parking/" + product.getId() + "/question");
         return routeBuilder.build(session.getToken());
     }
 
@@ -492,9 +500,12 @@ public class Router {
                     return new PurchaseError(PurchaseError.Code.VERY_OLD_TRAVELER);
                 case 2012:
                 case 2013:
-                    return new CancellationError(CancellationError.Code.NOT_CANCELLABLE);
                 case 2014:
-                    return new PurchaseError(PurchaseError.Code.BELLOW_MIN_UNITS);
+                    return new CancellationError(CancellationError.Code.NOT_CANCELLABLE);
+                case 2015:
+                    return new PurchaseError(PurchaseError.Code.ADULT_AGE_INVALID);
+                case 2017:
+                    return new PurchaseError(PurchaseError.Code.BELOW_MIN_UNITS);
                 case 2018:
                     return new PurchaseError(PurchaseError.Code.UNACCOMPANIED_CHILDREN);
                 case 2032:

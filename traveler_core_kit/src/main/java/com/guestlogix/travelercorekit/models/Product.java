@@ -8,5 +8,4 @@ public interface Product extends Serializable {
     String getTitle();
     Price getPrice();
     ProductType getProductType();
-    List<ProductItemCategory> getCategories();
 }

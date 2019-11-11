@@ -23,6 +23,7 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
         ProductType productType = null;
         Coordinate coordinate = null;
         ProviderTranslationAttribution providerTranslationAttribution = null;
+        boolean isAvailable = false;
 
         reader.beginObject();
 
@@ -74,6 +75,9 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                     providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
                             instantiate(reader);
                     break;
+                case "isAvailable":
+                    isAvailable = reader.nextBoolean();
+                    break;
                 default:
                     reader.skipValue();
                     break;
@@ -96,7 +100,8 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                         productType,
                         categories,
                         coordinate,
-                        providerTranslationAttribution);
+                        providerTranslationAttribution,
+                        isAvailable);
             case PARKING:
                 return new ParkingItem(
                         id,
