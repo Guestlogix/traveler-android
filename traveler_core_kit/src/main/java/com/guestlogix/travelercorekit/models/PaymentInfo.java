@@ -8,4 +8,8 @@ public class PaymentInfo implements Serializable {
     PaymentInfo(String detail) {
         this.detail = detail;
     }
+
+    public String getDetail() {
+        return detail;
+    }
 }
