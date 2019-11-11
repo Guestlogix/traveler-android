@@ -14,6 +14,10 @@ public abstract class OrderStatus implements Serializable {
         this.code = code;
     }
 
+    public Code getCode() {
+        return code;
+    }
+
     // Statuses
 
     public static class Pending extends OrderStatus {
