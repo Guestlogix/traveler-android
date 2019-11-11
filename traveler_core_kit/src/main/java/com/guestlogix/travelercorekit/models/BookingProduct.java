@@ -56,7 +56,6 @@ public class BookingProduct implements Product {
         return eventDate;
     }
 
-    @Override
     public List<ProductItemCategory> getCategories() {
         return categories;
     }

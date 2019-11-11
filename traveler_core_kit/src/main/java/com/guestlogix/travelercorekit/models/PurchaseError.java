@@ -2,7 +2,7 @@ package com.guestlogix.travelercorekit.models;
 
 public class PurchaseError extends Error {
     public enum Code {
-        NO_DATE, BAD_DATE, NO_OPTION, NO_PASSES, VERY_OLD_TRAVELER, ADULT_AGE_INVALID, BELLOW_MIN_UNITS, UNACCOMPANIED_CHILDREN, PASSES_UNAVAILABLE
+        NO_DATE, BAD_DATE, NO_OPTION, NO_PASSES, VERY_OLD_TRAVELER, ADULT_AGE_INVALID, BELOW_MIN_UNITS, UNACCOMPANIED_CHILDREN, PASSES_UNAVAILABLE
     }
 
     private Code code;
@@ -26,7 +26,7 @@ public class PurchaseError extends Error {
                 return "No option provided";
             case NO_PASSES:
                 return "No passes selected";
-            case BELLOW_MIN_UNITS:
+            case BELOW_MIN_UNITS:
                 return "Passes bellow minimum";
             case ADULT_AGE_INVALID:
                 return "Invalid age for adult";

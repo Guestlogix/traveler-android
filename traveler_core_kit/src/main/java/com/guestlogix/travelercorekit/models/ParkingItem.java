@@ -76,7 +76,6 @@ public class ParkingItem implements CatalogItem, Product {
         return productType;
     }
 
-    @Override
     public List<ProductItemCategory> getCategories() {
         return categories;
     }
@@ -87,6 +86,11 @@ public class ParkingItem implements CatalogItem, Product {
 
     public ProviderTranslationAttribution getProviderTranslationAttribution() {
         return providerTranslationAttribution;
+    }
+
+    public boolean isAvailable() {
+        // A ParkingItem that is seen is always available
+        return true;
     }
 
     static class ParkingItemObjectMappingFactory implements ObjectMappingFactory<ParkingItem> {

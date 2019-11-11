@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+import android.util.Log;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
@@ -15,6 +16,7 @@ import java.util.List;
 import static android.util.JsonToken.NULL;
 
 class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
+    private static final String TAG = "AnyProductMappingFactor";
     @Override
     public Product instantiate(JsonReader reader) throws Exception {
         String id = null;
@@ -69,17 +71,20 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
 
         reader.endObject();
 
+        Assertion.eval(id != null);
         Assertion.eval(title != null);
         Assertion.eval(price != null);
-        Assertion.eval(passes != null);
         Assertion.eval(productType != null);
-        Assertion.eval(categories != null);
+        Assertion.eval(eventDate != null);
 
-        if (productType == ProductType.BOOKABLE) {
-            Assertion.eval(eventDate != null);
-            return new BookingProduct(id, title, price, passes, eventDate, categories, cancellationPolicy);
-        } else {
-            throw new RuntimeException("Unknown product type");
+        switch (productType) {
+            case BOOKABLE:
+                return new BookingProduct(id, title, price, passes, eventDate, categories, cancellationPolicy);
+            case PARKING:
+                return new ParkingProduct(id, title, price, eventDate);
+            default:
+                Log.e(TAG, "Product (title:" + title + " has unknown product type:" + productType);
+                return null;
         }
     }
 }

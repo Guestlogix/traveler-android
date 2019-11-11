@@ -404,7 +404,18 @@ public class Traveler {
             return;
         }
 
-        AuthenticatedUrlRequest request = Router.productQuestion(localInstance.session, product, passes, localInstance.applicationContext);
+        AuthenticatedUrlRequest request;
+        switch (product.getProductType()) {
+            case BOOKABLE:
+                request = Router.bookingQuestions(localInstance.session, product, passes, localInstance.applicationContext);
+                break;
+            case PARKING:
+                request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
+                break;
+            default:
+                Log.e(TAG, "fetchPurchaseForm called with product of unknown product type:" + product.getProductType());
+                return;
+        }
         AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
                         request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
