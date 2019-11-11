@@ -162,7 +162,7 @@ public class TravelerTest{
             @Override
             public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
                 Assert.assertEquals(productIdReference.reference, item.getId());
-                Assert.assertEquals(productIdReference.reference, itemDetails.getId());
+                Assert.assertEquals(productIdReference.reference, ((BookingItemDetails) itemDetails).getId());
                 Log.v("TravelerTest", "fullIntegrationTest::step7WishlistRemoveCallback::onWishlistRemoveSuccess");
                 Traveler.fetchWishlist(new WishlistQuery(0, 10, new Date(), new Date()), 0, step8WishlistFetchCallback);
             }
@@ -219,7 +219,7 @@ public class TravelerTest{
         WishlistAddCallback step5WishlistAddCallback = new WishlistAddCallback() {
             @Override
             public void onWishlistAddSuccess(Product item, CatalogItemDetails itemDetails) {
-                Assert.assertTrue(productIdReference.reference.equals(itemDetails.getId()));
+                Assert.assertTrue(productIdReference.reference.equals(((BookingItemDetails) itemDetails).getId()));
                 Log.v("TravelerTest", "fullIntegrationTest::step5WishlistAddCallback::onWishlistAddSuccess");
                 // Call chain 6
                 Traveler.fetchWishlist(new WishlistQuery(0, 10, new Date(), new Date()), 0, step6WishlistFetchCallback);
@@ -238,7 +238,7 @@ public class TravelerTest{
             @Override
             public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
                 Assert.assertEquals(productReference.reference.getId(), item.getId());
-                Assert.assertEquals(productReference.reference.getId(), itemDetails.getId());
+                Assert.assertEquals(productReference.reference.getId(), ((BookingItemDetails) itemDetails).getId());
                 Log.v("TravelerTest", "fullIntegrationTest::step4WishlistRemoveCallback::onWishlistRemoveSuccess");
                 // Call chain 5
                 Traveler.addToWishlist(productReference.reference, step5WishlistAddCallback);
@@ -250,7 +250,7 @@ public class TravelerTest{
                 error.printStackTrace();
                 if (error instanceof NetworkTaskError &&
                         ALREADY_WISHLISTED.equals(((NetworkTaskError) error).getCode())) {
-                     expectation.fulfill();
+                    expectation.fulfill();
                 } else {
                     throw error;
                 }
@@ -375,7 +375,7 @@ public class TravelerTest{
             public void onWishlistAddSuccess(Product item, CatalogItemDetails itemDetails) {
                 Log.v("TravelerTest", "wishlistTestAdd::onWishlistToggleSuccess");
                 Assert.assertEquals(KENSINGTON_2H_TOUR_PRODUCT_ID, item.getId());
-                Assert.assertEquals(KENSINGTON_2H_TOUR_PRODUCT_ID, itemDetails.getId());
+                Assert.assertEquals(KENSINGTON_2H_TOUR_PRODUCT_ID, ((BookingItemDetails) itemDetails).getId());
                 expectation.fulfill();
             }
 
