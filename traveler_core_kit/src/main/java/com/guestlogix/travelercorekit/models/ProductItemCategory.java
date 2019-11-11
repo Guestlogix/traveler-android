@@ -5,7 +5,9 @@ public enum ProductItemCategory {
     TOUR("Tour"),
     SHOW("Show"),
     EVENT("Event"),
-    NIGHTLIFE("Nightlife");
+    NIGHTLIFE("Nightlife"),
+    PARKING("Parking"),
+    TRANSFERS("Transfers");
 
     private final String category;
 
@@ -25,9 +27,12 @@ public enum ProductItemCategory {
                 return EVENT;
             case "Nightlife":
                 return NIGHTLIFE;
+            case "Parking":
+                return PARKING;
+            case "transfers":
+                return TRANSFERS;
             default:
                 return null;
-//                throw new IllegalArgumentException("Unknown ProductItemCategory");
         }
     }
 
