@@ -437,7 +437,7 @@ public class Traveler {
 
         ArrayList<PurchaseForm> forms = new ArrayList<>();
         forms.add(purchaseForm);
-        AuthenticatedUrlRequest request = Router.orderCreate(localInstance.session, forms, localInstance.applicationContext);
+        AuthenticatedUrlRequest request = Router.createOrder(localInstance.session, forms, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<Order> createOrderTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
                         request, new Order.OrderMappingFactory());
