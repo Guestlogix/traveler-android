@@ -175,7 +175,7 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
-    public static AuthenticatedUrlRequest orderCreate(Session session, List<PurchaseForm> forms, Context context) {
+    public static AuthenticatedUrlRequest createOrder(Session session, List<PurchaseForm> forms, Context context) {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.POST)
                 .path("/order")
@@ -220,7 +220,7 @@ public class Router {
 
                         return payload;
                     } catch (JSONException e) {
-                        TravelerLog.e("Router.orderCreate() could not create JSONPayloadProvider");
+                        TravelerLog.e("Router.createOrder() could not create JSONPayloadProvider");
                     }
 
                     return null;
