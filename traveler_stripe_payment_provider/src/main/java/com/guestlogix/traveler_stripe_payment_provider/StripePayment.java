@@ -46,6 +46,7 @@ public class StripePayment implements Payment {
         attributes.add(new Attribute("Expiry date",
                 expirationMonth + "/" + expirationYear));
         attributes.add(new Attribute("Brand", brand));
+        attributes.add(new Attribute("LastFourDigits", lastFourDigits));
         return attributes;
     }
 
