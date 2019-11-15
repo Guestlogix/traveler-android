@@ -1,7 +1,7 @@
 package com.guestlogix.traveleruikit.fragments;
 
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,13 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.models.Catalog;
-import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
-import com.guestlogix.traveleruikit.widgets.CatalogWidget;
 
 public class CatalogFragment extends Fragment implements CatalogSearchCallback, RetryFragment.InteractionListener {
     private final static String TAG = "CatalogFragment";
@@ -47,8 +44,22 @@ public class CatalogFragment extends Fragment implements CatalogSearchCallback, 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
-        transactionQueue = new FragmentTransactionQueue(getChildFragmentManager());
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        transactionQueue.setSuspended(true);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (transactionQueue == null) {
+            transactionQueue = new FragmentTransactionQueue(getChildFragmentManager());
+        }
+        transactionQueue.setNewFragmentManager(getChildFragmentManager());
+        transactionQueue.setSuspended(false);
     }
 
     @Override
