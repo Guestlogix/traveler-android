@@ -23,6 +23,7 @@ import com.guestlogix.traveleruikit.TravelerUI;
 import com.guestlogix.traveleruikit.activities.QuestionsActivity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
@@ -105,21 +106,35 @@ public class PartnerOfferingsQuantityFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.btnCheckout).setOnClickListener(v -> Traveler.fetchPurchaseForm(partnerOfferingItem.getItemResource(), lstSelectedPartnerOfferings, new FetchPurchaseFormCallback() {
-            @Override
-            public void onPurchaseFormFetchSuccess(PurchaseForm purchaseForm) {
-                Intent intent = new Intent(getActivity(), QuestionsActivity.class);
-                intent.putExtra(QuestionsActivity.EXTRA_PURCHASE_FORM, purchaseForm);
-                startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
-            }
 
+        view.findViewById(R.id.btnCheckout).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPurchaseFormFetchError(Error error) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage(error.getMessage())
-                        .show();
+            public void onClick(View v) {
+
+                ArrayList<PartnerOffering> lstCheckout = new ArrayList<>();
+                for (PartnerOffering partnerOffering : lstSelectedPartnerOfferings) {
+                    for (int i = 0; i < quantity; i++) {
+                        lstCheckout.add(partnerOffering);
+                    }
+                }
+
+                Traveler.fetchPurchaseForm(partnerOfferingItem.getItemResource(), lstCheckout, new FetchPurchaseFormCallback() {
+                    @Override
+                    public void onPurchaseFormFetchSuccess(PurchaseForm purchaseForm) {
+                        Intent intent = new Intent(getActivity(), QuestionsActivity.class);
+                        intent.putExtra(QuestionsActivity.EXTRA_PURCHASE_FORM, purchaseForm);
+                        startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
+                    }
+
+                    @Override
+                    public void onPurchaseFormFetchError(Error error) {
+                        new AlertDialog.Builder(getContext())
+                                .setMessage(error.getMessage())
+                                .show();
+                    }
+                });
             }
-        }));
+        });
 
         return view;
     }

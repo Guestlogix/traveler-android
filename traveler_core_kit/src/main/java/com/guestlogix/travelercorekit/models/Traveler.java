@@ -349,6 +349,14 @@ public class Traveler {
                         request,
                         new ParkingItemDetails.ParkingItemDetailsObjectMappingFactory());
                 break;
+            case PARTNER_OFFERING:
+                request = Router.partnerOfferingItem(localInstance.session, product, localInstance.applicationContext);
+                catalogItemDetailsTask = new AuthenticatedRemoteNetworkRequestTask<>(
+                        localInstance.session,
+                        localInstance.applicationContext,
+                        request,
+                        new PartnerOfferingItemDetails.PartnerOfferingItemDetailsObjectMappingFactory());
+                break;
         }
 
         AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> finalCatalogItemDetailsTask = catalogItemDetailsTask;
@@ -507,9 +515,7 @@ public class Traveler {
     public static void fetchPurchaseForm(ParkingProduct product, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
         if (!isInitialized()) return;
 
-        AuthenticatedUrlRequest request;
-
-        request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
+        AuthenticatedUrlRequest request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
 
         AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
