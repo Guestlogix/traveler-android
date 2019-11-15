@@ -17,10 +17,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.models.PurchaseForm;
+import com.guestlogix.travelercorekit.callbacks.PaymentsFetchCallback;
 import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.Payment;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.widgets.PurchaseFormWidget;
+import com.guestlogix.traveleruikit.TravelerUI;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
@@ -86,9 +92,26 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
 
     @Override
     public void onOrderCreateSuccess(Order order) {
-        Intent intent = new Intent(this, OrderSummaryActivity.class);
-        intent.putExtra(OrderSummaryActivity.EXTRA_ORDER, order);
-        startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
+        TravelerUI.getPaymentManager().fetchPayments(new PaymentsFetchCallback() {
+            @Override
+            public void onPaymentsFetchSuccess(List<Payment> paymentList) {
+                advanceToSummary(new ArrayList<>(paymentList));
+            }
+
+            @Override
+            public void onPaymentsFetchError(Error error) {
+                // Graceful failure: In case we can't fetch saved payments we still
+                // want to advance the user
+                advanceToSummary(new ArrayList<>());
+            }
+
+            private void advanceToSummary(ArrayList<Payment> payments) {
+                Intent intent = new Intent(QuestionsActivity.this, OrderSummaryActivity.class);
+                intent.putExtra(OrderSummaryActivity.EXTRA_ORDER, order);
+                intent.putExtra(OrderSummaryActivity.EXTRA_PAYMENTS, payments);
+                startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
+            }
+        });
     }
 
     @Override
