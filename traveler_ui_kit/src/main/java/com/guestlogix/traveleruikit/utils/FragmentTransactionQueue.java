@@ -42,4 +42,8 @@ public class FragmentTransactionQueue {
     public FragmentTransaction newTransaction() {
         return manager.beginTransaction();
     }
+
+    public void setNewFragmentManager(FragmentManager fragmentManager) {
+        manager = fragmentManager;
+    }
 }
