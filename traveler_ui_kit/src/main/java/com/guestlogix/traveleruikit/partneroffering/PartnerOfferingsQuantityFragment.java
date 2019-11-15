@@ -108,7 +108,7 @@ public class PartnerOfferingsQuantityFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.btnCheckout).setOnClickListener(v -> Traveler.fetchBookablePurchaseForm(partnerOfferingItem, (List<ProductOffering>) (List<?>) lstSelectedPartnerOfferings, new FetchPurchaseFormCallback() {
+        view.findViewById(R.id.btnCheckout).setOnClickListener(v -> Traveler.fetchPurchaseForm(partnerOfferingItem.getItemResource(), (List<ProductOffering>) (List<?>) lstSelectedPartnerOfferings, new FetchPurchaseFormCallback() {
             @Override
             public void onPurchaseFormFetchSuccess(PurchaseForm purchaseForm) {
                 Intent intent = new Intent(getActivity(), QuestionsActivity.class);

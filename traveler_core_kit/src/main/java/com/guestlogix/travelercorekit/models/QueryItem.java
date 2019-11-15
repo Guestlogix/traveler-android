@@ -9,7 +9,7 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.net.URL;
 
-public class QueryItem implements CatalogItem {
+public class QueryItem implements CatalogItem<SearchQuery> {
     private String title;
     private String subTitle;
     private URL imageURL;
@@ -29,6 +29,7 @@ public class QueryItem implements CatalogItem {
         this.searchQuery = searchQuery;
     }
 
+
     @Override
     public String getTitle() {
         return title;
@@ -44,13 +45,18 @@ public class QueryItem implements CatalogItem {
         return imageURL;
     }
 
+    @Override
+    public SearchQuery getItemResource() {
+        return searchQuery;
+    }
+
     public QueryType getType() {
         return type;
     }
 
-    public SearchQuery getSearchQuery() {
-        return searchQuery;
-    }
+//    public SearchQuery getSearchQuery() {
+//        return searchQuery;
+//    }
 
     static class QueryItemMappingFactory implements ObjectMappingFactory<CatalogItem> {
         @Override

@@ -17,7 +17,7 @@ public class PartnerOffering implements ProductOffering, Serializable {
     private Price price;
     private int availableQuantity;
 
-    PartnerOffering(String id, String name, String description, URL iconUrl, Price price, int availableQuantity) {
+    public PartnerOffering(String id, String name, String description, URL iconUrl, Price price, int availableQuantity) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -3,8 +3,6 @@ package com.guestlogix.travelercorekit.models;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
-import androidx.annotation.NonNull;
-
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
@@ -13,47 +11,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookingItem implements CatalogItem, Product {
-    private String id;
+public class BookingItem implements CatalogItem<BookingProduct> {
     private String title;
     private String subTitle;
     private URL imageURL;
-    private Price price;
-    private ProductType productType;
-    private List<BookingItemCategory> categories;
-    private Coordinate coordinate;
-    private ProviderTranslationAttribution providerTranslationAttribution;
-    private Boolean isAvailable;
-    private Boolean isWishlisted;
+    private BookingProduct bookingProduct;
 
     BookingItem(
-            @NonNull String id,
             String title,
             String subTitle,
             URL imageURL,
-            Price price,
-            ProductType productType,
-            List<BookingItemCategory> categories,
-            Coordinate coordinate,
-            ProviderTranslationAttribution providerTranslationAttribution,
-            boolean isAvailable,
-            boolean isWishlisted) {
-        this.id = id;
+            BookingProduct bookingProduct) {
         this.title = title;
         this.subTitle = subTitle;
         this.imageURL = imageURL;
-        this.price = price;
-        this.productType = productType;
-        this.categories = categories;
-        this.coordinate = coordinate;
-        this.providerTranslationAttribution = providerTranslationAttribution;
-        this.isWishlisted = isWishlisted;
-        this.isAvailable = isAvailable;
-    }
-
-    @Override
-    public String getId() {
-        return id;
+        this.bookingProduct = bookingProduct;
     }
 
     @Override
@@ -72,37 +44,8 @@ public class BookingItem implements CatalogItem, Product {
     }
 
     @Override
-    public Price getPrice() {
-        return price;
-    }
-
-    @Override
-    public ProductType getProductType() {
-        return productType;
-    }
-
-    public List<BookingItemCategory> getCategories() {
-        return categories;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public ProviderTranslationAttribution getProviderTranslationAttribution() {
-        return providerTranslationAttribution;
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public Boolean isWishlisted() {
-        return isWishlisted;
-    }
-
-    void setWishlisted(Boolean wishlisted) {
-        isWishlisted = wishlisted;
+    public BookingProduct getItemResource() {
+        return bookingProduct;
     }
 
     static class BookingItemObjectMappingFactory implements ObjectMappingFactory<BookingItem> {
@@ -189,17 +132,16 @@ public class BookingItem implements CatalogItem, Product {
             Assertion.eval(categories != null);
 
             return new BookingItem(
-                    id,
                     title,
                     subTitle,
                     thumbnail,
-                    price,
-                    productType,
-                    categories,
-                    coordinate,
-                    providerTranslationAttribution,
-                    isAvailable,
-                    isWishlisted);
+                    new BookingProduct(id, title, price,
+                            productType,
+                            categories,
+                            coordinate,
+                            providerTranslationAttribution,
+                            isAvailable,
+                            isWishlisted));
         }
     }
 }

@@ -66,7 +66,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
         transaction.replace(R.id.booking_item_details_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
-        Traveler.fetchProductDetails(bookingItem, this);
+        Traveler.fetchProductDetails(bookingItem.getItemResource(), this);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
 
         // ActionStrip
 
-        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(bookingItem);
+        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(bookingItem.getItemResource());
         FragmentTransaction stripTransaction = transactionQueue.newTransaction();
         transaction.replace(R.id.actionStripContainerFrameLayout, stripContainerFragment);
         transactionQueue.addTransaction(stripTransaction);

@@ -29,11 +29,11 @@
         <activity android:name=".activities.TermsAndConditionsActivity"/>
         <activity android:name=".activities.BookingSearchActivity"/>
         <activity android:name=".activities.BookingSearchResultActivity"/>
-        <activity android:name=".activities.ParkingActivity"/>
-        <activity android:name=".activities.FindParkingActivity"/>
         <activity android:name=".partneroffering.PartnerOfferingActivity"/>
         <activity android:name=".partneroffering.PartnerOfferingSelectionActivity"/>
         <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"/>
+        <activity android:name=".activities.ParkingActivity"/>
+        <activity android:name=".activities.FindParkingActivity"/>
     </application>
 
 </manifest>

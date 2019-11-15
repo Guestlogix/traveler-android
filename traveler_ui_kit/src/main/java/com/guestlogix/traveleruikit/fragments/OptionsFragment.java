@@ -35,7 +35,7 @@ public class OptionsFragment extends Fragment implements RadioAdapter.Listener, 
     public static String ARG_AVAILABILITY = "ARG_AVAILABILITY";
 
     private ActionStrip actionStrip;
-    private Product product;
+    private BookingProduct bookingProduct;
 
     public static OptionsFragment getInstance(Product product, Availability availability) {
         OptionsFragment fragment = new OptionsFragment();
@@ -59,7 +59,7 @@ public class OptionsFragment extends Fragment implements RadioAdapter.Listener, 
         }
 
         Availability availability = (Availability) args.get(ARG_AVAILABILITY);
-        product = (Product) args.get(ARG_PRODUCT);
+        bookingProduct = (BookingProduct) args.get(ARG_PRODUCT);
 
         if (availability.getBookingOptionSet() == null) {
             Log.e(TAG, "Availability doesn't have a BookingOptionSet");
@@ -75,7 +75,7 @@ public class OptionsFragment extends Fragment implements RadioAdapter.Listener, 
         actionStrip = view.findViewById(R.id.actionStrip_optionsFragment);
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
-        String localizedPrice = String.format(Locale.getDefault(), getContext().getString(R.string.label_price_per_person), product.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+        String localizedPrice = String.format(Locale.getDefault(), getContext().getString(R.string.label_price_per_person), bookingProduct.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
         actionStrip.setValue(localizedPrice);
         actionStrip.setActionOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +83,7 @@ public class OptionsFragment extends Fragment implements RadioAdapter.Listener, 
                 actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
 
                 BookingOption bookingOption = availability.getBookingOptionSet().getOptions().get(adapter.getSelectedIndex());
-                Traveler.fetchPasses(product, availability, bookingOption, OptionsFragment.this);
+                Traveler.fetchPasses(bookingProduct, availability, bookingOption, OptionsFragment.this);
             }
         });
 
@@ -117,7 +117,7 @@ public class OptionsFragment extends Fragment implements RadioAdapter.Listener, 
 
         Intent intent = new Intent(this.getContext(), PassSelectionActivity.class);
         intent.putExtra(PassSelectionActivity.EXTRA_PASSES, new ArrayList<>(pass));
-        intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, product);
+        intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, bookingProduct);
         startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
     }
 

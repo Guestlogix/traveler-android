@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.ProductType;
 import com.guestlogix.travelercorekit.models.Receipt;
 import com.guestlogix.traveleruikit.R;
 

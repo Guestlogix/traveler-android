@@ -65,7 +65,7 @@ public class ParkingItemDetailsActivity extends AppCompatActivity implements
         transaction.replace(R.id.parking_item_details_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
-        Traveler.fetchProductDetails(parkingItem, this);
+        Traveler.fetchProductDetails(parkingItem.getItemResource(), this);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ParkingItemDetailsActivity extends AppCompatActivity implements
         transaction.replace(R.id.parking_item_details_container, fragment);
         transactionQueue.addTransaction(transaction);
 
-        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(parkingItem);
+        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(parkingItem.getItemResource());
         FragmentTransaction stripTransaction = transactionQueue.newTransaction();
         transaction.replace(R.id.actionStripContainerFrameLayout, stripContainerFragment);
         transactionQueue.addTransaction(stripTransaction);

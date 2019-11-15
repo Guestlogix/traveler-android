@@ -18,7 +18,6 @@ import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.PartnerOfferingItem;
 import com.guestlogix.travelercorekit.models.QueryItem;
-import com.guestlogix.travelercorekit.models.QueryType;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
 import com.guestlogix.traveleruikit.activities.BookingSearchActivity;
@@ -81,7 +80,7 @@ public class CatalogResultFragment extends Fragment implements CatalogSectionAda
             switch (queryItem.getType()){
                 case BOOKING:
                     Intent searchIntent = new Intent(getContext(), BookingSearchActivity.class);
-                    searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getSearchQuery());
+                    searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getItemResource());
                     startActivity(searchIntent);
                     break;
                 case PARKING:
