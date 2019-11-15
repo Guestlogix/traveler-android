@@ -15,6 +15,7 @@ import com.guestlogix.travelercorekit.callbacks.CancellationCallback;
 import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
+import com.guestlogix.travelercorekit.callbacks.EphemeralKeyFetchCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchAvailabilitiesCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
@@ -800,6 +801,32 @@ public class Traveler {
 
         localInstance.taskManager.addTask(fetchTask);
         localInstance.orderSerialTaskManager.addTask(mergeTask);
+        TaskManager.getMainTaskManager().addTask(blockTask);
+    }
+
+    public static void fetchEphemeralStripeCustomerKey(String version, EphemeralKeyFetchCallback callback) {
+        if (!isInitialized()) return;
+        if (localInstance.session.getIdentity() == null) {
+            callback.onEphemeralKeyError(new EphemeralKeyError(EphemeralKeyError.Code.UNIDENTIFIED_TRAVELER));
+            return;
+        }
+
+        AuthenticatedUrlRequest request = Router.stripeEphemeralKey(version, localInstance.session.getIdentity(), localInstance.session, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<EphemeralKey> fetchTask = new AuthenticatedRemoteNetworkRequestTask(localInstance.session, localInstance.applicationContext, request, new EphemeralKey.EphemeralKeyObjectMappingFactory());
+        BlockTask blockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (fetchTask.getError() != null) {
+                    callback.onEphemeralKeyError(fetchTask.getError());
+                } else {
+                    callback.onEphemeralKeyFetchSuccess(fetchTask.getResource());
+                }
+            }
+        };
+
+        blockTask.addDependency(fetchTask);
+
+        localInstance.taskManager.addTask(fetchTask);
         TaskManager.getMainTaskManager().addTask(blockTask);
     }
 }

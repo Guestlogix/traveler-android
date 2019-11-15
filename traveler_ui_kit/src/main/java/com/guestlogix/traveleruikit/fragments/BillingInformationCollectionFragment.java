@@ -40,7 +40,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     private Button addCardBtn;
 
     // Data
-    private List<Payment> payments;
+    private ArrayList<Payment> payments;
 
     public BillingInformationCollectionFragment() {
         // Do nothing
@@ -52,7 +52,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         this.payments = new ArrayList<>();
 
         if (null != savedInstanceState && savedInstanceState.containsKey(BUNDLE_PAYMENT)) {
-            this.payments.add((Payment) savedInstanceState.getSerializable(BUNDLE_PAYMENT));
+            this.payments = (ArrayList<Payment>) savedInstanceState.getSerializable(BUNDLE_PAYMENT);
         }
     }
 
@@ -86,16 +86,24 @@ public class BillingInformationCollectionFragment extends BaseFragment {
             if (extras != null && extras.containsKey("RESULT_INTENT_EXTRA_PAYMENT_KEY")) {
                 Payment payment = (Payment) extras.getSerializable("RESULT_INTENT_EXTRA_PAYMENT_KEY");
 
-                if (onPaymentMethodChangeListener != null) {
-                    onPaymentMethodChangeListener.onPaymentAdded(payment);
-                }
-
-                payments.clear();
                 payments.add(payment);
                 addCardBtn.setVisibility(View.GONE);
 
                 adapter.notifyDataSetChanged();
+
+                setSelectedPayment(payment);
             }
+        }
+    }
+
+    public void setPayments(ArrayList<Payment> payments) {
+        this.payments = payments;
+        adapter.notifyDataSetChanged();
+    }
+
+    private void setSelectedPayment(Payment payment) {
+        if (onPaymentMethodChangeListener != null) {
+            onPaymentMethodChangeListener.onPaymentSelected(payment);
         }
     }
 
@@ -108,7 +116,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         this.onPaymentMethodChangeListener = l;
 
         if (l != null && !payments.isEmpty()) {
-            l.onPaymentAdded(payments.get(0));
+            setSelectedPayment(payments.get(0));
         }
     }
 
@@ -130,7 +138,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
         super.onSaveInstanceState(outState);
 
         if (!payments.isEmpty()) {
-            outState.putSerializable(BUNDLE_PAYMENT, payments.get(0)); // Only one for now
+            outState.putSerializable(BUNDLE_PAYMENT, payments); // Only one for now
         }
     }
 
@@ -138,19 +146,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
      * Callback interface for payment change events
      */
     public interface OnPaymentMethodChangeListener {
-        /**
-         * Invoked whenever a new payment method was added.
-         *
-         * @param payment Object which was added
-         */
-        void onPaymentAdded(Payment payment);
-
-        /**
-         * Invoked whenever a payment method is deleted.
-         *
-         * @param payment the payment method which was deleted
-         */
-        void onPaymentRemoved(Payment payment);
+        void onPaymentSelected(Payment payment);
     }
 
     private void onAddPaymentButtonClick(View _button) {
@@ -162,6 +158,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     }
 
     private class PaymentsAdapter extends RecyclerView.Adapter<PaymentsAdapter.ViewHolder> {
+        private int selectedIndex = -1;
 
         @NonNull
         @Override
@@ -179,11 +176,21 @@ public class BillingInformationCollectionFragment extends BaseFragment {
             holder.label.setText(a.getLabel());
             holder.value.setText(a.getValue());
             holder.delete.setTag(position);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedIndex = position;
+
+                    adapter.notifyDataSetChanged();
+
+                    setSelectedPayment(payment);
+                }
+            });
 
             holder.delete.setOnClickListener(v -> {
                 int pos = (Integer) v.getTag();
-                onPaymentMethodChangeListener.onPaymentRemoved(payments.remove(pos));
                 notifyDataSetChanged();
+                setSelectedPayment(null);
                 addCardBtn.setVisibility(View.VISIBLE);
             });
         }

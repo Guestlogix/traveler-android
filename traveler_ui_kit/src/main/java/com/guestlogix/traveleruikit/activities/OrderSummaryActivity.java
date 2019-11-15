@@ -28,6 +28,8 @@ import com.guestlogix.traveleruikit.fragments.BillingInformationCollectionFragme
 import com.guestlogix.traveleruikit.fragments.ProductSummaryFragment;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
+import java.util.List;
+
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.ARG_RECEIPT;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
@@ -39,8 +41,10 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
     private static final String TAG = "OrderSummaryActivity";
     public static final String EXTRA_ORDER = "ORDER_SUMMARY_ACTIVITY_EXTRA_ORDER";
+    public static final String EXTRA_PAYMENTS = "ORDER_SUMMARY_ACTIVITY_EXTRA_PAYMENTS";
     public static final int CARD_REQUEST = 233;
 
+    private List<Payment> paymentList;
     private ActionStrip actionStrip;
     private Payment payment;
     private Order order;
@@ -166,15 +170,12 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPaymentAdded(Payment payment) {
+    public void onPaymentSelected(Payment payment) {
         this.payment = payment;
-        actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
-    }
 
-    @Override
-    public void onPaymentRemoved(Payment payment) {
-        if (this.payment == payment) {
-            this.payment = null;
+        if (payment != null) {
+            actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
+        } else {
             actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
         }
     }

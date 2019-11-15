@@ -344,6 +344,15 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
+    public static AuthenticatedUrlRequest stripeEphemeralKey(String version, String travelerId, Session session, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/traveler/" + travelerId + "/stripeEphemeralKey")
+                .param("api-version", version);
+
+        return routeBuilder.build(session.getToken());
+    }
+
     private static class RouteBuilder {
         private static String travelerSDKEndpoint = null;
         private static boolean isSandboxMode = false;

@@ -3,6 +3,7 @@ package com.guestlogix.traveler.application;
 import android.app.Application;
 
 import com.guestlogix.traveler.BuildConfig;
+import com.guestlogix.traveler_stripe_payment_provider.StripePaymentManager;
 import com.guestlogix.traveler_stripe_payment_provider.StripePaymentProvider;
 import com.guestlogix.travelercorekit.models.Currency;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -15,6 +16,6 @@ public class TravelerApplication extends Application {
         super.onCreate();
 
         Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext());
-        TravelerUI.initialize(new StripePaymentProvider(), Currency.USD);
+        TravelerUI.initialize(new StripePaymentProvider(), new StripePaymentManager(getApplicationContext()), Currency.USD);
     }
 }
