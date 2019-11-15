@@ -18,6 +18,7 @@ public class StripePayment implements Payment {
     private String lastFourDigits;
     private String expirationMonth;
     private String expirationYear;
+    private String brand;
 
     StripePayment(PaymentMethod paymentMethod) throws IllegalArgumentException {
         if (paymentMethod.card == null)
@@ -31,6 +32,7 @@ public class StripePayment implements Payment {
         expirationYear = paymentMethod.card.expiryYear.toString();
         lastFourDigits = paymentMethod.card.last4;
         paymentMethodId = paymentMethod.id;
+        brand = paymentMethod.card.brand;
     }
 
     public String getPaymentMethodId() {
@@ -43,6 +45,8 @@ public class StripePayment implements Payment {
         attributes.add(new Attribute("Credit card number", lastFourDigits));
         attributes.add(new Attribute("Expiry date",
                 expirationMonth + "/" + expirationYear));
+        attributes.add(new Attribute("Brand", brand));
+        attributes.add(new Attribute("LastFourDigits", lastFourDigits));
         return attributes;
     }
 
