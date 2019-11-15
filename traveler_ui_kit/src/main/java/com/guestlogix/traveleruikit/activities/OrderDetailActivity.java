@@ -14,18 +14,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
 import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
-import com.guestlogix.travelercorekit.models.BookingProduct;
+import com.guestlogix.travelercorekit.models.PurchasedBookingProduct;
 import com.guestlogix.travelercorekit.models.CancellationQuote;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderStatus;
-import com.guestlogix.travelercorekit.models.PartnerOfferingProduct;
+import com.guestlogix.travelercorekit.models.PurchasedPartnerOfferingProduct;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 
-import static com.guestlogix.travelercorekit.models.BookingProduct.CANCELLATION_POLICY_NON_REFUNDABLE;
+import static com.guestlogix.travelercorekit.models.PurchasedBookingProduct.CANCELLATION_POLICY_NON_REFUNDABLE;
 
 public class OrderDetailActivity extends AppCompatActivity implements CancellationQuoteCallback, EmailOrderConfirmationCallback {
     public static String ARG_ORDER = "ARG_ORDER";
@@ -67,27 +67,27 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
 
             productTitleTextView.setText(product.getTitle());
 
-            if (product instanceof BookingProduct) {
-                BookingProduct bookingProduct = (BookingProduct) product;
-                String date = DateHelper.formatToMonthDayYear(bookingProduct.getEventDate());
-                String dateTime = date + "\n" + DateHelper.formatTime(bookingProduct.getEventDate());
+            if (product instanceof PurchasedBookingProduct) {
+                PurchasedBookingProduct purchasedBookingProduct = (PurchasedBookingProduct) product;
+                String date = DateHelper.formatToMonthDayYear(purchasedBookingProduct.getEventDate());
+                String dateTime = date + "\n" + DateHelper.formatTime(purchasedBookingProduct.getEventDate());
 
                 productDateTextView.setText(dateTime);
 
-                productPriceTextView.setText(bookingProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
+                productPriceTextView.setText(purchasedBookingProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
 
-                boolean isRefundable = !CANCELLATION_POLICY_NON_REFUNDABLE.equals(bookingProduct.getCancellationPolicy());
+                boolean isRefundable = !CANCELLATION_POLICY_NON_REFUNDABLE.equals(purchasedBookingProduct.getCancellationPolicy());
                 cancelButton.setEnabled(isRefundable);
                 cancelButton.setText(isRefundable ? R.string.cancel_order : R.string.non_refundable);
-            } else if(product instanceof PartnerOfferingProduct)
+            } else if(product instanceof PurchasedPartnerOfferingProduct)
             {
-                PartnerOfferingProduct partnerOfferingProduct = (PartnerOfferingProduct) product;
+                PurchasedPartnerOfferingProduct purchasedPartnerOfferingProduct = (PurchasedPartnerOfferingProduct) product;
 
-                productPriceTextView.setText(partnerOfferingProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
+                productPriceTextView.setText(purchasedPartnerOfferingProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
 
                 productDateTextView.setText("");
 
-                boolean isRefundable = !CANCELLATION_POLICY_NON_REFUNDABLE.equals(partnerOfferingProduct.getCancellationPolicy());
+                boolean isRefundable = !CANCELLATION_POLICY_NON_REFUNDABLE.equals(purchasedPartnerOfferingProduct.getCancellationPolicy());
                 cancelButton.setEnabled(isRefundable);
                 cancelButton.setText(isRefundable ? R.string.cancel_order : R.string.non_refundable);
             }
@@ -95,7 +95,7 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
             productView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(product instanceof PartnerOfferingProduct)
+                    if(product instanceof PurchasedPartnerOfferingProduct)
                     {
                         return;
                     }

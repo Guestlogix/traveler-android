@@ -1,7 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 public enum CatalogItemType {
-    ITEM, QUERY;
+    ITEM, QUERY, UNKNOWN;
 
     public static CatalogItemType fromString(String value) throws IllegalArgumentException {
         switch (value) {
@@ -10,7 +10,7 @@ public enum CatalogItemType {
             case "Query":
                 return QUERY;
             default:
-                throw new IllegalArgumentException("Unknown CatalogItemType");
+                return UNKNOWN;
         }
     }
 }

@@ -1,9 +1,8 @@
 package com.guestlogix.travelercorekit.utilities;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,18 +14,15 @@ public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
     }
 
     @Override
-    public List<T> instantiate(JsonReader reader) throws Exception {
-        List<T> objects = new ArrayList<>();
+    public List<T> instantiate(String jsonString) throws Exception {
+        JSONArray jsonArray = new JSONArray(jsonString);
+        List<T> resultList = new ArrayList<>();
 
-        reader.beginArray();
-
-        while (reader.hasNext()) {
-            T model = objectMappingFactory.instantiate(reader);
-            objects.add(model);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject item = jsonArray.getJSONObject(i);
+            resultList.add(objectMappingFactory.instantiate(item.toString()));
         }
 
-        reader.endArray();
-
-        return objects;
+        return resultList;
     }
 }

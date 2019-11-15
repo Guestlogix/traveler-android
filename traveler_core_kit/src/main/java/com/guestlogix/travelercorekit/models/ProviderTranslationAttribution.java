@@ -1,9 +1,8 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -28,44 +27,16 @@ public class ProviderTranslationAttribution implements Serializable {
     static class ProviderTranslationAttributionObjectMappingFactory implements ObjectMappingFactory<ProviderTranslationAttribution> {
 
         @Override
-        public ProviderTranslationAttribution instantiate(JsonReader reader) throws Exception {
+        public ProviderTranslationAttribution instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
             URL image = null;
+            if (!jsonObject.isNull( "image"))
+                image = new URL(jsonObject.getString( "image"));
+
             URL link = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-                JsonToken token;
-
-                switch (key) {
-                    case "imageLink":
-                        token = reader.peek();
-
-                        if (token == JsonToken.NULL) {
-                            reader.skipValue();
-                            break;
-                        }
-
-                        image = new URL(reader.nextString());
-                        break;
-                    case "translationLink":
-                        token = reader.peek();
-
-                        if (token == JsonToken.NULL) {
-                            reader.skipValue();
-                            break;
-                        }
-
-                        link = new URL(reader.nextString());
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            if (!jsonObject.isNull( "link"))
+                link = new URL(jsonObject.getString( "link"));
 
             return new ProviderTranslationAttribution(image, link);
         }

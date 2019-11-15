@@ -70,6 +70,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
             EditUrlPreference editUrlPreference = (EditUrlPreference) preference;
             // check if dialog is already showing
+            //TODO: change getFragmentManager(). its a deprecated api
             if (getFragmentManager() != null && getFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
                 return;
             }

@@ -1,11 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import androidx.annotation.NonNull;
 
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 
@@ -34,32 +34,12 @@ public class CancellationReason implements Serializable {
 
     static class CancellationReasonsObjectMappingFactory implements ObjectMappingFactory<CancellationReason> {
         @Override
-        public CancellationReason instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String value = null;
-            boolean explanationRequired = false;
+        public CancellationReason instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "value":
-                        value = reader.nextString();
-                        break;
-                    case "explanationRequired":
-                        explanationRequired = reader.nextBoolean();
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-            reader.endObject();
+            String id = jsonObject.getString("id");
+            String value = jsonObject.getString("value");
+            boolean explanationRequired = jsonObject.getBoolean("explanationRequired");
 
             Assertion.eval(id != null);
             Assertion.eval(value != null);

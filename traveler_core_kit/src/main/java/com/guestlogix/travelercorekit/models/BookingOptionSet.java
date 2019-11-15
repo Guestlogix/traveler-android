@@ -1,11 +1,13 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -30,28 +32,11 @@ public class BookingOptionSet implements Serializable {
     static class BookingOptionSetObjectMappingFactory implements ObjectMappingFactory<BookingOptionSet> {
 
         @Override
-        public BookingOptionSet instantiate(JsonReader reader) throws Exception {
-            String label = null;
-            List<BookingOption> options = null;
+        public BookingOptionSet instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "optionSetLabel":
-                        label = reader.nextString();
-                        break;
-                    case "options":
-                        options = new ArrayMappingFactory<>(new BookingOption.BookingOptionObjectMappingFactory()).instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                }
-            }
-
-            reader.endObject();
+            String label = jsonObject.getString("optionSetLabel");
+            List<BookingOption> options = new ArrayMappingFactory<>(new BookingOption.BookingOptionObjectMappingFactory()).instantiate(jsonObject.getJSONArray("options").toString());
 
             Assertion.eval(label != null);
             Assertion.eval(options != null);

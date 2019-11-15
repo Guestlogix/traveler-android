@@ -1,11 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
 
 public class Location implements Serializable {
@@ -33,32 +34,12 @@ public class Location implements Serializable {
 
     static class LocationObjectMappingFactory implements ObjectMappingFactory<Location> {
         @Override
-        public Location instantiate(JsonReader reader) throws Exception {
-            String address = null;
-            Double latitude = null;
-            Double longitude = null;
+        public Location instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            String address = jsonObject.getString("address");
+            Double latitude = jsonObject.getDouble("latitude");
+            Double longitude = jsonObject.getDouble("longitude");
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "address":
-                        address = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "latitude":
-                        latitude = reader.nextDouble();
-                        break;
-                    case "longitude":
-                        longitude = reader.nextDouble();
-                        break;
-                    default:
-                        reader.skipValue();
-                }
-            }
-
-            reader.endObject();
 
             Assertion.eval(address != null);
             Assertion.eval(latitude != null);

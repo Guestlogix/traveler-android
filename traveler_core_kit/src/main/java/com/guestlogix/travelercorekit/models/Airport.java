@@ -1,11 +1,13 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
+
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
-import java.sql.Time;
-import java.time.ZoneOffset;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -34,57 +36,38 @@ public class Airport implements Serializable {
         return city;
     }
 
-    public TimeZone getTimeZone() { return timeZone; }
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
 
     static class AirportObjectMappingFactory implements ObjectMappingFactory<Airport> {
         @Override
-        public Airport instantiate(JsonReader reader) throws Exception {
-            String name = null;
-            String code = null;
-            String city = null;
-            TimeZone timeZone = null;
+        public Airport instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
+            String name = jsonObject.getString("name");
+            String code = jsonObject.getString("iata");
+            String city = jsonObject.getString("city");
 
-            while (reader.hasNext()) {
-                String key = reader.nextName();
 
-                switch (key) {
-                    case "name":
-                        name = reader.nextString();
-                        break;
-                    case "iata":
-                        code = reader.nextString();
-                        break;
-                    case "city":
-                        city = reader.nextString();
-                        break;
-                    case "utcOffsetHours":
-                        // Java 7 and below can only use custom ids for timezones or specific identifiers
-                        // like 'America/NewYork'
-                        // Custom ids are of the format `GMT(+-)HHmm`
-                        // Since the API is returning a double representing the hour offset for that specific
-                        // timezone, below we translate that value into a custom id so we can accurately generate
-                        // a TimeZone object for the Airport.
-                        // TimeZone for Airport is valuable because it allows flight times to be presented in the
-                        // local time of the respective airports.
-                        
-                        double offsetInHours = reader.nextDouble();
-                        int sign = (int) Math.signum(offsetInHours);
-                        int offsetInMinutes = (int) Math.abs(offsetInHours * 60);
-                        int hoursPortion = offsetInMinutes / 60;
-                        int minutesPortion = offsetInMinutes % 60;
-                        int offsetValue = sign * ((hoursPortion * 100) + minutesPortion);
-                        String customID = String.format(Locale.US, "GMT%+d", offsetValue);
-                        timeZone = TimeZone.getTimeZone(customID);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
+            // Java 7 and below can only use custom ids for timezones or specific identifiers
+            // like 'America/NewYork'
+            // Custom ids are of the format `GMT(+-)HHmm`
+            // Since the API is returning a double representing the hour offset for that specific
+            // timezone, below we translate that value into a custom id so we can accurately generate
+            // a TimeZone object for the Airport.
+            // TimeZone for Airport is valuable because it allows flight times to be presented in the
+            // local time of the respective airports.
 
-            reader.endObject();
+            double offsetInHours = jsonObject.getDouble("utcOffsetHours");
+            int sign = (int) Math.signum(offsetInHours);
+            int offsetInMinutes = (int) Math.abs(offsetInHours * 60);
+            int hoursPortion = offsetInMinutes / 60;
+            int minutesPortion = offsetInMinutes % 60;
+            int offsetValue = sign * ((hoursPortion * 100) + minutesPortion);
+            String customID = String.format(Locale.US, "GMT%+d", offsetValue);
+            TimeZone timeZone = TimeZone.getTimeZone(customID);
+
 
             Assertion.eval(name != null);
             Assertion.eval(code != null);

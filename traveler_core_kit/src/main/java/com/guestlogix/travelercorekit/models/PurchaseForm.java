@@ -17,15 +17,14 @@ import java.util.Map;
  */
 public class PurchaseForm implements Serializable {
     private Product product;
-    //TODO: this is not OOP. some one can send a pass as productOffering for partner offering purchase form which is wrong. we should have 3 separate purchase form :"( please fix this
-    private List<ProductOffering> productOfferings;
+    List<PurchasePass> purchasePasses;
     private List<QuestionGroup> questionGroups;
     private Map<String, Answer> answers;
 
     private HashSet<String> questionIds;
 
-    PurchaseForm(Product product, List<ProductOffering> productOfferings, List<QuestionGroup> questionGroups) {
-        this.productOfferings = productOfferings;
+    PurchaseForm(Product product, List<PurchasePass> purchasePasses, List<QuestionGroup> questionGroups) {
+        this.purchasePasses = purchasePasses;
         this.questionGroups = questionGroups;
         this.product = product;
 
@@ -90,8 +89,8 @@ public class PurchaseForm implements Serializable {
      *
      * @return list of productOfferings
      */
-    public List<ProductOffering> getProductOfferings() {
-        return this.productOfferings;
+    public List<PurchasePass> getProductOfferings() {
+        return this.purchasePasses;
     }
 
     /**

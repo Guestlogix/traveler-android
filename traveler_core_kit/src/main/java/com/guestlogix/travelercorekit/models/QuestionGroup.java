@@ -1,11 +1,13 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -34,32 +36,12 @@ public class QuestionGroup implements Serializable {
 
     static class QuestionGroupObjectMappingFactory implements ObjectMappingFactory<QuestionGroup> {
         @Override
-        public QuestionGroup instantiate(JsonReader reader) throws Exception {
-            String title = null;
-            String disclaimer = null;
-            List<Question> questions = null;
+        public QuestionGroup instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "title":
-                        title = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "description":
-                        disclaimer = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "questions":
-                        questions = new ArrayMappingFactory<>(new Question.QuestionObjectMappingFactory()).instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                }
-            }
-
-            reader.endObject();
+            String title = jsonObject.getNullableString("title");
+            String disclaimer = jsonObject.getNullableString("subTitle");
+            List<Question> questions = new ArrayMappingFactory<>(new Question.QuestionObjectMappingFactory()).instantiate(jsonObject.getJSONArray("questions").toString());
 
             Assertion.eval(questions != null);
 

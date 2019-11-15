@@ -1,7 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 public enum ProductType {
-    BOOKABLE, PARKING, PARTNER_OFFERING;
+    BOOKABLE, PARKING, PARTNER_OFFERING, UNKNOWN;
 
     public static ProductType fromString(String value) throws IllegalArgumentException {
         switch (value) {
@@ -12,7 +12,7 @@ public enum ProductType {
             case "Menu":
                 return PARTNER_OFFERING;
             default:
-                throw new IllegalArgumentException("Unknown ProductType: " + value);
+                return UNKNOWN;
         }
     }
 }

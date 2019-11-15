@@ -1,14 +1,15 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -74,45 +75,15 @@ public class Flight implements Serializable {
 
     static class FlightObjectMappingFactory implements ObjectMappingFactory<Flight> {
         @Override
-        public Flight instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String number = null;
-            Airport origin = null;
-            Airport destination = null;
-            String departureDateString = null;
-            String arrivalDateString = null;
+        public Flight instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "flightNumber":
-                        number = reader.nextString();
-                        break;
-                    case "origin":
-                        origin = new Airport.AirportObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "destination":
-                        destination = new Airport.AirportObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "departureTime":
-                        departureDateString = reader.nextString();
-                        break;
-                    case "arrivalTime":
-                        arrivalDateString = reader.nextString();
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String id = jsonObject.getString("id");
+            String number = jsonObject.getString("flightNumber");
+            Airport origin = new Airport.AirportObjectMappingFactory().instantiate(jsonObject.getJSONObject("origin").toString());
+            Airport destination = new Airport.AirportObjectMappingFactory().instantiate(jsonObject.getJSONObject("destination").toString());
+            String departureDateString = jsonObject.getString("departureTime");
+            String arrivalDateString = jsonObject.getString("arrivalTime");
 
             Assertion.eval(origin != null);
             Assertion.eval(destination != null);

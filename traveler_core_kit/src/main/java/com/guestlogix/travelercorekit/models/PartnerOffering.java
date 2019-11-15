@@ -1,15 +1,15 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-//TODO: this model hierarchy makes no sense change this. why do we need to have the same interface for booking passes and product offerigns ??? they are two totally different entity
-public class PartnerOffering implements ProductOffering, Serializable {
+public class PartnerOffering implements Serializable {
     private String id;
     private String name;
     private String description;
@@ -34,7 +34,6 @@ public class PartnerOffering implements ProductOffering, Serializable {
         return name;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
@@ -51,47 +50,30 @@ public class PartnerOffering implements ProductOffering, Serializable {
         return availableQuantity;
     }
 
+    public PurchasePass toPurchasePass() {
+        return new PurchasePass(id, name, description, price);
+    }
+
+    //TODO: this must be fixed. we need to remove passes from purchase form and send purchase form along wih passes to order api instead.
+    static List<PurchasePass> toPurchasePassList(List<PartnerOffering> partnerOfferings) {
+        List<PurchasePass> purchasePasses = new ArrayList<>();
+        for (PartnerOffering partnerOffering : partnerOfferings) {
+            purchasePasses.add(partnerOffering.toPurchasePass());
+        }
+        return purchasePasses;
+    }
+
     public static class PartnerOfferingObjectMappingFactory implements com.guestlogix.travelercorekit.utilities.ObjectMappingFactory<PartnerOffering> {
         @Override
-        public PartnerOffering instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String name = null;
-            String description = null;
-            String iconUrlString = null;
-            Price price = null;
-            Integer availableQuantity = null;
+        public PartnerOffering instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "name":
-                        name = reader.nextString();
-                        break;
-                    case "description":
-                        description = reader.nextString();
-                        break;
-                    case "image":
-                        iconUrlString = reader.nextString();
-                        break;
-                    case "price":
-                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "availableQuantity":
-                        availableQuantity = reader.nextInt();
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String id = jsonObject.getString("id");
+            String name = jsonObject.getString("name");
+            String description = jsonObject.getString("description");
+            String iconUrlString = jsonObject.getString("image");
+            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("price").toString());
+            Integer availableQuantity = jsonObject.getInt("availableQuantity");
 
             Assertion.eval(id != null);
             Assertion.eval(name != null);

@@ -1,9 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,34 +34,15 @@ public class Facets implements Serializable {
 
     static class FacetsObjectMappingFactory implements ObjectMappingFactory<Facets> {
         @Override
-        public Facets instantiate(JsonReader reader) throws Exception {
-            PriceLimits priceLimits = null;
-            Price minPrice = null;
-            Price maxPrice = null;
-            List<CategoryFacet> categories = null;
+        public Facets instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
+            PriceLimits priceLimits = new PriceLimits.PriceLimitsObjectMappingFactory()
+                    .instantiate(jsonObject.getJSONObject("price").toString());
+            Price minPrice = priceLimits.getMin();
+            Price maxPrice = priceLimits.getMax();
 
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "price":
-                        priceLimits = new PriceLimits.PriceLimitsObjectMappingFactory()
-                                .instantiate(reader);
-                        minPrice = priceLimits.getMin();
-                        maxPrice = priceLimits.getMax();
-                        break;
-                    case "categories":
-                        categories = new ArrayMappingFactory<>(new CategoryFacet.CategoryFacetObjectMappingFactory()).instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            List<CategoryFacet> categories = new ArrayMappingFactory<>(new CategoryFacet.CategoryFacetObjectMappingFactory()).instantiate(jsonObject.getJSONArray("categories").toString());
 
             return new Facets(minPrice, maxPrice, categories);
         }

@@ -38,7 +38,7 @@ import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 /**
- * Activity which lets the user select an arbitrary amount of Passes for a particular product.
+ * Activity which lets the user select an arbitrary amount of Passes for a particular bookingProduct.
  * <p>
  * Requires a <code>List&lt;Pass&gt;</code> object passes as "EXTRA_PASS_ACTIVITY_PASSES" extra and a <code>Product</code> object
  * passed as "EXTRA_PASS_ACTIVITY_PRODUCT". If either of those is null or missing the activity will finish with no result!
@@ -62,7 +62,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
     // Data
     private List<Pass> passes;
-    private Product product;
+    private BookingProduct bookingProduct;
     private Map<Pass, Integer> passQuantities;
     private String flavourTitle;
 
@@ -77,22 +77,22 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_PASSES) && savedInstanceState.containsKey(EXTRA_PRODUCT)) {
             passes = (List<Pass>) savedInstanceState.getSerializable(EXTRA_PASSES);
-            product = (Product) savedInstanceState.getSerializable(EXTRA_PRODUCT);
+            bookingProduct = (BookingProduct) savedInstanceState.getSerializable(EXTRA_PRODUCT);
             //flavourTitle = (String) savedInstanceState.getSerializable(EXTRA_FLAVOUR);
         }
 
-        if (passes == null || product == null) {
+        if (passes == null || bookingProduct == null) {
             // Attempt to read them from intent.
             Bundle extras = getIntent().getExtras();
 
             if (null != extras && extras.containsKey(EXTRA_PASSES) && extras.containsKey(EXTRA_PRODUCT)) {
                 passes = (List<Pass>) extras.getSerializable(EXTRA_PASSES);
-                product = (Product) extras.getSerializable(EXTRA_PRODUCT);
+                bookingProduct = (BookingProduct) extras.getSerializable(EXTRA_PRODUCT);
                 //flavourTitle = (String) extras.getSerializable(EXTRA_FLAVOUR);
             }
         }
 
-        if (passes == null || product == null) {
+        if (passes == null || bookingProduct == null) {
             Log.e(TAG, "PassSelectionActivity requires a List<Pass> and a Product to operate.");
             finish();
             return;
@@ -207,7 +207,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putSerializable(EXTRA_PRODUCT, product);
+        outState.putSerializable(EXTRA_PRODUCT, bookingProduct);
         outState.putSerializable(EXTRA_PASSES, (Serializable) passes);
 
         if (flavourTitle != null) {
@@ -219,7 +219,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
     private void onActionStripClick(View _view) {
         actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
-        List<ProductOffering> flatPasses = new ArrayList<>();
+        List<Pass> flatPasses = new ArrayList<>();
 
         for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
             if (entry.getValue() != null && entry.getValue() > 0) {
@@ -229,7 +229,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
             }
         }
 
-        Traveler.fetchBookablePurchaseForm(product, flatPasses, this);
+        Traveler.fetchPurchaseForm(bookingProduct, flatPasses, this);
     }
 
     private void calculatePrice() {

@@ -179,7 +179,7 @@ public class ParkingActivity extends AppCompatActivity implements
             }
         });
 
-        loadNewParkingItems((ParkingItemQuery) initialQueryItem.getSearchQuery());
+        loadNewParkingItems((ParkingItemQuery) initialQueryItem.getItemResource()   );
 
         smoothScroller = new LinearSmoothScroller(this) {
             @Override
@@ -301,10 +301,10 @@ public class ParkingActivity extends AppCompatActivity implements
 
     private void setMapMarkers(ParkingItemSearchResult searchResult) {
         for (ParkingItem parkingItem : searchResult.getItems()) {
-            Coordinate coordinate = parkingItem.getCoordinate();
+            Coordinate coordinate = parkingItem.getItemResource().getCoordinate();
             LatLng latLng = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
 
-            String price = String.valueOf((int) parkingItem.getPrice().getValueInBaseCurrency());
+            String price = String.valueOf((int) parkingItem.getItemResource().getPrice().getValueInBaseCurrency());
 
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(latLng)
@@ -369,7 +369,7 @@ public class ParkingActivity extends AppCompatActivity implements
     private void setSelectedMarker(Marker marker, ParkingItem parkingItem) {
         mapViewParkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
         scrollListToIndex(mapViewParkingSearchResultAdapter.getPositionForParkingItem(parkingItem));
-        String price = String.valueOf((int) parkingItem.getPrice().getValueInBaseCurrency());
+        String price = String.valueOf((int) parkingItem.getItemResource().getPrice().getValueInBaseCurrency());
         marker.setIcon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price, true)));
         selectedMarker = marker;
     }
@@ -378,7 +378,7 @@ public class ParkingActivity extends AppCompatActivity implements
         if (selectedMarker != null) {
             ParkingItem selectedMarkerParkingItem = (ParkingItem) selectedMarker.getTag();
             if (selectedMarkerParkingItem != null) {
-                String price = String.valueOf((int) selectedMarkerParkingItem.getPrice().getValueInBaseCurrency());
+                String price = String.valueOf((int) selectedMarkerParkingItem.getItemResource().getPrice().getValueInBaseCurrency());
                 selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price, false)));
             }
         }
@@ -434,8 +434,8 @@ public class ParkingActivity extends AppCompatActivity implements
         Double east = null;
         Double west = null;
         for (ParkingItem parkingItem : items) {
-            Double longtitude = parkingItem.getCoordinate().getLongitude();
-            Double latitude = parkingItem.getCoordinate().getLatitude();
+            Double longtitude = parkingItem.getItemResource().getCoordinate().getLongitude();
+            Double latitude = parkingItem.getItemResource().getCoordinate().getLatitude();
             if (north == null || latitude > north){
                 north = latitude;
             }
@@ -452,7 +452,7 @@ public class ParkingActivity extends AppCompatActivity implements
         LatLng southWest = new LatLng(south, west);
         LatLng northEast = new LatLng(north, east);
         return new LatLngBounds(southWest, northEast);
-    };
+    }
 
     private void setMapView() {
         parkingToggleMapTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));

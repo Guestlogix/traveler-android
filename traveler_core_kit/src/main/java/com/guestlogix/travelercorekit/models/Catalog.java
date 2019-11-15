@@ -1,11 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -22,22 +22,9 @@ public class Catalog implements Serializable {
 
     static class CatalogObjectMappingFactory implements ObjectMappingFactory<Catalog> {
         @Override
-        public Catalog instantiate(JsonReader reader) throws Exception {
-            List<CatalogGroup> catalogGroups = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                if (key.equals("groups")) {
-                    catalogGroups = new ArrayMappingFactory<>(new CatalogGroup.GroupObjectMappingFactory()).instantiate(reader);
-                } else {
-                    reader.skipValue();
-                }
-            }
-
-            reader.endObject();
+        public Catalog instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            List<CatalogGroup> catalogGroups = new CatalogGroupListMappingFactory().instantiate(jsonObject.getJSONArray("groups").toString());
 
             Assertion.eval(catalogGroups != null);
 

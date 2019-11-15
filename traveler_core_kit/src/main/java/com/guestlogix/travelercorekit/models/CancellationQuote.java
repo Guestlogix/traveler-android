@@ -1,11 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -82,45 +82,15 @@ public class CancellationQuote implements Serializable {
 
         static class ResponseObjectMappingFactory implements ObjectMappingFactory<Response> {
             @Override
-            public Response instantiate(JsonReader reader) throws Exception {
-                Date expirationDate = null;
-                String id = null;
-                Price totalRefund = null;
-                Price cancellationCharge = null;
-                List<ProductCancellationQuote> products = null;
-                List<CancellationReason> cancellationReasons = null;
+            public Response instantiate(String rawResponse) throws Exception {
+                JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-                reader.beginObject();
-
-                while (reader.hasNext()) {
-                    String key = reader.nextName();
-
-                    switch (key) {
-                        case "quoteExpiresOn":
-                            expirationDate = DateHelper.parseISO8601(reader.nextString());
-                            break;
-                        case "id":
-                            id = reader.nextString();
-                            break;
-                        case "totalRefund":
-                            totalRefund = new Price.PriceObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "cancellationCharge":
-                            cancellationCharge = new Price.PriceObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "products":
-                            products = new ArrayMappingFactory<>(new ProductCancellationQuote.ProductCancellationQuoteObjectMappingFactory()).instantiate(reader);
-                            break;
-                        case "cancellationReasons":
-                            cancellationReasons = new ArrayMappingFactory<>(new CancellationReason.CancellationReasonsObjectMappingFactory()).instantiate(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                            break;
-                    }
-                }
-
-                reader.endObject();
+                Date expirationDate = DateHelper.parseISO8601(jsonObject.getString("quoteExpiresOn"));
+                String id = jsonObject.getString("id");
+                Price totalRefund = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("totalRefund").toString());
+                Price cancellationCharge = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("cancellationCharge").toString());
+                List<ProductCancellationQuote> products = new ArrayMappingFactory<>(new ProductCancellationQuote.ProductCancellationQuoteObjectMappingFactory()).instantiate(jsonObject.getJSONArray("products").toString());
+                List<CancellationReason> cancellationReasons = new ArrayMappingFactory<>(new CancellationReason.CancellationReasonsObjectMappingFactory()).instantiate(jsonObject.getJSONArray("cancellationReasons").toString());
 
                 Assertion.eval(expirationDate != null);
                 Assertion.eval(id != null);

@@ -1,10 +1,15 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
 import androidx.annotation.Nullable;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.*;
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -13,7 +18,8 @@ import java.util.List;
 public class WishlistResult implements Serializable {
     private int skip;
     private int take;
-    @Nullable private Date fromDate;
+    @Nullable
+    private Date fromDate;
     private Date toDate;
     private int total;
     private List<BookingItem> items;
@@ -35,7 +41,8 @@ public class WishlistResult implements Serializable {
         return take;
     }
 
-    @Nullable public Date getFromDate() {
+    @Nullable
+    public Date getFromDate() {
         return fromDate;
     }
 
@@ -58,7 +65,8 @@ public class WishlistResult implements Serializable {
                 this.total == wishlistResult.total;
     }
 
-    public @Nullable WishlistResult merge(WishlistResult wishlistResult) {
+    public @Nullable
+    WishlistResult merge(WishlistResult wishlistResult) {
         if (!this.isResultEquivalentTo(wishlistResult)) {
             // Not mergable
             return null;
@@ -80,7 +88,7 @@ public class WishlistResult implements Serializable {
         int index = 0;
         while (iterator.hasNext()) {
             BookingItem item = iterator.next();
-            if (item.getId().equals(productId)) {
+            if (item.getItemResource().getId().equals(productId)) {
                 items.remove(item);
                 total--;
                 return index;
@@ -97,60 +105,27 @@ public class WishlistResult implements Serializable {
 
     static class WishlistResultMappingFactory implements ObjectMappingFactory<WishlistResult> {
         @Override
-        public WishlistResult instantiate(JsonReader reader) throws Exception {
-            int skip = -1;
-            int take = -1;
+        public WishlistResult instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            int skip = jsonObject.getInt("skip");
+            int take = jsonObject.getInt("take");
+
             Date fromDate = null;
-            Date toDate = null;
-            int total = -1;
+            if(!jsonObject.isNull("from"))
+                fromDate = DateHelper.parseISO8601(jsonObject.getString( "from"));
+
+            Date toDate = DateHelper.parseISO8601(jsonObject.getString("to"));
+            int total = jsonObject.getInt("total");
             List<BookingItem> bookingItems = null;
 
-            reader.beginObject();
-            while (reader.hasNext()) {
-                String key = reader.nextName();
+            bookingItems = new ArrayMappingFactory<>(
+                    new BookingItem.BookingItemObjectMappingFactory()).instantiate(jsonObject.getJSONArray("result").toString());
 
-                switch (key) {
-                    case "skip":
-                        skip = reader.nextInt();
-                        break;
-                    case "take":
-                        take = reader.nextInt();
-                        break;
-                    case "from":
-                        String fromDateString = JsonReaderHelper.nextNullableString(reader);
-                        if (fromDateString != null) {
-                            fromDate = DateHelper.parseISO8601(fromDateString);
-                        }
-                        break;
-                    case "to":
-                        toDate = DateHelper.parseISO8601(reader.nextString());
-                        break;
-                    case "total":
-                        total = reader.nextInt();
-                        break;
-                    case "result":
-                        //TODO: fix this shit
-                        // Only bookable items can wishlisted; but AnyItemMappingFactory returns objects of
-                        // interface CatalogItem.
-                        List<? extends CatalogItem> items = new ArrayList<>(new ArrayMappingFactory<>(
-                                new AnyItemMappingFactory()).instantiate(reader));
-                        try {
-                            bookingItems = (List<BookingItem>) items;
-                            for (BookingItem item : bookingItems) {
-                                // /traveler/{id}/wishlist API call doesn't return "isWishlisted" – it is implied
-                                item.setWishlisted(true);
-                            }
-                        } catch (ClassCastException e) {
-                            throw new IllegalStateException("WishlistResult items should only be of BookingItems!");
-                        }
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
+            for (BookingItem item : bookingItems) {
+                // /traveler/{id}/wishlist API call doesn't return "isWishlisted" – it is implied
+                item.getItemResource().setIsWishlisted(true);
             }
-
-            reader.endObject();
 
             Assertion.eval(bookingItems != null);
 

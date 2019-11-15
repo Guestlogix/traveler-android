@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.BookingItemSearchResult;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
+import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
 import com.guestlogix.traveleruikit.adapters.BookingSearchResultAdapter;
 
 public class BookingSearchResultFragment extends Fragment
@@ -56,8 +56,8 @@ public class BookingSearchResultFragment extends Fragment
 
     @Override
     public void onBookingSearchItemClick(BookingItem bookingItem) {
-        Intent intent = new Intent(this.getContext(), BookingItemDetailsActivity.class);
-        intent.putExtra(BookingItemDetailsActivity.ARG_PRODUCT, bookingItem);
+        Intent intent = new Intent(this.getContext(), CatalogItemDetailsActivity.class);
+        intent.putExtra(CatalogItemDetailsActivity.ARG_PRODUCT, bookingItem);
         startActivity(intent);
     }
 }

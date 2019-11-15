@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         android:background="@color/e5Gray"
         android:orientation="vertical"
-        tools:context=".activities.BookingItemDetailsActivity">
+        tools:context=".activities.CatalogItemDetailsActivity">
 
     <TextView
             android:id="@+id/textview_findParking_location_label"

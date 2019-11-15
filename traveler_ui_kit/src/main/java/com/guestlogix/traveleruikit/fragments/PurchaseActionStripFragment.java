@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
+import com.guestlogix.travelercorekit.models.BookingProduct;
+import com.guestlogix.travelercorekit.models.ParkingProduct;
 import com.guestlogix.travelercorekit.models.Price;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.PurchaseForm;
@@ -108,7 +110,7 @@ public class PurchaseActionStripFragment extends Fragment
     public void onClick(View v) {
         switch (product.getProductType()) {
             case PARKING:
-                Traveler.fetchParkingPurchaseForm(product, this);
+                Traveler.fetchPurchaseForm((ParkingProduct) product, this);
                 break;
             case BOOKABLE:
                 Intent intent = new Intent(requireContext(), AvailabilityActivity.class);

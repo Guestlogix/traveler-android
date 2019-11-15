@@ -1,14 +1,15 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -43,32 +44,13 @@ public class Availability implements Serializable {
 
     static class AvailabilityObjectMappingFactory implements ObjectMappingFactory<Availability> {
         @Override
-        public Availability instantiate(JsonReader reader) throws Exception {
-            Date date = null;
-            String id = null;
-            BookingOptionSet bookingOptionSet = null;
+        public Availability instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
+            Date date = DateHelper.parseDate(jsonObject.getString("date"));
+            String id = jsonObject.getString("id");
+            BookingOptionSet bookingOptionSet = new BookingOptionSet.BookingOptionSetObjectMappingFactory().instantiate(jsonObject.getJSONObject("optionSet").toString());
 
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "date":
-                        date = DateHelper.parseDate(reader.nextString());
-                        break;
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "optionSet":
-                        bookingOptionSet = new BookingOptionSet.BookingOptionSetObjectMappingFactory().instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                }
-            }
-
-            reader.endObject();
 
             Assertion.eval(date != null);
             Assertion.eval(id != null);

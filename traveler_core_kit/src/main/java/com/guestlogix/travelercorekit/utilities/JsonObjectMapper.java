@@ -1,13 +1,11 @@
 package com.guestlogix.travelercorekit.utilities;
 
-import android.util.JsonReader;
 import android.util.Log;
 
 import com.guestlogix.travelercorekit.BuildConfig;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,12 +21,26 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
     @Override
     public void onHandleResponse(InputStream stream) {
-        if (BuildConfig.DEBUG) {
-            stream = logRawJson(stream);
-        }
+        try {
 
-        try (JsonReader reader = new JsonReader(new InputStreamReader(stream))) {
-            T model = objectMappingFactory.instantiate(reader);
+            long startMilis = System.currentTimeMillis();
+            String rawResponse = convertStreamToString(stream);
+            long endMilis = System.currentTimeMillis();
+
+            if (BuildConfig.DEBUG) {
+
+                logRawResponse(rawResponse);
+
+                Log.d("Statistics", "converting stream into json took " + (endMilis - startMilis) + " mili seconds");
+            }
+
+            startMilis = System.currentTimeMillis();
+            T model = objectMappingFactory.instantiate(rawResponse);
+            endMilis = System.currentTimeMillis();
+
+            if (BuildConfig.DEBUG) {
+                Log.d("Statistics", "converting json into object took " + (endMilis - startMilis) + " mili seconds");
+            }
 
             callback.onSuccess(model);
         } catch (Exception e) {
@@ -40,44 +52,40 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
         }
     }
 
-    private InputStream logRawJson(InputStream inputStream) {
+    private void logRawResponse(String rawResponse) {
+        if (rawResponse.trim().isEmpty()) {
+            Log.d("NetworkTask", " \n RESPONSE BODY: [NO RESPONSE BODY] \n------------------------\n \n");
+        } else {
+            StringBuilder logMessage = new StringBuilder();
+            logMessage.append(" \n RESPONSE BODY:\n");
+            int charPerLine = 1000;
+            int loggedLinePerResponse = 4;
+            String shortenedResponse;
 
-        String responseBodyString;
+            if (rawResponse.length() > charPerLine * loggedLinePerResponse)
+                shortenedResponse = rawResponse.substring(0, charPerLine * loggedLinePerResponse) + "....\n....";
+            else
+                shortenedResponse = rawResponse;
 
-        byte[] is = new byte[0];
-        try {
-            is = readFully(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
+            for (int i = 0; i < shortenedResponse.length(); i += charPerLine) {
+                logMessage.append(shortenedResponse.substring(i, Math.min(shortenedResponse.length(), i + charPerLine)));
+                logMessage.append("\n");
+            }
+            Log.d("NetworkTask", logMessage.toString() + "\n------------------------\n \n");
+
         }
-        responseBodyString = convertStreamToString(new ByteArrayInputStream(is));
-
-
-        try {
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Log.d("NetworkTask",
-                " \n RESPONSE BODY:" + ((responseBodyString.trim().isEmpty()) ? " [NO RESPONSE BODY]" : "\n" + responseBodyString) +
-                        "\n------------------------\n \n");
-
-        return new ByteArrayInputStream(is);
     }
 
-    String convertStreamToString(java.io.InputStream is) {
-        java.util.Scanner s = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
-    }
-
-    byte[] readFully(InputStream input) throws IOException {
-        byte[] buffer = new byte[8192];
-        int bytesRead;
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        while ((bytesRead = input.read(buffer)) != -1) {
-            output.write(buffer, 0, bytesRead);
+    private String convertStreamToString(InputStream is) throws IOException {
+        BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        String inputLine;
+        StringBuilder responseStringBuilder = new StringBuilder();
+        while (true) {
+            inputLine = in.readLine();
+            if (inputLine == null) break;
+            responseStringBuilder.append(inputLine);
         }
-        return output.toByteArray();
+
+        return responseStringBuilder.toString();
     }
 }

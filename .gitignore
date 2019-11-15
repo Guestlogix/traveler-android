@@ -126,3 +126,4 @@ local.properties
 .idea/vcs.xml
 .idea/codeStyles/Project.xml
 *.iml
+.idea/codeStyles/Project.xml

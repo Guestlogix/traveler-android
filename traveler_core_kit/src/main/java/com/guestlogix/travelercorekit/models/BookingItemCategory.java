@@ -7,7 +7,8 @@ public enum BookingItemCategory implements Serializable {
     TOUR("Tour"),
     SHOW("Show"),
     EVENT("Event"),
-    NIGHTLIFE("Nightlife");
+    NIGHTLIFE("Nightlife"),
+    UNKNOWN("Unknown");
 
     private final String category;
 
@@ -28,7 +29,7 @@ public enum BookingItemCategory implements Serializable {
             case "Nightlife":
                 return NIGHTLIFE;
             default:
-                return null; //TODO:we should throw exception for unknown types. we did it becuase of category problem in anyItemMappingFactory
+                return UNKNOWN;
         }
     }
 

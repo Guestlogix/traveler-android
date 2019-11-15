@@ -2,13 +2,18 @@ package com.guestlogix.traveler.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.JsonReader;
 import android.util.Log;
-import androidx.annotation.NonNull;
-import com.guestlogix.traveler.utils.SerializableUtils;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.*;
+import androidx.annotation.NonNull;
+
+import com.guestlogix.traveler.utils.SerializableUtils;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
+import java.io.IOException;
+import java.io.Serializable;
 
 public class Profile implements Serializable {
     static private String SHARED_PREFS_KEY = "PROFILE_KEY";
@@ -43,36 +48,12 @@ public class Profile implements Serializable {
 
     public static class ProfileObjectMappingFactory implements ObjectMappingFactory<Profile> {
         @Override
-        public Profile instantiate(JsonReader reader) throws Exception {
-            String travelerId = null;
-            String firstName = null;
-            String lastName = null;
-            String email = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-                switch (key) {
-                    case "travelerId":
-                        travelerId = reader.nextString();
-                        break;
-                    case "firstName":
-                        firstName = reader.nextString();
-                        break;
-                    case "lastName":
-                        lastName = reader.nextString();
-                        break;
-                    case "email":
-                        email = reader.nextString();
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+        public Profile instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            String travelerId = jsonObject.getString("travelerId");
+            String firstName = jsonObject.getString("firstName");
+            String lastName = jsonObject.getString("lastName");
+            String email = jsonObject.getString("email");
 
             Assertion.eval(travelerId != null);
             Assertion.eval(firstName != null);

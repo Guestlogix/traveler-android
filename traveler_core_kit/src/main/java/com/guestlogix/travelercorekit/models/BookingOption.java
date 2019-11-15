@@ -1,11 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.io.Serializable;
 
 public class BookingOption implements Serializable {
@@ -34,32 +34,12 @@ public class BookingOption implements Serializable {
     static class BookingOptionObjectMappingFactory implements ObjectMappingFactory<BookingOption> {
 
         @Override
-        public BookingOption instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String value = null;
-            String disclaimer = null;
+        public BookingOption instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "optionLabel":
-                        value = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "disclaimer":
-                        disclaimer = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                }
-            }
-
-            reader.endObject();
+            String id = jsonObject.getString("id");
+            String value = jsonObject.getString("optionLabel");
+            String disclaimer = jsonObject.getNullableString("disclaimer");
 
             Assertion.eval(id != null);
             Assertion.eval(value != null);

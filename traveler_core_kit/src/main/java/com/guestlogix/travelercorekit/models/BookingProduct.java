@@ -1,36 +1,43 @@
 package com.guestlogix.travelercorekit.models;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import java.util.Date;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.util.List;
 
 public class BookingProduct implements Product {
-    public static final String CANCELLATION_POLICY_NON_REFUNDABLE = "Non-refundable";
     private String id;
     private String title;
     private Price price;
-    private List<Pass> passes;
-    private Date eventDate;
-    private List<BookingItemCategory> categories;
-    private ProductType productType = ProductType.BOOKABLE;
-    private String cancellationPolicy;
 
-    BookingProduct(@NonNull String id,
-                   String title,
-                   @NonNull Price price,
-                   @NonNull List<Pass> passes,
-                   @NonNull Date eventDate,
-                   List<BookingItemCategory> categories,
-                   @NonNull String cancellationPolicy) {
+    private ProductType productType;
+    private List<BookingItemCategory> categories;
+    private Coordinate coordinate;
+    private ProviderTranslationAttribution providerTranslationAttribution;
+    private Boolean isAvailable;
+    private Boolean isWishlisted;
+
+    BookingProduct(
+            @NonNull String id,
+            String title,
+            Price price,
+            ProductType productType,
+            List<BookingItemCategory> categories,
+            Coordinate coordinate,
+            ProviderTranslationAttribution providerTranslationAttribution,
+            boolean isAvailable) {
         this.id = id;
         this.title = title;
         this.price = price;
-        this.passes = passes;
-        this.eventDate = eventDate;
+        this.productType = productType;
         this.categories = categories;
-        this.cancellationPolicy = cancellationPolicy;
+        this.coordinate = coordinate;
+        this.providerTranslationAttribution = providerTranslationAttribution;
+        this.isAvailable = isAvailable;
     }
 
     @Override
@@ -38,26 +45,15 @@ public class BookingProduct implements Product {
         return id;
     }
 
-    @Nullable
+    @Override
     public String getTitle() {
         return title;
     }
 
+
     @Override
     public Price getPrice() {
         return price;
-    }
-
-    public List<Pass> getPasses() {
-        return passes;
-    }
-
-    public Date getEventDate() {
-        return eventDate;
-    }
-
-    public List<BookingItemCategory> getCategories() {
-        return categories;
     }
 
     @Override
@@ -65,7 +61,59 @@ public class BookingProduct implements Product {
         return productType;
     }
 
-    public String getCancellationPolicy() {
-        return cancellationPolicy;
+    public List<BookingItemCategory> getCategories() {
+        return categories;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public ProviderTranslationAttribution getProviderTranslationAttribution() {
+        return providerTranslationAttribution;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public Boolean isWishlisted() {
+        return isWishlisted;
+    }
+
+    public void setIsWishlisted(Boolean wishlisted) {
+        isWishlisted = wishlisted;
+    }
+
+    static class BookingProductObjectMappingFactory implements ObjectMappingFactory<BookingProduct> {
+        @Override
+        public BookingProduct instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            String id = jsonObject.getString("id");
+            String title = jsonObject.getString("title");
+            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceStartingAt").toString());
+            ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
+
+            List<BookingItemCategory> categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+
+            Coordinate coordinate = new Coordinate.CoordinateObjectMappingFactory()
+                    .instantiate(jsonObject.getJSONObject("geoLocation").toString());
+
+            ProviderTranslationAttribution providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
+                    instantiate(jsonObject.getJSONObject("providerTranslationAttribution").toString());
+            boolean isAvailable = jsonObject.getBoolean("isAvailable");
+
+            Assertion.eval(id != null);
+            Assertion.eval(price != null);
+            Assertion.eval(categories != null);
+
+            return new BookingProduct(id, title, price,
+                    productType,
+                    categories,
+                    coordinate,
+                    providerTranslationAttribution,
+                    isAvailable);
+        }
     }
 }

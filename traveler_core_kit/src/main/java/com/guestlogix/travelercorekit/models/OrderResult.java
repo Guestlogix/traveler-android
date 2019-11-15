@@ -1,12 +1,20 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.guestlogix.travelercorekit.utilities.*;
+
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class OrderResult implements Serializable {
     private int total;
@@ -80,44 +88,18 @@ public class OrderResult implements Serializable {
 
     static class OrderResultMappingFactory implements ObjectMappingFactory<OrderResult> {
         @Override
-        public OrderResult instantiate(JsonReader reader) throws Exception {
-            int offset = 0;
+        public OrderResult instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            int offset = jsonObject.getInt("skip");
             Date fromDate = null;
-            Date toDate = null;
-            int total = -1;
-            List<Order> ordersArray = null;
 
-            reader.beginObject();
+            if (!jsonObject.isNull("from"))
+                fromDate = DateHelper.parseISO8601(jsonObject.getString("from"));
 
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "skip":
-                        offset = reader.nextInt();
-                        break;
-                    case "from":
-                        String dateString = JsonReaderHelper.nextNullableString(reader);
-                        if (dateString != null)
-                            fromDate = DateHelper.parseISO8601(dateString);
-                        break;
-                    case "to":
-                        toDate = DateHelper.parseISO8601(reader.nextString());
-                        break;
-                    case "total":
-                        total = reader.nextInt();
-                        break;
-                    case "result":
-                        ArrayMappingFactory<Order> factory = new ArrayMappingFactory<>(new Order.OrderMappingFactory());
-                        ordersArray = factory.instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            Date toDate = DateHelper.parseISO8601(jsonObject.getString("to"));
+            int total = jsonObject.getInt("total");
+            List<Order> ordersArray = new ArrayMappingFactory<>(new Order.OrderMappingFactory()).instantiate(jsonObject.getJSONArray("result").toString());
 
             Assertion.eval(total >= 0);
             Assertion.eval(toDate != null);

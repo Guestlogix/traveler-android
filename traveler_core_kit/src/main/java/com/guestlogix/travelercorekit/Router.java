@@ -9,8 +9,36 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import com.guestlogix.travelercorekit.models.*;
+import com.guestlogix.travelercorekit.models.Answer;
+import com.guestlogix.travelercorekit.models.Availability;
+import com.guestlogix.travelercorekit.models.BookingItemCategory;
+import com.guestlogix.travelercorekit.models.BookingItemQuery;
+import com.guestlogix.travelercorekit.models.BookingOption;
+import com.guestlogix.travelercorekit.models.BoundingBox;
+import com.guestlogix.travelercorekit.models.CancellationError;
+import com.guestlogix.travelercorekit.models.CancellationQuote;
+import com.guestlogix.travelercorekit.models.CancellationReason;
+import com.guestlogix.travelercorekit.models.CancellationRequest;
+import com.guestlogix.travelercorekit.models.CatalogQuery;
+import com.guestlogix.travelercorekit.models.Coordinate;
 import com.guestlogix.travelercorekit.models.Currency;
+import com.guestlogix.travelercorekit.models.Flight;
+import com.guestlogix.travelercorekit.models.FlightQuery;
+import com.guestlogix.travelercorekit.models.Order;
+import com.guestlogix.travelercorekit.models.OrderQuery;
+import com.guestlogix.travelercorekit.models.ParkingItemQuery;
+import com.guestlogix.travelercorekit.models.Pass;
+import com.guestlogix.travelercorekit.models.Payment;
+import com.guestlogix.travelercorekit.models.PaymentError;
+import com.guestlogix.travelercorekit.models.PriceRangeFilter;
+import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.PurchaseError;
+import com.guestlogix.travelercorekit.models.PurchaseForm;
+import com.guestlogix.travelercorekit.models.PurchasePass;
+import com.guestlogix.travelercorekit.models.Session;
+import com.guestlogix.travelercorekit.models.Token;
+import com.guestlogix.travelercorekit.models.Traveler;
+import com.guestlogix.travelercorekit.models.WishlistQuery;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import com.guestlogix.travelercorekit.tasks.NetworkTaskError;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -22,7 +50,13 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELER_SDK_ENDPOINT;
 
@@ -258,7 +292,7 @@ public class Router {
                             JSONArray answers = new JSONArray();
 
                             if (form.getProductOfferings() != null) {
-                                for (ProductOffering p : form.getProductOfferings()) {
+                                for (PurchasePass p : form.getProductOfferings()) {
                                     passes.put(p.getId());
                                 }
                             }

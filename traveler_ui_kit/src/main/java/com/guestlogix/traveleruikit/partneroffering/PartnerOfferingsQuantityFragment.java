@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.models.PartnerOffering;
 import com.guestlogix.travelercorekit.models.PartnerOfferingItem;
-import com.guestlogix.travelercorekit.models.ProductOffering;
 import com.guestlogix.travelercorekit.models.PurchaseForm;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
@@ -88,8 +87,7 @@ public class PartnerOfferingsQuantityFragment extends Fragment {
                 imgLess.setVisibility(View.VISIBLE);
             }
 
-            if(quantity == maximumAvailable)
-            {
+            if (quantity == maximumAvailable) {
                 imgMore.setVisibility(View.INVISIBLE);
             }
         });
@@ -102,13 +100,12 @@ public class PartnerOfferingsQuantityFragment extends Fragment {
                 imgLess.setVisibility(View.INVISIBLE);
             }
 
-            if(quantity < maximumAvailable)
-            {
+            if (quantity < maximumAvailable) {
                 imgMore.setVisibility(View.VISIBLE);
             }
         });
 
-        view.findViewById(R.id.btnCheckout).setOnClickListener(v -> Traveler.fetchBookablePurchaseForm(partnerOfferingItem, (List<ProductOffering>) (List<?>) lstSelectedPartnerOfferings, new FetchPurchaseFormCallback() {
+        view.findViewById(R.id.btnCheckout).setOnClickListener(v -> Traveler.fetchPurchaseForm(partnerOfferingItem.getItemResource(), lstSelectedPartnerOfferings, new FetchPurchaseFormCallback() {
             @Override
             public void onPurchaseFormFetchSuccess(PurchaseForm purchaseForm) {
                 Intent intent = new Intent(getActivity(), QuestionsActivity.class);

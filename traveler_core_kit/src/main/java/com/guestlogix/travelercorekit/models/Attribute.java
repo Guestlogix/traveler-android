@@ -1,11 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
 
 public class Attribute implements Serializable {
@@ -27,29 +28,11 @@ public class Attribute implements Serializable {
 
     static class AttributeObjectMappingFactory implements ObjectMappingFactory<Attribute> {
         @Override
-        public Attribute instantiate(JsonReader reader) throws Exception {
-            String label = null;
-            String value = null;
+        public Attribute instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "label":
-                        label = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "value":
-                        value = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String label = jsonObject.getString("label");
+            String value = jsonObject.getString("value");
 
             Assertion.eval(label != null);
             Assertion.eval(value != null);
