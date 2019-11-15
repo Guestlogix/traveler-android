@@ -1,5 +1,7 @@
 package com.guestlogix.traveler.application;
+
 import android.app.Application;
+
 import com.guestlogix.traveler.BuildConfig;
 import com.guestlogix.traveler_stripe_payment_provider.StripePaymentManager;
 import com.guestlogix.traveler_stripe_payment_provider.StripePaymentProvider;
@@ -12,8 +14,9 @@ public class TravelerApplication extends Application {
     public static final String PRODUCTION_AUTH_ENDPOINT = "https://9th3dtgfg3.execute-api.ca-central-1.amazonaws.com/dev";//production
     public static final String RC_AUTH_ENDPOINT = "https://hklkg7c974.execute-api.ca-central-1.amazonaws.com/dev";//rc
     public static final String DEV_AUTH_ENDPOINT = "https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev";//dev
+    public static final String SANDBOX_AUTH_ENDPOINT = "https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev";//sandbox
 
-    //    public static final String PRODUCTION_ENDPOINT = "https://traveler.guestlogix.io/v1";//productio
+    public static final String PRODUCTION_ENDPOINT = "https://traveler.guestlogix.io/v1";//productio
     public static final String RC_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";//rc
     public static final String DEV_ENDPOINT = "https://traveler.dev.guestlogix.io/v1";//dev
 

@@ -222,6 +222,18 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
+    // /menu/{id}
+    public static AuthenticatedUrlRequest partnerOfferingItem(Session session, Product product, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/menu/" + product.getId());
+
+        if (!TextUtils.isEmpty(session.getIdentity()))
+            routeBuilder.param("travelerId", session.getIdentity());
+
+        return routeBuilder.build(session.getToken());
+    }
+
     // /product/{id}/schedule
     public static AuthenticatedUrlRequest productSchedule(Session session, Product product, Date from, Date to, Context context) {
         return new RouteBuilder(context, session.getApiKey())
