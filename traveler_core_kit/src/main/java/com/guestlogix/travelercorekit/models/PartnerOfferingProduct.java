@@ -1,54 +1,63 @@
 package com.guestlogix.travelercorekit.models;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.util.List;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 public class PartnerOfferingProduct implements Product {
-    private String id;
-    private String title;
-    private Price price;
-    private List<ProductOffering> productOfferings;
-    private ProductType productType = ProductType.PARTNER_OFFERING;
-    private String cancellationPolicy;
 
-    PartnerOfferingProduct(@NonNull String id,
-                           String title,
-                           @NonNull Price price,
-                           @NonNull List<ProductOffering> productOfferings, String cancellationPolicy) {
-        this.id = id;
+    private String title, id;
+    private boolean isAvailable;
+    private Price price;
+
+    public PartnerOfferingProduct(String id, String title,
+                                  Price price, ProductType productType,
+                                  boolean isAvailable) {
         this.title = title;
+        this.id = id;
+        this.isAvailable = isAvailable;
         this.price = price;
-        this.productOfferings = productOfferings;
-        this.cancellationPolicy = cancellationPolicy;
     }
 
     @Override
-    public String getId() {
-        return id;
-    }
-
-    @Nullable
     public String getTitle() {
         return title;
     }
 
-    @Override
+    public String getId() {
+        return id;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
     public Price getPrice() {
         return price;
     }
 
-    public List<ProductOffering> getProductOfferings() {
-        return productOfferings;
-    }
-
     @Override
     public ProductType getProductType() {
-        return productType;
+        return ProductType.PARTNER_OFFERING;
     }
 
-    public String getCancellationPolicy() {
-        return cancellationPolicy;
+    static class PartnerOfferingProductObjectMappingFactory implements ObjectMappingFactory<PartnerOfferingProduct> {
+        @Override
+        public PartnerOfferingProduct instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            String id = jsonObject.getString( "id");
+            String title = jsonObject.getString( "title");
+            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceStartingAt").toString());
+            ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
+            boolean isAvailable = jsonObject.getBoolean("isAvailable");
+
+            Assertion.eval(price != null);
+
+            return new PartnerOfferingProduct(id, title, price,
+                    productType,
+                    isAvailable);
+        }
     }
 }

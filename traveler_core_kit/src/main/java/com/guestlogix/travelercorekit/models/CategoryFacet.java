@@ -1,9 +1,8 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 
@@ -26,29 +25,11 @@ public class CategoryFacet implements Serializable {
 
     static class CategoryFacetObjectMappingFactory implements ObjectMappingFactory<CategoryFacet> {
         @Override
-        public CategoryFacet instantiate(JsonReader reader) throws Exception {
-            BookingItemCategory category = null;
-            int quantity = 0;
+        public CategoryFacet instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            BookingItemCategory category = BookingItemCategory.fromString(jsonObject.getString("label"));
+            int quantity = jsonObject.getInt("count");
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "label":
-                        category = BookingItemCategory.fromString(JsonReaderHelper.nextNullableString(reader));
-                        break;
-                    case "count":
-                        quantity = reader.nextInt();
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
 
             return new CategoryFacet(category, quantity);
         }

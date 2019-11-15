@@ -11,7 +11,11 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELER_AUTH_ENDPOINT;
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;

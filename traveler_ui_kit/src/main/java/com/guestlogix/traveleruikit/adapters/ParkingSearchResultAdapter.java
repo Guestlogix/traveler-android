@@ -98,7 +98,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
 
                 itemHolder.title.setText(parkingItem.getTitle());
                 itemHolder.subtitle.setText(parkingItem.getSubtitle());
-                itemHolder.price.setText(parkingItem.getPrice().getValueWithBaseCurrencySuffix());
+                itemHolder.price.setText(parkingItem.getItemResource().getPrice().getValueWithBaseCurrencySuffix());
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -198,7 +198,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onParkingSearchSuccess(ParkingItemSearchResult searchResult) {
-        searchResult.merge(searchResult);
+        parkingItemSearchResult.getItems().addAll(searchResult.getItems());
         notifyItemRangeChanged(searchResult.getQuery().getOffset(), PAGE_SIZE);
     }
 

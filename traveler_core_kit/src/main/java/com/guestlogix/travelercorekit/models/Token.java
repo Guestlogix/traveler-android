@@ -1,8 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
+
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 
 public class Token {
@@ -22,22 +25,10 @@ public class Token {
 
     public static class AuthTokenObjectMappingFactory implements ObjectMappingFactory<Token> {
         @Override
-        public Token instantiate(JsonReader reader) throws Exception {
-            String value = null;
+        public Token instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                if (key.equals("token")) {
-                    value = reader.nextString();
-                } else {
-                    reader.skipValue();
-                }
-            }
-
-            reader.endObject();
+            String value = jsonObject.getString("token");
 
             Assertion.eval(value != null);
 

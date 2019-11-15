@@ -1,11 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.StringArrayMappingFactory;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,46 +45,16 @@ public class ContactInfo implements Serializable {
 
     static class ContactInfoObjectMappingFactory implements ObjectMappingFactory<ContactInfo> {
         @Override
-        public ContactInfo instantiate(JsonReader reader) throws Exception {
-            String name = null;
-            String email = null;
-            String website = null;
-            String address = null;
-            List<String> phones = null;
+        public ContactInfo instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "name":
-                        name = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "email":
-                        email = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "website":
-                        website = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "address":
-                        address = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "phones":
-                        if (reader.peek() != JsonToken.NULL) {
-                            phones = JsonReaderHelper.readStringsArray(reader);
-                        } else {
-                            phones = new ArrayList<>();
-                            reader.skipValue();
-                        }
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String name = jsonObject.getString("name");
+            String email = jsonObject.getNullableString("email");
+            String website = jsonObject.getNullableString("website");
+            String address = jsonObject.getNullableString("address");
+            List<String> phones = new ArrayList<>();
+            if (!jsonObject.isNull("phones"))
+                phones = new StringArrayMappingFactory().instantiate(jsonObject.getJSONArray("phones").toString());
 
             Assertion.eval(name != null);
             Assertion.eval(phones != null);

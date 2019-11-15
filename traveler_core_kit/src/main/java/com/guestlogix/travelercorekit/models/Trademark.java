@@ -1,10 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -28,26 +29,13 @@ public class Trademark implements Serializable {
 
     public static class TrademarkObjectMappingFactory implements ObjectMappingFactory<Trademark> {
         @Override
-        public Trademark instantiate(JsonReader reader) throws Exception {
+        public Trademark instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            String iconUrl = jsonObject.getString("iconUrl");
             URL imageURL = null;
-            String copyright = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                if (key.equals("iconUrl")) {
-                    String url = reader.nextString();
-                    imageURL = new URL(url);
-                } else if (key.equals("copyRight")) {
-                    copyright = reader.nextString();
-                } else {
-                    reader.skipValue();
-                }
-            }
-
-            reader.endObject();
+            if (iconUrl != null)
+                imageURL = new URL(iconUrl);
+            String copyright = jsonObject.getString("copyRight");
 
             Assertion.eval(copyright != null);
             Assertion.eval(imageURL != null);

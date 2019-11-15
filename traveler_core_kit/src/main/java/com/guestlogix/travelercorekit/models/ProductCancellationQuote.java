@@ -1,14 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 public class ProductCancellationQuote implements Serializable {
     private String title;
@@ -35,33 +32,12 @@ public class ProductCancellationQuote implements Serializable {
 
     static class ProductCancellationQuoteObjectMappingFactory implements ObjectMappingFactory<ProductCancellationQuote> {
         @Override
-        public ProductCancellationQuote instantiate(JsonReader reader) throws Exception {
-            String title = null;
-            Price totalRefund = null;
-            Price cancellationCharge = null;
+        public ProductCancellationQuote instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "title":
-                        title = reader.nextString();
-                        break;
-                    case "totalRefund":
-                        totalRefund = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "cancellationCharge":
-                        cancellationCharge = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String title =  jsonObject.getString("title");
+            Price totalRefund = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("totalRefund").toString());
+            Price cancellationCharge = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("cancellationCharge").toString());
 
             Assertion.eval(title != null);
             Assertion.eval(totalRefund != null);

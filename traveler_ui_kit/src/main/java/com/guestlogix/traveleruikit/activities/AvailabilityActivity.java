@@ -2,11 +2,12 @@ package com.guestlogix.traveleruikit.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-import com.guestlogix.travelercorekit.models.Availability;
-import com.guestlogix.travelercorekit.models.Product;
+
+import com.guestlogix.travelercorekit.models.BookingProduct;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.fragments.AvailabilityFragment;
 
@@ -20,7 +21,7 @@ public class AvailabilityActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_availability);
 
-        Product product = (Product) getIntent().getSerializableExtra(ARG_PRODUCT);
+        BookingProduct product = (BookingProduct) getIntent().getSerializableExtra(ARG_PRODUCT);
         if (product == null) {
             Log.e(TAG, "No Product");
             finish();

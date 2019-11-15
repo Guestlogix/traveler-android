@@ -1,13 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import androidx.annotation.NonNull;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.Serializable;
@@ -57,53 +55,23 @@ public class Question implements Serializable {
 
     static class QuestionObjectMappingFactory implements ObjectMappingFactory<Question> {
         @Override
-        public Question instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String title = null;
-            String description = null;
-            String typeString = null;
-            String suggestedAnswerString = null;
+        public Question instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            String id = jsonObject.getString("id");
+            String title = jsonObject.getString("title");
+            String description = jsonObject.getNullableString("description");
+            String typeString = jsonObject.getString("type");
+            String suggestedAnswerString = jsonObject.getNullableString("suggestedAnswer");
             SuggestedAnswer suggestedAnswer = null;
+
             List<ValidationRule> rules = new ArrayList<>();
-            List<Choice> choices = null;
-            QuestionType type = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "title":
-                        title = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "description":
-                        description = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "type":
-                        typeString = reader.nextString();
-                        break;
-                    case "choices":
-                        ArrayMappingFactory<Choice> factory = new ArrayMappingFactory<>(new Choice.ChoiceObjectMappingFactory());
-                        choices = factory.instantiate(reader);
-                        break;
-                    case "required":
-                        if (reader.nextBoolean())
-                            rules.add(new RequiredValidationRule());
-                        break;
-                    case "suggestedAnswer":
-                        suggestedAnswerString = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
+            if (jsonObject.getBoolean("required")) {
+                rules.add(new RequiredValidationRule());
             }
 
-            reader.endObject();
+            List<Choice> choices = new ArrayMappingFactory<>(new Choice.ChoiceObjectMappingFactory()).instantiate(jsonObject.getJSONArray("choices").toString());
+            QuestionType type = null;
 
             Assertion.eval(id != null);
             Assertion.eval(title != null);

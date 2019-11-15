@@ -1,7 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
 public enum QueryType {
-    BOOKING, PARKING;
+    BOOKING, PARKING, UNKNOWN;
 
     public static QueryType fromString(String value) throws IllegalArgumentException {
         switch (value) {
@@ -10,7 +10,7 @@ public enum QueryType {
             case "Parking":
                 return PARKING;
             default:
-                throw new IllegalArgumentException("Unknown QueryType: " + value);
+                return UNKNOWN;
         }
     }
 }

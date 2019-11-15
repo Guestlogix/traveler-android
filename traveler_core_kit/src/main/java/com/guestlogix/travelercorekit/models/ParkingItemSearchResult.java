@@ -1,10 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,58 +43,29 @@ public class ParkingItemSearchResult implements Serializable {
         return query;
     }
 
-    public void merge(ParkingItemSearchResult searchResult) {
-        this.items.addAll(searchResult.getItems());
-    }
-
     static class ParkingItemSearchResultObjectMappingFactory implements ObjectMappingFactory<ParkingItemSearchResult> {
         @Override
-        public ParkingItemSearchResult instantiate(JsonReader reader) throws Exception {
-            int total = 0;
-            List<ParkingItem> parkingItems = null;
-            int offset = 0;
-            Facets facets = null;
-            ParkingItemSearchParameters parameters;
-            ParkingItemQuery query = null;
+        public ParkingItemSearchResult instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-            while (reader.hasNext()) {
-                String key = reader.nextName();
+            int total = jsonObject.getInt("total");
+            List<ParkingItem> catalogItems = new ArrayMappingFactory<>(new ParkingItem.ParkingItemObjectMappingFactory())
+                    .instantiate(jsonObject.getJSONArray("items").toString());
+            int offset = jsonObject.getInt("total");
+            Facets facets = new Facets.FacetsObjectMappingFactory().instantiate(jsonObject.getJSONObject("aggregation").toString());
+            ParkingItemQuery query = new ParkingItemQuery(new ParkingItemSearchParameters.ParkingItemSearchParametersObjectMappingFactory()
+                    .instantiate(jsonObject.getJSONObject("parameters").toString()));
 
-                switch (key) {
-                    case "total":
-                        total = reader.nextInt();
-                        break;
-                    case "items":
-                        parkingItems = new ArrayMappingFactory<>(new ParkingItem.ParkingItemObjectMappingFactory()).instantiate(reader);
-                        break;
-                    case "offset":
-                        offset = reader.nextInt();
-                        break;
-                    case "aggregation":
-                        facets = new Facets.FacetsObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "parameters":
-                        parameters = new ParkingItemSearchParameters.ParkingItemSearchParametersObjectMappingFactory()
-                                .instantiate(reader);
-                        query = new ParkingItemQuery(parameters);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
 
-            reader.endObject();
+            Assertion.eval(catalogItems != null);
 
-            Assertion.eval(parkingItems != null);
-
+            //TODO: whats happening here ???
             List<ParkingItem> indexedItems = new ArrayList<>();
-            for (int i = 0; i < parkingItems.size(); i++) {
-                indexedItems.add(i + offset, parkingItems.get(i));
+            for (int i = 0; i < catalogItems.size(); i++) {
+                indexedItems.add(i + offset, catalogItems.get(i));
             }
 
-            return new ParkingItemSearchResult(total, parkingItems, facets, query);
+            return new ParkingItemSearchResult(total, catalogItems, facets, query);
         }
     }
 }

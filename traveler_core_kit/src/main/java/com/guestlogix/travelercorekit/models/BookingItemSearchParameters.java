@@ -1,15 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.util.JsonToken.NULL;
 
 public class BookingItemSearchParameters implements Serializable {
     private String searchText;
@@ -61,86 +58,48 @@ public class BookingItemSearchParameters implements Serializable {
 
     static class BookingItemSearchParametersObjectMappingFactory implements ObjectMappingFactory<BookingItemSearchParameters> {
         @Override
-        public BookingItemSearchParameters instantiate(JsonReader reader) throws Exception {
-            String searchText = null;
-            Double minPrice = null;
-            Double maxPrice = null;
+        public BookingItemSearchParameters instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            String searchText = "";
+            if (!jsonObject.isNull("text"))
+                searchText = jsonObject.getString("text");
+
+            Double minPrice = jsonObject.getNullableDouble("minPrice");
+            Double maxPrice = jsonObject.getNullableDouble("maxPrice");
+
             Currency currency = null;
-            PriceRangeFilter priceRangeFilter = null;
-            List<BookingItemCategory> categories = null;
-            Double topLeftLatitude = null;
-            Double topLeftLongitude = null;
-            Double bottomRightLatitude = null;
-            Double bottomRightLongitude = null;
-            BoundingBox boundingBox = null;
-            String city = null;
-            BookingItemSortOrder bookingItemSortOrder = null;
-            BookingItemSortField bookingItemSortField = null;
-            BookingItemSort bookingItemSort = null;
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "text":
-                        searchText = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "topLeftLatitude":
-                        topLeftLatitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "topLeftLongitude":
-                        topLeftLongitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "bottomRightLatitude":
-                        bottomRightLatitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "bottomRightLongitude":
-                        bottomRightLongitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "minPrice":
-                        minPrice = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "maxPrice":
-                        maxPrice = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "city":
-                        city = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "sortField":
-                        String rawSortField = JsonReaderHelper.nextNullableString(reader);
-                        if (rawSortField != null) {
-                            bookingItemSortField = BookingItemSortField.fromString(rawSortField);
-                        }
-                        break;
-                    case "sortOrder":
-                        String rawSortOrder = JsonReaderHelper.nextNullableString(reader);
-                        if (rawSortOrder != null) {
-                            bookingItemSortOrder = BookingItemSortOrder.fromString(rawSortOrder);
-                        }
-                        break;
-                    case "currency":
-                        String code = JsonReaderHelper.nextNullableString(reader);
-                        if (code != null) {
-                            currency = Currency.getInstance(code);
-                        }
-                        break;
-                    case "categories":
-                        if (reader.peek() == NULL) {
-                            categories = new ArrayList<>();
-                            reader.skipValue();
-                        } else {
-                            categories = JsonReaderHelper.readCatalogItemCategoryArray(reader);
-                        }
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-
-                }
+            if (!jsonObject.isNull("currency")) {
+                currency = Currency.getInstance(jsonObject.getString("currency"));
             }
 
-            reader.endObject();
+            List<BookingItemCategory> categories = new ArrayList<>();
+            if (!jsonObject.isNull("categories"))
+                categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+
+            Double topLeftLatitude = jsonObject.getNullableDouble("topLeftLatitude");
+            Double topLeftLongitude = jsonObject.getNullableDouble("topLeftLongitude");
+            Double bottomRightLatitude = jsonObject.getNullableDouble("bottomRightLatitude");
+            Double bottomRightLongitude = jsonObject.getNullableDouble("bottomRightLongitude");
+
+
+            BoundingBox boundingBox = null;
+            PriceRangeFilter priceRangeFilter = null;
+            String city = jsonObject.getString("city");
+
+            BookingItemSortOrder bookingItemSortOrder = null;
+            String rawSortOrder = jsonObject.getString("sortOrder");
+            if (rawSortOrder != null) {
+                bookingItemSortOrder = BookingItemSortOrder.fromString(rawSortOrder);
+            }
+
+            BookingItemSortField bookingItemSortField = null;
+            String rawSortField = jsonObject.getString("sortField");
+            if (rawSortField != null) {
+                bookingItemSortField = BookingItemSortField.fromString(rawSortField);
+            }
+
+            BookingItemSort bookingItemSort = null;
 
             if (currency != null && maxPrice != null && minPrice != null) {
                 Range<Double> range = new Range<>(minPrice, maxPrice);

@@ -1,10 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -38,53 +37,20 @@ public class ParkingItemSearchParameters implements Serializable {
 
     public static class ParkingItemSearchParametersObjectMappingFactory implements ObjectMappingFactory<ParkingItemSearchParameters> {
         @Override
-        public ParkingItemSearchParameters instantiate(JsonReader reader) throws Exception {
-            String airportIATA = null;
-            String startTime = null;
-            String endTime = null;
-            Double topLeftLatitude = null;
-            Double topLeftLongitude = null;
-            Double bottomRightLatitude = null;
-            Double bottomRightLongitude = null;
-            BoundingBox boundingBox = null;
+        public ParkingItemSearchParameters instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "airport":
-                        airportIATA = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "topLeftLatitude":
-                        topLeftLatitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "topLeftLongitude":
-                        topLeftLongitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "bottomRightLatitude":
-                        bottomRightLatitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "bottomRightLongitude":
-                        bottomRightLongitude = JsonReaderHelper.nextNullableDouble(reader);
-                        break;
-                    case "startTime":
-                        startTime = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "endTime":
-                        endTime = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String airportIATA = jsonObject.getNullableString("airport");
+            String startTime = jsonObject.getString("startTime");
+            String endTime = jsonObject.getString("endTime");
+            Double topLeftLatitude = jsonObject.getNullableDouble("topLeftLatitude");
+            Double topLeftLongitude = jsonObject.getNullableDouble("topLeftLongitude");
+            Double bottomRightLatitude = jsonObject.getNullableDouble("bottomRightLatitude");
+            Double bottomRightLongitude = jsonObject.getNullableDouble("bottomRightLongitude");
 
             Range<Date> dateRange = new Range<>(DateHelper.parseISO8601(startTime), DateHelper.parseISO8601(endTime));
 
+            BoundingBox boundingBox = null;
             if (topLeftLatitude != null && topLeftLongitude != null &&
                     bottomRightLatitude != null && bottomRightLongitude != null) {
                 Coordinate topLeftCoordinate = new Coordinate(topLeftLatitude, topLeftLongitude);

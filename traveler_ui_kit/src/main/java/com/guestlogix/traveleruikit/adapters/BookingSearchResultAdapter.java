@@ -88,7 +88,7 @@ public class BookingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                         });
 
                 itemHolder.title.setText(bookingItem.getTitle());
-                itemHolder.price.setText(String.valueOf(bookingItem.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency())));
+                itemHolder.price.setText(String.valueOf(bookingItem.getItemResource().getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency())));
                 itemHolder.itemView.setOnClickListener(v -> {
 
                     if (onBookingSearchItemClickListener != null) {

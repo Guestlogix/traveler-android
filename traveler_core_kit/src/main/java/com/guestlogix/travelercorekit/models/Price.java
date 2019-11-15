@@ -1,8 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
 import androidx.annotation.Nullable;
-import com.guestlogix.travelercorekit.utilities.*;
+
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -75,7 +79,8 @@ public class Price implements Serializable {
         return value * exchangeRates.getRate(currency);
     }
 
-    private static @Nullable Currency commonCurrency(Price lhs, Price rhs) {
+    private static @Nullable
+    Currency commonCurrency(Price lhs, Price rhs) {
         if (lhs.baseCurrency == rhs.baseCurrency) {
             return lhs.baseCurrency;
         } else if (lhs.exchangeEnabled) {
@@ -122,38 +127,13 @@ public class Price implements Serializable {
 
     static class PriceObjectMappingFactory implements ObjectMappingFactory<Price> {
         @Override
-        public Price instantiate(JsonReader reader) throws Exception {
-            double value = 0;
-            Currency baseCurrency = null;
-            boolean exchangeEnabled = false;
-            ExchangeRates rates = null;
+        public Price instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "value":
-                        value = reader.nextDouble();
-                        break;
-                    case "baseCurrency":
-                        String code = reader.nextString();
-                        baseCurrency = Currency.getInstance(code);
-                        break;
-                    case "exchangeEnabled":
-                        exchangeEnabled = reader.nextBoolean();
-                        break;
-                    case "exchangeRates":
-                        rates = new ExchangeRates.ExhangeRatesObjectMappingFactory().instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            double value = jsonObject.getDouble("value");
+            Currency baseCurrency = Currency.getInstance(jsonObject.getString("baseCurrency"));
+            boolean exchangeEnabled = jsonObject.getBoolean("exchangeEnabled");
+            ExchangeRates rates = new ExchangeRates.ExhangeRatesObjectMappingFactory().instantiate(jsonObject.getJSONObject("exchangeRates").toString());
 
             Assertion.eval(baseCurrency != null);
             Assertion.eval(rates != null);

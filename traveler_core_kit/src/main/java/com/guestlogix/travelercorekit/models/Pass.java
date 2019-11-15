@@ -1,17 +1,17 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import androidx.annotation.NonNull;
 
-import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.*;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class Pass implements ProductOffering, Serializable {
+public class Pass implements Serializable {
     private String id;
     private String name;
     private String description;
@@ -24,12 +24,10 @@ public class Pass implements ProductOffering, Serializable {
         this.description = description;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -38,7 +36,6 @@ public class Pass implements ProductOffering, Serializable {
         this.name = name;
     }
 
-    @Override
     public String getId() {
         return id;
     }
@@ -47,40 +44,28 @@ public class Pass implements ProductOffering, Serializable {
         return price;
     }
 
+    public PurchasePass toPurchasePass() {
+        return new PurchasePass(id, name, description, price);
+    }
+
+    //TODO: this must be fixed. we need to remove passes from purchase form and send purchase form along wih passes to order api instead.
+    static List<PurchasePass> toPurchasePassList(List<Pass> passes) {
+        List<PurchasePass> purchasePasses = new ArrayList<>();
+        for (Pass pass : passes) {
+            purchasePasses.add(pass.toPurchasePass());
+        }
+        return purchasePasses;
+    }
+
     static class PassObjectMappingFactory implements ObjectMappingFactory<Pass> {
         @Override
-        public Pass instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String name = null;
-            String description = null;
-            Price price = null;
+        public Pass instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "title":
-                        name = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "description":
-                        description = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "price":
-                        ObjectMappingFactory<Price> p = new Price.PriceObjectMappingFactory();
-                        price = p.instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String id = jsonObject.getString("id");
+            String name = jsonObject.getString("title");
+            String description = jsonObject.getNullableString("description");
+            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("price").toString());
 
             Assertion.eval(id != null);
             Assertion.eval(name != null);

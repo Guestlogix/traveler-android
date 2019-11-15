@@ -12,15 +12,17 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.guestlogix.travelercorekit.models.BookingProduct;
-import com.guestlogix.travelercorekit.models.PartnerOfferingProduct;
+import com.guestlogix.travelercorekit.models.PartnerOffering;
 import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.models.ProductOffering;
 import com.guestlogix.travelercorekit.models.ProductType;
+import com.guestlogix.travelercorekit.models.PurchasePass;
+import com.guestlogix.travelercorekit.models.PurchasedBookingProduct;
+import com.guestlogix.travelercorekit.models.PurchasedPartnerOfferingProduct;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,11 +81,20 @@ public class ProductSummaryFragment extends BaseFragment {
             Product product = products.get(position);
 
             holder.title.setText(product.getTitle());
-            holder.subtitle.setVisibility(View.GONE); // TODO: We can't display the date for this product since we do have it in the model nor the payload.
+            holder.subtitle.setVisibility(View.GONE);
+            //TODO: this is not open closed we should have a intermediate abstraction product type called something like PassableProduct. then here only check if the product is passable if it is we show them.
             if (product.getProductType() == ProductType.BOOKABLE) {
-                holder.recyclerView.setAdapter(new PassAdapter((List<ProductOffering>)(List<?>)((BookingProduct) product).getPasses()));
+                List<PurchasePass> purchasePasses = new ArrayList<>();
+                for (Pass pass : ((PurchasedBookingProduct) product).getPasses()) {
+                    purchasePasses.add(pass.toPurchasePass());
+                }
+                holder.recyclerView.setAdapter(new PassAdapter(purchasePasses));
             } else if (product.getProductType() == ProductType.PARTNER_OFFERING) {
-                holder.recyclerView.setAdapter(new PassAdapter(((PartnerOfferingProduct) product).getProductOfferings()));
+                List<PurchasePass> purchasePasses = new ArrayList<>();
+                for (PartnerOffering partnerOffering : ((PurchasedPartnerOfferingProduct) product).getPartnerOfferings()) {
+                    purchasePasses.add(partnerOffering.toPurchasePass());
+                }
+                holder.recyclerView.setAdapter(new PassAdapter(purchasePasses));
             }
 
             LinearLayoutManager lm = new LinearLayoutManager(ProductSummaryFragment.this.getActivityContext());
@@ -112,9 +123,9 @@ public class ProductSummaryFragment extends BaseFragment {
     }
 
     private class PassAdapter extends RecyclerView.Adapter<PassAdapter.ViewHolder> {
-        List<ProductOffering> passes;
+        List<PurchasePass> passes;
 
-        PassAdapter(List<ProductOffering> passes) {
+        PassAdapter(List<PurchasePass> passes) {
             this.passes = passes;
         }
 
@@ -127,17 +138,16 @@ public class ProductSummaryFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            ProductOffering pass = passes.get(position);
+            PurchasePass purchasePass = passes.get(position);
 
-            holder.title.setText(pass.getName());
-            if (pass.getDescription() == null || pass.getDescription().isEmpty()) {
-                holder.subtitle.setText(pass.getDescription());
+            holder.title.setText(purchasePass.getName());
+            if (purchasePass.getDescription() == null || purchasePass.getDescription().isEmpty()) {
+                holder.subtitle.setText(purchasePass.getDescription());
             } else {
                 holder.subtitle.setVisibility(View.GONE);
             }
 
-            if (pass instanceof Pass)
-                holder.value.setText(((Pass) pass).getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+            holder.value.setText(purchasePass.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
         }
 
         @Override

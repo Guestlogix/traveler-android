@@ -1,10 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.Serializable;
@@ -28,28 +28,14 @@ public class Supplier implements Serializable {
 
     public static class SupplierObjectMappingFactory implements ObjectMappingFactory<Supplier> {
         @Override
-        public Supplier instantiate(JsonReader reader) throws Exception {
-            String name = null;
+        public Supplier instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            String name = jsonObject.getString("name");
+
             Trademark trademark = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                if (key.equals("name")) {
-                    name = reader.nextString();
-                } else if (key.equals("trademark")) {
-                    if (reader.peek() != JsonToken.NULL)
-                        trademark = new Trademark.TrademarkObjectMappingFactory().instantiate(reader);
-                    else
-                        reader.skipValue();
-                } else {
-                    reader.skipValue();
-                }
-            }
-
-            reader.endObject();
+            if (!jsonObject.isNull("trademark"))
+                trademark = new Trademark.TrademarkObjectMappingFactory().instantiate(jsonObject.getJSONObject("trademark").toString());
 
             Assertion.eval(name != null);
 

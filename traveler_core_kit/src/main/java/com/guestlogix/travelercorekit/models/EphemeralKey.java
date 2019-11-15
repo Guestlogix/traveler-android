@@ -1,10 +1,11 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.Base64;
-import android.util.JsonReader;
 
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 
@@ -21,26 +22,9 @@ public class EphemeralKey implements Serializable {
 
     static class EphemeralKeyObjectMappingFactory implements ObjectMappingFactory<EphemeralKey> {
         @Override
-        public EphemeralKey instantiate(JsonReader reader) throws Exception {
-            String rawKey = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "key":
-                        String base64Encoded = reader.nextString();
-                        rawKey = new String(Base64.decode(base64Encoded, Base64.DEFAULT));
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+        public EphemeralKey instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            String rawKey = new String(Base64.decode(jsonObject.getString("key"), Base64.DEFAULT)) ;
 
             Assertion.eval(rawKey != null);
 

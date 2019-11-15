@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.guestlogix.travelercorekit.callbacks.BookingItemDetailsCallback;
+import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistItemChangedCallback;
 import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
@@ -21,8 +21,8 @@ import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
-public class BookingItemDetailsActivity extends AppCompatActivity implements
-        BookingItemDetailsCallback, RetryFragment.InteractionListener, WishlistItemChangedCallback {
+public class CatalogItemDetailsActivity extends AppCompatActivity implements
+        CatalogItemDetailsCallback, RetryFragment.InteractionListener, WishlistItemChangedCallback {
 
     public static final String ARG_PRODUCT = "bookingItem";
 
@@ -66,7 +66,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
         transaction.replace(R.id.booking_item_details_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
-        Traveler.fetchProductDetails(bookingItem, this);
+        Traveler.fetchProductDetails(bookingItem.getItemResource(), this);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onBookingItemDetailsError(Error error) {
+    public void onCatalogItemDetailsError(Error error) {
         Fragment fragment = new RetryFragment();
         FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.booking_item_details_container, fragment);
@@ -96,7 +96,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onBookingItemDetailsSuccess(CatalogItemDetails details) {
+    public void onCatalogItemDetailsSuccess(CatalogItemDetails details) {
         BookingItemDetailsFragment fragment = BookingItemDetailsFragment.newInstance(bookingItem, details);
         fragment.setWishlistItemChangedCallback(this);
         FragmentTransaction transaction = transactionQueue.newTransaction();
@@ -105,7 +105,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
 
         // ActionStrip
 
-        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(bookingItem);
+        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(bookingItem.getItemResource());
         FragmentTransaction stripTransaction = transactionQueue.newTransaction();
         transaction.replace(R.id.actionStripContainerFrameLayout, stripContainerFragment);
         transactionQueue.addTransaction(stripTransaction);

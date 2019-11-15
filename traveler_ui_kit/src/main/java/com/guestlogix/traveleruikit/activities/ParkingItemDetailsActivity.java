@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.guestlogix.travelercorekit.callbacks.BookingItemDetailsCallback;
+import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.ParkingItem;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -20,7 +20,7 @@ import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
 public class ParkingItemDetailsActivity extends AppCompatActivity implements
-        BookingItemDetailsCallback, RetryFragment.InteractionListener {
+        CatalogItemDetailsCallback, RetryFragment.InteractionListener {
 
     public static final String TAG = "ParkingItemDetailsActiv";
     public static final String ARG_PARKING_ITEM = "ParkingItem";
@@ -65,7 +65,7 @@ public class ParkingItemDetailsActivity extends AppCompatActivity implements
         transaction.replace(R.id.parking_item_details_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
-        Traveler.fetchProductDetails(parkingItem, this);
+        Traveler.fetchProductDetails(parkingItem.getItemResource(), this);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ParkingItemDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onBookingItemDetailsError(Error error) {
+    public void onCatalogItemDetailsError(Error error) {
         Fragment fragment = new RetryFragment();
         FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.parking_item_details_container, fragment);
@@ -95,7 +95,7 @@ public class ParkingItemDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onBookingItemDetailsSuccess(CatalogItemDetails details) {
+    public void onCatalogItemDetailsSuccess(CatalogItemDetails details) {
         String s = details.toString();
         Log.d(TAG, "" + s);
         ParkingItemDetailsFragment fragment = ParkingItemDetailsFragment.newInstance(parkingItem, details);
@@ -103,7 +103,7 @@ public class ParkingItemDetailsActivity extends AppCompatActivity implements
         transaction.replace(R.id.parking_item_details_container, fragment);
         transactionQueue.addTransaction(transaction);
 
-        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(parkingItem);
+        ActionStripContainerFragment stripContainerFragment = ActionStripContainerFragment.newInstance(parkingItem.getItemResource());
         FragmentTransaction stripTransaction = transactionQueue.newTransaction();
         transaction.replace(R.id.actionStripContainerFrameLayout, stripContainerFragment);
         transactionQueue.addTransaction(stripTransaction);

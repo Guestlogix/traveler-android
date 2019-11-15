@@ -1,8 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
+import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 
@@ -26,36 +27,14 @@ public class Coordinate implements Serializable {
     static class CoordinateObjectMappingFactory implements ObjectMappingFactory<Coordinate> {
 
         @Override
-        public Coordinate instantiate(JsonReader reader) throws Exception {
-            Double latitude = null;
-            Double longitude = null;
+        public Coordinate instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            //TODO: fix this. we should not let null here. we should change the whole AnyItemMapping and its usecase to fix this.
-            try {
-                reader.beginObject();
+            Double latitude = jsonObject.getDouble("latitude");
+            Double longitude = jsonObject.getDouble("longitude");
 
-                while (reader.hasNext()) {
-                    String key = reader.nextName();
-
-                    switch (key) {
-                        case "latitude":
-                            latitude = reader.nextDouble();
-                            break;
-                        case "longitude":
-                            longitude = reader.nextDouble();
-                            break;
-                    }
-                }
-                reader.endObject();
-
-            } catch (IllegalStateException ex) {
-                reader.skipValue();
-                return null;
-            }
-
-            if (latitude == null && longitude == null) {
-                return null;
-            }
+            Assertion.eval(latitude != null);
+            Assertion.eval(longitude != null);
 
             return new Coordinate(latitude, longitude);
         }

@@ -1,9 +1,8 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.Serializable;
@@ -49,46 +48,19 @@ public class BookingItemSearchResult implements Serializable {
 
     static class BookingItemSearchResultObjectMappingFactory implements ObjectMappingFactory<BookingItemSearchResult> {
         @Override
-        public BookingItemSearchResult instantiate(JsonReader reader) throws Exception {
-            int total = 0;
-            List<BookingItem> catalogItems = null;
+        public BookingItemSearchResult instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            int total = jsonObject.getInt("total");
+            List<BookingItem> catalogItems = new ArrayMappingFactory<>(new BookingItem.BookingItemObjectMappingFactory())
+                    .instantiate(jsonObject.getJSONArray("items").toString());
             int offset = 0;
+            if (!jsonObject.isNull("offset"))
+                offset = jsonObject.getInt("offset");
             List<BookingItem> items;
-            Facets facets = null;
-            BookingItemSearchParameters parameters;
-            BookingItemQuery query = null;
+            Facets facets = new Facets.FacetsObjectMappingFactory().instantiate(jsonObject.getJSONObject("aggregation").toString());
+            BookingItemQuery query = new BookingItemQuery(new BookingItemSearchParameters.BookingItemSearchParametersObjectMappingFactory()
+                    .instantiate(jsonObject.getJSONObject("parameters").toString()));
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "total":
-                        total = reader.nextInt();
-                        break;
-                    case "items":
-                        catalogItems = new ArrayMappingFactory<>(new BookingItem.BookingItemObjectMappingFactory())
-                                .instantiate(reader);
-                        break;
-                    case "offset":
-                        offset = reader.nextInt();
-                        break;
-                    case "aggregation":
-                        facets = new Facets.FacetsObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "parameters":
-                        parameters = new BookingItemSearchParameters.BookingItemSearchParametersObjectMappingFactory()
-                                .instantiate(reader);
-                        query = new BookingItemQuery(parameters);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
 
             Assertion.eval(catalogItems != null);
 

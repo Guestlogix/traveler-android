@@ -5,6 +5,7 @@ import android.util.Log;
 import com.guestlogix.travelercorekit.models.Attribute;
 import com.guestlogix.travelercorekit.models.Payment;
 import com.stripe.android.model.PaymentMethod;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

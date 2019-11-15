@@ -1,59 +1,25 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-
-import androidx.annotation.NonNull;
-
-import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
-public class BookingItem implements CatalogItem, Product {
-    private String id;
+public class BookingItem implements CatalogItem<BookingProduct> {
     private String title;
     private String subTitle;
     private URL imageURL;
-    private Price price;
-    private ProductType productType;
-    private List<BookingItemCategory> categories;
-    private Coordinate coordinate;
-    private ProviderTranslationAttribution providerTranslationAttribution;
-    private Boolean isAvailable;
-    private Boolean isWishlisted;
+    private BookingProduct bookingProduct;
 
     BookingItem(
-            @NonNull String id,
             String title,
             String subTitle,
             URL imageURL,
-            Price price,
-            ProductType productType,
-            List<BookingItemCategory> categories,
-            Coordinate coordinate,
-            ProviderTranslationAttribution providerTranslationAttribution,
-            boolean isAvailable,
-            boolean isWishlisted) {
-        this.id = id;
+            BookingProduct bookingProduct) {
         this.title = title;
         this.subTitle = subTitle;
         this.imageURL = imageURL;
-        this.price = price;
-        this.productType = productType;
-        this.categories = categories;
-        this.coordinate = coordinate;
-        this.providerTranslationAttribution = providerTranslationAttribution;
-        this.isWishlisted = isWishlisted;
-        this.isAvailable = isAvailable;
-    }
-
-    @Override
-    public String getId() {
-        return id;
+        this.bookingProduct = bookingProduct;
     }
 
     @Override
@@ -72,134 +38,27 @@ public class BookingItem implements CatalogItem, Product {
     }
 
     @Override
-    public Price getPrice() {
-        return price;
-    }
-
-    @Override
-    public ProductType getProductType() {
-        return productType;
-    }
-
-    public List<BookingItemCategory> getCategories() {
-        return categories;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public ProviderTranslationAttribution getProviderTranslationAttribution() {
-        return providerTranslationAttribution;
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public Boolean isWishlisted() {
-        return isWishlisted;
-    }
-
-    void setWishlisted(Boolean wishlisted) {
-        isWishlisted = wishlisted;
+    public BookingProduct getItemResource() {
+        return bookingProduct;
     }
 
     static class BookingItemObjectMappingFactory implements ObjectMappingFactory<BookingItem> {
         @Override
-        public BookingItem instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String title = null;
-            String subTitle = null;
+        public BookingItem instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            String title = jsonObject.getNullableString( "title");
+            String subTitle = jsonObject.getNullableString( "subTitle");
             URL thumbnail = null;
-            Price price = null;
-            ProductType productType = null;
-            List<BookingItemCategory> categories = null;
-            Coordinate coordinate = null;
-            ProviderTranslationAttribution providerTranslationAttribution = null;
-            boolean isAvailable = false;
-            boolean isWishlisted = false;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "title":
-                        title = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "subTitle":
-                        subTitle = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "thumbnail":
-                        JsonToken token = reader.peek();
-
-                        if (token == JsonToken.NULL) {
-                            reader.skipValue();
-                            break;
-                        }
-
-                        thumbnail = new URL(reader.nextString());
-                        break;
-                    case "priceStartingAt":
-                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "purchaseStrategy":
-                        productType = ProductType.fromString(reader.nextString());
-                        break;
-                    case "categories":
-                        categories = new ArrayList<>();
-
-                        reader.beginArray();
-
-                        while (reader.hasNext()) {
-                            categories.add(BookingItemCategory.fromString(reader.nextString()));
-                        }
-
-                        reader.endArray();
-                        break;
-                    case "geoLocation":
-                        coordinate = new Coordinate.CoordinateObjectMappingFactory()
-                                .instantiate(reader);
-                        break;
-                    case "providerTranslationAttribution":
-                        providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
-                                instantiate(reader);
-                        break;
-                    case "isAvailable":
-                        isAvailable = reader.nextBoolean();
-                        break;
-                    case "isWishlisted":
-                        isWishlisted = reader.nextBoolean();
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
-
-            Assertion.eval(id != null);
-            Assertion.eval(price != null);
-            Assertion.eval(categories != null);
+            if (!jsonObject.isNull("thumbnail"))
+                thumbnail = new URL(jsonObject.getString("thumbnail"));
+            BookingProduct bookingProduct = new BookingProduct.BookingProductObjectMappingFactory().instantiate(rawResponse);
 
             return new BookingItem(
-                    id,
                     title,
                     subTitle,
                     thumbnail,
-                    price,
-                    productType,
-                    categories,
-                    coordinate,
-                    providerTranslationAttribution,
-                    isAvailable,
-                    isWishlisted);
+                    bookingProduct);
         }
     }
 }

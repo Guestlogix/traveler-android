@@ -17,7 +17,6 @@ public class OrderConfirmationActivity extends AppCompatActivity {
     public static final String ARG_RECEIPT = "ARG_RECEIPT";
     public static final int RESULT_OK_ORDER_CONFIRMED = -2;
     public static final int REQUEST_CODE_ORDER_FLOW = 1;
-    private Receipt receipt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +31,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
             return;
         }
 
-        receipt = (Receipt) extras.getSerializable(ARG_RECEIPT);
+        Receipt receipt = (Receipt) extras.getSerializable(ARG_RECEIPT);
 
         if (receipt == null) {
             Log.e(TAG, "A receipt object is required to run this activity. See ARG_RECEIPT");

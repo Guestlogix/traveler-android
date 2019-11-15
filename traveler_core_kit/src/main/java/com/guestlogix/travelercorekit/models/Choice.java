@@ -1,11 +1,12 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
 
 public class Choice implements Serializable {
@@ -27,29 +28,10 @@ public class Choice implements Serializable {
 
     static class ChoiceObjectMappingFactory implements ObjectMappingFactory<Choice> {
         @Override
-        public Choice instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String value = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "label":
-                        value = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+        public Choice instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            String id = jsonObject.getString("id");
+            String value = jsonObject.getNullableString("label");
 
             Assertion.eval(id != null);
 

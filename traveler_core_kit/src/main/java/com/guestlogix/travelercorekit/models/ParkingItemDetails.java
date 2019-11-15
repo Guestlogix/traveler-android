@@ -1,22 +1,19 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
-
 import androidx.annotation.NonNull;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.UrlArrayMappingFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static android.util.JsonToken.NULL;
 
 public class ParkingItemDetails implements CatalogItemDetails {
     private String id;
@@ -180,147 +177,55 @@ public class ParkingItemDetails implements CatalogItemDetails {
 
     static class ParkingItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
         @Override
-        public ParkingItemDetails instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String title = null;
-            String subtitle = null;
-            String description = null;
-            List<Attribute> information = null;
+        public ParkingItemDetails instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            String id = jsonObject.getString("id");
+            String title = jsonObject.getNullableString("title");
+            String subtitle = jsonObject.getNullableString("subTitle");
+            String description = jsonObject.getNullableString("description");
+
             URL thumbnailURL = null;
-            List<URL> imageURLs = null;
-            List<Location> locations = null;
-            ContactInfo contact = null;
-            Supplier supplier = null;
-            String disclaimer = null;
-            String termsAndConditions = null;
-            Price price = null;
-            Price payableOnline = null;
-            Price payableOnsite = null;
-            ProductType productType = null;
-            List<BookingItemCategory> categories = null;
-            boolean isWishlisted = false;
-            ProviderTranslationAttribution providerTranslationAttribution = null;
-            String startTime = null;
-            String endTime = null;
-            Coordinate coordinate = null;
-
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "title":
-                        title = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "subTitle":
-                        subtitle = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "description":
-                        description = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "information":
-                        if (reader.peek() == NULL) {
-                            information = new ArrayList<>();
-                            reader.skipValue();
-                        } else {
-                            information = new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory())
-                                    .instantiate(reader);
-                        }
-                        break;
-                    case "thumbnail":
-                        JsonToken token = reader.peek();
-
-                        if (token == JsonToken.NULL) {
-                            reader.skipValue();
-                            break;
-                        }
-
-                        thumbnailURL = new URL(reader.nextString());
-                        break;
-                    case "imageUrls":
-                        if (reader.peek() != JsonToken.NULL) {
-                            imageURLs = JsonReaderHelper.readURLArray(reader);
-                        } else {
-                            imageURLs = new ArrayList<>();
-                            reader.skipValue();
-                        }
-                        break;
-                    case "locations":
-                        if (reader.peek() == NULL)
-                            reader.skipValue();
-                        else
-                            locations = new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(reader);
-                        break;
-                    case "contact":
-                        if (reader.peek() == NULL)
-                            reader.skipValue();
-                        else
-                            contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "supplier":
-                        supplier = new Supplier.SupplierObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "disclaimer":
-                        disclaimer = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "termsAndConditions":
-                        termsAndConditions = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "priceStartingAt":
-                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "payableOnline":
-                        payableOnline = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "payableOnsite":
-                        payableOnsite = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "purchaseStrategy":
-                        productType = ProductType.fromString(reader.nextString());
-                        break;
-                    case "categories":
-                        if (reader.peek() == NULL) {
-                            categories = new ArrayList<>();
-                            reader.skipValue();
-                        } else {
-                            categories = JsonReaderHelper.readCatalogItemCategoryArray(reader);
-                        }
-                        break;
-                    case "isWishlisted":
-                        if (reader.peek() == NULL) {
-                            reader.skipValue();
-                        } else {
-                            isWishlisted = reader.nextBoolean();
-                        }
-                        break;
-                    case "providerTranslationAttribution":
-                        if (reader.peek() == NULL) {
-                            reader.skipValue();
-                        } else {
-                            providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
-                                    instantiate(reader);
-                        }
-                        break;
-                    case "startTime":
-                        startTime = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "endTime":
-                        endTime = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "geoLocation":
-                        coordinate = new Coordinate.CoordinateObjectMappingFactory().instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
+            if (!jsonObject.isNull("thumbnail")) {
+                thumbnailURL = new URL(jsonObject.getString("thumbnail"));
             }
 
-            reader.endObject();
+            List<Attribute> information = new ArrayList<>();
+            if (!jsonObject.isNull("information"))
+                information = new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory())
+                        .instantiate(jsonObject.getJSONArray("information").toString());
+
+            List<URL> imageURLs = new ArrayList<>();
+            if (!jsonObject.isNull("imageUrls"))
+                imageURLs = new UrlArrayMappingFactory().instantiate(jsonObject.getJSONArray("imageUrls").toString());
+
+            List<Location> locations = null;
+            if (!jsonObject.isNull("locations"))
+                locations = new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(jsonObject.getJSONArray("locations").toString());
+
+
+            ContactInfo contact = null;
+            if (!jsonObject.isNull("contact"))
+                contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(jsonObject.getJSONObject("contact").toString());
+
+            Supplier supplier = new Supplier.SupplierObjectMappingFactory().instantiate(jsonObject.getJSONObject("supplier").toString());
+            String disclaimer = jsonObject.getNullableString("disclaimer");
+            String termsAndConditions = jsonObject.getNullableString("termsAndConditions");
+            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceStartingAt").toString());
+            Price priceToPayOnline = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceToPayOnline").toString());
+            Price priceToPayOnsite = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceToPayOnsite").toString());
+            ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
+
+            //TODO: does parking even have category !!!!?
+            List<BookingItemCategory> categories = new ArrayList<>();
+            if (!jsonObject.isNull("categories"))
+                categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+
+            boolean isWishlisted = jsonObject.getBoolean("isWishlisted");
+            ProviderTranslationAttribution providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
+                    instantiate(jsonObject.getJSONObject("providerTranslationAttribution").toString());
+            String startTime = jsonObject.getString("startTime");
+            String endTime = jsonObject.getString("endTime");
+            Coordinate coordinate = new Coordinate.CoordinateObjectMappingFactory().instantiate(jsonObject.getJSONObject("geoLocation").toString());
 
             Assertion.eval(id != null);
             Assertion.eval(thumbnailURL != null);
@@ -328,7 +233,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
             Assertion.eval(locations != null);
             Assertion.eval(supplier != null);
             Assertion.eval(price != null);
-            Assertion.eval(payableOnline != null);
+            Assertion.eval(priceToPayOnline != null);
+            Assertion.eval(priceToPayOnsite != null);
             Assertion.eval(productType != null);
             Assertion.eval(categories != null);
 
@@ -348,8 +254,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
                     disclaimer,
                     termsAndConditions,
                     price,
-                    payableOnline,
-                    payableOnsite,
+                    priceToPayOnline,
+                    priceToPayOnsite,
                     productType,
                     categories,
                     isWishlisted,

@@ -1,19 +1,17 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import androidx.annotation.NonNull;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.UrlArrayMappingFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.util.JsonToken.NULL;
 
 public class BookingItemDetails implements CatalogItemDetails {
     private String id;
@@ -138,113 +136,49 @@ public class BookingItemDetails implements CatalogItemDetails {
 
     static class BookingItemDetailsObjectMappingFactory implements ObjectMappingFactory<CatalogItemDetails> {
         @Override
-        public BookingItemDetails instantiate(JsonReader reader) throws Exception {
-            String id = null;
-            String title = null;
-            String description = null;
-            List<Attribute> information = null;
-            List<URL> imageURLs = null;
+        public BookingItemDetails instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+            String id = jsonObject.getString("id");
+            String title = jsonObject.getNullableString("title");
+
+            String description = jsonObject.getNullableString("description");
+
+            List<Attribute> information = new ArrayList<>();
+            if (!jsonObject.isNull("information"))
+                information = new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory())
+                        .instantiate(jsonObject.getJSONArray("information").toString());
+
+            List<URL> imageURLs = new ArrayList<>();
+            if (!jsonObject.isNull("imageUrls"))
+                imageURLs = new UrlArrayMappingFactory().instantiate(jsonObject.getJSONArray("imageUrls").toString());
+
             List<Location> locations = null;
+            if (!jsonObject.isNull("locations"))
+                locations = new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory()).instantiate(jsonObject.getJSONArray("locations").toString());
+
+
             ContactInfo contact = null;
-            Supplier supplier = null;
-            String disclaimer = null;
-            String termsAndConditions = null;
-            Price price = null;
-            ProductType productType = null;
-            List<BookingItemCategory> categories = null;
+            if (!jsonObject.isNull("contact"))
+                contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(jsonObject.getJSONObject("contact").toString());
+
+            Supplier supplier = new Supplier.SupplierObjectMappingFactory().instantiate(jsonObject.getJSONObject("supplier").toString());
+            String disclaimer = jsonObject.getNullableString("disclaimer");
+            String termsAndConditions = jsonObject.getNullableString("termsAndConditions");
+            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceStartingAt").toString());
+            ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
+
+            List<BookingItemCategory> categories = new ArrayList<>();
+            if (!jsonObject.isNull("categories"))
+                categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+
             boolean isWishlisted = false;
-            boolean isAvailable = false;
-            ProviderTranslationAttribution providerTranslationAttribution = null;
+            if (!jsonObject.isNull("isWishlisted"))
+                isWishlisted = jsonObject.getBoolean("isWishlisted");
 
-            reader.beginObject();
+            boolean isAvailable = jsonObject.getBoolean("isAvailable");
 
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "id":
-                        id = reader.nextString();
-                        break;
-                    case "title":
-                        title = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "description":
-                        description = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "information":
-                        if (reader.peek() == NULL) {
-                            information = new ArrayList<>();
-                            reader.skipValue();
-                        } else {
-                            information = new ArrayMappingFactory<>(new Attribute.AttributeObjectMappingFactory())
-                                    .instantiate(reader);
-                        }
-                        break;
-                    case "imageUrls":
-                        if (reader.peek() == NULL) {
-                            imageURLs = new ArrayList<>();
-                            reader.skipValue();
-                        } else {
-                            imageURLs = JsonReaderHelper.readURLArray(reader);
-                        }
-                        break;
-                    case "locations":
-                        if (reader.peek() == NULL)
-                            reader.skipValue();
-                        else
-                            locations = new ArrayMappingFactory<>(new Location.LocationObjectMappingFactory())
-                                    .instantiate(reader);
-                        break;
-                    case "contact":
-                        if (reader.peek() == NULL)
-                            reader.skipValue();
-                        else
-                            contact = new ContactInfo.ContactInfoObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "supplier":
-                        supplier = new Supplier.SupplierObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "disclaimer":
-                        disclaimer = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "termsAndConditions":
-                        termsAndConditions = JsonReaderHelper.nextNullableString(reader);
-                        break;
-                    case "priceStartingAt":
-                        price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-                    case "purchaseStrategy":
-                        productType = ProductType.fromString(reader.nextString());
-                        break;
-                    case "categories":
-                        if (reader.peek() == NULL) {
-                            categories = new ArrayList<>();
-                            reader.skipValue();
-                        } else {
-                            categories = JsonReaderHelper.readCatalogItemCategoryArray(reader);
-                        }
-                        break;
-                    case "isWishlisted":
-                        if (reader.peek() == NULL) {
-                            reader.skipValue();
-                        } else {
-                            isWishlisted = reader.nextBoolean();
-                        }
-                        break;
-                    case "isAvailable":
-                        isAvailable = reader.nextBoolean();
-                        break;
-                    case "providerTranslationAttribution":
-                        providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
-                                instantiate(reader);
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            ProviderTranslationAttribution providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
+                    instantiate(jsonObject.getJSONObject("providerTranslationAttribution").toString());
 
             Assertion.eval(id != null);
             Assertion.eval(imageURLs != null);

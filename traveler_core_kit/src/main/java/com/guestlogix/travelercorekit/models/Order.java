@@ -1,15 +1,15 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-import android.util.JsonToken;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.guestlogix.travelercorekit.utilities.*;
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import java.io.IOException;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -83,87 +83,52 @@ public final class Order implements Serializable {
 
     static class OrderMappingFactory implements ObjectMappingFactory<Order> {
         @Override
-        public Order instantiate(JsonReader reader) throws Exception {
-                String id = null;
-                Price price = null;
-                String orderNumber = null;
-                String statusString = null;
-                String last4DigitsString = null;
-                List<Product> products = null;
-                Date createdDate = null;
-                OrderStatus status = null;
-                CustomerContact contact = null;
+        public Order instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-                reader.beginObject();
+            String id = jsonObject.getString("id");
+            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("amount").toString());
+            String orderNumber = jsonObject.getNullableString("referenceNumber");
+            String statusString = jsonObject.getString("status");
+            String last4DigitsString = jsonObject.getNullableString("last4Digits");
+            List<Product> products = new PurchasedProductListMappingFactory().instantiate(jsonObject.getJSONArray("products").toString());
+            Date createdDate = DateHelper.parseISO8601(jsonObject.getString("createdOn"));
+            CustomerContact contact =  new CustomerContact.CustomerContactObjectMappingFactory().instantiate(jsonObject.getString("customer"));
 
-                while (reader.hasNext()) {
-                    String key = reader.nextName();
+            OrderStatus status = null;
 
-                    switch (key) {
-                        case "id":
-                            id = reader.nextString();
-                            break;
-                        case "amount":
-                            price = new Price.PriceObjectMappingFactory().instantiate(reader);
-                            break;
-                        case "referenceNumber":
-                            orderNumber = JsonReaderHelper.nextNullableString(reader);
-                            break;
-                        case "status":
-                            statusString = reader.nextString();
-                            break;
-                        case "createdOn":
-                            createdDate = DateHelper.parseISO8601(reader.nextString());
-                            break;
-                        case "products":
-                            products = new ArrayMappingFactory<>(new AnyProductMappingFactory()).instantiate(reader);
-                            break;
-                        case "last4Digits":
-                            last4DigitsString = JsonReaderHelper.nextNullableString(reader);
-                            break;
-                        case "customer":
-                            contact = new CustomerContact.CustomerContactObjectMappingFactory().instantiate(reader);
-                            break;
-                        default:
-                            reader.skipValue();
-                            break;
-                    }
-                }
+            Assertion.eval(statusString != null);
 
-                reader.endObject();
+            switch (statusString) {
+                case "Pending":
+                    status = new OrderStatus.Pending();
+                    break;
+                case "Confirmed":
+                    Assertion.eval(last4DigitsString != null);
+                    status = new OrderStatus.Confirmed(new PaymentInfo(last4DigitsString));
+                    break;
+                case "Declined":
+                    Assertion.eval(last4DigitsString != null);
+                    status = new OrderStatus.Declined(new PaymentInfo(last4DigitsString));
+                    break;
+                case "UnderReview":
+                    Assertion.eval(last4DigitsString != null);
+                    status = new OrderStatus.UnderReview(new PaymentInfo(last4DigitsString));
+                    break;
+                case "Cancelled":
+                    Assertion.eval(last4DigitsString != null);
+                    status = new OrderStatus.Cancelled(new PaymentInfo(last4DigitsString));
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown status");
+            }
 
-                Assertion.eval(statusString != null);
+            Assertion.eval(id != null);
+            Assertion.eval(price != null);
+            Assertion.eval(createdDate != null);
+            Assertion.eval(contact != null);
 
-                switch (statusString) {
-                    case "Pending":
-                        status = new OrderStatus.Pending();
-                        break;
-                    case "Confirmed":
-                        Assertion.eval(last4DigitsString != null);
-                        status = new OrderStatus.Confirmed(new PaymentInfo(last4DigitsString));
-                        break;
-                    case "Declined":
-                        Assertion.eval(last4DigitsString != null);
-                        status = new OrderStatus.Declined(new PaymentInfo(last4DigitsString));
-                        break;
-                    case "UnderReview":
-                        Assertion.eval(last4DigitsString != null);
-                        status = new OrderStatus.UnderReview(new PaymentInfo(last4DigitsString));
-                        break;
-                    case "Cancelled":
-                        Assertion.eval(last4DigitsString != null);
-                        status = new OrderStatus.Cancelled(new PaymentInfo(last4DigitsString));
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unknown status");
-                }
-
-                Assertion.eval(id != null);
-                Assertion.eval(price != null);
-                Assertion.eval(createdDate != null);
-                Assertion.eval(contact != null);
-
-                return new Order(id, price, orderNumber, status, products, createdDate, contact);
+            return new Order(id, price, orderNumber, status, products, createdDate, contact);
         }
     }
 }

@@ -18,9 +18,8 @@ import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.PartnerOfferingItem;
 import com.guestlogix.travelercorekit.models.QueryItem;
-import com.guestlogix.travelercorekit.models.QueryType;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
+import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
 import com.guestlogix.traveleruikit.activities.BookingSearchActivity;
 import com.guestlogix.traveleruikit.activities.ParkingActivity;
 import com.guestlogix.traveleruikit.adapters.CatalogSectionAdapter;
@@ -73,15 +72,15 @@ public class CatalogResultFragment extends Fragment implements CatalogSectionAda
     public void onCatalogItemClick(int sectionId, int itemId) {
         CatalogItem item = catalog.getGroups().get(sectionId).getItems().get(itemId);
         if (item instanceof BookingItem) {
-            Intent intent = new Intent(this.getContext(), BookingItemDetailsActivity.class);
-            intent.putExtra(BookingItemDetailsActivity.ARG_PRODUCT, item);
+            Intent intent = new Intent(this.getContext(), CatalogItemDetailsActivity.class);
+            intent.putExtra(CatalogItemDetailsActivity.ARG_PRODUCT, item);
             startActivity(intent);
         } else if (item instanceof QueryItem){
             QueryItem queryItem = (QueryItem) item;
             switch (queryItem.getType()){
                 case BOOKING:
                     Intent searchIntent = new Intent(getContext(), BookingSearchActivity.class);
-                    searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getSearchQuery());
+                    searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getItemResource());
                     startActivity(searchIntent);
                     break;
                 case PARKING:

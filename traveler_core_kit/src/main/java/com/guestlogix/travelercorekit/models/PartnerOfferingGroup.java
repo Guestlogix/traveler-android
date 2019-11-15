@@ -1,10 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
-
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,38 +40,13 @@ public class PartnerOfferingGroup implements Serializable {
 
     static class PartnerOfferingGroupObjectMappingFactory implements ObjectMappingFactory<PartnerOfferingGroup> {
         @Override
-        public PartnerOfferingGroup instantiate(JsonReader reader) throws Exception {
-            String title = null;
-            String subtitle = null;
-            List<PartnerOffering> offerings = null;
-            Price priceStartingAt = null;
+        public PartnerOfferingGroup instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "title":
-                        title = reader.nextString();
-                        break;
-                    case "subTitle":
-                        subtitle = reader.nextString();
-                        break;
-                    case "items":
-                        offerings = new ArrayMappingFactory<PartnerOffering>(new PartnerOffering.PartnerOfferingObjectMappingFactory()).instantiate(reader);
-                        break;
-                    case "priceStartingAt":
-                        priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(reader);
-                        break;
-
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            String title = jsonObject.getString("title");
+            String subtitle = jsonObject.getString("subTitle");
+            List<PartnerOffering> offerings = new ArrayMappingFactory<PartnerOffering>(new PartnerOffering.PartnerOfferingObjectMappingFactory()).instantiate(jsonObject.getJSONArray("items").toString());
+            Price priceStartingAt = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceStartingAt").toString());
 
             Assertion.eval(title != null);
             Assertion.eval(subtitle != null);

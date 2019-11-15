@@ -112,11 +112,11 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 itemHolder.subtitleTextView.setText(bookingItem.getSubtitle());
 
                 Resources resources = itemHolder.titleTextView.getResources();
-                if (bookingItem.isAvailable()) {
+                if (bookingItem.getItemResource().isAvailable()) {
                     String localizedPrice = String.format(
                             Locale.getDefault(),
                             resources.getString(R.string.label_price_per_person),
-                            bookingItem.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+                            bookingItem.getItemResource().getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
                     itemHolder.priceTextView.setText(localizedPrice);
                     itemHolder.notAvailableTextView.setVisibility(View.GONE);
                     itemHolder.imageView.setImageAlpha(ALPHA_OPAQUE);
@@ -187,8 +187,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * @param context context with which to create error dialogs
      */
     private void removeItemFromWishlist(BookingItem bookingItem, Context context) {
-        int indexRemove = removeWishlistedItemFromAdapterById(bookingItem.getId());
-        Traveler.wishlistRemove(bookingItem, result, new WishlistRemoveCallback() {
+        int indexRemove = removeWishlistedItemFromAdapterById(bookingItem.getItemResource().getId());
+        Traveler.wishlistRemove(bookingItem.getItemResource(), result, new WishlistRemoveCallback() {
             @Override
             public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
                 // no-op

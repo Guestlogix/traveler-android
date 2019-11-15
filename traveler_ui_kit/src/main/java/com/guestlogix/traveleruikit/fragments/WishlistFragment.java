@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -12,9 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.BookingItemDetails;
-import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
+import com.guestlogix.traveleruikit.activities.CatalogItemDetailsActivity;
 import com.guestlogix.traveleruikit.adapters.WishlistAdapter;
 
 public class WishlistFragment extends Fragment implements WishlistAdapter.OnItemClickListener{
@@ -48,15 +48,15 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.OnItem
 
     @Override
     public void onWishlistedItemClick(BookingItem bookingItem) {
-        Intent intent = new Intent(this.getContext(), BookingItemDetailsActivity.class);
-        intent.putExtra(BookingItemDetailsActivity.ARG_PRODUCT, bookingItem);
+        Intent intent = new Intent(this.getContext(), CatalogItemDetailsActivity.class);
+        intent.putExtra(CatalogItemDetailsActivity.ARG_PRODUCT, bookingItem);
         startActivityForResult(intent, REQUEST_CODE_ITEM_DETAILS);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE_ITEM_DETAILS && null != data && null != data.getExtras()) {
-            Object object = data.getExtras().get(BookingItemDetailsActivity.ARG_PRODUCT);
+            Object object = data.getExtras().get(CatalogItemDetailsActivity.ARG_PRODUCT);
             boolean isWishlisted = false;
             String id = null;
             if (object instanceof BookingItemDetails) {
@@ -65,8 +65,8 @@ public class WishlistFragment extends Fragment implements WishlistAdapter.OnItem
                 id = bookingItemDetails.getId();
             } else if (object instanceof BookingItem) {
                 BookingItem bookingItem = ((BookingItem) object);
-                isWishlisted = bookingItem.isWishlisted();
-                id = bookingItem.getId();
+                isWishlisted = bookingItem.getItemResource().isWishlisted();
+                id = bookingItem.getItemResource().getId();
             }
 
             if (id != null && !isWishlisted) {

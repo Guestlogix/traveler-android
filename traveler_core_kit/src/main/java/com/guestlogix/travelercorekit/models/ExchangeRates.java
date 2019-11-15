@@ -1,8 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.util.JsonReader;
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 
 import java.io.Serializable;
 
@@ -44,41 +45,14 @@ class ExchangeRates implements Serializable {
 
     static class ExhangeRatesObjectMappingFactory implements ObjectMappingFactory<ExchangeRates> {
         @Override
-        public ExchangeRates instantiate(JsonReader reader) throws Exception {
-            double usd = 0;
-            double cad = 0;
-            double aud = 0;
-            double eur = 0;
-            double gbp = 0;
+        public ExchangeRates instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
-            reader.beginObject();
-
-            while (reader.hasNext()) {
-                String key = reader.nextName();
-
-                switch (key) {
-                    case "usd":
-                        usd = reader.nextDouble();
-                        break;
-                    case "cad":
-                        cad = reader.nextDouble();
-                        break;
-                    case "aud":
-                        aud = reader.nextDouble();
-                        break;
-                    case "eur":
-                        eur = reader.nextDouble();
-                        break;
-                    case "gbp":
-                        gbp = reader.nextDouble();
-                        break;
-                    default:
-                        reader.skipValue();
-                        break;
-                }
-            }
-
-            reader.endObject();
+            double usd = jsonObject.getDouble("usd");
+            double cad = jsonObject.getDouble("cad");
+            double aud = jsonObject.getDouble("aud");
+            double eur = jsonObject.getDouble("eur");
+            double gbp = jsonObject.getDouble("gbp");
 
             Assertion.eval(usd != 0);
             Assertion.eval(cad != 0);
