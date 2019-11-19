@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,10 +23,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
+import com.guestlogix.travelercorekit.callbacks.WishlistItemChangedCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistRemoveCallback;
 import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.BookingItemDetails;
-import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -49,6 +50,7 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
     private ImageButton wishListToggleImageButton;
     private BookingItemDetails bookingItemDetails;
     private BookingItem bookingItem;
+    private WishlistItemChangedCallback wishlistItemChangedCallback;
 
     public static BookingItemDetailsFragment newInstance(BookingItem item, CatalogItemDetails details) {
         Bundle args = new Bundle();
@@ -57,6 +59,10 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
         BookingItemDetailsFragment fragment = new BookingItemDetailsFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setWishlistItemChangedCallback(WishlistItemChangedCallback wishlistItemChangedCallback) {
+        this.wishlistItemChangedCallback = wishlistItemChangedCallback;
     }
 
     @Override
@@ -70,7 +76,7 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
             return null;
         }
 
-        if (args == null || !args.containsKey(ARG_BOOKING_ITEM_DETAILS)) {
+        if (!args.containsKey(ARG_BOOKING_ITEM_DETAILS)) {
             Log.e(TAG, "No CatalogItemDetails in arguments");
             return null;
         }
@@ -179,6 +185,7 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
     public void onWishlistAddSuccess(Product item, CatalogItemDetails itemDetails) {
         bookingItem = (BookingItem) item;
         bookingItemDetails = (BookingItemDetails) itemDetails;
+        wishlistItemChangedCallback.onItemWishlistStateChanged(itemDetails);
     }
 
     @Override
@@ -197,6 +204,9 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
     public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
         bookingItem = (BookingItem) item;
         bookingItemDetails = (BookingItemDetails) itemDetails;
+        if (wishlistItemChangedCallback != null) {
+            wishlistItemChangedCallback.onItemWishlistStateChanged(itemDetails);
+        }
     }
 
     @Override

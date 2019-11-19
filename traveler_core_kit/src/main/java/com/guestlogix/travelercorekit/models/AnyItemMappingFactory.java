@@ -24,6 +24,7 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
         Coordinate coordinate = null;
         ProviderTranslationAttribution providerTranslationAttribution = null;
         boolean isAvailable = false;
+        boolean isWishlisted = false;
 
         reader.beginObject();
 
@@ -78,6 +79,9 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                 case "isAvailable":
                     isAvailable = reader.nextBoolean();
                     break;
+                case "isWishlisted":
+                    isWishlisted = reader.nextBoolean();
+                    break;
                 default:
                     reader.skipValue();
                     break;
@@ -101,7 +105,8 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                         categories,
                         coordinate,
                         providerTranslationAttribution,
-                        isAvailable);
+                        isAvailable,
+                        isWishlisted);
             case PARKING:
                 return new ParkingItem(
                         id,

@@ -1,6 +1,7 @@
 package com.guestlogix.traveleruikit.adapters;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -40,7 +41,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final static int IMAGE_FADE_IN_DURATION_MS = 100;
 
     public interface OnItemClickListener {
-        void onWishlistedItemClick(CatalogItem catalogItemDetails);
+        void onWishlistedItemClick(BookingItem bookingItem);
     }
 
     private WishlistResult result;
@@ -105,17 +106,17 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         switch (holder.getItemViewType()) {
             case WISHLISTED_ITEM_VIEW_TYPE:
                 WishlistedItemViewHolder itemHolder = (WishlistedItemViewHolder) holder;
-                CatalogItem catalogItem = result.getItems().get(position);
+                BookingItem bookingItem = result.getItems().get(position);
 
-                itemHolder.titleTextView.setText(catalogItem.getTitle());
-                itemHolder.subtitleTextView.setText(catalogItem.getSubTitle());
+                itemHolder.titleTextView.setText(bookingItem.getTitle());
+                itemHolder.subtitleTextView.setText(bookingItem.getSubTitle());
 
                 Resources resources = itemHolder.titleTextView.getResources();
-                if (catalogItem.isAvailable()) {
+                if (bookingItem.isAvailable()) {
                     String localizedPrice = String.format(
                             Locale.getDefault(),
                             resources.getString(R.string.label_price_per_person),
-                            catalogItem.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+                            bookingItem.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
                     itemHolder.priceTextView.setText(localizedPrice);
                     itemHolder.notAvailableTextView.setVisibility(View.GONE);
                     itemHolder.imageView.setImageAlpha(ALPHA_OPAQUE);
@@ -128,7 +129,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 itemHolder.imageView.setImageBitmap(null);
                 AssetManager.getInstance().loadImage(
-                        catalogItem.getImageURL(),
+                        bookingItem.getImageURL(),
                         (int) resources.getDimension(R.dimen.thumbnail_width),
                         (int) resources.getDimension(R.dimen.thumbnail_height),
                         holder.hashCode(),
@@ -149,13 +150,13 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 itemHolder.removeTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public void onClick(View view) {
                         new AlertDialog.Builder(itemHolder.removeTextView.getContext())
                                 .setMessage("Are you sure you want to remove this item?")
                                 .setPositiveButton("Remove", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        removeItemFromWishlist(catalogItem);
+                                        removeItemFromWishlist(bookingItem, view.getContext());
                                     }
                                 })
                                 .setNegativeButton("Cancel", null)
@@ -168,7 +169,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     @Override
                     public void onClick(View v) {
                         if (onItemClickListener != null) {
-                            onItemClickListener.onWishlistedItemClick(catalogItem);
+                            onItemClickListener.onWishlistedItemClick(bookingItem);
                         }
                     }
                 });
@@ -179,16 +180,28 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     }
 
-    private void removeItemFromWishlist(CatalogItem catalogItem) {
-        Traveler.wishlistRemove(catalogItem, result, new WishlistRemoveCallback() {
+    /**
+     * Remove the item from the adapter, then calls API to remove the item. If onWishlistRemoveError is called,
+     * the removed item will be reinstated
+     * @param bookingItem the item to be removed from Adapter and API
+     * @param context context with which to create error dialogs
+     */
+    private void removeItemFromWishlist(BookingItem bookingItem, Context context) {
+        int indexRemove = removeWishlistedItemFromAdapterById(bookingItem.getId());
+        Traveler.wishlistRemove(bookingItem, result, new WishlistRemoveCallback() {
             @Override
             public void onWishlistRemoveSuccess(Product item, CatalogItemDetails itemDetails) {
-
+                // no-op
             }
 
             @Override
             public void onWishlistRemoveError(Error error, @Nullable WishlistResult result) {
-
+                addWishlistedItemToAdapter(bookingItem, indexRemove);
+                new AlertDialog.Builder(context)
+                        .setMessage(error.getMessage())
+                        .setNeutralButton("OK", null)
+                        .create()
+                        .show();
             }
         });
     }
@@ -227,12 +240,10 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onWishlistFetchReceive(WishlistResult result, int identifier) {
         this.result = result;
         pagesLoading.remove(identifier);
-        // TODO: Do a better refresh here. i.e. refresh only cells that are in range?
-        // TODO ALVTAG use diffUtil
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                notifyDataSetChanged();
+                notifyItemRangeChanged(identifier * PAGE_SIZE, PAGE_SIZE);
             }
         });
     }
@@ -254,14 +265,25 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return result;
     }
 
-    //TODO ALVTAG this is for when an item is removed from wishlist using CatalogItemDetailsFragment
-    public void removeWishlistedItem(CatalogItem itemToRemove) {
-        for (CatalogItem catalogItem : result.getItems()) {
-
-            if (itemToRemove.getId().equals(catalogItem.getId())) {
-                result.getItems().remove(itemToRemove);
-                return;
-            }
+    /**
+     * Call this method after a successful API call to remove an item from the recyclerView adapter
+     * @param productId the item that was removed from wishlist via API
+     * @return index at which the item was removed from; -1 if not found.
+     */
+    public int removeWishlistedItemFromAdapterById(String productId) {
+        int index = result.remove(productId);
+        if (index != -1) {
+            notifyItemRemoved(index);
         }
+        return index;
+    }
+
+    /**
+     * @param bookingItem item to be added
+     * @param index index that the item shall be added at
+     */
+    private void addWishlistedItemToAdapter(BookingItem bookingItem, int index) {
+        result.add(bookingItem, index);
+        notifyItemInserted(index);
     }
 }

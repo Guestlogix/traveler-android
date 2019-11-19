@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.guestlogix.travelercorekit.callbacks.BookingItemDetailsCallback;
+import com.guestlogix.travelercorekit.callbacks.WishlistItemChangedCallback;
 import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -19,7 +21,8 @@ import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
-public class BookingItemDetailsActivity extends AppCompatActivity implements BookingItemDetailsCallback, RetryFragment.InteractionListener {
+public class BookingItemDetailsActivity extends AppCompatActivity implements
+        BookingItemDetailsCallback, RetryFragment.InteractionListener, WishlistItemChangedCallback {
 
     public static final String ARG_PRODUCT = "bookingItem";
 
@@ -30,7 +33,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements Boo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_catalog_item_details);
+        setContentView(R.layout.activity_booking_item_details);
 
         this.bookingItem = (BookingItem) getIntent().getSerializableExtra(ARG_PRODUCT);
 
@@ -47,18 +50,18 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements Boo
 
         this.transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
 
-        reloadCatalogItemDetails();
+        reloadBookingItemDetails();
     }
 
     @Override
     public void onRetry() {
-        reloadCatalogItemDetails();
+        reloadBookingItemDetails();
     }
 
-    private void reloadCatalogItemDetails() {
+    private void reloadBookingItemDetails() {
         Fragment loadingFragment = new LoadingFragment();
         FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.catalog_item_details_container, loadingFragment);
+        transaction.replace(R.id.booking_item_details_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
         Traveler.fetchProductDetails(bookingItem, this);
@@ -86,15 +89,16 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements Boo
     public void onBookingItemDetailsError(Error error) {
         Fragment fragment = new RetryFragment();
         FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.catalog_item_details_container, fragment);
+        transaction.replace(R.id.booking_item_details_container, fragment);
         transactionQueue.addTransaction(transaction);
     }
 
     @Override
     public void onBookingItemDetailsSuccess(CatalogItemDetails details) {
-        Fragment fragment = BookingItemDetailsFragment.newInstance(bookingItem, details);
+        BookingItemDetailsFragment fragment = BookingItemDetailsFragment.newInstance(bookingItem, details);
+        fragment.setWishlistItemChangedCallback(this);
         FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.catalog_item_details_container, fragment);
+        transaction.replace(R.id.booking_item_details_container, fragment);
         transactionQueue.addTransaction(transaction);
 
         // ActionStrip
@@ -103,5 +107,12 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements Boo
         FragmentTransaction stripTransaction = transactionQueue.newTransaction();
         transaction.replace(R.id.actionStripContainerFrameLayout, stripContainerFragment);
         transactionQueue.addTransaction(stripTransaction);
+    }
+
+    @Override
+    public void onItemWishlistStateChanged(CatalogItemDetails catalogItemDetails){
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(ARG_PRODUCT, catalogItemDetails);
+        setResult(RESULT_OK, resultIntent);
     }
 }

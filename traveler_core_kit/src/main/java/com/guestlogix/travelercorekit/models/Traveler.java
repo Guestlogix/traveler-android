@@ -251,7 +251,7 @@ public class Traveler {
     }
 
     /**
-     * Fetches the details of a catalog item.
+     * Fetches the BookingItemDetails of a catalog item.
      *
      * @param product                the product for which to fetch details
      * @param productDetailsCallback callback methods to be executed once the fetch is complete.
@@ -698,7 +698,7 @@ public class Traveler {
         @Nullable WishlistResult immediateResult = null;
 
         if (null != originalResult) {
-            List<CatalogItem> immediateItems = originalResult.getItems();
+            List<BookingItem> immediateItems = originalResult.getItems();
             immediateItems.remove(item);
             immediateResult = new WishlistResult(
                     originalResult.getSkip(),

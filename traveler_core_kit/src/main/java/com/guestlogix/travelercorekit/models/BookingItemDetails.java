@@ -30,6 +30,7 @@ public class BookingItemDetails implements CatalogItemDetails {
     private ProductType productType;
     private List<ProductItemCategory> categories;
     private boolean isWishlisted;
+    private boolean isAvailable;
     private ProviderTranslationAttribution providerTranslationAttribution;
 
     private BookingItemDetails(
@@ -47,6 +48,7 @@ public class BookingItemDetails implements CatalogItemDetails {
             @NonNull ProductType productType,
             @NonNull List<ProductItemCategory> categories,
             @NonNull boolean isWishlisted,
+            @NonNull boolean isAvailable,
             ProviderTranslationAttribution providerTranslationAttribution) {
         this.id = id;
         this.title = title;
@@ -62,6 +64,7 @@ public class BookingItemDetails implements CatalogItemDetails {
         this.productType = productType;
         this.categories = categories;
         this.isWishlisted = isWishlisted;
+        this.isAvailable = isAvailable;
         this.providerTranslationAttribution = providerTranslationAttribution;
     }
 
@@ -151,6 +154,7 @@ public class BookingItemDetails implements CatalogItemDetails {
             ProductType productType = null;
             List<ProductItemCategory> categories = null;
             boolean isWishlisted = false;
+            boolean isAvailable = false;
             ProviderTranslationAttribution providerTranslationAttribution = null;
 
             reader.beginObject();
@@ -224,6 +228,9 @@ public class BookingItemDetails implements CatalogItemDetails {
                     case "isWishlisted":
                         isWishlisted = reader.nextBoolean();
                         break;
+                    case "isAvailable":
+                        isAvailable = reader.nextBoolean();
+                        break;
                     case "providerTranslationAttribution":
                         providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
                                 instantiate(reader);
@@ -259,6 +266,7 @@ public class BookingItemDetails implements CatalogItemDetails {
                     productType,
                     categories,
                     isWishlisted,
+                    isAvailable,
                     providerTranslationAttribution);
         }
     }
