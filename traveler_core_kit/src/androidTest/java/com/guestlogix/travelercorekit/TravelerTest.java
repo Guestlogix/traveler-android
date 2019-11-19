@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class TravelerTest{
     private static final String TAG = "TravelerTest";
-    private static final String TRAVELLER_ID = "eefda674-bb01-4c6c-b0fa-46f30341bf4f";
+    private static final String TRAVELLER_ID = "517231A8-9934-4579-A268-4700049280FF";
     private static final String KENSINGTON_2H_TOUR_PRODUCT_ID = "ite_hkVh9VhhvV11nk_";
     private static final int PAGINATION_LIMIT = 1000;
 
