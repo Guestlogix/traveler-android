@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -41,8 +42,8 @@ import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
 
 public class BookingItemDetailsFragment extends Fragment implements WishlistAddCallback, WishlistRemoveCallback {
-    private static String ARG_BOOKING_ITEM = "ARG_BOOKING_ITEM";
-    private static String ARG_BOOKING_ITEM_DETAILS = "ARG_BOOKING_ITEM_DETAILS";
+    static String ARG_BOOKING_ITEM = "ARG_BOOKING_ITEM";
+    static String ARG_BOOKING_ITEM_DETAILS = "ARG_BOOKING_ITEM_DETAILS";
     private static String TAG = "BookingItemDetailsFragment";
 
     private WrapContentViewPager catalogItemDetailsPager;
@@ -72,12 +73,12 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
         Bundle args = getArguments();
 
         if (args == null || !args.containsKey(ARG_BOOKING_ITEM_DETAILS)) {
-            Log.e(TAG, "No CatalogItem in arguments");
+            Log.e(TAG, "No BookingItemDetails in arguments");
             return null;
         }
 
-        if (!args.containsKey(ARG_BOOKING_ITEM_DETAILS)) {
-            Log.e(TAG, "No CatalogItemDetails in arguments");
+        if (!args.containsKey(ARG_BOOKING_ITEM)) {
+            Log.e(TAG, "No Booking Item in arguments");
             return null;
         }
 
