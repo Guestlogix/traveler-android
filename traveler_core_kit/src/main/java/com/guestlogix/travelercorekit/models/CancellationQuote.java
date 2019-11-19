@@ -97,7 +97,7 @@ public class CancellationQuote implements Serializable {
 
                     switch (key) {
                         case "quoteExpiresOn":
-                            expirationDate = DateHelper.parseDate(reader.nextString());
+                            expirationDate = DateHelper.parseISO8601(reader.nextString());
                             break;
                         case "id":
                             id = reader.nextString();
