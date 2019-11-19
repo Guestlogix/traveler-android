@@ -90,7 +90,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Booking
 
     @Override
     public void onBookingItemDetailsSuccess(CatalogItemDetails details) {
-        Fragment fragment = BookingItemDetailsFragment.newInstance((BookingItem) product, details);
+        BookingItemDetailsFragment fragment = BookingItemDetailsFragment.newInstance((BookingItem) product, details);
         FragmentTransaction transaction = transactionQueue.newTransaction();
         transaction.replace(R.id.product_details_container, fragment);
         transactionQueue.addTransaction(transaction);

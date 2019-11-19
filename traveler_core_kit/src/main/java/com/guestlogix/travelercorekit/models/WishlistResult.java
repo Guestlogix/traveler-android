@@ -16,9 +16,9 @@ public class WishlistResult implements Serializable {
     @Nullable private Date fromDate;
     private Date toDate;
     private int total;
-    private List<CatalogItem> items;
+    private List<BookingItem> items;
 
-    WishlistResult(int skip, int take, @Nullable Date fromDate, Date toDate, int total, List<CatalogItem> items) {
+    WishlistResult(int skip, int take, @Nullable Date fromDate, Date toDate, int total, List<BookingItem> items) {
         this.skip = skip;
         this.take = take;
         this.fromDate = fromDate;
@@ -47,7 +47,7 @@ public class WishlistResult implements Serializable {
         return total;
     }
 
-    public List<CatalogItem> getItems() {
+    public List<BookingItem> getItems() {
         return items;
     }
 
@@ -64,7 +64,7 @@ public class WishlistResult implements Serializable {
             return null;
         }
 
-        List<CatalogItem> items = new ArrayList<>(this.items);
+        List<BookingItem> items = new ArrayList<>(this.items);
 
         items.addAll(wishlistResult.items);
 
@@ -72,15 +72,15 @@ public class WishlistResult implements Serializable {
     }
 
     /**
-     * @param product item to remove
+     * @param productId Id of the item to remove
      * @return index that product was removed from; -1 if item is not found
      */
-    public int remove(Product product) {
-        Iterator<CatalogItem> iterator = items.iterator();
+    public int remove(String productId) {
+        Iterator<BookingItem> iterator = items.iterator();
         int index = 0;
         while (iterator.hasNext()) {
-            CatalogItem item = iterator.next();
-            if (((BookingItem)item).getId().equals(product.getId())) {
+            BookingItem item = iterator.next();
+            if (item.getId().equals(productId)) {
                 items.remove(item);
                 total--;
                 return index;
@@ -90,7 +90,7 @@ public class WishlistResult implements Serializable {
         return -1;
     }
 
-    public void add(CatalogItem item, int index) {
+    public void add(BookingItem item, int index) {
         items.add(index, item);
         total++;
     }
@@ -103,7 +103,7 @@ public class WishlistResult implements Serializable {
             Date fromDate = null;
             Date toDate = null;
             int total = -1;
-            List<CatalogItem> items = null;
+            List<BookingItem> bookingItems = null;
 
             reader.beginObject();
             while (reader.hasNext()) {
@@ -129,8 +129,19 @@ public class WishlistResult implements Serializable {
                         total = reader.nextInt();
                         break;
                     case "result":
-                        items = new ArrayList<>(new ArrayMappingFactory<>(
+                        // Only bookable items can wishlisted; but AnyItemMappingFactory returns objects of
+                        // interface CatalogItem.
+                        List<? extends CatalogItem> items = new ArrayList<>(new ArrayMappingFactory<>(
                                 new AnyItemMappingFactory()).instantiate(reader));
+                        try {
+                            bookingItems = (List<BookingItem>) items;
+                            for (BookingItem item : bookingItems) {
+                                // /traveler/{id}/wishlist API call doesn't return "isWishlisted" – it is implied
+                                item.setWishlisted(true);
+                            }
+                        } catch (ClassCastException e) {
+                            throw new IllegalStateException("WishlistResult items should only be of BookingItems!");
+                        }
                         break;
                     default:
                         reader.skipValue();
@@ -140,9 +151,9 @@ public class WishlistResult implements Serializable {
 
             reader.endObject();
 
-            Assertion.eval(items != null);
+            Assertion.eval(bookingItems != null);
 
-            return new WishlistResult(skip, take, fromDate, toDate, total, items);
+            return new WishlistResult(skip, take, fromDate, toDate, total, bookingItems);
         }
     }
 }

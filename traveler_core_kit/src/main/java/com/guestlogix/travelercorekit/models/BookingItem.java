@@ -23,6 +23,8 @@ public class BookingItem implements CatalogItem, Product {
     private List<ProductItemCategory> categories;
     private Coordinate coordinate;
     private ProviderTranslationAttribution providerTranslationAttribution;
+    private Boolean isAvailable;
+    private Boolean isWishlisted;
 
     BookingItem(
             @NonNull String id,
@@ -33,7 +35,9 @@ public class BookingItem implements CatalogItem, Product {
             ProductType productType,
             List<ProductItemCategory> categories,
             Coordinate coordinate,
-            ProviderTranslationAttribution providerTranslationAttribution, boolean isAvailable) {
+            ProviderTranslationAttribution providerTranslationAttribution,
+            boolean isAvailable,
+            boolean isWishlisted) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
@@ -43,8 +47,9 @@ public class BookingItem implements CatalogItem, Product {
         this.categories = categories;
         this.coordinate = coordinate;
         this.providerTranslationAttribution = providerTranslationAttribution;
+        this.isWishlisted = isWishlisted;
+        this.isAvailable = isAvailable;
     }
-
 
     @Override
     public String getId() {
@@ -88,6 +93,18 @@ public class BookingItem implements CatalogItem, Product {
         return providerTranslationAttribution;
     }
 
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public Boolean isWishlisted() {
+        return isWishlisted;
+    }
+
+    void setWishlisted(Boolean wishlisted) {
+        isWishlisted = wishlisted;
+    }
+
     static class BookingItemObjectMappingFactory implements ObjectMappingFactory<BookingItem> {
         @Override
         public BookingItem instantiate(JsonReader reader) throws Exception {
@@ -101,6 +118,7 @@ public class BookingItem implements CatalogItem, Product {
             Coordinate coordinate = null;
             ProviderTranslationAttribution providerTranslationAttribution = null;
             boolean isAvailable = false;
+            boolean isWishlisted = false;
 
             reader.beginObject();
 
@@ -155,6 +173,9 @@ public class BookingItem implements CatalogItem, Product {
                     case "isAvailable":
                         isAvailable = reader.nextBoolean();
                         break;
+                    case "isWishlisted":
+                        isWishlisted = reader.nextBoolean();
+                        break;
                     default:
                         reader.skipValue();
                         break;
@@ -177,7 +198,8 @@ public class BookingItem implements CatalogItem, Product {
                     categories,
                     coordinate,
                     providerTranslationAttribution,
-                    isAvailable);
+                    isAvailable,
+                    isWishlisted);
         }
     }
 }

@@ -9,7 +9,7 @@
             tools:context=".activities.BookingItemDetailsActivity">
 
     <FrameLayout
-                android:id="@+id/catalog_item_details_container"
+                android:id="@+id/booking_item_details_container"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:layout_width="match_parent"/>
