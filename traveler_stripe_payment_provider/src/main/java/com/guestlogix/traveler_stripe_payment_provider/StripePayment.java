@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StripePayment implements Payment {
+    public static final String CREDIT_CARD_NUMBER = "Credit card number";
+    public static final String EXPIRY_DATE = "Expiry date";
+    public static final String LAST_FOUR_DIGITS = "Last four digits";
+    public static final String BRAND = "Brand";
     private String paymentMethodId;
     private String lastFourDigits;
     private String expirationMonth;
@@ -40,11 +44,11 @@ public class StripePayment implements Payment {
     @Override
     public List<Attribute> getAttributes() {
         ArrayList<Attribute> attributes = new ArrayList<>();
-        attributes.add(new Attribute("Credit card number", lastFourDigits));
-        attributes.add(new Attribute("Expiry date",
+        attributes.add(new Attribute(CREDIT_CARD_NUMBER, lastFourDigits));
+        attributes.add(new Attribute(EXPIRY_DATE,
                 expirationMonth + "/" + expirationYear));
-        attributes.add(new Attribute("Brand", brand));
-        attributes.add(new Attribute("LastFourDigits", lastFourDigits));
+        attributes.add(new Attribute(BRAND, this.brand));
+        attributes.add(new Attribute(LAST_FOUR_DIGITS, this.lastFourDigits));
         return attributes;
     }
 
