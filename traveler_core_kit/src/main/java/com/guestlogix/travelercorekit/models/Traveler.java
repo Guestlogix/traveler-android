@@ -85,6 +85,7 @@ public class Traveler {
                     Traveler.this.session = null;
                     Traveler.this.applicationContext = null;
                     localInstance = null;
+                    Log.e(TAG, "Could not initialize TravelerSDK: " + authTokenFetchTask.getError().getLocalizedMessage());
                 } else {
                     session.setToken(authTokenFetchTask.getAuthToken());
                 }
