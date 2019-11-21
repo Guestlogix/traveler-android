@@ -6,8 +6,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.guestlogix.travelercorekit.callbacks.PaymentSaveCallback;
 import com.guestlogix.travelercorekit.callbacks.PaymentsFetchCallback;
 import com.guestlogix.travelercorekit.models.Payment;
+import com.guestlogix.travelercorekit.models.PaymentError;
 import com.guestlogix.travelercorekit.models.PaymentManager;
 import com.stripe.android.CustomerSession;
 import com.stripe.android.PaymentConfiguration;
@@ -49,7 +51,7 @@ public class StripePaymentManager implements PaymentManager {
     }
 
     @Override
-    public void savePayment(Payment payment) {
+    public void savePayment(Payment payment, PaymentSaveCallback callback) {
         if (!(payment instanceof StripePayment)) {
             Log.e("StripePaymentManager", "Unknown payment type: " + payment);
             return;
@@ -59,11 +61,15 @@ public class StripePaymentManager implements PaymentManager {
         CustomerSession.getInstance().attachPaymentMethod(((StripePayment) payment).getPaymentMethodId(), new CustomerSession.PaymentMethodRetrievalListener() {
             @Override
             public void onPaymentMethodRetrieved(@NonNull PaymentMethod paymentMethod) {
-                // do nothing
+                if (callback != null)
+                    callback.onPaymentSaveSuccess();
             }
 
             @Override
             public void onError(int errorCode, @NonNull String errorMessage, @Nullable StripeError stripeError) {
+                if (callback != null)
+                    callback.onPaymentSaveError(new PaymentSaveError(errorMessage, stripeError));
+
                 Log.w("StripePaymentManager", errorMessage);
             }
         });

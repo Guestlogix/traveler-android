@@ -54,4 +54,5 @@
     <string name="toggle_wishlist_contentdescription">Toggle Wishlist</string>
     <string name="cancel_order">Cancel order</string>
     <string name="non_refundable">Non Refundable</string>
+    <string name="save_payment">Save Credit Card</string>
 </resources>
