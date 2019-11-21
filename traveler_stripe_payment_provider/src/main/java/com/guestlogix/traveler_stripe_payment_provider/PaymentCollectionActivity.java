@@ -30,7 +30,7 @@ public class PaymentCollectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         stripe = new Stripe(this, Traveler.isSandboxMode() ?
-                BuildConfig.STRIPE_PUBLISHABLE_KEY_DEBUG : BuildConfig.STRIPE_PUBLISHABLE_KEY_RELEASE);
+                BuildConfig.STRIPE_PUBLISHABLE_KEY_SANDBOX : BuildConfig.STRIPE_PUBLISHABLE_KEY_NON_SANDBOX);
 
         setContentView(R.layout.activity_payment_collection);
         setTitle(R.string.title_payment_collection_Activity);
