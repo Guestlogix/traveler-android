@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.guestlogix.travelercorekit.callbacks.PaymentConfirmationCallback;
+import com.guestlogix.travelercorekit.callbacks.PaymentSaveCallback;
 import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Payment;
@@ -48,6 +49,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     private ActionStrip actionStrip;
     private Payment payment;
     private Order order;
+    private boolean savePayment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,8 +172,9 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPaymentSelected(Payment payment) {
+    public void onPaymentSelected(Payment payment, boolean savePayment) {
         this.payment = payment;
+        this.savePayment = savePayment;
 
         if (payment != null) {
             actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
@@ -183,7 +186,23 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     private void onActionStripClick(View _v) {
         actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
         if (payment != null && order != null) {
-            Traveler.processOrder(order, payment, this);
+            if (savePayment) {
+                TravelerUI.getPaymentManager().savePayment(payment, new PaymentSaveCallback() {
+                    @Override
+                    public void onPaymentSaveSuccess() {
+                        Traveler.processOrder(order, payment, OrderSummaryActivity.this);
+                    }
+
+                    @Override
+                    public void onPaymentSaveError(Error error) {
+                        Log.w(TAG, "Error saving payment: " + error.getMessage());
+
+                        Traveler.processOrder(order, payment, OrderSummaryActivity.this);
+                    }
+                });
+            } else {
+                Traveler.processOrder(order, payment, this);
+            }
         }
     }
 
