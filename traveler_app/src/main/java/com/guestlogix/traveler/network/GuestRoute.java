@@ -18,7 +18,7 @@ import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 class GuestRoute {
 
-    private static final String DEFAULT_AUTH_URL = "https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev";
+    public static final String DEFAULT_AUTH_URL = "https://hklkg7c974.execute-api.ca-central-1.amazonaws.com/dev/";
 
     static UrlRequest profile(String requestIdToken, Context context) {
         return new GuestRequestBuilder(context, requestIdToken)
