@@ -226,7 +226,11 @@ public class BookingItemDetails implements CatalogItemDetails {
                         }
                         break;
                     case "isWishlisted":
-                        isWishlisted = reader.nextBoolean();
+                        if (reader.peek() == NULL) {
+                            reader.skipValue();
+                        } else {
+                            isWishlisted = reader.nextBoolean();
+                        }
                         break;
                     case "isAvailable":
                         isAvailable = reader.nextBoolean();

@@ -33,8 +33,10 @@ public class EphemeralKey implements Serializable {
                     case "key":
                         String base64Encoded = reader.nextString();
                         rawKey = new String(Base64.decode(base64Encoded, Base64.DEFAULT));
+                        break;
                     default:
                         reader.skipValue();
+                        break;
                 }
             }
 
