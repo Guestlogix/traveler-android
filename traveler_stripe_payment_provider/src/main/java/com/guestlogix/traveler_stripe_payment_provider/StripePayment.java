@@ -2,11 +2,9 @@ package com.guestlogix.traveler_stripe_payment_provider;
 
 import android.util.Log;
 
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.Attribute;
 import com.guestlogix.travelercorekit.models.Payment;
 import com.stripe.android.model.PaymentMethod;
-import com.stripe.android.model.Token;
 import org.json.JSONException;
 import org.json.JSONObject;
 
