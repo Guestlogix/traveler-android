@@ -3,6 +3,7 @@ package com.guestlogix.traveleruikit.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.models.BookingForm;
 import com.guestlogix.travelercorekit.models.Order;
@@ -26,6 +26,7 @@ import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
 
 public class QuestionsActivity extends AppCompatActivity implements OrderCreateCallback {
+    private static final String TAG = "QuestionsActivity";
     public static final String EXTRA_BOOKING_FORM = "EXTRA_QUESTIONS_ACTIVITY_BOOKING_FORM";
 
     // Views
@@ -47,7 +48,7 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
             Bundle extras = getIntent().getExtras();
 
             if (extras == null || !extras.containsKey(EXTRA_BOOKING_FORM)) {
-                TravelerLog.e("QuestionsActivity requires a BookingForm to operate.");
+                Log.e(TAG, "QuestionsActivity requires a BookingForm to operate.");
                 finish();
                 return;
             }
@@ -57,7 +58,7 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
 
 
         if (bookingForm == null) {
-            TravelerLog.e("QuestionsActivity requires a BookingForm to operate.");
+            Log.e(TAG, "QuestionsActivity requires a BookingForm to operate.");
             finish();
             return;
         }

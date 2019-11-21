@@ -2,18 +2,19 @@ package com.guestlogix.traveleruikit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.models.BookingProduct;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Receipt;
 import com.guestlogix.traveleruikit.R;
 
 public class OrderConfirmationActivity extends AppCompatActivity {
+    private static final String TAG = "OrderConfirmationActivi";
 
     public static final String ARG_RECEIPT = "ARG_RECEIPT";
     public static final int RESULT_OK_ORDER_CONFIRMED = -2;
@@ -27,7 +28,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         if (null == extras || !extras.containsKey(ARG_RECEIPT)) {
-            TravelerLog.e("A receipt object is required to run this activity. See ARG_RECEIPT");
+            Log.e(TAG, "A receipt object is required to run this activity. See ARG_RECEIPT");
             finish();
             return;
         }
@@ -35,7 +36,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         Receipt receipt = (Receipt) extras.getSerializable(ARG_RECEIPT);
 
         if (receipt == null) {
-            TravelerLog.e("A receipt object is required to run this activity. See ARG_RECEIPT");
+            Log.e(TAG, "A receipt object is required to run this activity. See ARG_RECEIPT");
             finish();
             return;
         }

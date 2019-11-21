@@ -1,21 +1,14 @@
 package com.guestlogix.traveleruikit.fragments;
 
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.ViewModelProviders;
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.viewmodels.BookableProductViewModel;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
-
-import java.util.Locale;
 
 /**
  * TODO: This fragment is not yet implemented! It is an exact copy of Bookable Fragment.

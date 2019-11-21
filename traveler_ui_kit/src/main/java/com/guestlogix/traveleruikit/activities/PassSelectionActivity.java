@@ -17,7 +17,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.FetchBookingFormCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
@@ -32,7 +31,6 @@ import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
@@ -48,6 +46,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
         Form.DataSource,
         Form.FormValueChangedListener,
         FetchBookingFormCallback {
+    private static final String TAG = "PassSelectionActivity";
 
     /**
      * Expects a list of Pass objects.
@@ -92,7 +91,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
         }
 
         if (passes == null || product == null) {
-            TravelerLog.e("PassSelectionActivity requires a List<Pass> and a Product to operate.");
+            Log.e(TAG, "PassSelectionActivity requires a List<Pass> and a Product to operate.");
             finish();
             return;
         }
@@ -246,7 +245,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
                     total = total.add(value);
                 }
             } catch (Price.ExchangeException e) {
-                Log.e(this.getLocalClassName(), "Error performing Price arithmetic");
+                Log.e(TAG, "Error performing Price arithmetic");
                 return;
             }
         }
