@@ -2,8 +2,8 @@ package com.guestlogix.travelercorekit.tasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import com.guestlogix.travelercorekit.models.TravelerError;
-import com.guestlogix.travelercorekit.TravelerLog;
+import android.util.Log;
+
 import com.guestlogix.travelercorekit.utilities.Task;
 import com.guestlogix.travelercorekit.utilities.TaskManager;
 
@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class DownloadImageTask extends Task {
+    private static final String TAG = "DownloadImageTask";
 
     private TaskManager mTaskManager = new TaskManager();
     private NetworkTask.Route imageRequest;
@@ -67,7 +68,7 @@ public class DownloadImageTask extends Task {
             return BitmapFactory.decodeStream(bufferedInputStream, null, options);
 
         } catch (IOException e) {
-            TravelerLog.e("Could not decode stream to bitmap %s", e.getMessage());
+            Log.e(TAG, String.format("Could not decode stream to bitmap %s", e.getMessage()));
             return null;
         }
     }

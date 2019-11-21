@@ -27,6 +27,7 @@ import java.util.*;
 import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELER_SDK_ENDPOINT;
 
 public class Router {
+    private static final String TAG = "Router";
     private static final String DEFAULT_ENDPOINT = "https://traveler.rc.guestlogix.io/v1";
 
     public static void setSandBoxMode(boolean isSandboxMode) {
@@ -224,7 +225,7 @@ public class Router {
 
                         return payload;
                     } catch (JSONException e) {
-                        TravelerLog.e("Router.orderCreate() could not create JSONPayloadProvider");
+                        Log.e(TAG, "Router.createOrder() could not create JSONPayloadProvider");
                     }
 
                     return null;
@@ -281,7 +282,7 @@ public class Router {
                             payload.put("cancellationReasonText", cancellationRequest.getExplanation());
                             return payload;
                         } catch (JSONException e) {
-                            TravelerLog.e("Router.cancelOrder() could not create JSONPayloadProvider");
+                            Log.e(TAG, "Router.cancelOrder() could not create JSONPayloadProvider");
                         }
 
                         return null;
@@ -306,7 +307,7 @@ public class Router {
                         payload.put("product_id", product.getId());
                         return payload;
                     } catch (JSONException e) {
-                        TravelerLog.e("Router.wishlistAdd() could not create JSONPayloadProvider");
+                        Log.e(TAG, "Router.wishlistAdd() could not create JSONPayloadProvider");
                     }
                     return null;
                 })
