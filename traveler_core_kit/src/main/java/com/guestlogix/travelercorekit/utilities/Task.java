@@ -1,11 +1,12 @@
 package com.guestlogix.travelercorekit.utilities;
 
-import com.guestlogix.travelercorekit.TravelerLog;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public abstract class Task implements TaskObserver {
+    private static final String TAG = "Task";
 
     public enum State {
         READY, RUNNING, FINISHED
@@ -50,7 +51,7 @@ public abstract class Task implements TaskObserver {
             try {
                 semaphore.acquire();
             } catch (InterruptedException e) {
-                TravelerLog.e("Could not acquire lock for dependencies. Will abort task.");
+                Log.e(TAG, "Could not acquire lock for dependencies. Will abort task.");
                 cancelled = true;
                 setState(State.FINISHED);
                 return;
@@ -104,12 +105,12 @@ public abstract class Task implements TaskObserver {
 
     final public void addDependency(Task task) {
         if (state != State.READY) {
-            TravelerLog.e("Cannot add dependency when task has already started or finished.");
+            Log.e(TAG, "Cannot add dependency when task has already started or finished.");
             return;
         }
 
         if (task.getState() != State.READY) {
-            TravelerLog.e("Dependent task must not have been started or finished.");
+            Log.e(TAG, "Dependent task must not have been started or finished.");
             return;
         }
 
@@ -119,12 +120,12 @@ public abstract class Task implements TaskObserver {
 
     final public void removeDependency(Task task) {
         if (state != State.READY) {
-            TravelerLog.e("Cannot remove dependency when task has already started or finished.");
+            Log.e(TAG, "Cannot remove dependency when task has already started or finished.");
             return;
         }
 
         if (task.getState() == State.READY) {
-            TravelerLog.e("Dependent task must not have been started or finished.");
+            Log.e(TAG, "Dependent task must not have been started or finished.");
             return;
         }
 
