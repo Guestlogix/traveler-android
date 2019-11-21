@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.Router;
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.callbacks.BookingItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.BookingSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.CancellationCallback;
@@ -40,7 +39,7 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 
 public class Traveler {
-    private static String TAG = "Traveler";
+    private static final String TAG = "Traveler";
     private static Traveler localInstance;
 
     private TaskManager taskManager = new TaskManager();
@@ -56,9 +55,9 @@ public class Traveler {
      */
     public static void initialize(String apiKey, Context applicationContext, boolean isSandboxMode) {
         if (localInstance != null) {
-            TravelerLog.e("SDK already initialized");
+            Log.e(TAG, "SDK already initialized");
         } else if (TextUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase("null")) {
-            TravelerLog.e("SDK cannot be initialized with an empty API key!");
+            Log.e(TAG, "SDK cannot be initialized with an empty API key!");
         } else {
             localInstance = new Traveler(apiKey, applicationContext, isSandboxMode);
         }
@@ -142,7 +141,7 @@ public class Traveler {
             protected void main() {
                 if (null != searchFlightTask.getError()) {
                     flightSearchCallback.onFlightSearchError(searchFlightTask.getError());
-                    TravelerLog.e(searchFlightTask.getError().getMessage());
+                    Log.e(TAG, searchFlightTask.getError().getMessage());
                 } else {
                     flightSearchCallback.onFlightSearchSuccess(searchFlightTask.getResource());
                 }
@@ -177,7 +176,7 @@ public class Traveler {
             protected void main() {
                 if (null != searchGroupTask.getError()) {
                     catalogSearchCallback.onCatalogError(searchGroupTask.getError());
-                    TravelerLog.e(searchGroupTask.getError().getMessage());
+                    Log.e(TAG, searchGroupTask.getError().getMessage());
                 } else {
                     catalogSearchCallback.onCatalogSuccess(searchGroupTask.getResource());
                 }
@@ -209,7 +208,7 @@ public class Traveler {
             protected void main() {
                 if (null != searchBookingTask.getError()) {
                     bookingSearchCallback.onBookingSearchError(searchBookingTask.getError());
-                    TravelerLog.e(searchBookingTask.getError().getMessage());
+                    Log.e(TAG, searchBookingTask.getError().getMessage());
                 } else {
                     bookingSearchCallback.onBookingSearchSuccess(searchBookingTask.getResource());
                 }
@@ -241,7 +240,7 @@ public class Traveler {
             protected void main() {
                 if (null != searchBookingTask.getError()) {
                     parkingSearchCallback.onParkingSearchError(searchBookingTask.getError());
-                    TravelerLog.e(searchBookingTask.getError().getMessage());
+                    Log.e(TAG, searchBookingTask.getError().getMessage());
                 } else {
                     parkingSearchCallback.onParkingSearchSuccess(searchBookingTask.getResource());
                 }
@@ -290,8 +289,7 @@ public class Traveler {
             protected void main() {
                 if (null != finalCatalogItemDetailsTask.getError()) {
                     productDetailsCallback.onBookingItemDetailsError(finalCatalogItemDetailsTask.getError());
-                    // TODO: Stop using TravelerLog completely
-                    TravelerLog.e(finalCatalogItemDetailsTask.getError().getMessage());
+                    Log.e(TAG, finalCatalogItemDetailsTask.getError().getMessage());
                 } else {
                     productDetailsCallback.onBookingItemDetailsSuccess(finalCatalogItemDetailsTask.getResource());
                 }
@@ -339,7 +337,7 @@ public class Traveler {
             protected void main() {
                 if (null != fetchAvailabilitiesTask.getError()) {
                     checkAvailabilityCallback.onAvailabilityError(fetchAvailabilitiesTask.getError());
-                    TravelerLog.e(fetchAvailabilitiesTask.getError().getMessage());
+                    Log.e(TAG, fetchAvailabilitiesTask.getError().getMessage());
                 } else {
                     checkAvailabilityCallback.onAvailabilitySuccess(fetchAvailabilitiesTask.getResource());
                 }
@@ -375,7 +373,7 @@ public class Traveler {
             protected void main() {
                 if (null != fetchPassesTask.getError()) {
                     fetchPassesCallback.onPassFetchError(fetchPassesTask.getError());
-                    TravelerLog.e(fetchPassesTask.getError().getMessage());
+                    Log.e(TAG, fetchPassesTask.getError().getMessage());
                 } else {
                     fetchPassesCallback.onPassFetchSuccess(fetchPassesTask.getResource());
                 }
@@ -426,7 +424,7 @@ public class Traveler {
             protected void main() {
                 if (null != fetchPurchaseFormTask.getError()) {
                     fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
-                    TravelerLog.e(fetchPurchaseFormTask.getError().getMessage());
+                    Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
                 } else {
                     fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, passes, fetchPurchaseFormTask.getResource()));
                 }
@@ -459,7 +457,7 @@ public class Traveler {
             protected void main() {
                 if (null != createOrderTask.getError()) {
                     orderCreateCallback.onOrderCreateFailure(createOrderTask.getError());
-                    TravelerLog.e(createOrderTask.getError().getMessage());
+                    Log.e(TAG, createOrderTask.getError().getMessage());
                 } else {
                     orderCreateCallback.onOrderCreateSuccess(createOrderTask.getResource());
                 }
@@ -491,7 +489,7 @@ public class Traveler {
             protected void main() {
                 if (null != processOrderTask.getError()) {
                     processOrderCallback.onOrderProcessError(processOrderTask.getError());
-                    TravelerLog.e(processOrderTask.getError().getMessage());
+                    Log.e(TAG, processOrderTask.getError().getMessage());
                 } else {
                     Receipt receipt = new Receipt(processOrderTask.getResource(), payment);
                     processOrderCallback.onOrderProcessSuccess(receipt);
