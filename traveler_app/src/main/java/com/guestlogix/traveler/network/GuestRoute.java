@@ -1,8 +1,8 @@
 package com.guestlogix.traveler.network;
 
 import android.content.Context;
+import android.util.Log;
 
-import com.guestlogix.travelercorekit.TravelerLog;
 import com.guestlogix.travelercorekit.UrlRequest;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import com.guestlogix.travelercorekit.utilities.TravelerPrefs;
@@ -17,7 +17,7 @@ import static com.guestlogix.travelercorekit.utilities.TravelerPrefs.Key.TRAVELE
 import static com.guestlogix.travelercorekit.utilities.UrlHelper.urlEncodeUTF8;
 
 class GuestRoute {
-
+    private static final String TAG = "GuestRoute";
     private static final String DEFAULT_AUTH_URL = "https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev";
 
     static UrlRequest profile(String requestIdToken, Context context) {
@@ -70,7 +70,7 @@ class GuestRoute {
 
                 return new URL(sb.toString());
             } catch (MalformedURLException e) {
-                TravelerLog.e("Bad URL: %s", url + path);
+                Log.e(TAG, String.format("Bad URL: %s", url + path));
                 return null;
             }
         }
