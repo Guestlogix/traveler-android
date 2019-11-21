@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -38,9 +40,11 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private PaymentsAdapter adapter;
     private Button addCardBtn;
+    private CheckBox savePaymentCheckbox;
 
     // Data
     private ArrayList<Payment> payments;
+    private ArrayList<Payment> savedPayments;
 
     public BillingInformationCollectionFragment() {
         // Do nothing
@@ -50,9 +54,11 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.payments = new ArrayList<>();
+        this.savedPayments = new ArrayList<>();
 
         if (null != savedInstanceState && savedInstanceState.containsKey(BUNDLE_PAYMENT)) {
             this.payments = (ArrayList<Payment>) savedInstanceState.getSerializable(BUNDLE_PAYMENT);
+            this.savedPayments = (ArrayList<Payment>) savedInstanceState.getSerializable(BUNDLE_PAYMENT);
         }
     }
 
@@ -72,6 +78,22 @@ public class BillingInformationCollectionFragment extends BaseFragment {
 
         addCardBtn = view.findViewById(R.id.button_orderSummary_addCard);
         addCardBtn.setOnClickListener(this::onAddPaymentButtonClick);
+
+        savePaymentCheckbox = view.findViewById(R.id.checkbox_billingCollection_savePayment);
+        savePaymentCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (adapter.selectedIndex == -1) {
+                    return;
+                }
+
+                Payment payment = payments.get(adapter.selectedIndex);
+
+                if (payment != null) {
+                    setSelectedPayment(payment);
+                }
+            }
+        });
 
         if (!payments.isEmpty()) {
             addCardBtn.setVisibility(View.GONE);
@@ -102,8 +124,12 @@ public class BillingInformationCollectionFragment extends BaseFragment {
     }
 
     private void setSelectedPayment(Payment payment) {
+        boolean isPreviouslySaved = savedPayments.contains(payment);
+
+        savePaymentCheckbox.setVisibility(isPreviouslySaved ? View.INVISIBLE : View.VISIBLE);
+
         if (onPaymentMethodChangeListener != null) {
-            onPaymentMethodChangeListener.onPaymentSelected(payment);
+            onPaymentMethodChangeListener.onPaymentSelected(payment, savePaymentCheckbox.isChecked() && !isPreviouslySaved);
         }
     }
 
@@ -146,7 +172,7 @@ public class BillingInformationCollectionFragment extends BaseFragment {
      * Callback interface for payment change events
      */
     public interface OnPaymentMethodChangeListener {
-        void onPaymentSelected(Payment payment);
+        void onPaymentSelected(Payment payment, boolean savePayment);
     }
 
     private void onAddPaymentButtonClick(View _button) {

@@ -27,6 +27,13 @@
             tools:listitem="@layout/item_label_value"
             tools:itemCount="2"/>
 
+    <CheckBox
+            android:id="@+id/checkbox_billingCollection_savePayment"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/save_payment"
+            android:layout_margin="@dimen/margin_default"/>
+
     <com.google.android.material.button.MaterialButton
             android:id="@+id/button_orderSummary_addCard"
             android:layout_width="match_parent"

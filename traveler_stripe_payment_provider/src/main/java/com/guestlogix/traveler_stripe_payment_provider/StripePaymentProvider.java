@@ -9,14 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.guestlogix.travelercorekit.callbacks.PaymentConfirmationCallback;
-import com.guestlogix.travelercorekit.models.Payment;
 import com.guestlogix.travelercorekit.models.PaymentError;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.PaymentProvider;
 import com.stripe.android.ApiResultCallback;
 import com.stripe.android.PaymentIntentResult;
 import com.stripe.android.Stripe;
-import com.stripe.android.model.ConfirmPaymentIntentParams;
 
 public class StripePaymentProvider implements PaymentProvider {
     private static String TAG = "StripePaymentProvider";
@@ -56,12 +54,13 @@ public class StripePaymentProvider implements PaymentProvider {
     }
 
     private Stripe stripeInstance = null;
+
     private Stripe getStripeInstance(Context context) {
         if (stripeInstance != null)
             return stripeInstance;
 
         stripeInstance = new Stripe(context, Traveler.isSandboxMode() ?
-                BuildConfig.STRIPE_PUBLISHABLE_KEY_DEBUG : BuildConfig.STRIPE_PUBLISHABLE_KEY_RELEASE);
+                BuildConfig.STRIPE_PUBLISHABLE_KEY_SANDBOX : BuildConfig.STRIPE_PUBLISHABLE_KEY_NON_SANDBOX);
         return stripeInstance;
     }
 }

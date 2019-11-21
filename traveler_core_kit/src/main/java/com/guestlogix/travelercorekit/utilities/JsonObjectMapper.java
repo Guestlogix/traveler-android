@@ -32,6 +32,7 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
 
             callback.onSuccess(model);
         } catch (Exception e) {
+            e.printStackTrace();
             callback.onError(new ObjectMappingError(objectMappingFactory, e));
         }
     }

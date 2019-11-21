@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.guestlogix.travelercorekit.callbacks.PaymentConfirmationCallback;
+import com.guestlogix.travelercorekit.callbacks.PaymentSaveCallback;
 import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.Payment;
@@ -28,7 +29,7 @@ import com.guestlogix.traveleruikit.fragments.BillingInformationCollectionFragme
 import com.guestlogix.traveleruikit.fragments.ProductSummaryFragment;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.ARG_RECEIPT;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
@@ -44,10 +45,11 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     public static final String EXTRA_PAYMENTS = "ORDER_SUMMARY_ACTIVITY_EXTRA_PAYMENTS";
     public static final int CARD_REQUEST = 233;
 
-    private List<Payment> paymentList;
+    private ArrayList<Payment> paymentList;
     private ActionStrip actionStrip;
     private Payment payment;
     private Order order;
+    private boolean savePayment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,8 @@ public class OrderSummaryActivity extends AppCompatActivity implements
             return;
         }
 
+        paymentList = (ArrayList<Payment>) extras.getSerializable(EXTRA_PAYMENTS);
+
         order = (Order) extras.getSerializable(EXTRA_ORDER);
 
         // Product Summary.
@@ -69,6 +73,8 @@ public class OrderSummaryActivity extends AppCompatActivity implements
 
         BillingInformationCollectionFragment billingInformationCollectionFragment =
                 (BillingInformationCollectionFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_orderSummary_billingInformation);
+
+        billingInformationCollectionFragment.setPayments(paymentList);
 
         actionStrip = findViewById(R.id.actionStrip_orderSummary);
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
@@ -170,8 +176,9 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPaymentSelected(Payment payment) {
+    public void onPaymentSelected(Payment payment, boolean savePayment) {
         this.payment = payment;
+        this.savePayment = savePayment;
 
         if (payment != null) {
             actionStrip.changeState(ActionStrip.ActionStripState.ENABLED);
@@ -183,7 +190,23 @@ public class OrderSummaryActivity extends AppCompatActivity implements
     private void onActionStripClick(View _v) {
         actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
         if (payment != null && order != null) {
-            Traveler.processOrder(order, payment, this);
+            if (savePayment) {
+                TravelerUI.getPaymentManager().savePayment(payment, new PaymentSaveCallback() {
+                    @Override
+                    public void onPaymentSaveSuccess() {
+                        Traveler.processOrder(order, payment, OrderSummaryActivity.this);
+                    }
+
+                    @Override
+                    public void onPaymentSaveError(Error error) {
+                        Log.w(TAG, "Error saving payment: " + error.getMessage());
+
+                        Traveler.processOrder(order, payment, OrderSummaryActivity.this);
+                    }
+                });
+            } else {
+                Traveler.processOrder(order, payment, this);
+            }
         }
     }
 
