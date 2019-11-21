@@ -1,9 +1,11 @@
 package com.guestlogix.traveleruikit;
 
-import com.guestlogix.travelercorekit.TravelerLog;
+import android.util.Log;
+
 import com.guestlogix.travelercorekit.models.Currency;
 
 public class TravelerUI {
+    private static final String TAG = "TravelerUI";
     private static TravelerUI localInstance;
 
     private PaymentProvider mPaymentProvider;
@@ -20,7 +22,7 @@ public class TravelerUI {
 
     public static void initialize(PaymentProvider paymentProvider, Currency preferredCurrency) {
         if (localInstance != null) {
-            TravelerLog.e("SDK already initialized");
+            Log.e(TAG, "SDK already initialized");
         } else {
             localInstance = new TravelerUI(paymentProvider, preferredCurrency);
         }
@@ -28,7 +30,7 @@ public class TravelerUI {
 
     public static PaymentProvider getPaymentProvider() {
         if (localInstance == null) {
-            TravelerLog.e("SDK not initialized");
+            Log.e(TAG, "SDK not initialized");
             return null;
         }
 
@@ -37,7 +39,7 @@ public class TravelerUI {
 
     public static Currency getPreferredCurrency() {
         if (localInstance == null) {
-            TravelerLog.e("SDK not initialized");
+            Log.e(TAG, "SDK not initialized");
             return null;
         }
 
@@ -46,7 +48,7 @@ public class TravelerUI {
 
     public static void setPreferredCurrency(Currency currency) {
         if (localInstance == null) {
-            TravelerLog.e("SDK not initialized");
+            Log.e(TAG, "SDK not initialized");
             return;
         }
 
