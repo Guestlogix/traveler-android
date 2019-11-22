@@ -478,7 +478,8 @@ public class Traveler {
             protected void main() {
                 if (null != processOrderTask.getError()) {
                     processOrderCallback.onOrderProcessError(processOrderTask.getError());
-                    Log.e(TAG, processOrderTask.getError().getMessage());
+                    String message = processOrderTask.getError().getMessage();
+                    Log.e(TAG, message != null ? message : "unknown processOrder");
                 } else {
                     Receipt receipt = new Receipt(processOrderTask.getResource(), payment);
                     processOrderCallback.onOrderProcessSuccess(receipt);
