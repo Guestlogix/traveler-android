@@ -44,6 +44,7 @@ public class Traveler {
     private TaskManager orderSerialTaskManager = new TaskManager(TaskManager.Mode.SERIAL);
     private Session session;
     private Context applicationContext;
+    private static boolean isSandboxMode = false;
 
     /**
      * Initializes the SDK.
@@ -68,7 +69,7 @@ public class Traveler {
     private Traveler(String apiKey, Context applicationContext, boolean isSandboxMode) {
         this.session = new Session(apiKey);
         this.applicationContext = applicationContext;
-        Router.setSandBoxMode(isSandboxMode);
+        Traveler.isSandboxMode = isSandboxMode;
 
         //read token from disk
         SessionBeginTask sessionBeginTask = new SessionBeginTask(this.session, applicationContext);
@@ -115,6 +116,10 @@ public class Traveler {
             return false;
         }
         return true;
+    }
+
+    public static boolean isSandboxMode() {
+        return isSandboxMode;
     }
 
     public static void identify(String identifier) {
