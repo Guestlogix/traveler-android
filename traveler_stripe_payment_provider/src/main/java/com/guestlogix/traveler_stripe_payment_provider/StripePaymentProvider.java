@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.guestlogix.travelercorekit.callbacks.PaymentConfirmationCallback;
 import com.guestlogix.travelercorekit.models.Payment;
 import com.guestlogix.travelercorekit.models.PaymentError;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.PaymentProvider;
 import com.stripe.android.ApiResultCallback;
 import com.stripe.android.PaymentIntentResult;
@@ -59,7 +60,8 @@ public class StripePaymentProvider implements PaymentProvider {
         if (stripeInstance != null)
             return stripeInstance;
 
-        stripeInstance = new Stripe(context, BuildConfig.STRIPE_PUBLISHABLE_KEY);
+        stripeInstance = new Stripe(context, Traveler.isSandboxMode() ?
+                BuildConfig.STRIPE_PUBLISHABLE_KEY_DEBUG : BuildConfig.STRIPE_PUBLISHABLE_KEY_RELEASE);
         return stripeInstance;
     }
 }

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.guestlogix.travelercorekit.models.Payment;
+import com.guestlogix.travelercorekit.models.Traveler;
 import com.stripe.android.ApiResultCallback;
 import com.stripe.android.Stripe;
 import com.stripe.android.model.Card;
@@ -28,7 +29,8 @@ public class PaymentCollectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        stripe = new Stripe(this, BuildConfig.STRIPE_PUBLISHABLE_KEY);
+        stripe = new Stripe(this, Traveler.isSandboxMode() ?
+                BuildConfig.STRIPE_PUBLISHABLE_KEY_DEBUG : BuildConfig.STRIPE_PUBLISHABLE_KEY_RELEASE);
 
         setContentView(R.layout.activity_payment_collection);
         setTitle(R.string.title_payment_collection_Activity);
