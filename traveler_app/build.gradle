@@ -10,17 +10,26 @@ android {
         versionCode 8
         versionName "0.0.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    signingConfigs {
+        debug {
+            storeFile file("../upload-keystore.jks")
+            storePassword '1234567890'
+            keyAlias 'upload'
+            keyPassword '1234567890'
+        }
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "TRAVELER_API_KEY", "\""+getReleaseTravelerAPIKey()+"\"")
             buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\""+getReleaseGoogleSignInClientID()+"\"")
         }
 
         debug {
-            minifyEnabled true
+            minifyEnabled false
             buildConfigField("String", "TRAVELER_API_KEY", "\""+getDebugTravelerAPIKey()+"\"")
             buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\""+getDebugGoogleSignInClientID()+"\"")
         }
@@ -118,6 +127,8 @@ dependencies {
 
     // Google Auth
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
+    implementation 'com.android.support:multidex:1.0.3'
 }
 repositories {
     mavenCentral()
