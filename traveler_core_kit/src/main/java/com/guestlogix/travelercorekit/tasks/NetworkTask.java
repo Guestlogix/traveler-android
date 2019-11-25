@@ -1,9 +1,13 @@
 package com.guestlogix.travelercorekit.tasks;
 
 import android.util.Log;
+
+import com.guestlogix.travelercorekit.BuildConfig;
 import com.guestlogix.travelercorekit.utilities.InputStreamHelper;
 import com.guestlogix.travelercorekit.utilities.Task;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,14 +24,38 @@ public class NetworkTask extends Task {
 
     public interface Route {
         enum Method {
-            GET, POST, PUT, DELETE, PATCH
+            GET("GET", false),
+            POST("POST", true),
+            PUT("PUT", true),
+            DELETE("DELETE", false),
+            PATCH("PATCH", true);
+
+            private String value;
+            private boolean doOutput;
+
+            Method(String value, Boolean doOutput) {
+                this.value = value;
+                this.doOutput = doOutput;
+            }
+
+            public String getValue() {
+                return value;
+            }
+
+            public boolean isDoOutput() {
+                return doOutput;
+            }
         }
 
         Method getMethod();
+
         URL getURL() throws MalformedURLException;
+
         Map<String, String> getHeaders();
-        void onProvidePayload(OutputStream stream);
+
         Error transformError(NetworkTaskError error);
+
+        void onProvidePayload(OutputStream stream);
     }
 
     public interface ResponseHandler {
@@ -79,9 +107,6 @@ public class NetworkTask extends Task {
 
         HttpURLConnection urlConnection = null;
 
-        // TODO: Better logging
-        Log.d("NetworkTask", "URL: " + url.toString());
-
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -101,30 +126,15 @@ public class NetworkTask extends Task {
 
             // HTTP Method
 
-            switch (route.getMethod()) {
-                case GET:
-                    urlConnection.setRequestMethod("GET");
-                    urlConnection.setDoOutput(false);
-                    break;
-                case PUT:
-                    urlConnection.setRequestMethod("PUT");
-                    urlConnection.setDoOutput(true);
-                    route.onProvidePayload(urlConnection.getOutputStream());
-                    break;
-                case POST:
-                    urlConnection.setRequestMethod("POST");
-                    urlConnection.setDoOutput(true);
-                    route.onProvidePayload(urlConnection.getOutputStream());
-                    break;
-                case PATCH:
-                    urlConnection.setRequestMethod("PATCH");
-                    urlConnection.setDoOutput(true);
-                    route.onProvidePayload(urlConnection.getOutputStream());
-                    break;
-                case DELETE:
-                    urlConnection.setRequestMethod("DELETE");
-                    urlConnection.setDoOutput(false);
-                    break;
+            urlConnection.setRequestMethod(route.getMethod().getValue());
+            urlConnection.setDoOutput(route.getMethod().isDoOutput());
+
+            if (BuildConfig.DEBUG) {
+                logTheRequest(url, headers, route.getMethod());
+            }
+
+            if (route.getMethod().isDoOutput()) {
+                route.onProvidePayload(urlConnection.getOutputStream());
             }
 
             urlConnection.connect();
@@ -139,6 +149,10 @@ public class NetworkTask extends Task {
             // Response
 
             int statusCode = urlConnection.getResponseCode();
+
+            if (BuildConfig.DEBUG) {
+                logTheResponse(url, statusCode);
+            }
 
             if (statusCode == 401) {
                 error = new NetworkTaskError(NetworkTaskError.Code.UNAUTHORIZED);
@@ -180,4 +194,28 @@ public class NetworkTask extends Task {
 
         finish();
     }
+
+    private void logTheRequest(URL url, Map<String, String> headers, Route.Method method) {
+
+        StringBuilder headersForLog = new StringBuilder();
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                headersForLog.append(key + " : " + headers.get(key) + "\n");
+            }
+        }
+
+        Log.d("NetworkTask",
+                " \n------------------------\n--------API CALL--------\n------------------------" +
+                        "\n URL: " + url.toString() + "(" + method.getValue() + ")" +
+                        "\n HEADERS:" + ((headersForLog.toString().isEmpty()) ? " [NO HEADER]" : "\n" + headersForLog));
+    }
+
+    private void logTheResponse(URL url, int statusCode) {
+
+        Log.d("NetworkTask",
+                " \n------------------------\n------API RESPONSE------\n------------------------" +
+                        "\n URL: " + url.toString() + "(" + route.getMethod().getValue() + ")" +
+                        "\n RESPONSE CODE:" + statusCode);
+    }
+
 }

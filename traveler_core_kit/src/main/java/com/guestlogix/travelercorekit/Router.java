@@ -449,11 +449,11 @@ public class Router {
             String tokenValue = (null != token) ? token.getValue() : null;
             return new AuthenticatedUrlRequest(method, getURL(), headers, tokenValue) {
                 @Override
-                public JSONObject getJSONPayload() {
+                public String getPayload() {
                     if (payload == null)
                         return null;
 
-                    return payload.getJsonPayload();
+                    return payload.getJsonPayload().toString();
                 }
 
                 @Override
@@ -466,11 +466,11 @@ public class Router {
         UnauthenticatedUrlRequest build() {
             return new UnauthenticatedUrlRequest(method, getURL(), headers) {
                 @Override
-                public JSONObject getJSONPayload() {
+                public String getPayload() {
                     if (payload == null)
                         return null;
 
-                    return payload.getJsonPayload();
+                    return payload.getJsonPayload().toString();
                 }
 
                 @Override
