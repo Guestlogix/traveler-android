@@ -1,8 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
-import android.content.Intent;
 import android.util.JsonReader;
-import android.util.SparseArray;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.guestlogix.travelercorekit.utilities.*;

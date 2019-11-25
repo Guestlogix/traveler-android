@@ -37,6 +37,30 @@ public class Router {
                 .build();
     }
 
+    // /traveler/{travelerId}
+    public static AuthenticatedUrlRequest storeAttributes(Session session, Map<String, Object> attributes, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.PUT)
+                .path("/traveler/" + session.getIdentity())
+                .payload(() -> {
+                    try {
+                        JSONObject payload = new JSONObject();
+
+                        for (String key : attributes.keySet()) {
+                            payload.put(key, attributes.get(key));
+                        }
+
+                        return payload;
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Router.storeAttributes() could not create JSONPayloadProvider");
+                    }
+
+                    return null;
+                });
+
+        return routeBuilder.build(session.getToken());
+    }
+
     // /flight?flight-number=xxx&departure-date=xxx
     public static AuthenticatedUrlRequest searchFlight(Session session, FlightQuery query, Context context) {
         return new RouteBuilder(context, session.getApiKey())
@@ -100,7 +124,8 @@ public class Router {
                 .method(NetworkTask.Route.Method.GET)
                 .path("/booking/" + product.getId());
 
-        if (!TextUtils.isEmpty(session.getIdentity())) routeBuilder.param("travelerId", session.getIdentity());
+        if (!TextUtils.isEmpty(session.getIdentity()))
+            routeBuilder.param("travelerId", session.getIdentity());
 
         return routeBuilder.build(session.getToken());
     }
@@ -135,7 +160,8 @@ public class Router {
                 .method(NetworkTask.Route.Method.GET)
                 .path("/parking/" + product.getId());
 
-        if (!TextUtils.isEmpty(session.getIdentity())) routeBuilder.param("travelerId", session.getIdentity());
+        if (!TextUtils.isEmpty(session.getIdentity()))
+            routeBuilder.param("travelerId", session.getIdentity());
 
         return routeBuilder.build(session.getToken());
     }
@@ -172,6 +198,9 @@ public class Router {
         for (Pass pass : passes) {
             routeBuilder.param("pass-ids", pass.getId());
         }
+
+        if (!TextUtils.isEmpty(session.getIdentity()))
+            routeBuilder.param("travelerId", session.getIdentity());
 
         return routeBuilder.build(session.getToken());
     }
@@ -253,7 +282,7 @@ public class Router {
     public static AuthenticatedUrlRequest orders(OrderQuery query, Session session, Context context) {
         RouteBuilder rb = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
-                .path("/traveler/"+session.getIdentity()+"/order")
+                .path("/traveler/" + session.getIdentity() + "/order")
                 .param("skip", String.valueOf(query.getOffset()))
                 .param("take", String.valueOf(query.getLimit()))
                 .param("to", DateHelper.formatDateToISO8601(query.getToDate()));
@@ -321,7 +350,7 @@ public class Router {
     public static AuthenticatedUrlRequest wishlistRemove(Product product, String travelerId, Session session, Context context) {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.DELETE)
-                .path("/traveler/" + travelerId + "/wishlist/"+product.getId())
+                .path("/traveler/" + travelerId + "/wishlist/" + product.getId())
                 .build(session.getToken());
     }
 

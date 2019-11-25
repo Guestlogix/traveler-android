@@ -32,6 +32,7 @@ import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
 import java.util.ArrayList;
 
+
 public class HomeActivity extends AppCompatActivity implements ProfileFetchCallback, FlightsSummaryAdapter.Listener {
     final static int REQUEST_CODE_ADD_FLIGHT = 0;
     final static int REQUEST_CODE_SIGN_IN = 1;
