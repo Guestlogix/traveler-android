@@ -1,14 +1,13 @@
 package com.guestlogix.travelercorekit;
 
+import android.util.Log;
+
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import com.guestlogix.travelercorekit.tasks.NetworkTaskError;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -48,14 +47,15 @@ public class UrlRequest implements NetworkTask.Route {
 
     @Override
     public void onProvidePayload(OutputStream stream) {
-        JSONObject payload = getJSONPayload();
+        if (BuildConfig.DEBUG)
+            logNetworkRequest(getPayload());
 
-        if (payload == null) {
+        if (getPayload() == null) {
             return;
         }
 
         try {
-            stream.write(payload.toString().getBytes());
+            stream.write(getPayload().getBytes());
         } catch (IOException e) {
             // TODO: Handle error
         }
@@ -66,7 +66,29 @@ public class UrlRequest implements NetworkTask.Route {
         return error;
     }
 
-    public JSONObject getJSONPayload() {
+    public String getPayload() {
         return null;
     }
+
+    private void logNetworkRequest(String postBody) {
+        //do not print request if its a file
+        if (url.toString().endsWith("jpg")||
+                url.toString().endsWith("png")||
+                url.toString().endsWith("gif")||
+                url.toString().endsWith("bmp"))
+            return;
+
+        StringBuilder headersForLog = new StringBuilder();
+
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                headersForLog.append(key + " : " + headers.get(key) + "\n");
+            }
+        }
+
+        Log.d("NetworkTask",
+                        " \n POST BODY:" + ((postBody == null || postBody.trim().isEmpty()) ? " [NO POST BODY]" : "\n" + postBody) +
+                        "\n------------------------\n \n");
+    }
+
 }

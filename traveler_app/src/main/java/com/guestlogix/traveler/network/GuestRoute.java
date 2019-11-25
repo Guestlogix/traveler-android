@@ -128,8 +128,8 @@ class GuestRoute {
 
             return new UrlRequest(method, url, headers) {
                 @Override
-                public JSONObject getJSONPayload() {
-                    return payload.getJsonPayload();
+                public String getPayload() {
+                    return payload.getJsonPayload().toString();
                 }
             };
         }
