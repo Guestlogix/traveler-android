@@ -30,10 +30,6 @@ public class Router {
     private static final String TAG = "Router";
     public static final String DEFAULT_ENDPOINT = "https://traveler.guestlogix.io/v1";
 
-    public static void setSandBoxMode(boolean isSandboxMode) {
-        RouteBuilder.setSandboxMode(isSandboxMode);
-    }
-
     public static UnauthenticatedUrlRequest authenticate(String apiKey, Context context) {
         return new RouteBuilder(context, apiKey)
                 .method(NetworkTask.Route.Method.GET)
@@ -351,17 +347,12 @@ public class Router {
 
     private static class RouteBuilder {
         private static String travelerSDKEndpoint = null;
-        private static boolean isSandboxMode = false;
 
         private NetworkTask.Route.Method method;
         private String path;
         private JSONPayloadProvider payload = null;
         private Map<String, String> headers;
         private List<Pair<String, String>> params;
-
-        static void setSandboxMode(boolean isSandboxMode) {
-            RouteBuilder.isSandboxMode = isSandboxMode;
-        }
 
         private RouteBuilder(Context context, String apiKey) {
             this.params = new ArrayList<>();
@@ -392,7 +383,7 @@ public class Router {
             this.headers.put("x-application-id", applicationId);
             this.headers.put("x-timezone", "UTC");
             this.headers.put("x-api-key", apiKey);
-            this.headers.put("x-sandbox-mode",String.valueOf(isSandboxMode));
+            this.headers.put("x-sandbox-mode", String.valueOf(Traveler.isSandboxMode()));
 
             if (null == travelerSDKEndpoint) {
                 TravelerPrefs travelerPrefs = TravelerPrefs.getInstance(context);
