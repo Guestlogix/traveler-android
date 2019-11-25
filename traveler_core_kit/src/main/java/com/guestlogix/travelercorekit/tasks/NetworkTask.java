@@ -1,5 +1,6 @@
 package com.guestlogix.travelercorekit.tasks;
 
+import android.renderscript.Sampler;
 import android.util.Log;
 
 import com.guestlogix.travelercorekit.BuildConfig;
@@ -10,11 +11,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NetworkTask extends Task {
 
@@ -148,6 +154,7 @@ public class NetworkTask extends Task {
 
             // Response
 
+
             int statusCode = urlConnection.getResponseCode();
 
             if (BuildConfig.DEBUG) {
@@ -166,6 +173,10 @@ public class NetworkTask extends Task {
                         InputStreamHelper.getStringFromInputStream(urlConnection.getErrorStream()));
             } else {
                 InputStream is = urlConnection.getInputStream();
+
+                if (BuildConfig.DEBUG) {
+                    logTheResponse(url, statusCode);
+                }
 
                 if (responseHandler != null) {
                     responseHandler.onHandleResponse(is);

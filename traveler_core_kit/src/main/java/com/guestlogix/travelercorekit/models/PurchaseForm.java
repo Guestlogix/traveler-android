@@ -1,10 +1,16 @@
 package com.guestlogix.travelercorekit.models;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A PurchaseForm contains all the information required to book an experience.
@@ -22,15 +28,30 @@ public class PurchaseForm implements Serializable {
         this.questionGroups = questionGroups;
         this.product = product;
 
-        // So we don't have to loop through all questions every time we add or get an answer.
+        // used a hashset so we don't have to loop through all questions every time we add or get an answer.
         questionIds = new HashSet<>();
+        answers = new HashMap<>();
+
         for (QuestionGroup group : questionGroups) {
             for (Question question : group.getQuestions()) {
                 questionIds.add(question.getId());
+
+                if (question.getSuggestedAnswer() != null) {
+                    if (question.getSuggestedAnswer() instanceof SuggestedAnswer.MultipleChoiceSuggestedAnswer) {
+                        addAnswer(new MultipleChoiceSelection(((SuggestedAnswer.MultipleChoiceSuggestedAnswer) question.getSuggestedAnswer()).getValue(), question));
+                    } else if (question.getSuggestedAnswer() instanceof SuggestedAnswer.TextualSuggestedAnswer) {
+                        addAnswer(new TextualAnswer(((SuggestedAnswer.TextualSuggestedAnswer) question.getSuggestedAnswer()).getValue(), question));
+                    } else if (question.getSuggestedAnswer() instanceof SuggestedAnswer.QuantitySuggestedAnswer) {
+                        addAnswer(new QuantityAnswer(((SuggestedAnswer.QuantitySuggestedAnswer) question.getSuggestedAnswer()).getValue(), question));
+                    } else if (question.getSuggestedAnswer() instanceof SuggestedAnswer.DateSuggestedAnswer) {
+                        addAnswer(new DateAnswer(((SuggestedAnswer.DateSuggestedAnswer) question.getSuggestedAnswer()).getValue(), question));
+                    } else {
+                        Log.e("purchase form", "the suggested answer type is invalid");
+                    }
+                }
+
             }
         }
-
-        answers = new HashMap<>();
     }
 
     /**

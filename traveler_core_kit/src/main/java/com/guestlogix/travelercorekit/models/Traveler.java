@@ -15,9 +15,9 @@ import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchAvailabilitiesCallback;
-import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
+import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.callbacks.ParkingSearchCallback;
@@ -35,6 +35,7 @@ import com.guestlogix.travelercorekit.utilities.TaskManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class Traveler {
     private static final String TAG = "Traveler";
@@ -122,9 +123,36 @@ public class Traveler {
         return isSandboxMode;
     }
 
-    public static void identify(String identifier) {
+    public static void identify(String identifier)
+    {
         if (!isInitialized()) return;
         localInstance.session.setIdentity(identifier);
+    }
+
+    public static void identify(String identifier, Map<String, Object> attributes) {
+        identify(identifier);
+
+        if(attributes == null)
+            return;
+
+        AuthenticatedUrlRequest request = Router.storeAttributes(localInstance.session, attributes, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<Void> storeAttributesTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext, request,
+                        null);
+
+        BlockTask storeAttributesBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != storeAttributesTask.getError()) {
+                    Log.e(TAG,storeAttributesTask.getError().getMessage());
+                }
+            }
+        };
+
+        storeAttributesBlockTask.addDependency(storeAttributesTask);
+        localInstance.taskManager.addTask(storeAttributesBlockTask);
+        localInstance.taskManager.addTask(storeAttributesTask);
     }
 
     /**
