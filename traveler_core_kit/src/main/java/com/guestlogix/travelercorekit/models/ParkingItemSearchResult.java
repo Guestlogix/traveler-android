@@ -14,13 +14,13 @@ public class ParkingItemSearchResult implements Serializable {
     private int total;
     private List<ParkingItem> items;
     private Facets facets;
-    private BookingItemQuery query;
+    private ParkingItemQuery query;
 
     private ParkingItemSearchResult(
             int total,
             List<ParkingItem> items,
             Facets facets,
-            BookingItemQuery query) {
+            ParkingItemQuery query) {
         this.total = total;
         this.items = items;
         this.facets = facets;
@@ -39,21 +39,25 @@ public class ParkingItemSearchResult implements Serializable {
         return facets;
     }
 
-    public BookingItemQuery getQuery() {
+    public ParkingItemQuery getQuery() {
         return query;
+    }
+
+    public void merge(ParkingItemSearchResult searchResult) {
+        this.items.addAll(searchResult.getItems());
     }
 
     static class ParkingItemSearchResultObjectMappingFactory implements ObjectMappingFactory<ParkingItemSearchResult> {
         @Override
         public ParkingItemSearchResult instantiate(JsonReader reader) throws Exception {
             int total = 0;
-            List<ParkingItem> catalogItems = null;
+            List<ParkingItem> parkingItems = null;
             int offset = 0;
-            List<ParkingItem> items = null;
             Facets facets = null;
-            BookingItemSearchParameters parameters;
-            BookingItemQuery query = null;
+            ParkingItemSearchParameters parameters;
+            ParkingItemQuery query = null;
 
+            reader.beginObject();
             while (reader.hasNext()) {
                 String key = reader.nextName();
 
@@ -62,8 +66,7 @@ public class ParkingItemSearchResult implements Serializable {
                         total = reader.nextInt();
                         break;
                     case "items":
-                        catalogItems = new ArrayMappingFactory<>(new ParkingItem.ParkingItemObjectMappingFactory())
-                                .instantiate(reader);
+                        parkingItems = new ArrayMappingFactory<>(new ParkingItem.ParkingItemObjectMappingFactory()).instantiate(reader);
                         break;
                     case "offset":
                         offset = reader.nextInt();
@@ -72,9 +75,9 @@ public class ParkingItemSearchResult implements Serializable {
                         facets = new Facets.FacetsObjectMappingFactory().instantiate(reader);
                         break;
                     case "parameters":
-                        parameters = new BookingItemSearchParameters.BookingItemSearchParametersObjectMappingFactory()
+                        parameters = new ParkingItemSearchParameters.ParkingItemSearchParametersObjectMappingFactory()
                                 .instantiate(reader);
-                        query = new BookingItemQuery(parameters);
+                        query = new ParkingItemQuery(parameters);
                         break;
                     default:
                         reader.skipValue();
@@ -84,14 +87,14 @@ public class ParkingItemSearchResult implements Serializable {
 
             reader.endObject();
 
-            Assertion.eval(catalogItems != null);
+            Assertion.eval(parkingItems != null);
 
             List<ParkingItem> indexedItems = new ArrayList<>();
-            for (int i = 0; i < catalogItems.size(); i++) {
-                indexedItems.add(i + offset, catalogItems.get(i));
+            for (int i = 0; i < parkingItems.size(); i++) {
+                indexedItems.add(i + offset, parkingItems.get(i));
             }
 
-            return new ParkingItemSearchResult(total, items, facets, query);
+            return new ParkingItemSearchResult(total, parkingItems, facets, query);
         }
     }
 }
