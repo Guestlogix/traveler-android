@@ -14,7 +14,7 @@ public class TravelerApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext());
+        Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext(), true);
         TravelerUI.initialize(new StripePaymentProvider(), Currency.USD);
     }
 }
