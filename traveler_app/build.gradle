@@ -11,18 +11,31 @@ android {
         versionName "0.0.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        debug {
+            if (getTravelerAppDebugSigningStoreFile() != null && !getTravelerAppDebugSigningStoreFile().isEmpty()) {
+                storeFile file(getTravelerAppDebugSigningStoreFile())
+                storePassword getTravelerAppDebugSigningStorePassword()
+                keyAlias getTravelerAppDebugSigningStoreAlias()
+                keyPassword getTravelerAppDebugSigningKeyPassword()
+            }
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "TRAVELER_API_KEY", "\""+getReleaseTravelerAPIKey()+"\"")
-            buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\""+getReleaseGoogleSignInClientID()+"\"")
+            buildConfigField("String", "TRAVELER_API_KEY", "\"" + getReleaseTravelerAPIKey() + "\"")
+            buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\"" + getReleaseGoogleSignInClientID() + "\"")
         }
 
         debug {
-            minifyEnabled true
-            buildConfigField("String", "TRAVELER_API_KEY", "\""+getDebugTravelerAPIKey()+"\"")
-            buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\""+getDebugGoogleSignInClientID()+"\"")
+            minifyEnabled false
+            multiDexEnabled true
+            buildConfigField("String", "TRAVELER_API_KEY", "\"" + getDebugTravelerAPIKey() + "\"")
+            buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\"" + getDebugGoogleSignInClientID() + "\"")
         }
     }
 
@@ -92,6 +105,30 @@ def getDebugGoogleSignInClientID() {
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
         return properties.getProperty('google_sign_in_client_id_debug')
     }
+}
+
+def getTravelerAppDebugSigningStoreFile() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty('traveler_app_debug_signing_storeFile')
+}
+
+def getTravelerAppDebugSigningStorePassword() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty('traveler_app_debug_signing_storePassword')
+}
+
+def getTravelerAppDebugSigningStoreAlias() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty('traveler_app_debug_signing_keyAlias')
+}
+
+def getTravelerAppDebugSigningKeyPassword() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty('traveler_app_debug_signing_keyPassword')
 }
 
 dependencies {
