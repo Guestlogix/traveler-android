@@ -19,3 +19,4 @@
 # If you keep the line number informationList, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontobfuscate
