@@ -14,7 +14,7 @@
             android:layout_margin="@dimen/margin_default"
             android:layout_centerHorizontal="true"/>
 
-    <com.google.android.material.button.MaterialButton
+    <Button
             android:id="@+id/done_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
