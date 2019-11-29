@@ -14,7 +14,7 @@ android {
 
     signingConfigs {
         debug {
-            if (getTravelerAppDebugSigningStoreFile() != null && !getTravelerAppDebugSigningStoreFile().isEmpty()) {
+            if (new File("local.properties").exists() && getTravelerAppDebugSigningStoreFile() != null && !getTravelerAppDebugSigningStoreFile().isEmpty()) {
                 storeFile file(getTravelerAppDebugSigningStoreFile())
                 storePassword getTravelerAppDebugSigningStorePassword()
                 keyAlias getTravelerAppDebugSigningStoreAlias()
