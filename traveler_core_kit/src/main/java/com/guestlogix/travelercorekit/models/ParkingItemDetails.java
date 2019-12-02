@@ -35,7 +35,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
     private Price priceToPayOnline;
     private Price priceToPayOnsite;
     private ProductType productType;
-    private List<ProductItemCategory> categories;
+    private List<BookingItemCategory> categories;
     private boolean isWishlisted;
     private ProviderTranslationAttribution providerTranslationAttribution;
     private Range<Date> dateRange;
@@ -57,7 +57,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
             @NonNull Price priceToPayOnline,
             @NonNull Price priceToPayOnsite,
             @NonNull ProductType productType,
-            @NonNull List<ProductItemCategory> categories,
+            @NonNull List<BookingItemCategory> categories,
             @NonNull boolean isWishlisted,
             ProviderTranslationAttribution providerTranslationAttribution,
             Range<Date> dateRange) {
@@ -156,7 +156,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
         return productType;
     }
 
-    public List<ProductItemCategory> getCategories() {
+    public List<BookingItemCategory> getCategories() {
         return categories;
     }
 
@@ -191,7 +191,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
             Price priceToPayOnline = null;
             Price priceToPayOnsite = null;
             ProductType productType = null;
-            List<ProductItemCategory> categories = null;
+            List<BookingItemCategory> categories = null;
             boolean isWishlisted = false;
             ProviderTranslationAttribution providerTranslationAttribution = null;
             String startTime = null;

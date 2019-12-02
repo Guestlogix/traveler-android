@@ -19,7 +19,7 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
         String subTitle = null;
         URL thumbnail = null;
         Price price = null;
-        List<ProductItemCategory> categories = null;
+        List<BookingItemCategory> categories = null;
         ProductType productType = null;
         Coordinate coordinate = null;
         ProviderTranslationAttribution providerTranslationAttribution = null;
@@ -63,7 +63,11 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                     reader.beginArray();
 
                     while (reader.hasNext()) {
-                        categories.add(ProductItemCategory.fromString(reader.nextString()));
+                        BookingItemCategory bookingItemCategory = BookingItemCategory.fromString(reader.nextString());
+                        //TODO: we should not do this. we should only parse catalog item fields here.
+                        if (bookingItemCategory != null) {
+                            categories.add(bookingItemCategory);
+                        }
                     }
 
                     reader.endArray();
@@ -115,7 +119,6 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                         thumbnail,
                         price,
                         productType,
-                        categories,
                         coordinate,
                         providerTranslationAttribution);
             default:

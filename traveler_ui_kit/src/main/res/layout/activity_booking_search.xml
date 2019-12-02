@@ -1,20 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp">
 
-    <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_bar"
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/booking_search_city_title"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+            android:id="@+id/llLocation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bordered_bg_no_color"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLocation">
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgLocation"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_location"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/etLocation" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="@string/booking_search_current_label_label"
+                android:layout_marginStart="4dp" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etLocation"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="4dp"
+                android:layout_weight="1"
+                android:background="@null"
+                app:layout_constraintLeft_toRightOf="@id/imgLocation"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:text="Toronto"
+                android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/booking_search_categories_title"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llLocation" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:iconifiedByDefault="false"/>
+            android:layout_marginTop="5dp"
+            android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@+id/tvCategories" />
 
-    <FrameLayout
-            android:id="@+id/booking_items_container"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_width="match_parent"/>
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/booking_search_keywords_title"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rvCategories" />
 
-</LinearLayout>
+    <LinearLayout
+            android:id="@+id/llSearch"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bordered_bg_no_color"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSearch">
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgSearch"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_search"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/etLocation" />
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etSearch"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="4dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/booking_search_keywords_hint"
+                app:layout_constraintLeft_toRightOf="@id/imgLocation"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSearch"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bordered_bg_primary_color"
+            android:text="@string/booking_search_search_button_text"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

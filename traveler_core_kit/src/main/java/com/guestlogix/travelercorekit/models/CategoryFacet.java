@@ -8,15 +8,15 @@ import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import java.io.Serializable;
 
 public class CategoryFacet implements Serializable {
-    private ProductItemCategory category;
+    private BookingItemCategory category;
     private int quantity;
 
-    private CategoryFacet(ProductItemCategory category, int quantity) {
+    private CategoryFacet(BookingItemCategory category, int quantity) {
         this.category = category;
         this.quantity = quantity;
     }
 
-    public ProductItemCategory getCategory() {
+    public BookingItemCategory getCategory() {
         return category;
     }
 
@@ -27,7 +27,7 @@ public class CategoryFacet implements Serializable {
     static class CategoryFacetObjectMappingFactory implements ObjectMappingFactory<CategoryFacet> {
         @Override
         public CategoryFacet instantiate(JsonReader reader) throws Exception {
-            ProductItemCategory category = null;
+            BookingItemCategory category = null;
             int quantity = 0;
 
             reader.beginObject();
@@ -37,7 +37,7 @@ public class CategoryFacet implements Serializable {
 
                 switch (key) {
                     case "label":
-                        category = ProductItemCategory.fromString(JsonReaderHelper.nextNullableString(reader));
+                        category = BookingItemCategory.fromString(JsonReaderHelper.nextNullableString(reader));
                         break;
                     case "count":
                         quantity = reader.nextInt();

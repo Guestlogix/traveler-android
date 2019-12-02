@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center_vertical">
+
+        <TextView
+                android:id="@+id/tvCity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Toronto" />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="|"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Tour" />
+
+        <TextView
+                android:id="@+id/tvSearchTextSeparator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="|"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        <TextView
+                android:id="@+id/tvSearchText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Beer Night Tour" />
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+
+        <ImageView
+                android:src="@drawable/ic_edit"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:tint="@color/colorPrimary"
+                />
+
+        <TextView
+                android:id="@+id/tvChangeSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:paddingLeft="5dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:textStyle="bold"
+                android:text="@string/booking_search_edit_search_button_text"
+                android:paddingStart="5dp" />
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/gray" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+        <TextView
+                android:id="@+id/booking_search_result_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="999 items found" />
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+        <LinearLayout
+                android:id="@+id/llSortAndFilters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="horizontal">
+            <ImageView
+                    android:src="@drawable/ic_sort"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:tint="@color/colorPrimary"
+                    />
+
+            <TextView
+                    android:id="@+id/tvSortAndFilters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:text="@string/booking_search_sort_filters_button_text"
+                    android:paddingStart="5dp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <FrameLayout
+            android:id="@+id/booking_items_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:layout_editor_absoluteX="20dp"
+            tools:layout_editor_absoluteY="302dp" />
+
+</LinearLayout>

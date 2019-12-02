@@ -58,7 +58,7 @@ public class BookingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                         .inflate(R.layout.item_loading_order, parent, false);
                 return new LoadingItemViewHolder(loadingView);
             default:
-                return null;
+                throw new IllegalStateException("view type unknown");
         }
     }
 
@@ -88,15 +88,11 @@ public class BookingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                         });
 
                 itemHolder.title.setText(bookingItem.getTitle());
-                itemHolder.subtitle.setText(bookingItem.getSubTitle());
                 itemHolder.price.setText(String.valueOf(bookingItem.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency())));
-                itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                itemHolder.itemView.setOnClickListener(v -> {
 
-                        if (onBookingSearchItemClickListener != null) {
-                            onBookingSearchItemClickListener.onBookingSearchItemClick(result.getItems().get(position));
-                        }
+                    if (onBookingSearchItemClickListener != null) {
+                        onBookingSearchItemClickListener.onBookingSearchItemClick(result.getItems().get(position));
                     }
                 });
                 break;
@@ -133,9 +129,11 @@ public class BookingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
             pagesLoading.add(page);
             BookingItemQuery currentQuery = result.getQuery();
             BookingItemQuery query = new BookingItemQuery(currentQuery.getQueryText(),
+                    currentQuery.getCity(),
                     currentQuery.getPriceRangeFilter(),
                     currentQuery.getCategories(),
                     currentQuery.getBoundingBox(),
+                    currentQuery.getBookingItemSort(),
                     DEFAULT_PAGE_SIZE * page,
                     DEFAULT_PAGE_SIZE);
             Traveler.searchBookingItems(query, this);
@@ -156,14 +154,12 @@ public class BookingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     public class BookingSearchResultViewHolder extends RecyclerView.ViewHolder {
         public ImageView thumbnail;
         public TextView title;
-        public TextView subtitle;
         public TextView price;
 
         public BookingSearchResultViewHolder(@NonNull View itemView) {
             super(itemView);
             thumbnail = itemView.findViewById(R.id.booking_search_item_thumbnail);
             title = itemView.findViewById(R.id.booking_search_item_title);
-            subtitle = itemView.findViewById(R.id.booking_search_item_subtitle);
             price = itemView.findViewById(R.id.booking_search_item_price);
         }
     }

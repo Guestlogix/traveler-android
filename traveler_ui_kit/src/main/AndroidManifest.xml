@@ -19,6 +19,7 @@
         <activity android:name=".activities.CancelOrderActivity"/>
         <activity android:name=".activities.TermsAndConditionsActivity"/>
         <activity android:name=".activities.BookingSearchActivity"/>
+        <activity android:name=".activities.BookingSearchResultActivity"/>
     </application>
 
 </manifest>

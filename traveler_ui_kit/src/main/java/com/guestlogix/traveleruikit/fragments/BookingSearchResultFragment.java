@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,8 +17,6 @@ import com.guestlogix.travelercorekit.models.BookingItemSearchResult;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
 import com.guestlogix.traveleruikit.adapters.BookingSearchResultAdapter;
-
-import java.util.Locale;
 
 public class BookingSearchResultFragment extends Fragment
         implements BookingSearchResultAdapter.OnBookingSearchItemClickListener {
@@ -46,9 +43,6 @@ public class BookingSearchResultFragment extends Fragment
         }
 
         BookingItemSearchResult result = (BookingItemSearchResult) args.get(ARG_BOOKING_ITEM_SEARCH_RESULTS);
-
-        TextView textView = view.findViewById(R.id.booking_search_result_total);
-        textView.setText(String.format(Locale.getDefault(), "%d items found", result.getTotal()));
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_booking_search_results);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());

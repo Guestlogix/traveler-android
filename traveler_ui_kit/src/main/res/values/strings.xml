@@ -56,4 +56,26 @@
     <string name="non_refundable">Non Refundable</string>
     <string name="saved_item">Saved Item</string>
     <string name="remove">Remove</string>
+
+    <string name="search_result_all_categories">All Categories</string>
+    <string name="search_result_catogories_count">Categories</string>
+    <string name="booking_search_city_title">Search by City</string>
+    <string name="booking_search_current_label_label">Current:</string>
+    <string name="booking_search_categories_title">Category</string>
+    <string name="booking_search_keywords_title">Keywords (optional)</string>
+    <string name="booking_search_keywords_hint">Try keywords (e.g. Beer Market Tour)</string>
+    <string name="booking_search_search_button_text">Search Experience</string>
+    <string name="booking_search_edit_search_button_text">Change</string>
+    <string name="booking_search_sort_filters_button_text"><![CDATA[Sort & Filters]]></string>
+    <string name="price_range_dialog_title">Price Range:</string>
+    <string name="price_range_min_price_label">Min Price</string>
+    <string name="price_range_max_price_label">Max Price</string>
+    <string name="search_filters_sort_label">Sort</string>
+    <string name="search_filters_order_by_label">Order by</string>
+    <string name="search_filters_filter_label">Filters</string>
+    <string name="search_filters_price_range_label">Price Range</string>
+    <string name="search_filters_themes_label">Themes</string>
+    <string name="search_filters_reset_button_text">Reset</string>
+    <string name="sort_dialog_label">Current:</string>
+    <string name="apply_button_text">Apply</string>
 </resources>

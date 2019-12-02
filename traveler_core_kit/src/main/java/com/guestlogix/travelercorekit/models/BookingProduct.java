@@ -13,7 +13,7 @@ public class BookingProduct implements Product {
     private Price price;
     private List<Pass> passes;
     private Date eventDate;
-    private List<ProductItemCategory> categories;
+    private List<BookingItemCategory> categories;
     private ProductType productType = ProductType.BOOKABLE;
     private String cancellationPolicy;
 
@@ -22,7 +22,7 @@ public class BookingProduct implements Product {
                    @NonNull Price price,
                    @NonNull List<Pass> passes,
                    @NonNull Date eventDate,
-                   List<ProductItemCategory> categories,
+                   List<BookingItemCategory> categories,
                    @NonNull String cancellationPolicy) {
         this.id = id;
         this.title = title;
@@ -56,7 +56,7 @@ public class BookingProduct implements Product {
         return eventDate;
     }
 
-    public List<ProductItemCategory> getCategories() {
+    public List<BookingItemCategory> getCategories() {
         return categories;
     }
 

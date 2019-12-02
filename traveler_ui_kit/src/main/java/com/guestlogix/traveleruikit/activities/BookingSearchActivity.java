@@ -1,28 +1,30 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.guestlogix.travelercorekit.callbacks.BookingSearchCallback;
+import com.guestlogix.travelercorekit.models.BookingItemCategory;
 import com.guestlogix.travelercorekit.models.BookingItemQuery;
-import com.guestlogix.travelercorekit.models.BookingItemSearchResult;
-import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.fragments.BookingSearchResultFragment;
-import com.guestlogix.traveleruikit.fragments.LoadingFragment;
-import com.guestlogix.traveleruikit.fragments.RetryFragment;
-import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
-public class BookingSearchActivity extends AppCompatActivity
-        implements BookingSearchCallback, RetryFragment.InteractionListener {
+import java.util.ArrayList;
+import java.util.EnumSet;
 
-    private FragmentTransactionQueue transactionQueue;
-    private String queryText;
+public class BookingSearchActivity extends AppCompatActivity {
+
+    AppCompatEditText etSearch;
+    AppCompatEditText etLocation;
+    RecyclerView rvCategories;
+    CategoryAdapter categoryAdapter;
+
+    public final static String KEY_ITEM_QUERY = "key_item_query";
+    BookingItemQuery bookingItemQuery;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,53 +32,38 @@ public class BookingSearchActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_booking_search);
 
-        SearchView searchView = findViewById(R.id.search_bar);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        etSearch = findViewById(R.id.etSearch);
+        etLocation = findViewById(R.id.etLocation);
+        rvCategories = findViewById(R.id.rvCategories);
 
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                queryText = query;
-                searchBookings();
-                return false;
-            }
+        findViewById(R.id.btnSearch).setOnClickListener(v -> showResultActivity());
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
+        Object queryObject = getIntent().getSerializableExtra(KEY_ITEM_QUERY);
+        if (queryObject != null) {
+            bookingItemQuery = (BookingItemQuery) queryObject;
+        }
 
-        this.transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
+        if (bookingItemQuery != null) {
+            etSearch.setText(bookingItemQuery.getQueryText());
+            etLocation.setText(bookingItemQuery.getCity());
+        }
+
+
+        ArrayList<CategoryAdapter.CategoryItem> lstCategories = new ArrayList<>();
+        for (BookingItemCategory bookingItemCategory : EnumSet.allOf(BookingItemCategory.class)) {
+            lstCategories.add(new CategoryAdapter.CategoryItem("", bookingItemCategory, bookingItemQuery != null && bookingItemQuery.getCategories().contains(bookingItemCategory)));
+        }
+
+        categoryAdapter = new CategoryAdapter(BookingSearchActivity.this, lstCategories);
+        rvCategories.setAdapter(categoryAdapter);
+        rvCategories.setLayoutManager(new LinearLayoutManager(BookingSearchActivity.this));
     }
 
-    private void searchBookings() {
-        Fragment loadingFragment = new LoadingFragment();
-        FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.booking_items_container, loadingFragment);
-        transactionQueue.addTransaction(transaction);
-
-        BookingItemQuery query = new BookingItemQuery(queryText, null, null);
-        Traveler.searchBookingItems(query, this);
-    }
-
-    @Override
-    public void onBookingSearchSuccess(BookingItemSearchResult searchResult) {
-        Fragment fragment = BookingSearchResultFragment.newInstance(searchResult);
-        FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.booking_items_container, fragment);
-        transactionQueue.addTransaction(transaction);
-    }
-
-    @Override
-    public void onBookingSearchError(Error error) {
-        RetryFragment errorFragment = new RetryFragment();
-        FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.ordersContainerFrameLayout, errorFragment);
-        transactionQueue.addTransaction(transaction);
-    }
-
-    @Override
-    public void onRetry() {
-        searchBookings();
+    private void showResultActivity() {
+        Intent intent = new Intent(BookingSearchActivity.this, BookingSearchResultActivity.class);
+        intent.putExtra(BookingSearchResultActivity.KEY_SEARCH_TEXT, etSearch.getText().toString());
+        intent.putExtra(BookingSearchResultActivity.KEY_City, etLocation.getText().toString());
+        intent.putExtra(BookingSearchResultActivity.KEY_CATEGORIES, categoryAdapter.getSelectedCategories());
+        startActivity(intent);
     }
 }

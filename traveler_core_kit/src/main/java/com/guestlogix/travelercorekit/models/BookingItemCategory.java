@@ -1,21 +1,21 @@
 package com.guestlogix.travelercorekit.models;
 
-public enum ProductItemCategory {
+import java.io.Serializable;
+
+public enum BookingItemCategory implements Serializable {
     ACTIVITY("Activity"),
     TOUR("Tour"),
     SHOW("Show"),
     EVENT("Event"),
-    NIGHTLIFE("Nightlife"),
-    PARKING("Parking"),
-    TRANSFERS("Transfers");
+    NIGHTLIFE("Nightlife");
 
     private final String category;
 
-    ProductItemCategory(String category) {
+    BookingItemCategory(String category) {
         this.category = category;
     }
 
-    public static ProductItemCategory fromString(String value) throws IllegalArgumentException {
+    public static BookingItemCategory fromString(String value) throws IllegalArgumentException {
         switch (value) {
             case "Activity":
                 return ACTIVITY;
@@ -27,12 +27,8 @@ public enum ProductItemCategory {
                 return EVENT;
             case "Nightlife":
                 return NIGHTLIFE;
-            case "Parking":
-                return PARKING;
-            case "transfers":
-                return TRANSFERS;
             default:
-                return null;
+                return null; //TODO:we should throw exception for unknown types. we did it becuase of category problem in anyItemMappingFactory
         }
     }
 

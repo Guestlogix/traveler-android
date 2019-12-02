@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="20dp">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/search_filters_sort_label"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_filters_order_by_label"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+        <TextView
+                android:id="@+id/tvSort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="Recommended"
+                android:paddingStart="10dp"
+                android:paddingEnd="5dp" />
+
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/right_arrow" />
+
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/search_filters_filter_label"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_filters_price_range_label"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.3" />
+
+        <TextView
+                android:id="@+id/tvPriceRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                tools:text="1$ - 1000$"
+                android:paddingStart="10dp"
+                android:paddingEnd="5dp" />
+
+        <ImageView
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/right_arrow" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_filters_themes_label"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:orientation="horizontal">
+
+        <Button
+                android:id="@+id/btnReset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/search_filters_reset_button_text" />
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5" />
+
+        <Button
+                android:id="@+id/btnApply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/apply_button_text" />
+
+    </LinearLayout>
+
+</LinearLayout>
