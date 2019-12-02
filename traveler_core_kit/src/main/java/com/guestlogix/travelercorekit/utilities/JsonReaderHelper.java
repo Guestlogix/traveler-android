@@ -3,7 +3,7 @@ package com.guestlogix.travelercorekit.utilities;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
-import com.guestlogix.travelercorekit.models.ProductItemCategory;
+import com.guestlogix.travelercorekit.models.BookingItemCategory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -66,18 +66,18 @@ public class JsonReaderHelper {
     }
 
     /**
-     * Performs a ProductItemCategory Array read from the reader object.
+     * Performs a BookingItemCategory Array read from the reader object.
      *
      * @param reader Reader object to read from
-     * @return ProductItemCategory Array or empty array
+     * @return BookingItemCategory Array or empty array
      * @throws IOException If reading cannot be performed.
      */
-    public static List<ProductItemCategory> readCatalogItemCategoryArray(JsonReader reader) throws IOException {
-        ArrayList<ProductItemCategory> categories = new ArrayList<>();
+    public static List<BookingItemCategory> readCatalogItemCategoryArray(JsonReader reader) throws IOException {
+        ArrayList<BookingItemCategory> categories = new ArrayList<>();
 
         reader.beginArray();
         while (reader.hasNext()) {
-            categories.add(ProductItemCategory.fromString(reader.nextString()));
+            categories.add(BookingItemCategory.fromString(reader.nextString()));
         }
         reader.endArray();
         return categories;

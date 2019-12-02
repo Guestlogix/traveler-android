@@ -129,6 +129,7 @@ public class WishlistResult implements Serializable {
                         total = reader.nextInt();
                         break;
                     case "result":
+                        //TODO: fix this shit
                         // Only bookable items can wishlisted; but AnyItemMappingFactory returns objects of
                         // interface CatalogItem.
                         List<? extends CatalogItem> items = new ArrayList<>(new ArrayMappingFactory<>(

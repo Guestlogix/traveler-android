@@ -10,8 +10,6 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ParkingItem implements CatalogItem, Product {
     private String id;
@@ -20,7 +18,6 @@ public class ParkingItem implements CatalogItem, Product {
     private URL imageURL;
     private Price price;
     private ProductType productType;
-    private List<ProductItemCategory> categories;
     private Coordinate coordinate;
     private ProviderTranslationAttribution providerTranslationAttribution;
 
@@ -31,7 +28,6 @@ public class ParkingItem implements CatalogItem, Product {
             URL imageURL,
             Price price,
             ProductType productType,
-            List<ProductItemCategory> categories,
             Coordinate coordinate,
             ProviderTranslationAttribution providerTranslationAttribution) {
         this.id = id;
@@ -40,7 +36,6 @@ public class ParkingItem implements CatalogItem, Product {
         this.imageURL = imageURL;
         this.price = price;
         this.productType = productType;
-        this.categories = categories;
         this.coordinate = coordinate;
         this.providerTranslationAttribution = providerTranslationAttribution;
     }
@@ -76,10 +71,6 @@ public class ParkingItem implements CatalogItem, Product {
         return productType;
     }
 
-    public List<ProductItemCategory> getCategories() {
-        return categories;
-    }
-
     public Coordinate getCoordinate() {
         return coordinate;
     }
@@ -102,7 +93,6 @@ public class ParkingItem implements CatalogItem, Product {
             URL thumbnail = null;
             Price price = null;
             ProductType productType = null;
-            List<ProductItemCategory> categories = null;
             Coordinate coordinate = null;
             ProviderTranslationAttribution providerTranslationAttribution = null;
 
@@ -137,17 +127,6 @@ public class ParkingItem implements CatalogItem, Product {
                     case "purchaseStrategy":
                         productType = ProductType.fromString(reader.nextString());
                         break;
-                    case "categories":
-                        categories = new ArrayList<>();
-
-                        reader.beginArray();
-
-                        while (reader.hasNext()) {
-                            categories.add(ProductItemCategory.fromString(reader.nextString()));
-                        }
-
-                        reader.endArray();
-                        break;
                     case "geoLocation":
                         coordinate = new Coordinate.CoordinateObjectMappingFactory()
                                 .instantiate(reader);
@@ -166,7 +145,6 @@ public class ParkingItem implements CatalogItem, Product {
 
             Assertion.eval(id != null);
             Assertion.eval(price != null);
-            Assertion.eval(categories != null);
 
             return new ParkingItem(
                     id,
@@ -175,7 +153,6 @@ public class ParkingItem implements CatalogItem, Product {
                     thumbnail,
                     price,
                     productType,
-                    categories,
                     coordinate,
                     providerTranslationAttribution);
         }

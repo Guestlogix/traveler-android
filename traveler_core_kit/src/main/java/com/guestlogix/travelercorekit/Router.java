@@ -89,14 +89,16 @@ public class Router {
         RouteBuilder rb = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
                 .path("/booking/")
-                .param("text", bookingItemQuery.getQueryText())
+                .param("text", bookingItemQuery.getQueryText() == null ? "" : bookingItemQuery.getQueryText())
                 .param("skip", String.valueOf(bookingItemQuery.getOffset()))
-                .param("take", String.valueOf(bookingItemQuery.getLimit()));
+                .param("take", String.valueOf(bookingItemQuery.getLimit()))
+                .param("city", bookingItemQuery.getCity() == null ? "" : bookingItemQuery.getCity());
 
 
-        for (ProductItemCategory category : bookingItemQuery.getCategories()) {
-            rb.param("categories", category.toString());
-        }
+        if (bookingItemQuery.getCategories() != null)
+            for (BookingItemCategory category : bookingItemQuery.getCategories()) {
+                rb.param("categories", category.toString());
+            }
 
         if (bookingItemQuery.getPriceRangeFilter() != null) {
             PriceRangeFilter priceRangeFilter = bookingItemQuery.getPriceRangeFilter();
@@ -113,6 +115,11 @@ public class Router {
             rb.param("top-left-longitude", String.valueOf(topLeftCoordinate.getLongitude()));
             rb.param("bottom-right-latitude", String.valueOf(bottomRightCoordinate.getLatitude()));
             rb.param("bottom-right-longitude", String.valueOf(bottomRightCoordinate.getLongitude()));
+        }
+
+        if (bookingItemQuery.getBookingItemSort() != null) {
+            rb.param("sort-field", bookingItemQuery.getBookingItemSort().getSortField().toString());
+            rb.param("sort-order", bookingItemQuery.getBookingItemSort().getSortOrder().getSortValue());
         }
 
         return rb.build(session.getToken());
@@ -270,12 +277,7 @@ public class Router {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.PATCH)
                 .path("/order/" + order.getId())
-                .payload(new RouteBuilder.JSONPayloadProvider() {
-                    @Override
-                    public JSONObject getJsonPayload() {
-                        return payment.getSecurePayload();
-                    }
-                })
+                .payload(payment::getSecurePayload)
                 .build(session.getToken());
     }
 

@@ -24,7 +24,7 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
         Price price = null;
         List<Pass> passes = null;
         Date eventDate = null;
-        List<ProductItemCategory> categories = null;
+        List<BookingItemCategory> categories = null;
         ProductType productType = null;
         String cancellationPolicy = null;
 

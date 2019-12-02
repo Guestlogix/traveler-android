@@ -25,7 +25,6 @@ import com.guestlogix.traveler.network.Guest;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.Traveler;
-import com.guestlogix.traveleruikit.activities.BookingSearchActivity;
 import com.guestlogix.traveleruikit.fragments.CatalogFragment;
 import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
@@ -95,10 +94,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.search_action:
-                Intent searchIntent = new Intent(this, BookingSearchActivity.class);
-                startActivity(searchIntent);
-                return true;
             case R.id.flight_add_action:
                 Intent addFlightIntent = new Intent(this, FlightSearchActivity.class);
                 startActivityForResult(addFlightIntent, REQUEST_CODE_ADD_FLIGHT);
