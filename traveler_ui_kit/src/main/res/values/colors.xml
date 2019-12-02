@@ -24,4 +24,5 @@
     <color name="catalog_item_detail_indicator_active">@color/off_white</color>
 
     <color name="saveditem_remove_button_text_color">#0DA2D4</color>
+    <color name="parking_list_bg">#F3F3F3</color>
 </resources>
