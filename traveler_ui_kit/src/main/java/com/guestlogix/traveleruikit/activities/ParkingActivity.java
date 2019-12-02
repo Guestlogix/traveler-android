@@ -9,12 +9,16 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.guestlogix.travelercorekit.callbacks.ParkingSearchCallback;
 import com.guestlogix.travelercorekit.models.BoundingBox;
@@ -34,12 +39,19 @@ import com.guestlogix.travelercorekit.models.QueryItem;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.fragments.LoadingFragment;
+import com.guestlogix.traveleruikit.adapters.ParkingSearchResultAdapter;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
-public class ParkingActivity extends AppCompatActivity implements ParkingSearchCallback,
-        RetryFragment.InteractionListener, OnMapReadyCallback {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ParkingActivity extends AppCompatActivity implements
+        ParkingSearchCallback,
+        RetryFragment.InteractionListener,
+        OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener,
+        ParkingSearchResultAdapter.OnParkingSearchItemClickListener {
     public static final String TAG = "ParkingActivity";
     public static final String ARG_PARKING_QUERY = "parkingQuery";
     private static final int PAGE_SIZE = 10;
@@ -50,6 +62,12 @@ public class ParkingActivity extends AppCompatActivity implements ParkingSearchC
     private QueryItem queryItem;
     private FragmentTransactionQueue transactionQueue;
     private GoogleMap map;
+    private SupportMapFragment mapFragment;
+    private ProgressBar progressBar;
+    private RecyclerView parkingSearchRecyclerView;
+    private ParkingSearchResultAdapter parkingSearchResultAdapter;
+
+    private List<Marker> markerList = new ArrayList<>();
 
     /**
      * Manipulates the map once available.
@@ -75,23 +93,25 @@ public class ParkingActivity extends AppCompatActivity implements ParkingSearchC
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.map);
-        Assertion.eval(fragment != null);
-        ((SupportMapFragment) fragment).getMapAsync(this);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        Assertion.eval(mapFragment != null);
+        mapFragment.getMapAsync(this);
+
+        progressBar = findViewById(R.id.spinner);
+        parkingSearchRecyclerView = findViewById(R.id.parking_items_recyclerview);
+
         reloadParkingItem();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        //TODO ALVTAG loading spinners
+        map.setOnMarkerClickListener(this);
+        mapFragment.getView().setVisibility(View.INVISIBLE);
     }
 
     private void reloadParkingItem() {
-        Fragment loadingFragment = new LoadingFragment();
-        FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.booking_item_details_container, loadingFragment);
-        transactionQueue.addTransaction(transaction);
+        progressBar.setVisibility(View.VISIBLE);
 
         ParkingItemQuery query = (ParkingItemQuery) queryItem.getSearchQuery();  //TODO ALVTAG Do this cast/typecheck way earlier, maybe pass in
         ParkingItemQuery parkingItemQuery = new ParkingItemQuery(query.getAirportIATA(),
@@ -134,10 +154,28 @@ public class ParkingActivity extends AppCompatActivity implements ParkingSearchC
 
     @Override
     public void onParkingSearchSuccess(ParkingItemSearchResult searchResult) {
-        Log.d("ALVTAG", "items size:" + (searchResult.getItems() == null ? 0 : searchResult.getItems().size()));
         LatLngBounds latLngBounds = boundingBoxToLatLngBounds(searchResult.getQuery().getBoundingBox());
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0));
 
+        mapFragment.getView().setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0));
+        map.clear();
+        setMapMarkers(searchResult);
+        if (parkingSearchResultAdapter == null) {
+            parkingSearchResultAdapter = new ParkingSearchResultAdapter(searchResult, this);
+            parkingSearchRecyclerView.setLayoutManager(
+                    new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            parkingSearchRecyclerView.setAdapter(parkingSearchResultAdapter);
+        }
+    }
+
+    @Override
+    public void onParkingSearchItemClick(ParkingItem parkingItem) {
+        Log.d("ALVTAG", "parkingitem clicked:" + parkingItem.getTitle());
+    }
+
+    private void setMapMarkers(ParkingItemSearchResult searchResult) {
         for (ParkingItem parkingItem : searchResult.getItems()) {
             Coordinate coordinate = parkingItem.getCoordinate();
             LatLng latLng = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
@@ -147,17 +185,16 @@ public class ParkingActivity extends AppCompatActivity implements ParkingSearchC
 
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(latLng)
-                    .title(price)
                     .icon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price)));
 
-            map.addMarker(markerOptions);
-        }
+            markerList.add(map.addMarker(markerOptions));
 
-//        ParkingMapFragment fragment = BookingItemDetailsFragment.newInstance(bookingItem, details);
-//        fragment.setWishlistItemChangedCallback(this);
-//        FragmentTransaction transaction = transactionQueue.newTransaction();
-//        transaction.replace(R.id.booking_item_details_container, fragment);
-//        transactionQueue.addTransaction(transaction);
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
     }
 
     private Bitmap createCustomMarkerBitmap(String text) {

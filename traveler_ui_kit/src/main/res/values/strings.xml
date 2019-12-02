@@ -79,4 +79,7 @@
     <string name="search_filters_reset_button_text">Reset</string>
     <string name="sort_dialog_label">Current:</string>
     <string name="apply_button_text">Apply</string>
+
+    <string name="view">View</string>
+    <string name="total">Total:</string>
 </resources>
