@@ -98,7 +98,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
         return parkingItemSearchResult != null ? parkingItemSearchResult.getTotal() : 0;
     }
 
-    public void setSelectedParkingItem(ParkingItem parkingItem) {
+    public int setSelectedParkingItem(ParkingItem parkingItem) {
         if (selectedParkingItem != null) {
             int previousIndex = parkingItemSearchResult.getItems().indexOf(selectedParkingItem);
             selectedParkingItem = null;
@@ -107,7 +107,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
         selectedParkingItem = parkingItem;
         int newIndex = parkingItemSearchResult.getItems().indexOf(selectedParkingItem);
         notifyItemChanged(newIndex);
-        //TODO: alvtag handle smooth scroll
+        return newIndex;
     }
 
     private void onFetchItems(int position) {
@@ -139,6 +139,10 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onParkingSearchError(Error error) {
 
+    }
+
+    public int getPositionForParkingItem(ParkingItem parkingItem) {
+        return parkingItemSearchResult.getItems().indexOf(parkingItem);
     }
 
     private class ParkingSearchResultViewHolder extends RecyclerView.ViewHolder {
