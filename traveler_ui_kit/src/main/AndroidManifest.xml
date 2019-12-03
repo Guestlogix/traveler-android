@@ -3,6 +3,9 @@
           package="com.guestlogix.traveleruikit">
 
     <application android:theme="@style/AppTheme">
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="${googleMapApiKey}"/>
         <activity android:name=".activities.OrderDetailActivity"/>
         <activity android:name=".activities.OrderConfirmationActivity"/>
         <activity android:name=".activities.OrderSummaryActivity"/>
@@ -20,6 +23,7 @@
         <activity android:name=".activities.TermsAndConditionsActivity"/>
         <activity android:name=".activities.BookingSearchActivity"/>
         <activity android:name=".activities.BookingSearchResultActivity"/>
+        <activity android:name=".activities.ParkingActivity"/>
     </application>
 
 </manifest>

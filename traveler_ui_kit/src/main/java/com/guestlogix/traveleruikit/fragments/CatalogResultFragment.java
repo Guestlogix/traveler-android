@@ -21,6 +21,7 @@ import com.guestlogix.travelercorekit.models.QueryType;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
 import com.guestlogix.traveleruikit.activities.BookingSearchActivity;
+import com.guestlogix.traveleruikit.activities.ParkingActivity;
 import com.guestlogix.traveleruikit.adapters.CatalogSectionAdapter;
 
 public class CatalogResultFragment extends Fragment implements CatalogSectionAdapter.CatalogSectionAdapterCallback {
@@ -73,11 +74,20 @@ public class CatalogResultFragment extends Fragment implements CatalogSectionAda
             Intent intent = new Intent(this.getContext(), BookingItemDetailsActivity.class);
             intent.putExtra(BookingItemDetailsActivity.ARG_PRODUCT, item);
             startActivity(intent);
-        } else if (item instanceof QueryItem && ((QueryItem) item).getType() == QueryType.BOOKING) {
-            Intent searchIntent = new Intent(getContext(), BookingSearchActivity.class);
-            searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getSearchQuery());
-            startActivity(searchIntent);
+        } else if (item instanceof QueryItem){
+            QueryItem queryItem = (QueryItem) item;
+            switch (queryItem.getType()){
+                case BOOKING:
+                    Intent searchIntent = new Intent(getContext(), BookingSearchActivity.class);
+                    searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getSearchQuery());
+                    startActivity(searchIntent);
+                    break;
+                case PARKING:
+                    Intent intent = new Intent(this.getContext(), ParkingActivity.class);
+                    intent.putExtra(ParkingActivity.ARG_PARKING_QUERY, item);
+                    startActivity(intent);
+                    break;
+            }
         }
-
     }
 }
