@@ -7,10 +7,14 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -70,6 +74,8 @@ public class ParkingActivity extends AppCompatActivity implements
     private ParkingSearchResultAdapter parkingSearchResultAdapter;
 
     private List<Marker> markerList = new ArrayList<>();
+    @Nullable
+    private Marker selectedMarker = null;
     private RecyclerView.SmoothScroller smoothScroller;
     private LinearLayoutManager linearLayoutManager;
 
@@ -191,6 +197,8 @@ public class ParkingActivity extends AppCompatActivity implements
         for (Marker marker : markerList) {
             if (parkingItem == marker.getTag()) {
                 map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), MAP_ANIMATION_DURATION_MS, null);
+                clearSelectedMarker();
+                setSelectedMarker(marker, parkingItem);
             }
         }
         int newIndex = parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
@@ -212,7 +220,7 @@ public class ParkingActivity extends AppCompatActivity implements
 
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price)));
+                    .icon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price, false)));
 
             Marker marker = map.addMarker(markerOptions);
             marker.setTag(parkingItem);
@@ -228,19 +236,45 @@ public class ParkingActivity extends AppCompatActivity implements
     @Override
     public boolean onMarkerClick(Marker marker) {
         ParkingItem parkingItem = (ParkingItem) marker.getTag();
-        scrollListToIndex(parkingSearchResultAdapter.getPositionForParkingItem(parkingItem));
+        if (parkingItem == null) {
+            Log.e(TAG, "onMarkerClick has null parkingItem!");
+            return false;
+        }
+
+        clearSelectedMarker();
+        setSelectedMarker(marker, parkingItem);
         return false;
     }
 
-    private Bitmap createCustomMarkerBitmap(String text) {
-        Bitmap immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_price_pin);
+    private void setSelectedMarker(Marker marker, ParkingItem parkingItem) {
+        parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
+        scrollListToIndex(parkingSearchResultAdapter.getPositionForParkingItem(parkingItem));
+        String price = String.valueOf((int) parkingItem.getPrice().getValueInBaseCurrency());
+        marker.setIcon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price, true)));
+        selectedMarker = marker;
+    }
+
+    private void clearSelectedMarker() {
+        if (selectedMarker != null) {
+            ParkingItem selectedMarkerParkingItem = (ParkingItem) selectedMarker.getTag();
+            if (selectedMarkerParkingItem != null) {
+                String price = String.valueOf((int) selectedMarkerParkingItem.getPrice().getValueInBaseCurrency());
+                selectedMarker.setIcon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price, false)));
+            }
+        }
+    }
+
+    private Bitmap createCustomMarkerBitmap(String text, boolean isSelected) {
+        @DrawableRes int drawableResource = isSelected ? R.drawable.ic_price_pin_selected : R.drawable.ic_price_pin;
+        Bitmap immutableBitmap = BitmapFactory.decodeResource(getResources(), drawableResource);
 
         Bitmap mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(mutableBitmap);
         Paint paint = new Paint();
         paint.setTextSize(MARKER_MAX_FONT_SIZE * getResources().getDisplayMetrics().density);
 
-        paint.setColor(ContextCompat.getColor(this, R.color.black));
+        @ColorRes Integer colorRes = isSelected ? R.color.white : R.color.black;
+        paint.setColor(ContextCompat.getColor(this, colorRes));
         paint.setTypeface(Typeface.create("Roboto", Typeface.NORMAL));
 
         Rect bounds = new Rect();
