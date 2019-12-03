@@ -59,6 +59,7 @@ public class ParkingActivity extends AppCompatActivity implements
     private static final float MARKER_CENTER_X_DIVISOR = 2f;
     private static final float MARKER_CENTER_Y_DIVISOR = 2.5f;
     private static final int SCROLL_SLOWDOWN_FACTOR = 2;
+    private static final int MAP_ANIMATION_DURATION_MS = 500;
 
     private QueryItem queryItem;
     private FragmentTransactionQueue transactionQueue;
@@ -110,7 +111,7 @@ public class ParkingActivity extends AppCompatActivity implements
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMarkerClickListener(this);
-        mapFragment.getView().setVisibility(View.INVISIBLE);
+        mapFragment.getView().setVisibility(View.VISIBLE);
     }
 
     private void reloadParkingItem() {
@@ -162,7 +163,7 @@ public class ParkingActivity extends AppCompatActivity implements
         mapFragment.getView().setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
 
-        map.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0));
+        map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0), MAP_ANIMATION_DURATION_MS, null);
         map.clear();
         setMapMarkers(searchResult);
         if (parkingSearchResultAdapter == null) {
@@ -189,7 +190,7 @@ public class ParkingActivity extends AppCompatActivity implements
     public void onParkingSearchItemClick(ParkingItem parkingItem) {
         for (Marker marker : markerList) {
             if (parkingItem == marker.getTag()) {
-                map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), MAP_ANIMATION_DURATION_MS, null);
             }
         }
         int newIndex = parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
