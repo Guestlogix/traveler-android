@@ -187,6 +187,11 @@ public class ParkingActivity extends AppCompatActivity implements
 
     @Override
     public void onParkingSearchItemClick(ParkingItem parkingItem) {
+        for (Marker marker : markerList) {
+            if (parkingItem == marker.getTag()) {
+                map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+            }
+        }
         int newIndex = parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
         scrollListToIndex(newIndex);
     }
@@ -216,8 +221,8 @@ public class ParkingActivity extends AppCompatActivity implements
 
     /**
      * @return true if the listener has consumed the event (i.e., the default behavior should not occur);
-     *          false otherwise (i.e., the default behavior should occur). The default behavior is
-     *          for the camera to move to the marker and an info window to appear.
+     * false otherwise (i.e., the default behavior should occur). The default behavior is
+     * for the camera to move to the marker and an info window to appear.
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
