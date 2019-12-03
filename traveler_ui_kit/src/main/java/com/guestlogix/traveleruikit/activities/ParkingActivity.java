@@ -173,6 +173,7 @@ public class ParkingActivity extends AppCompatActivity implements
     @Override
     public void onParkingSearchItemClick(ParkingItem parkingItem) {
         Log.d("ALVTAG", "parkingitem clicked:" + parkingItem.getTitle());
+        parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
     }
 
     private void setMapMarkers(ParkingItemSearchResult searchResult) {

@@ -6,7 +6,7 @@
         android:id="@+id/card_view"
         android:layout_gravity="center"
         android:layout_margin="@dimen/margin_small"
-        android:layout_width="156dp"
+        android:layout_width="264dp"
         android:layout_height="match_parent"
         card_view:cardCornerRadius="4dp">
     <LinearLayout
