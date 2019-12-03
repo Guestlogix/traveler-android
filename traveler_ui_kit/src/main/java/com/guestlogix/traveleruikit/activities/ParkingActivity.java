@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -18,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -58,6 +58,7 @@ public class ParkingActivity extends AppCompatActivity implements
     private static final int MARKER_MAX_FONT_SIZE = 18;
     private static final float MARKER_CENTER_X_DIVISOR = 2f;
     private static final float MARKER_CENTER_Y_DIVISOR = 2.5f;
+    private static final int SCROLL_SLOWDOWN_FACTOR = 2;
 
     private QueryItem queryItem;
     private FragmentTransactionQueue transactionQueue;
@@ -68,6 +69,8 @@ public class ParkingActivity extends AppCompatActivity implements
     private ParkingSearchResultAdapter parkingSearchResultAdapter;
 
     private List<Marker> markerList = new ArrayList<>();
+    private RecyclerView.SmoothScroller smoothScroller;
+    private LinearLayoutManager linearLayoutManager;
 
     /**
      * Manipulates the map once available.
@@ -164,16 +167,33 @@ public class ParkingActivity extends AppCompatActivity implements
         setMapMarkers(searchResult);
         if (parkingSearchResultAdapter == null) {
             parkingSearchResultAdapter = new ParkingSearchResultAdapter(searchResult, this);
-            parkingSearchRecyclerView.setLayoutManager(
-                    new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
+            smoothScroller = new LinearSmoothScroller(this) {
+                @Override
+                protected int getHorizontalSnapPreference() {
+                    return LinearSmoothScroller.SNAP_TO_START;
+                }
+
+                @Override
+                protected int calculateTimeForScrolling(int dx) {
+                    return SCROLL_SLOWDOWN_FACTOR * super.calculateTimeForScrolling(dx);
+                }
+            };
+            linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            parkingSearchRecyclerView.setLayoutManager(linearLayoutManager);
             parkingSearchRecyclerView.setAdapter(parkingSearchResultAdapter);
         }
     }
 
     @Override
     public void onParkingSearchItemClick(ParkingItem parkingItem) {
-        Log.d("ALVTAG", "parkingitem clicked:" + parkingItem.getTitle());
-        parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
+        int newIndex = parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
+        scrollListToIndex(newIndex);
+    }
+
+    private void scrollListToIndex(int newIndex) {
+        smoothScroller.setTargetPosition(newIndex);
+        linearLayoutManager.startSmoothScroll(smoothScroller);
     }
 
     private void setMapMarkers(ParkingItemSearchResult searchResult) {
@@ -188,13 +208,21 @@ public class ParkingActivity extends AppCompatActivity implements
                     .position(latLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price)));
 
-            markerList.add(map.addMarker(markerOptions));
-
+            Marker marker = map.addMarker(markerOptions);
+            marker.setTag(parkingItem);
+            markerList.add(marker);
         }
     }
 
+    /**
+     * @return true if the listener has consumed the event (i.e., the default behavior should not occur);
+     *          false otherwise (i.e., the default behavior should occur). The default behavior is
+     *          for the camera to move to the marker and an info window to appear.
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
+        ParkingItem parkingItem = (ParkingItem) marker.getTag();
+        scrollListToIndex(parkingSearchResultAdapter.getPositionForParkingItem(parkingItem));
         return false;
     }
 
@@ -216,7 +244,6 @@ public class ParkingActivity extends AppCompatActivity implements
         canvas.drawText(text, x, y, paint);
 
         return mutableBitmap;
-
     }
 
     private static LatLngBounds boundingBoxToLatLngBounds(BoundingBox boundingBox) {
