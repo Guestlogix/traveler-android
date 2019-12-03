@@ -5,7 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.guestlogix.travelercorekit.callbacks.ParkingSearchCallback;
@@ -30,6 +32,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private ParkingItemSearchResult parkingItemSearchResult;
     private OnParkingSearchItemClickListener parkingSearchItemClickListener;
+    private ParkingItem selectedParkingItem;
 
     public ParkingSearchResultAdapter(ParkingItemSearchResult parkingItemSearchResult,
                                       OnParkingSearchItemClickListener parkingSearchItemClickListener) {
@@ -50,7 +53,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                         .inflate(R.layout.item_loading_order, parent, false);
                 return new LoadingItemViewHolder(loadingView);
             default:
-                throw new IllegalArgumentException(TAG+ " unknown viewHolder type");
+                throw new IllegalArgumentException(TAG + " unknown viewHolder type");
         }
     }
 
@@ -70,11 +73,13 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                         parkingSearchItemClickListener.onParkingSearchItemClick(parkingItem);
                     }
                 });
+                int indicatorColorInt = (selectedParkingItem == parkingItem ? R.color.colorPrimary : R.color.off_white);
+                @ColorInt int color = ContextCompat.getColor(itemHolder.selectionIndicator.getContext(), indicatorColorInt);
+                itemHolder.selectionIndicator.setBackgroundColor(color);
                 break;
             case LOADING_VIEW_TYPE:
                 break;
         }
-
     }
 
     @Override
@@ -91,6 +96,18 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemCount() {
         return parkingItemSearchResult != null ? parkingItemSearchResult.getTotal() : 0;
+    }
+
+    public void setSelectedParkingItem(ParkingItem parkingItem) {
+        if (selectedParkingItem != null) {
+            int previousIndex = parkingItemSearchResult.getItems().indexOf(selectedParkingItem);
+            selectedParkingItem = null;
+            notifyItemChanged(previousIndex);
+        }
+        selectedParkingItem = parkingItem;
+        int newIndex = parkingItemSearchResult.getItems().indexOf(selectedParkingItem);
+        notifyItemChanged(newIndex);
+        //TODO: alvtag handle smooth scroll
     }
 
     private void onFetchItems(int position) {
@@ -125,15 +142,17 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private class ParkingSearchResultViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
-        public TextView subtitle;
-        public TextView price;
+        private TextView title;
+        private TextView subtitle;
+        private TextView price;
+        private View selectionIndicator;
 
         ParkingSearchResultViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.textView_parking_title);
             subtitle = itemView.findViewById(R.id.textView_parking_subtitle);
             price = itemView.findViewById(R.id.textView_parking_total);
+            selectionIndicator = itemView.findViewById(R.id.view_parking_selected_indicator);
         }
     }
 
