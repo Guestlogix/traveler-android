@@ -212,7 +212,6 @@ public class ParkingActivity extends AppCompatActivity implements
     public void onParkingSearchItemClick(ParkingItem parkingItem) {
         for (Marker marker : markerList) {
             if (parkingItem == marker.getTag()) {
-                map.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()), MAP_ANIMATION_DURATION_MS, null);
                 clearSelectedMarker();
                 setSelectedMarker(marker, parkingItem);
             }
@@ -254,12 +253,12 @@ public class ParkingActivity extends AppCompatActivity implements
         ParkingItem parkingItem = (ParkingItem) marker.getTag();
         if (parkingItem == null) {
             Log.e(TAG, "onMarkerClick has null parkingItem!");
-            return false;
+            return true;
         }
 
         clearSelectedMarker();
         setSelectedMarker(marker, parkingItem);
-        return false;
+        return true;
     }
 
     private void setSearchButtonLoadingState() {
