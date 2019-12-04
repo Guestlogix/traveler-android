@@ -35,12 +35,6 @@
             android:layout_alignRight="@+id/map"
             android:layout_alignBottom="@+id/map">
 
-        <ProgressBar
-                android:id="@+id/spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
-
         <ImageButton
                 android:id="@+id/search_button"
                 android:layout_width="160dp"
@@ -53,7 +47,7 @@
                 tools:ignore="ContentDescription" />
 
         <LinearLayout
-                android:id="@+id/linearLayout"
+                android:id="@+id/linearLayout_parking_searchButton_ready"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/search_button"
@@ -64,6 +58,7 @@
                 android:layout_alignBottom="@id/search_button"
                 android:gravity="center"
                 android:orientation="horizontal"
+                android:visibility="invisible"
                 tools:ignore="UseCompoundDrawables">
 
             <ImageView
@@ -80,6 +75,38 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/search_this_area"
+                    android:textColor="@color/off_white" />
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/linearLayout_parking_searchButton_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/search_button"
+                android:layout_alignLeft="@id/search_button"
+                android:layout_alignTop="@id/search_button"
+                android:layout_alignEnd="@id/search_button"
+                android:layout_alignRight="@id/search_button"
+                android:layout_alignBottom="@id/search_button"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="invisible"
+                tools:ignore="UseCompoundDrawables"
+                tools:visibility="visible">
+
+            <ProgressBar
+                    android:id="@+id/progressBar_searchButton_loading"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:indeterminate="true" />
+
+            <TextView
+                    android:id="@+id/textView_parking_search_button_loading_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loading"
                     android:textColor="@color/off_white" />
         </LinearLayout>
     </RelativeLayout>
