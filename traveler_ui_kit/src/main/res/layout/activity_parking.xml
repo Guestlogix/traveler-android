@@ -21,9 +21,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/parking_items_recyclerview"
-            tools:context=".MapsActivity" />
+            tools:context=".MapsActivity"
+            tools:ignore="FragmentTagUsage" />
 
     <RelativeLayout
+            android:id="@+id/relativeLayout_map_overlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/map"
@@ -38,5 +40,47 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true" />
+
+        <ImageButton
+                android:id="@+id/search_button"
+                android:layout_width="160dp"
+                android:layout_height="32sp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:paddingBottom="@dimen/padding_large"
+                android:src="@drawable/ripple_parking"
+                tools:ignore="ContentDescription" />
+
+        <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@id/search_button"
+                android:layout_alignLeft="@id/search_button"
+                android:layout_alignTop="@id/search_button"
+                android:layout_alignEnd="@id/search_button"
+                android:layout_alignRight="@id/search_button"
+                android:layout_alignBottom="@id/search_button"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                    android:id="@+id/imageView_search_button_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_xsmall"
+                    android:layout_marginRight="@dimen/margin_xsmall"
+                    android:src="@drawable/ic_search"
+                    tools:ignore="ContentDescription" />
+
+            <TextView
+                    android:id="@+id/textView_parking_search_button_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/search_this_area"
+                    android:textColor="@color/off_white" />
+        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
