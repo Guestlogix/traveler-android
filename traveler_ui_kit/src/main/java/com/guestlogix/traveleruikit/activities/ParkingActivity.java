@@ -65,19 +65,18 @@ public class ParkingActivity extends AppCompatActivity implements
     private static final int SCROLL_SLOWDOWN_FACTOR = 2;
     private static final int MAP_ANIMATION_DURATION_MS = 500;
 
-    private QueryItem queryItem;
-    private FragmentTransactionQueue transactionQueue;
     private GoogleMap map;
     private SupportMapFragment mapFragment;
     private ProgressBar progressBar;
     private RecyclerView parkingSearchRecyclerView;
-    private ParkingSearchResultAdapter parkingSearchResultAdapter;
-
-    private List<Marker> markerList = new ArrayList<>();
-    @Nullable
-    private Marker selectedMarker = null;
     private RecyclerView.SmoothScroller smoothScroller;
     private LinearLayoutManager linearLayoutManager;
+
+    private ParkingSearchResultAdapter parkingSearchResultAdapter;
+    private List<Marker> markerList = new ArrayList<>();
+    private ParkingItemQuery previousSearchQuery;
+    private FragmentTransactionQueue transactionQueue;
+    @Nullable private Marker selectedMarker = null;
 
     /**
      * Manipulates the map once available.
@@ -94,9 +93,10 @@ public class ParkingActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_parking);
         transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
 
-        queryItem = (QueryItem) getIntent().getSerializableExtra(ARG_PARKING_QUERY);
-        Assertion.eval(queryItem != null);
-        setTitle(queryItem.getTitle());
+        //QueryItem holds the initial search query
+        QueryItem initialQueryItem = (QueryItem) getIntent().getSerializableExtra(ARG_PARKING_QUERY);
+        Assertion.eval(initialQueryItem != null);
+        setTitle(initialQueryItem.getTitle());
 
         ActionBar actionBar = getSupportActionBar();
         Assertion.eval(actionBar != null);
@@ -109,24 +109,28 @@ public class ParkingActivity extends AppCompatActivity implements
 
         progressBar = findViewById(R.id.spinner);
         parkingSearchRecyclerView = findViewById(R.id.parking_items_recyclerview);
+        findViewById(R.id.search_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO alvtag check button state
+                LatLngBounds visibleLatLngBounds = map.getProjection().getVisibleRegion().latLngBounds;
+                ParkingItemQuery newSearchQuery = new ParkingItemQuery(previousSearchQuery.getAirportIATA(),
+                        previousSearchQuery.getDateRange(),
+                        latLngBoundsToBoundingBox(visibleLatLngBounds),
+                        0, PAGE_SIZE);
+                loadNewParkingItems(newSearchQuery);
+            }
+        });
 
-        reloadParkingItem();
+
+        loadNewParkingItems((ParkingItemQuery) initialQueryItem.getSearchQuery());
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMarkerClickListener(this);
-        mapFragment.getView().setVisibility(View.VISIBLE);
-    }
-
-    private void reloadParkingItem() {
-        progressBar.setVisibility(View.VISIBLE);
-
-        ParkingItemQuery query = (ParkingItemQuery) queryItem.getSearchQuery();  //TODO ALVTAG Do this cast/typecheck way earlier, maybe pass in
-        ParkingItemQuery parkingItemQuery = new ParkingItemQuery(query.getAirportIATA(),
-                query.getDateRange(), query.getBoundingBox(), 0, PAGE_SIZE);
-        Traveler.searchParkingItems(parkingItemQuery, this);
+        showMapFragment();
     }
 
     @Override
@@ -149,9 +153,8 @@ public class ParkingActivity extends AppCompatActivity implements
 
     @Override
     public void onRetry() {
-        reloadParkingItem();
+        loadNewParkingItems(previousSearchQuery);
     }
-
 
     @Override
     public void onParkingSearchError(Error error) {
@@ -166,7 +169,7 @@ public class ParkingActivity extends AppCompatActivity implements
     public void onParkingSearchSuccess(ParkingItemSearchResult searchResult) {
         LatLngBounds latLngBounds = boundingBoxToLatLngBounds(searchResult.getQuery().getBoundingBox());
 
-        mapFragment.getView().setVisibility(View.VISIBLE);
+        showMapFragment();
         progressBar.setVisibility(View.INVISIBLE);
 
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0), MAP_ANIMATION_DURATION_MS, null);
@@ -189,6 +192,9 @@ public class ParkingActivity extends AppCompatActivity implements
             linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
             parkingSearchRecyclerView.setLayoutManager(linearLayoutManager);
             parkingSearchRecyclerView.setAdapter(parkingSearchResultAdapter);
+        } else {
+            parkingSearchResultAdapter.setData(searchResult);
+            parkingSearchResultAdapter.notifyDataSetChanged();
         }
     }
 
@@ -246,6 +252,24 @@ public class ParkingActivity extends AppCompatActivity implements
         return false;
     }
 
+    private void showMapFragment() {
+        View view = mapFragment.getView();
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void loadNewParkingItems(ParkingItemQuery query) {
+        previousSearchQuery = query;
+        progressBar.setVisibility(View.VISIBLE);
+        //todo Alvtag set button state to loading
+
+        ParkingItemQuery parkingItemQuery = new ParkingItemQuery(query.getAirportIATA(),
+                query.getDateRange(), query.getBoundingBox(), 0, PAGE_SIZE);
+
+        Traveler.searchParkingItems(parkingItemQuery, this);
+    }
+
     private void setSelectedMarker(Marker marker, ParkingItem parkingItem) {
         parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
         scrollListToIndex(parkingSearchResultAdapter.getPositionForParkingItem(parkingItem));
@@ -273,7 +297,7 @@ public class ParkingActivity extends AppCompatActivity implements
         Paint paint = new Paint();
         paint.setTextSize(MARKER_MAX_FONT_SIZE * getResources().getDisplayMetrics().density);
 
-        @ColorRes Integer colorRes = isSelected ? R.color.white : R.color.black;
+        @ColorRes int colorRes = isSelected ? R.color.white : R.color.black;
         paint.setColor(ContextCompat.getColor(this, colorRes));
         paint.setTypeface(Typeface.create("Roboto", Typeface.NORMAL));
 
@@ -292,5 +316,13 @@ public class ParkingActivity extends AppCompatActivity implements
         LatLng southWest = new LatLng(bottomRightCoordinate.getLatitude(), topLeftCoordinate.getLongitude());
         LatLng northEast = new LatLng(topLeftCoordinate.getLatitude(), bottomRightCoordinate.getLongitude());
         return new LatLngBounds(southWest, northEast);
+    }
+
+    private static BoundingBox latLngBoundsToBoundingBox(LatLngBounds latLngBounds) {
+        LatLng southWest = latLngBounds.southwest;
+        LatLng northEast = latLngBounds.northeast;
+        Coordinate topLeftCoordinate = new Coordinate(northEast.latitude, southWest.longitude);
+        Coordinate bottomRightCoordinate = new Coordinate(southWest.latitude, northEast.longitude);
+        return new BoundingBox(topLeftCoordinate, bottomRightCoordinate);
     }
 }

@@ -145,6 +145,10 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
         return parkingItemSearchResult.getItems().indexOf(parkingItem);
     }
 
+    public void setData(ParkingItemSearchResult searchResult) {
+        parkingItemSearchResult = searchResult;
+    }
+
     private class ParkingSearchResultViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private TextView subtitle;
