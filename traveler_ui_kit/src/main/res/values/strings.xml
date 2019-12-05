@@ -84,4 +84,6 @@
     <string name="total">Total:</string>
     <string name="search_this_area">Search this Area</string>
     <string name="loading">Loading…</string>
+    <string name="list_view">List View</string>
+    <string name="map_view">Map View</string>
 </resources>
