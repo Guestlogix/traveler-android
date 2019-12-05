@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
@@ -75,6 +76,8 @@ public class ParkingActivity extends AppCompatActivity implements
     private LinearLayoutManager linearLayoutManager;
     private LinearLayout searchButtonLoadingLayout;
     private LinearLayout searchButtonReadyLayout;
+    private TextView parkingToggleMapTextView;
+    private TextView parkingToggleListTextView;
 
     private ParkingSearchResultAdapter parkingSearchResultAdapter;
     private List<Marker> markerList = new ArrayList<>();
@@ -112,9 +115,24 @@ public class ParkingActivity extends AppCompatActivity implements
         Assertion.eval(mapFragment != null);
         mapFragment.getMapAsync(this);
 
+        parkingToggleMapTextView = findViewById(R.id.linearLayout_parking_toggle_map);
+        parkingToggleMapTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMapView();
+            }
+        });
+        parkingToggleListTextView = findViewById(R.id.linearLayout_parking_toggle_list);
+        parkingToggleListTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setListView();
+            }
+        });
+
         searchButtonLoadingLayout = findViewById(R.id.linearLayout_parking_searchButton_loading);
         searchButtonReadyLayout = findViewById(R.id.linearLayout_parking_searchButton_ready);
-        parkingSearchRecyclerView = findViewById(R.id.parking_items_recyclerview);
+        parkingSearchRecyclerView = findViewById(R.id.parking_mapView_items_recyclerview);
         findViewById(R.id.search_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -342,5 +360,25 @@ public class ParkingActivity extends AppCompatActivity implements
         Coordinate topLeftCoordinate = new Coordinate(northEast.latitude, southWest.longitude);
         Coordinate bottomRightCoordinate = new Coordinate(southWest.latitude, northEast.longitude);
         return new BoundingBox(topLeftCoordinate, bottomRightCoordinate);
+    }
+
+    private void setMapView() {
+        parkingToggleMapTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
+        parkingToggleMapTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_left_selected));
+        parkingToggleMapTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_map_selected), null, null, null);
+
+        parkingToggleListTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        parkingToggleListTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_right_unselected));
+        parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_list_unselected), null, null, null);
+    }
+
+    private void setListView() {
+        parkingToggleMapTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        parkingToggleMapTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_left_unselected));
+        parkingToggleMapTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_map_unselected), null, null, null);
+
+        parkingToggleListTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
+        parkingToggleListTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_right_selected));
+        parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_list_selected), null, null, null);
     }
 }
