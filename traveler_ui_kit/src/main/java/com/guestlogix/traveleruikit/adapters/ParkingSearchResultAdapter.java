@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.guestlogix.travelercorekit.callbacks.ParkingSearchCallback;
@@ -29,15 +30,30 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     private final static int LOADING_VIEW_TYPE = 1;
     private final static int PAGE_SIZE = 10;
     private HashSet<Integer> pagesLoading = new HashSet<>();
+    private int layoutId;
 
     private ParkingItemSearchResult parkingItemSearchResult;
     private OnParkingSearchItemClickListener parkingSearchItemClickListener;
     private ParkingItem selectedParkingItem;
 
+    /**
+     * @param orientation LinearLayoutManager.VERTICAL or LinearLayoutManager.HORIZONTAL
+     */
     public ParkingSearchResultAdapter(ParkingItemSearchResult parkingItemSearchResult,
-                                      OnParkingSearchItemClickListener parkingSearchItemClickListener) {
+                                      OnParkingSearchItemClickListener parkingSearchItemClickListener,
+                                      int orientation) {
         this.parkingItemSearchResult = parkingItemSearchResult;
         this.parkingSearchItemClickListener = parkingSearchItemClickListener;
+        switch (orientation) {
+            case LinearLayoutManager.VERTICAL:
+                this.layoutId = R.layout.item_parking_vertical;
+                break;
+            case LinearLayoutManager.HORIZONTAL:
+                this.layoutId = R.layout.item_parking_horizontal;
+                break;
+            default:
+                throw new IllegalArgumentException(TAG + ": invalid orientation");
+        }
     }
 
     @NonNull
@@ -46,7 +62,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
         switch (viewType) {
             case PARKING_ITEM_VIEW_TYPE:
                 View parkingItemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_parking, parent, false);
+                        .inflate(layoutId, parent, false);
                 return new ParkingSearchResultViewHolder(parkingItemView);
             case LOADING_VIEW_TYPE:
                 View loadingView = LayoutInflater.from(parent.getContext())

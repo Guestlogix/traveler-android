@@ -7,9 +7,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -71,15 +74,18 @@ public class ParkingActivity extends AppCompatActivity implements
 
     private GoogleMap map;
     private SupportMapFragment mapFragment;
-    private RecyclerView parkingSearchRecyclerView;
+    private RecyclerView parkingSearchMapViewRecyclerView;
+    private RecyclerView parkingSearchListViewRecyclerView;
     private RecyclerView.SmoothScroller smoothScroller;
     private LinearLayoutManager linearLayoutManager;
     private LinearLayout searchButtonLoadingLayout;
     private LinearLayout searchButtonReadyLayout;
     private TextView parkingToggleMapTextView;
     private TextView parkingToggleListTextView;
+    private ImageButton searchButton;
 
-    private ParkingSearchResultAdapter parkingSearchResultAdapter;
+    private ParkingSearchResultAdapter mapViewParkingSearchResultAdapter;
+    private ParkingSearchResultAdapter listViewParkingSearchResultAdapter;
     private List<Marker> markerList = new ArrayList<>();
     private ParkingItemQuery previousSearchQuery;
     private FragmentTransactionQueue transactionQueue;
@@ -132,11 +138,13 @@ public class ParkingActivity extends AppCompatActivity implements
 
         searchButtonLoadingLayout = findViewById(R.id.linearLayout_parking_searchButton_loading);
         searchButtonReadyLayout = findViewById(R.id.linearLayout_parking_searchButton_ready);
-        parkingSearchRecyclerView = findViewById(R.id.parking_mapView_items_recyclerview);
-        findViewById(R.id.search_button).setOnClickListener(new View.OnClickListener() {
+        parkingSearchMapViewRecyclerView = findViewById(R.id.parking_mapView_recyclerview);
+        parkingSearchListViewRecyclerView = findViewById(R.id.parking_listView_recyclerview);
+        searchButton = findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ((Integer) parkingSearchRecyclerView.getTag() == SEARCH_BUTTON_STATE_LOADING) {
+                if ((Integer) searchButton.getTag() == SEARCH_BUTTON_STATE_LOADING) {
                     return;
                 }
                 LatLngBounds visibleLatLngBounds = map.getProjection().getVisibleRegion().latLngBounds;
@@ -145,12 +153,24 @@ public class ParkingActivity extends AppCompatActivity implements
                         previousSearchQuery.getDateRange(),
                         latLngBoundsToBoundingBox(visibleLatLngBounds),
                         0, PAGE_SIZE);
-                parkingSearchRecyclerView.setTag(SEARCH_BUTTON_STATE_LOADING);
+                searchButton.setTag(SEARCH_BUTTON_STATE_LOADING);
                 loadNewParkingItems(newSearchQuery);
             }
         });
 
         loadNewParkingItems((ParkingItemQuery) initialQueryItem.getSearchQuery());
+
+        smoothScroller = new LinearSmoothScroller(this) {
+            @Override
+            protected int getHorizontalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+
+            @Override
+            protected int calculateTimeForScrolling(int dx) {
+                return SCROLL_SLOWDOWN_FACTOR * super.calculateTimeForScrolling(dx);
+            }
+        };
     }
 
     @Override
@@ -202,28 +222,23 @@ public class ParkingActivity extends AppCompatActivity implements
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0), MAP_ANIMATION_DURATION_MS, null);
         map.clear();
         setMapMarkers(searchResult);
-        if (parkingSearchResultAdapter == null) {
-            parkingSearchResultAdapter = new ParkingSearchResultAdapter(searchResult, this);
-
-            smoothScroller = new LinearSmoothScroller(this) {
-                @Override
-                protected int getHorizontalSnapPreference() {
-                    return LinearSmoothScroller.SNAP_TO_START;
-                }
-
-                @Override
-                protected int calculateTimeForScrolling(int dx) {
-                    return SCROLL_SLOWDOWN_FACTOR * super.calculateTimeForScrolling(dx);
-                }
-            };
+        if (mapViewParkingSearchResultAdapter == null || listViewParkingSearchResultAdapter == null) {
+            mapViewParkingSearchResultAdapter = new ParkingSearchResultAdapter(searchResult, this, LinearLayoutManager.HORIZONTAL);
             linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-            parkingSearchRecyclerView.setLayoutManager(linearLayoutManager);
-            parkingSearchRecyclerView.setAdapter(parkingSearchResultAdapter);
+            parkingSearchMapViewRecyclerView.setLayoutManager(linearLayoutManager);
+            parkingSearchMapViewRecyclerView.setAdapter(mapViewParkingSearchResultAdapter);
+
+            listViewParkingSearchResultAdapter = new ParkingSearchResultAdapter(searchResult, this, LinearLayoutManager.VERTICAL);
+            LinearLayoutManager verticalLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+            parkingSearchListViewRecyclerView.setLayoutManager(verticalLinearLayoutManager);
+            parkingSearchListViewRecyclerView.setAdapter(listViewParkingSearchResultAdapter);
         } else {
-            parkingSearchResultAdapter.setData(searchResult);
-            parkingSearchResultAdapter.notifyDataSetChanged();
+            mapViewParkingSearchResultAdapter.setData(searchResult);
+            mapViewParkingSearchResultAdapter.notifyDataSetChanged();
+            listViewParkingSearchResultAdapter.setData(searchResult);
+            listViewParkingSearchResultAdapter.notifyDataSetChanged();
         }
-        parkingSearchRecyclerView.setTag(SEARCH_BUTTON_STATE_READY);
+        searchButton.setTag(SEARCH_BUTTON_STATE_READY);
     }
 
     @Override
@@ -234,7 +249,7 @@ public class ParkingActivity extends AppCompatActivity implements
                 setSelectedMarker(marker, parkingItem);
             }
         }
-        int newIndex = parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
+        int newIndex = mapViewParkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
         scrollListToIndex(newIndex);
     }
 
@@ -248,7 +263,6 @@ public class ParkingActivity extends AppCompatActivity implements
             Coordinate coordinate = parkingItem.getCoordinate();
             LatLng latLng = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
 
-            //TODO alvtag: this is oft used, refactor
             String price = String.valueOf((int) parkingItem.getPrice().getValueInBaseCurrency());
 
             MarkerOptions markerOptions = new MarkerOptions()
@@ -307,8 +321,8 @@ public class ParkingActivity extends AppCompatActivity implements
     }
 
     private void setSelectedMarker(Marker marker, ParkingItem parkingItem) {
-        parkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
-        scrollListToIndex(parkingSearchResultAdapter.getPositionForParkingItem(parkingItem));
+        mapViewParkingSearchResultAdapter.setSelectedParkingItem(parkingItem);
+        scrollListToIndex(mapViewParkingSearchResultAdapter.getPositionForParkingItem(parkingItem));
         String price = String.valueOf((int) parkingItem.getPrice().getValueInBaseCurrency());
         marker.setIcon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price, true)));
         selectedMarker = marker;
@@ -370,6 +384,18 @@ public class ParkingActivity extends AppCompatActivity implements
         parkingToggleListTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         parkingToggleListTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_right_unselected));
         parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_list_unselected), null, null, null);
+
+        TranslateAnimation animation = new TranslateAnimation(0F, 0F, 0F, mapFragment.getView().getMeasuredHeight());
+        parkingSearchListViewRecyclerView.setAnimation(animation);
+        animation.setDuration(500);
+        animation.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                parkingSearchListViewRecyclerView.setVisibility(View.INVISIBLE);
+            }
+        }, 500);
     }
 
     private void setListView() {
@@ -380,5 +406,11 @@ public class ParkingActivity extends AppCompatActivity implements
         parkingToggleListTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
         parkingToggleListTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_right_selected));
         parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_list_selected), null, null, null);
+
+        parkingSearchListViewRecyclerView.setVisibility(View.VISIBLE);
+        TranslateAnimation animation = new TranslateAnimation(0F, 0F, mapFragment.getView().getMeasuredHeight(), 0F);
+        parkingSearchListViewRecyclerView.setAnimation(animation);
+        animation.setDuration(500);
+        animation.start();
     }
 }

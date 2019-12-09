@@ -36,7 +36,6 @@ public class ParkingItemSearchParameters implements Serializable {
         return boundingBox;
     }
 
-
     public static class ParkingItemSearchParametersObjectMappingFactory implements ObjectMappingFactory<ParkingItemSearchParameters> {
         @Override
         public ParkingItemSearchParameters instantiate(JsonReader reader) throws Exception {
