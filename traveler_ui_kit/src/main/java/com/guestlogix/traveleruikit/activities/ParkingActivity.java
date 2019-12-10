@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -117,7 +118,7 @@ public class ParkingActivity extends AppCompatActivity implements
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.parking_details_map);
         Assertion.eval(mapFragment != null);
         mapFragment.getMapAsync(this);
 
@@ -242,7 +243,7 @@ public class ParkingActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onParkingSearchItemClick(ParkingItem parkingItem) {
+    public void onParkingItemViewHolderClick(ParkingItem parkingItem) {
         for (Marker marker : markerList) {
             if (parkingItem == marker.getTag()) {
                 clearSelectedMarker();
@@ -256,6 +257,13 @@ public class ParkingActivity extends AppCompatActivity implements
     private void scrollListToIndex(int newIndex) {
         smoothScroller.setTargetPosition(newIndex);
         linearLayoutManager.startSmoothScroll(smoothScroller);
+    }
+
+    @Override
+    public void onParkingItemDetailsClick(ParkingItem parkingItem) {
+        Intent intent = new Intent(this, ParkingItemDetailsActivity.class);
+        intent.putExtra(ParkingItemDetailsActivity.ARG_PARKING_ITEM, parkingItem);
+        startActivity(intent);
     }
 
     private void setMapMarkers(ParkingItemSearchResult searchResult) {

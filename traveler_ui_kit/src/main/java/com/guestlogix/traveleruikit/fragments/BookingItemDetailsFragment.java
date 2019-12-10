@@ -1,6 +1,5 @@
 package com.guestlogix.traveleruikit.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -97,7 +95,7 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
             return view;
         }
 
-        TextView titleTextView = view.findViewById(R.id.titleTextView);
+        TextView titleTextView = view.findViewById(R.id.textView_parking_details_title);
         TextView descriptionTextView = view.findViewById(R.id.descriptionTextView);
         carouselView = view.findViewById(R.id.carouselView);
         catalogItemDetailsPager = view.findViewById(R.id.catalogItemPager);

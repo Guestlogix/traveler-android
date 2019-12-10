@@ -86,12 +86,18 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        parkingSearchItemClickListener.onParkingSearchItemClick(parkingItem);
+                        parkingSearchItemClickListener.onParkingItemViewHolderClick(parkingItem);
                     }
                 });
                 int indicatorColorInt = (selectedParkingItem == parkingItem ? R.color.colorPrimary : R.color.off_white);
                 @ColorInt int color = ContextCompat.getColor(itemHolder.selectionIndicator.getContext(), indicatorColorInt);
-                itemHolder.selectionIndicator.setBackgroundColor(color);
+
+                itemHolder.viewButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        parkingSearchItemClickListener.onParkingItemDetailsClick(parkingItem);
+                    }
+                });
                 break;
             case LOADING_VIEW_TYPE:
                 break;
@@ -170,6 +176,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
         private TextView subtitle;
         private TextView price;
         private View selectionIndicator;
+        private View viewButton;
 
         ParkingSearchResultViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -177,10 +184,15 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
             subtitle = itemView.findViewById(R.id.textView_parking_subtitle);
             price = itemView.findViewById(R.id.textView_parking_total);
             selectionIndicator = itemView.findViewById(R.id.view_parking_selected_indicator);
+            viewButton = itemView.findViewById(R.id.textView_parking_view_label);
         }
     }
 
     public interface OnParkingSearchItemClickListener {
-        void onParkingSearchItemClick(ParkingItem parkingItem);
+
+        void onParkingItemViewHolderClick(ParkingItem parkingItem);
+
+        void onParkingItemDetailsClick(ParkingItem parkingItem);
+
     }
 }

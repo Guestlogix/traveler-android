@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.guestlogix.travelercorekit.models.BookingItem;
+import com.guestlogix.travelercorekit.models.ParkingItem;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.ProductType;
 import com.guestlogix.traveleruikit.R;
@@ -49,6 +50,9 @@ public class ActionStripContainerFragment extends Fragment {
 
         if (product.getProductType() == ProductType.BOOKABLE) {
             fragment = BookableActionStripFragment.newInstance(new BookingContext((BookingItem) product));
+        } else if (product.getProductType() == ProductType.PARKING) {
+            BookingItem bookingItem = ((ParkingItem) product).toBookingItem();
+            fragment = BookableActionStripFragment.newInstance(new BookingContext(bookingItem));
         } else {
             // TODO: This is not done yet
             fragment = new BuyableActionStripFragment();
