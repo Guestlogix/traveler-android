@@ -30,6 +30,10 @@ public class DateHelper {
         return new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(date);
     }
 
+    public static String formatToMonthDayYearTime(Date date) {
+        return new SimpleDateFormat("M/d/yyyy h:mm a", Locale.getDefault()).format(date);
+    }
+
     public static Date parseISO8601(String dateString) throws ParseException {
         try {
             return new SimpleDateFormat(DATE_TIME_PATTERN, Locale.getDefault()).parse(dateString);

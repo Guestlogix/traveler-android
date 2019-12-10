@@ -146,11 +146,14 @@ public class Router {
         RouteBuilder rb = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
                 .path("/parking/")
-                .param("airport", parkingItemQuery.getAirportIATA())
                 .param("to", DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getUpper()))
                 .param("from", DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getLower()))
                 .param("skip", String.valueOf(parkingItemQuery.getOffset()))
                 .param("take", String.valueOf(parkingItemQuery.getLimit()));
+
+        if (!TextUtils.isEmpty(parkingItemQuery.getAirportIATA())) {
+            rb.param("airport", parkingItemQuery.getAirportIATA());
+        }
 
         if (parkingItemQuery.getBoundingBox() != null) {
             BoundingBox boundingBox = parkingItemQuery.getBoundingBox();
