@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".activities.ParkingItemDetailsActivity">
+
+    <FrameLayout
+                android:id="@+id/parking_item_details_container"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"/>
+
+    <FrameLayout
+                android:id="@+id/actionStripContainerFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"/>
+</LinearLayout>

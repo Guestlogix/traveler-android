@@ -86,4 +86,8 @@
     <string name="loading">Loading…</string>
     <string name="list_view">List View</string>
     <string name="map_view">Map View</string>
+    <string name="parking_balance_description">You will pay the balance of the parking fee at the Parking facility. Please ensure you have a means to complete payment</string>
+    <string name="what_is_this">What is this?</string>
+    <string name="contact_parking_company">Contact Parking Company</string>
+    <string name="powered_by">Powered by</string>
 </resources>
