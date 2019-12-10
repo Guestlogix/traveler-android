@@ -39,6 +39,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
     private boolean isWishlisted;
     private ProviderTranslationAttribution providerTranslationAttribution;
     private Range<Date> dateRange;
+    private Coordinate geolocation;
 
     private ParkingItemDetails(
             @NonNull String id,
@@ -60,7 +61,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
             @NonNull List<BookingItemCategory> categories,
             @NonNull boolean isWishlisted,
             ProviderTranslationAttribution providerTranslationAttribution,
-            Range<Date> dateRange) {
+            Range<Date> dateRange,
+            Coordinate geolocation) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
@@ -81,6 +83,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
         this.isWishlisted = isWishlisted;
         this.providerTranslationAttribution = providerTranslationAttribution;
         this.dateRange = dateRange;
+        this.geolocation = geolocation;
     }
 
     public String getId() {
@@ -164,6 +167,10 @@ public class ParkingItemDetails implements CatalogItemDetails {
         return isWishlisted;
     }
 
+    public Coordinate getGeolocation() {
+        return geolocation;
+    }
+
     public ProviderTranslationAttribution getProviderTranslationAttribution() {
         return providerTranslationAttribution;
     }
@@ -188,14 +195,15 @@ public class ParkingItemDetails implements CatalogItemDetails {
             String disclaimer = null;
             String termsAndConditions = null;
             Price price = null;
-            Price priceToPayOnline = null;
-            Price priceToPayOnsite = null;
+            Price payableOnline = null;
+            Price payableOnsite = null;
             ProductType productType = null;
             List<BookingItemCategory> categories = null;
             boolean isWishlisted = false;
             ProviderTranslationAttribution providerTranslationAttribution = null;
             String startTime = null;
             String endTime = null;
+            Coordinate coordinate = null;
 
             reader.beginObject();
 
@@ -266,11 +274,11 @@ public class ParkingItemDetails implements CatalogItemDetails {
                     case "priceStartingAt":
                         price = new Price.PriceObjectMappingFactory().instantiate(reader);
                         break;
-                    case "priceToPayOnline":
-                        priceToPayOnline = new Price.PriceObjectMappingFactory().instantiate(reader);
+                    case "payableOnline":
+                        payableOnline = new Price.PriceObjectMappingFactory().instantiate(reader);
                         break;
-                    case "priceToPayOnsite":
-                        priceToPayOnsite = new Price.PriceObjectMappingFactory().instantiate(reader);
+                    case "payableOnsite":
+                        payableOnsite = new Price.PriceObjectMappingFactory().instantiate(reader);
                         break;
                     case "purchaseStrategy":
                         productType = ProductType.fromString(reader.nextString());
@@ -284,17 +292,28 @@ public class ParkingItemDetails implements CatalogItemDetails {
                         }
                         break;
                     case "isWishlisted":
-                        isWishlisted = reader.nextBoolean();
+                        if (reader.peek() == NULL) {
+                            reader.skipValue();
+                        } else {
+                            isWishlisted = reader.nextBoolean();
+                        }
                         break;
                     case "providerTranslationAttribution":
-                        providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
-                                instantiate(reader);
+                        if (reader.peek() == NULL) {
+                            reader.skipValue();
+                        } else {
+                            providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
+                                    instantiate(reader);
+                        }
                         break;
                     case "startTime":
                         startTime = JsonReaderHelper.nextNullableString(reader);
                         break;
                     case "endTime":
                         endTime = JsonReaderHelper.nextNullableString(reader);
+                        break;
+                    case "geoLocation":
+                        coordinate = new Coordinate.CoordinateObjectMappingFactory().instantiate(reader);
                         break;
                     default:
                         reader.skipValue();
@@ -310,8 +329,7 @@ public class ParkingItemDetails implements CatalogItemDetails {
             Assertion.eval(locations != null);
             Assertion.eval(supplier != null);
             Assertion.eval(price != null);
-            Assertion.eval(priceToPayOnline != null);
-            Assertion.eval(priceToPayOnsite != null);
+            Assertion.eval(payableOnline != null);
             Assertion.eval(productType != null);
             Assertion.eval(categories != null);
 
@@ -331,13 +349,14 @@ public class ParkingItemDetails implements CatalogItemDetails {
                     disclaimer,
                     termsAndConditions,
                     price,
-                    priceToPayOnline,
-                    priceToPayOnsite,
+                    payableOnline,
+                    payableOnsite,
                     productType,
                     categories,
                     isWishlisted,
                     providerTranslationAttribution,
-                    dateRange);
+                    dateRange,
+                    coordinate);
         }
     }
 }

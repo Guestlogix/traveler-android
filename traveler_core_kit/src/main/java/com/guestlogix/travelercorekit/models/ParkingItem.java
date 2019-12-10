@@ -40,6 +40,10 @@ public class ParkingItem implements CatalogItem, Product {
         this.providerTranslationAttribution = providerTranslationAttribution;
     }
 
+    public BookingItem toBookingItem() {
+        return new BookingItem(id, title, subTitle, imageURL, price, productType, categories,
+                coordinate, providerTranslationAttribution, true, false);
+    }
 
     @Override
     public String getId() {

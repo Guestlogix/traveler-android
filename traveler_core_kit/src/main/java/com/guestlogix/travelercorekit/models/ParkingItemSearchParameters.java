@@ -89,6 +89,9 @@ public class ParkingItemSearchParameters implements Serializable {
             Coordinate bottomRightCoordinate = new Coordinate(bottomRightLatitude, bottomRightLongitude);
             boundingBox = new BoundingBox(topLeftCoordinate, bottomRightCoordinate);
 
+            //ALVTAG dont merge this in
+            boundingBox = new BoundingBox(new Coordinate(topLeftCoordinate.getLatitude(), -79.725552368164057), bottomRightCoordinate);
+
             return new ParkingItemSearchParameters(airportIATA, dateRange, boundingBox);
         }
     }
