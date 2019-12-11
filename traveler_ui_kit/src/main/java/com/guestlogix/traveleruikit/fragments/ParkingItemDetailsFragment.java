@@ -1,16 +1,18 @@
 package com.guestlogix.traveleruikit.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.guestlogix.travelercorekit.models.Attribute;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
 import com.guestlogix.travelercorekit.models.Location;
 import com.guestlogix.travelercorekit.models.ParkingItem;
@@ -41,8 +44,6 @@ public class ParkingItemDetailsFragment extends Fragment
     //private ImageView staticMapImageView;
     private ParkingItemDetails parkingItemDetails;
     private ParkingItem parkingItem;
-    private GoogleMap map;
-    private SupportMapFragment mapFragment;
 
     public static ParkingItemDetailsFragment newInstance(ParkingItem item, CatalogItemDetails details) {
         Bundle args = new Bundle();
@@ -81,6 +82,7 @@ public class ParkingItemDetailsFragment extends Fragment
         setPhone(view);
         setLocation(view);
         setDateRange(view);
+        setDescription(view);
         setPrice(view);
         setMap(view);
         return view;
@@ -113,6 +115,9 @@ public class ParkingItemDetailsFragment extends Fragment
                 DateHelper.formatToMonthDayYearTime(upperDate);
         ((TextView) view.findViewById(R.id.textView_parking_details_hours)).setText(dateRangeString);
     }
+    private void setDescription(View view){
+        ((TextView) view.findViewById(R.id.textView_parking_details_information_description)).setText(parkingItemDetails.getDescription());
+    }
 
     private void setPrice(View view) {
         ((TextView) view.findViewById(R.id.textView_parking_details_total_price))
@@ -134,26 +139,64 @@ public class ParkingItemDetailsFragment extends Fragment
     private void setMap(View view) {
         //TODO replace heavy map fragment with a static image
         FragmentManager childFragmentManager = getChildFragmentManager();
-        mapFragment = (SupportMapFragment) childFragmentManager.findFragmentById(R.id.parking_details_map);
+        SupportMapFragment mapFragment = (SupportMapFragment) childFragmentManager.findFragmentById(R.id.parking_details_map);
         Assertion.eval(mapFragment != null);
         mapFragment.getMapAsync(this);
 
-        Fragment infoFragment = CatalogItemInformationFragment.getInstance(parkingItemDetails.getInformation());
-        FragmentTransaction transaction = childFragmentManager.beginTransaction();
-        transaction.add(R.id.view_parking_details_information_container, infoFragment);
-        transaction.commit();
+        ((TextView) view.findViewById(R.id.textView_parking_details_information_description)).setText(parkingItemDetails.getDescription());
+        LinearLayout infoLinearLayout = view.findViewById(R.id.linearLayout_parking_details_information);
+        View hoursDistanceDivider = view.findViewById(R.id.textView_parking_details_information_divider);
+        TextView hoursTextView = view.findViewById(R.id.textView_parking_details_information_hours);
+        TextView hoursLabelTextView = view.findViewById(R.id.textView_parking_details_information_hours_label);
+        TextView distanceTextView = view.findViewById(R.id.textView_parking_details_information_distance);
+        TextView distanceLabelTextView = view.findViewById(R.id.textView_parking_details_information_distance_label);
+
+        boolean hasDistance = false;
+        boolean hasHours = false;
+        List<Attribute> attributes = parkingItemDetails.getInformation();
+        for (Attribute attribute : attributes) {
+            if (attribute.getLabel().equalsIgnoreCase("Hours of operation")) {
+                hasHours = true;
+                hoursTextView.setText(attribute.getValue());
+            } else if (attribute.getLabel().equalsIgnoreCase("Distance from the terminal")) {
+                hasDistance = true;
+                distanceTextView.setText(attribute.getValue());
+            } else {
+                // inflating views is lighter-weight than using a recyclerView/adapter.
+                LinearLayout attributeLinearLayout = (LinearLayout) LayoutInflater.from(getContext())
+                        .inflate(R.layout.item_attribute, infoLinearLayout, false);
+                ((TextView) attributeLinearLayout.findViewById(R.id.itemLabel)).setText(attribute.getLabel());
+                TextView valueTextView = attributeLinearLayout.findViewById(R.id.itemValue);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    valueTextView.setText(Html.fromHtml(attribute.getValue(), Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    valueTextView.setText(Html.fromHtml(attribute.getValue()));
+                }
+                infoLinearLayout.addView(attributeLinearLayout);
+            }
+        }
+
+        if (!hasHours) {
+            hoursTextView.setVisibility(View.GONE);
+            hoursLabelTextView.setVisibility(View.GONE);
+            hoursDistanceDivider.setVisibility(View.GONE);
+        }
+        if (!hasDistance) {
+            distanceTextView.setVisibility(View.GONE);
+            distanceLabelTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
         LatLng latLng = new LatLng(
                 parkingItemDetails.getGeolocation().getLatitude(),
                 parkingItemDetails.getGeolocation().getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL));
-        map.getUiSettings().setAllGesturesEnabled(false);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL));
+        googleMap.getUiSettings().setAllGesturesEnabled(false);
         MarkerOptions markerOptions = new MarkerOptions().position(latLng);
         //todo icon as per design .icon(BitmapDescriptorFactory.fromBitmap(createCustomMarkerBitmap("$" + price, false)));
-        map.addMarker(markerOptions);
+        googleMap.addMarker(markerOptions);
     }
 }
