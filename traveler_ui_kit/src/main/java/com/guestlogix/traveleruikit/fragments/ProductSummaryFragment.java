@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.BookingProduct;
+import com.guestlogix.travelercorekit.models.ParkingProduct;
 import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.traveleruikit.R;
@@ -72,11 +73,14 @@ public class ProductSummaryFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            BookingProduct product = (BookingProduct) products.get(position);
+            Product product = products.get(position);
 
             holder.title.setText(product.getTitle());
             holder.subtitle.setVisibility(View.GONE); // TODO: We can't display the date for this product since we do have it in the model nor the payload.
-            holder.recyclerView.setAdapter(new PassAdapter(product.getPasses()));
+            if (product instanceof BookingProduct) {
+                holder.recyclerView.setAdapter(new PassAdapter(((BookingProduct) product).getPasses()));
+            }
+
             LinearLayoutManager lm = new LinearLayoutManager(ProductSummaryFragment.this.getActivityContext());
             holder.recyclerView.setLayoutManager(lm);
             DividerItemDecoration decoration = new DividerItemDecoration(recyclerView.getContext(), lm.getOrientation());

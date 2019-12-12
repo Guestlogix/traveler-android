@@ -9,10 +9,12 @@
     <string name="label_contact_details">Contact Details</string>
     <string name="label_location">Location</string>
     <string name="label_starting_at">Starting at</string>
+    <string name="total_price">Total Price</string>
     <string name="label_price">Price</string>
     <string name="button_check_availability">Check Availability</string>
     <string name="button_buy_now">Buy Now</string>
     <string name="button_next">Next</string>
+    <string name="button_book_parking">Book Parking</string>
     <string name="unexpected_error">Unexpected Error</string>
     <string name="unknown_error_message">Unfortunately something went wrong, please try again</string>
     <string name="ok">OK</string>
