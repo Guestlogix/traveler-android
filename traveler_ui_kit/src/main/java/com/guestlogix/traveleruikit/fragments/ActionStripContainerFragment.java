@@ -52,7 +52,7 @@ public class ActionStripContainerFragment extends Fragment {
             fragment = BookableActionStripFragment.newInstance(new BookingContext((BookingItem) product));
         } else if (product.getProductType() == ProductType.PARKING) {
             BookingItem bookingItem = ((ParkingItem) product).toBookingItem();
-            fragment = BookableActionStripFragment.newInstance(new BookingContext(bookingItem));
+            fragment = ParkingActionStripFragment.newInstance(new BookingContext(bookingItem));
         } else {
             // TODO: This is not done yet
             fragment = new BuyableActionStripFragment();
