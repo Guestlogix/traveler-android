@@ -10,6 +10,7 @@ import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 public class ParkingItem implements CatalogItem, Product {
     private String id;
@@ -41,7 +42,7 @@ public class ParkingItem implements CatalogItem, Product {
     }
 
     public BookingItem toBookingItem() {
-        return new BookingItem(id, title, subTitle, imageURL, price, productType, categories,
+        return new BookingItem(id, title, subTitle, imageURL, price, productType, new ArrayList<>(),
                 coordinate, providerTranslationAttribution, true, false);
     }
 

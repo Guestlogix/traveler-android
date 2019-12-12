@@ -227,7 +227,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
             }
         }
 
-        Traveler.fetchPurchaseForm(product, flatPasses, this);
+        Traveler.fetchBookablePurchaseForm(product, flatPasses, this);
     }
 
     private void calculatePrice() {

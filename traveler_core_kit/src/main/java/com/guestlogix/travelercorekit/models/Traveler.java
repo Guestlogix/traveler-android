@@ -431,7 +431,7 @@ public class Traveler {
      * @param passes                   selected passes
      * @param fetchPurchaseFormCallback callback methods which will be executed after creation is complete.
      */
-    public static void fetchPurchaseForm(Product product, List<Pass> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
+    public static void fetchBookablePurchaseForm(Product product, List<Pass> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
         if (!isInitialized()) return;
 
         if (passes.size() == 0) {
@@ -439,18 +439,35 @@ public class Traveler {
             return;
         }
 
-        AuthenticatedUrlRequest request;
-        switch (product.getProductType()) {
-            case BOOKABLE:
-                request = Router.bookingQuestions(localInstance.session, product, passes, localInstance.applicationContext);
-                break;
-            case PARKING:
-                request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
-                break;
-            default:
-                Log.e(TAG, "fetchPurchaseForm called with product of unknown product type:" + product.getProductType());
-                return;
-        }
+        AuthenticatedUrlRequest request = Router.bookingQuestions(localInstance.session, product, passes, localInstance.applicationContext);
+        AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
+
+        BlockTask fetchBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != fetchPurchaseFormTask.getError()) {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
+                    Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
+                } else {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, passes, fetchPurchaseFormTask.getResource()));
+                }
+            }
+        };
+
+        fetchBlockTask.addDependency(fetchPurchaseFormTask);
+        localInstance.taskManager.addTask(fetchPurchaseFormTask);
+        TaskManager.getMainTaskManager().addTask(fetchBlockTask);
+    }
+
+    /**
+     * Creates a purchase form for a parking
+     */
+    public static void fetchParkingPurchaseForm(Product product, List<Pass> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
         AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
                         request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
