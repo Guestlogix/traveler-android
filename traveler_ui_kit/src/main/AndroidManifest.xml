@@ -31,6 +31,9 @@
         <activity android:name=".activities.BookingSearchResultActivity"/>
         <activity android:name=".activities.ParkingActivity"/>
         <activity android:name=".activities.FindParkingActivity"/>
+        <activity android:name=".partneroffering.PartnerOfferingActivity"/>
+        <activity android:name=".partneroffering.PartnerOfferingSelectionActivity"/>
+        <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"/>
     </application>
 
 </manifest>

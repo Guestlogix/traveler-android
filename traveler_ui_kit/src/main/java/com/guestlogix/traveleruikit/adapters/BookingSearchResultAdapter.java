@@ -71,10 +71,10 @@ public class BookingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
 
                 itemHolder.thumbnail.setImageResource(R.color.colorPrimary);
                 AssetManager.getInstance().loadImage(
-                        bookingItem.getImageURL(),
-                        (int) context.getResources().getDimension(R.dimen.booking_search_result_width),
-                        (int) context.getResources().getDimension(R.dimen.booking_search_item_thumbnail_height),
-                        itemHolder.hashCode(),
+                        bookingItem.getImageUrl(),
+                        itemHolder.thumbnail.getWidth(),
+                        itemHolder.thumbnail.getHeight(),
+                        itemHolder.thumbnail.hashCode(),
                         new ImageLoader.ImageLoaderCallback() {
                             @Override
                             public void onBitmapLoaded(Bitmap bitmap) {

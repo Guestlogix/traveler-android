@@ -102,8 +102,8 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
         TabLayout catalogItemDetailsTabs = view.findViewById(R.id.catalogItemTabs);
         titleTextView.setText(bookingItemDetails.getTitle());
 
-        if (null != bookingItemDetails.getImageURLs() && bookingItemDetails.getImageURLs().size() > 0) {
-            RecyclerView.Adapter adapter = new ImageURLAdapter(bookingItemDetails.getImageURLs());
+        if (null != bookingItemDetails.getImageUrls() && bookingItemDetails.getImageUrls().size() > 0) {
+            RecyclerView.Adapter adapter = new ImageURLAdapter(bookingItemDetails.getImageUrls());
             carouselView.setAdapter(adapter);
         }
 

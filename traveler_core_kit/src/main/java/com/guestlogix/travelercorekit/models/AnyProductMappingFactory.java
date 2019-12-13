@@ -17,6 +17,7 @@ import static android.util.JsonToken.NULL;
 
 class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
     private static final String TAG = "AnyProductMappingFactor";
+
     @Override
     public Product instantiate(JsonReader reader) throws Exception {
         String id = null;
@@ -82,6 +83,8 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
                 return new BookingProduct(id, title, price, passes, eventDate, categories, cancellationPolicy);
             case PARKING:
                 return new ParkingProduct(id, title, price, eventDate);
+            case PARTNER_OFFERING:
+                return new PartnerOfferingProduct(id, title, price, (List<ProductOffering>) (List<?>) passes, cancellationPolicy);
             default:
                 Log.e(TAG, "Product (title:" + title + " has unknown product type:" + productType);
                 return null;
