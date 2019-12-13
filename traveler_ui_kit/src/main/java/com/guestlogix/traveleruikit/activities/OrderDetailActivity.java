@@ -18,6 +18,7 @@ import com.guestlogix.travelercorekit.models.BookingProduct;
 import com.guestlogix.travelercorekit.models.CancellationQuote;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderStatus;
+import com.guestlogix.travelercorekit.models.PartnerOfferingProduct;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
@@ -78,11 +79,26 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
                 boolean isRefundable = !CANCELLATION_POLICY_NON_REFUNDABLE.equals(bookingProduct.getCancellationPolicy());
                 cancelButton.setEnabled(isRefundable);
                 cancelButton.setText(isRefundable ? R.string.cancel_order : R.string.non_refundable);
+            } else if(product instanceof PartnerOfferingProduct)
+            {
+                PartnerOfferingProduct partnerOfferingProduct = (PartnerOfferingProduct) product;
+
+                productPriceTextView.setText(partnerOfferingProduct.getPrice().getLocalizedDescriptionInBaseCurrency());
+
+                productDateTextView.setText("");
+
+                boolean isRefundable = !CANCELLATION_POLICY_NON_REFUNDABLE.equals(partnerOfferingProduct.getCancellationPolicy());
+                cancelButton.setEnabled(isRefundable);
+                cancelButton.setText(isRefundable ? R.string.cancel_order : R.string.non_refundable);
             }
 
             productView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(product instanceof PartnerOfferingProduct)
+                    {
+                        return;
+                    }
                     Intent intent = new Intent(self, ProductDetailsActivity.class);
                     intent.putExtra(ProductDetailsActivity.ARG_PRODUCT, product);
                     startActivity(intent);

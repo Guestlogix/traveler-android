@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageView
+            android:id="@+id/imgOffer"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@color/colorPrimary"
+            android:layout_marginStart="20dp" />
+
+    <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:ellipsize="end"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toRightOf="@+id/imgOffer"
+            app:layout_constraintTop_toTopOf="@id/imgOffer"
+            tools:text="Chicken Cesar Sandwich" />
+
+    <TextView
+            android:id="@+id/tvSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textSize="15sp"
+            app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            tools:text="Halal" />
+
+    <LinearLayout
+            android:id="@+id/llLess"
+            android:layout_width="245dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvSubTitle"
+            android:paddingBottom="20dp"
+            tools:visibility="gone">
+
+        <TextView
+                android:id="@+id/tvDetailsLess"
+                android:layout_width="245dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                tools:text="spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo." />
+
+        <TextView
+                android:id="@+id/tvShowMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/partner_offering_expand_label"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsLess" />
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/llMore"
+            android:layout_width="245dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="@+id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@id/tvSubTitle"
+            android:paddingBottom="20dp"
+            tools:visibility="visible">
+
+        <TextView
+                android:id="@+id/tvDetailsMore"
+                android:layout_width="245dp"
+                android:layout_height="wrap_content"
+                tools:text="spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo. spiced roasted vegtables wrapped in a whole wheat tortilla with a dressing of ranch mayo." />
+
+        <TextView
+                android:id="@+id/tvShowLess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="@string/partner_offering_collapse_label"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsMore" />
+
+    </LinearLayout>
+
+    <View
+            android:id="@+id/vSeparator"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

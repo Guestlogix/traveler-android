@@ -34,6 +34,9 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
         } catch (Exception e) {
             e.printStackTrace();
             callback.onError(new ObjectMappingError(objectMappingFactory, e));
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -57,7 +60,7 @@ public class JsonObjectMapper<T> implements NetworkTask.ResponseHandler {
         }
 
         Log.d("NetworkTask",
-                        " \n RESPONSE BODY:" + ((responseBodyString.trim().isEmpty()) ? " [NO RESPONSE BODY]" : "\n" + responseBodyString) +
+                " \n RESPONSE BODY:" + ((responseBodyString.trim().isEmpty()) ? " [NO RESPONSE BODY]" : "\n" + responseBodyString) +
                         "\n------------------------\n \n");
 
         return new ByteArrayInputStream(is);

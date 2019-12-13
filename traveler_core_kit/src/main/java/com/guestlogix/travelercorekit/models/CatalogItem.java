@@ -5,6 +5,6 @@ import java.net.URL;
 
 public interface CatalogItem extends Serializable {
     String getTitle();
-    String getSubTitle();
-    URL getImageURL();
+    String getSubtitle();
+    URL getImageUrl();
 }

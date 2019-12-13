@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.Catalog;
 import com.guestlogix.travelercorekit.models.CatalogItem;
+import com.guestlogix.travelercorekit.models.PartnerOfferingItem;
 import com.guestlogix.travelercorekit.models.QueryItem;
 import com.guestlogix.travelercorekit.models.QueryType;
 import com.guestlogix.traveleruikit.R;
@@ -23,6 +24,7 @@ import com.guestlogix.traveleruikit.activities.BookingItemDetailsActivity;
 import com.guestlogix.traveleruikit.activities.BookingSearchActivity;
 import com.guestlogix.traveleruikit.activities.ParkingActivity;
 import com.guestlogix.traveleruikit.adapters.CatalogSectionAdapter;
+import com.guestlogix.traveleruikit.partneroffering.PartnerOfferingActivity;
 
 public class CatalogResultFragment extends Fragment implements CatalogSectionAdapter.CatalogSectionAdapterCallback {
     public final static String TAG = "CatalogResultFragment";
@@ -88,6 +90,10 @@ public class CatalogResultFragment extends Fragment implements CatalogSectionAda
                     startActivity(intent);
                     break;
             }
+        } else if (item instanceof PartnerOfferingItem) {
+            Intent partnerOfferingIntent = new Intent(getContext(), PartnerOfferingActivity.class);
+            partnerOfferingIntent.putExtra(PartnerOfferingActivity.KEY_PARTNER_OFFERING_ITEM, item);
+            startActivity(partnerOfferingIntent);
         }
     }
 }

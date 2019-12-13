@@ -124,7 +124,7 @@ public class CatalogSectionAdapter extends RecyclerView.Adapter<CatalogSectionAd
 
             holder.thumbnail.setImageResource(R.color.colorPrimary);
             AssetManager.getInstance().loadImage(
-                    item.getImageURL(),
+                    item.getImageUrl(),
                     (int) context.getResources().getDimension(R.dimen.thumbnail_width),
                     (int) context.getResources().getDimension(R.dimen.thumbnail_height),
                     holder.hashCode(),

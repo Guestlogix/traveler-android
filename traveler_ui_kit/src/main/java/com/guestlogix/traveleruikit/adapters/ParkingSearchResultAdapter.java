@@ -17,7 +17,6 @@ import com.guestlogix.travelercorekit.models.ParkingItemQuery;
 import com.guestlogix.travelercorekit.models.ParkingItemSearchResult;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.TravelerUI;
 
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +97,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                 ParkingItem parkingItem = parkingItemSearchResult.getItems().get(position);
 
                 itemHolder.title.setText(parkingItem.getTitle());
-                itemHolder.subtitle.setText(parkingItem.getSubTitle());
+                itemHolder.subtitle.setText(parkingItem.getSubtitle());
                 itemHolder.price.setText(parkingItem.getPrice().getValueWithBaseCurrencySuffix());
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

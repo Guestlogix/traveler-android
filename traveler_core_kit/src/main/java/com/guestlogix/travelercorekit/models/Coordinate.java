@@ -10,7 +10,7 @@ public class Coordinate implements Serializable {
     private Double latitude;
     private Double longitude;
 
-    public Coordinate(Double latitude, Double longitude){
+    public Coordinate(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -30,22 +30,32 @@ public class Coordinate implements Serializable {
             Double latitude = null;
             Double longitude = null;
 
-            reader.beginObject();
+            //TODO: fix this. we should not let null here. we should change the whole AnyItemMapping and its usecase to fix this.
+            try {
+                reader.beginObject();
 
-            while (reader.hasNext()) {
-                String key = reader.nextName();
+                while (reader.hasNext()) {
+                    String key = reader.nextName();
 
-                switch (key) {
-                    case "latitude":
-                        latitude = reader.nextDouble();
-                        break;
-                    case "longitude":
-                        longitude = reader.nextDouble();
-                        break;
+                    switch (key) {
+                        case "latitude":
+                            latitude = reader.nextDouble();
+                            break;
+                        case "longitude":
+                            longitude = reader.nextDouble();
+                            break;
+                    }
                 }
+                reader.endObject();
+
+            } catch (IllegalStateException ex) {
+                reader.skipValue();
+                return null;
             }
 
-            reader.endObject();
+            if (latitude == null && longitude == null) {
+                return null;
+            }
 
             return new Coordinate(latitude, longitude);
         }
