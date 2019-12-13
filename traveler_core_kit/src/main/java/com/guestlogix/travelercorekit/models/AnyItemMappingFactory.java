@@ -69,8 +69,13 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                     reader.endArray();
                     break;
                 case "geoLocation":
-                    coordinate = new Coordinate.CoordinateObjectMappingFactory()
-                            .instantiate(reader);
+                    JsonToken geoLocationToken = reader.peek();
+                    if (geoLocationToken != JsonToken.NULL) {
+                        coordinate = new Coordinate.CoordinateObjectMappingFactory()
+                                .instantiate(reader);
+                    } else {
+                        reader.skipValue();
+                    }
                     break;
                 case "providerTranslationAttribution":
                     providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
