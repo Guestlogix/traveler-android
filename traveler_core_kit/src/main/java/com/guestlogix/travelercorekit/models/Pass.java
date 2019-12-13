@@ -1,15 +1,17 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
-import android.util.JsonToken;
-import androidx.annotation.NonNull;
-import com.guestlogix.travelercorekit.utilities.*;
 
-import java.io.IOException;
+import androidx.annotation.NonNull;
+
+import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.io.Serializable;
 
 
-public class Pass implements Serializable {
+public class Pass implements ProductOffering, Serializable {
     private String id;
     private String name;
     private String description;
@@ -22,10 +24,12 @@ public class Pass implements Serializable {
         this.description = description;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -34,6 +38,7 @@ public class Pass implements Serializable {
         this.name = name;
     }
 
+    @Override
     public String getId() {
         return id;
     }

@@ -4,17 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.guestlogix.travelercorekit.models.BookingProduct;
-import com.guestlogix.travelercorekit.models.ParkingProduct;
+import com.guestlogix.travelercorekit.models.PartnerOfferingProduct;
 import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.ProductOffering;
+import com.guestlogix.travelercorekit.models.ProductType;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
 
@@ -77,8 +80,10 @@ public class ProductSummaryFragment extends BaseFragment {
 
             holder.title.setText(product.getTitle());
             holder.subtitle.setVisibility(View.GONE); // TODO: We can't display the date for this product since we do have it in the model nor the payload.
-            if (product instanceof BookingProduct) {
-                holder.recyclerView.setAdapter(new PassAdapter(((BookingProduct) product).getPasses()));
+            if (product.getProductType() == ProductType.BOOKABLE) {
+                holder.recyclerView.setAdapter(new PassAdapter((List<ProductOffering>)(List<?>)((BookingProduct) product).getPasses()));
+            } else if (product.getProductType() == ProductType.PARTNER_OFFERING) {
+                holder.recyclerView.setAdapter(new PassAdapter(((PartnerOfferingProduct) product).getProductOfferings()));
             }
 
             LinearLayoutManager lm = new LinearLayoutManager(ProductSummaryFragment.this.getActivityContext());
@@ -106,10 +111,10 @@ public class ProductSummaryFragment extends BaseFragment {
         }
     }
 
-    private class PassAdapter extends  RecyclerView.Adapter<PassAdapter.ViewHolder> {
-        List<Pass> passes;
+    private class PassAdapter extends RecyclerView.Adapter<PassAdapter.ViewHolder> {
+        List<ProductOffering> passes;
 
-        PassAdapter(List<Pass> passes) {
+        PassAdapter(List<ProductOffering> passes) {
             this.passes = passes;
         }
 
@@ -122,7 +127,7 @@ public class ProductSummaryFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            Pass pass = passes.get(position);
+            ProductOffering pass = passes.get(position);
 
             holder.title.setText(pass.getName());
             if (pass.getDescription() == null || pass.getDescription().isEmpty()) {
@@ -131,7 +136,8 @@ public class ProductSummaryFragment extends BaseFragment {
                 holder.subtitle.setVisibility(View.GONE);
             }
 
-            holder.value.setText(pass.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+            if (pass instanceof Pass)
+                holder.value.setText(((Pass) pass).getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
         }
 
         @Override

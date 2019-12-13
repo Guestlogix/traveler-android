@@ -109,7 +109,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 BookingItem bookingItem = result.getItems().get(position);
 
                 itemHolder.titleTextView.setText(bookingItem.getTitle());
-                itemHolder.subtitleTextView.setText(bookingItem.getSubTitle());
+                itemHolder.subtitleTextView.setText(bookingItem.getSubtitle());
 
                 Resources resources = itemHolder.titleTextView.getResources();
                 if (bookingItem.isAvailable()) {
@@ -129,7 +129,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 itemHolder.imageView.setImageBitmap(null);
                 AssetManager.getInstance().loadImage(
-                        bookingItem.getImageURL(),
+                        bookingItem.getImageUrl(),
                         (int) resources.getDimension(R.dimen.thumbnail_width),
                         (int) resources.getDimension(R.dimen.thumbnail_height),
                         holder.hashCode(),

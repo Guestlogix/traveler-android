@@ -21,7 +21,7 @@ public class TravelerApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        //for production comment out all these 4 lines
+        //for production comment out all these 4 lines and re-install the app
         //NOTE:never push to master with any of these uncommented
         //uncomment for rc
 //        TravelerPrefs.getInstance(this).save(TravelerPrefs.Key.TRAVELER_AUTH_ENDPOINT, RC_AUTH_ENDPOINT);

@@ -10,7 +10,7 @@ public enum QueryType {
             case "Parking":
                 return PARKING;
             default:
-                throw new IllegalArgumentException("Unknown QueryType");
+                throw new IllegalArgumentException("Unknown QueryType: " + value);
         }
     }
 }
