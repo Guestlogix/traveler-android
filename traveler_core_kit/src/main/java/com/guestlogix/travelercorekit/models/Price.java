@@ -55,13 +55,13 @@ public class Price implements Serializable {
         return value;
     }
 
-    public double getValue(Currency currency) throws ExchangeException {
+    public double getValue(Currency currency) {
         if (currency == baseCurrency) {
             return value;
         }
 
         if (!exchangeEnabled) {
-            throw new ExchangeException(ExchangeException.Cause.NOT_ALLOWED);
+            return getValueInBaseCurrency();
         }
 
         return value * exchangeRates.getRate(currency);

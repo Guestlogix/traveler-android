@@ -88,11 +88,10 @@ public class BookingItemDetails implements CatalogItemDetails {
     }
 
     @Override
-    public List<URL> getImageURLs() {
+    public List<URL> getImageUrls() {
         return imageURLs;
     }
 
-    @Override
     public List<Location> getLocations() {
         return locations;
     }

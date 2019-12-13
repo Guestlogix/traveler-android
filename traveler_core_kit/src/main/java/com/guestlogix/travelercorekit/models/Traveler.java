@@ -22,6 +22,7 @@ import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.callbacks.ParkingSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.PartnerOfferingFetchCallback;
 import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistFetchCallback;
@@ -155,6 +156,37 @@ public class Traveler {
         storeAttributesBlockTask.addDependency(storeAttributesTask);
         localInstance.taskManager.addTask(storeAttributesBlockTask);
         localInstance.taskManager.addTask(storeAttributesTask);
+    }
+
+    /**
+     * fetches all partner offerings
+     *
+     * @param partnerOfferingId     the id for the partner offering
+     */
+    public static void fetchPartnerOfferings(String partnerOfferingId, PartnerOfferingFetchCallback partnerOfferingFetchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.fetchPartnerOfferings(localInstance.session, partnerOfferingId, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<List<PartnerOfferingGroup>> partnerOfferingFetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<List<PartnerOfferingGroup>>(localInstance.session, localInstance.applicationContext, request, new ArrayMappingFactory<>(new PartnerOfferingGroup.PartnerOfferingGroupObjectMappingFactory()));
+
+        BlockTask fetchPartnerOfferingBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != partnerOfferingFetchTask.getError()) {
+                    partnerOfferingFetchCallback.onError(partnerOfferingFetchTask.getError());
+                    Log.e(TAG, partnerOfferingFetchTask.getError().getMessage());
+                } else {
+                    partnerOfferingFetchCallback.onSuccess(partnerOfferingFetchTask.getResource());
+                }
+            }
+        };
+
+        fetchPartnerOfferingBlockTask.addDependency(partnerOfferingFetchTask);
+
+        localInstance.taskManager.addTask(partnerOfferingFetchTask);
+        TaskManager.getMainTaskManager().addTask(fetchPartnerOfferingBlockTask);
     }
 
     /**
@@ -431,21 +463,24 @@ public class Traveler {
      * @param passes                   selected passes
      * @param fetchPurchaseFormCallback callback methods which will be executed after creation is complete.
      */
-    public static void fetchPurchaseForm(Product product, List<Pass> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
+    public static void fetchPurchaseForm(Product product, List<ProductOffering> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
         if (!isInitialized()) return;
-
-        if (passes.size() == 0) {
-            fetchPurchaseFormCallback.onPurchaseFormFetchError(new PurchaseError(PurchaseError.Code.NO_PASSES));
-            return;
-        }
 
         AuthenticatedUrlRequest request;
         switch (product.getProductType()) {
             case BOOKABLE:
-                request = Router.bookingQuestions(localInstance.session, product, passes, localInstance.applicationContext);
+                if (passes.size() == 0) {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchError(new PurchaseError(PurchaseError.Code.NO_PASSES));
+                    return;
+                }
+                //TODO: this is the sickest cast of my whole courier :D. this can be sent wrong. no type protection is happening here. remove this and make 3 different method for purchase form
+                request = Router.bookingQuestions(localInstance.session, product, (List<Pass>)(List<?>)  passes, localInstance.applicationContext);
                 break;
             case PARKING:
                 request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
+                break;
+            case PARTNER_OFFERING:
+                request = Router.partnerOfferingQuestions(localInstance.session, product, localInstance.applicationContext);
                 break;
             default:
                 Log.e(TAG, "fetchPurchaseForm called with product of unknown product type:" + product.getProductType());

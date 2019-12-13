@@ -20,6 +20,9 @@
         <activity android:name=".activities.TermsAndConditionsActivity"/>
         <activity android:name=".activities.BookingSearchActivity"/>
         <activity android:name=".activities.BookingSearchResultActivity"/>
+        <activity android:name=".partneroffering.PartnerOfferingActivity"/>
+        <activity android:name=".partneroffering.PartnerOfferingSelectionActivity"/>
+        <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"/>
     </application>
 
 </manifest>

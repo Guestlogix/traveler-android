@@ -79,4 +79,16 @@
     <string name="search_filters_reset_button_text">Reset</string>
     <string name="sort_dialog_label">Current:</string>
     <string name="apply_button_text">Apply</string>
+    <string name="partner_offering_total_price">Total price</string>
+    <string name="partner_offering_meals_from">Meals from</string>
+    <string name="partner_offering_starting_from">Starting from</string>
+    <string name="partner_offering_checkout_button_text">Checkout</string>
+    <string name="partner_offering_quantity_title">Select Quantity of Meals</string>
+    <string name="partner_offering_quantity_custom_meal_title">Your customized meal</string>
+    <string name="partner_offering_subtitle">choose your meal items. you can choose one item from each kind to make a customized meal. simply select on whatever you want in your meal. some stuff are charged extra.</string>
+    <string name="partner_offering_selec_iterm_button_text">Select Items</string>
+    <string name="partner_offering_selection_title">Select your Meal items</string>
+    <string name="partner_offering_select_quantitiy_button_text">Select Quantity</string>
+    <string name="partner_offering_expand_label">Read More</string>
+    <string name="partner_offering_collapse_label">Read Less</string>
 </resources>

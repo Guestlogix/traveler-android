@@ -121,6 +121,15 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
                         productType,
                         coordinate,
                         providerTranslationAttribution);
+            case PARTNER_OFFERING:
+                return new PartnerOfferingItem(
+                        id,
+                        title,
+                        subTitle,
+                        thumbnail,
+                        price,
+                        productType,
+                        isAvailable);
             default:
                 throw new RuntimeException("Unknown product type");
         }

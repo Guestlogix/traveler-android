@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+    <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/partner_offering_quantity_title"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/tvOfferingName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/partner_offering_quantity_custom_meal_title"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/tvTitle"
+            app:layout_constraintLeft_toLeftOf="@id/tvTitle" />
+
+    <TextView
+            android:id="@+id/tvItemsList"
+            tools:text="• Grilled Chicken Wrap \n• Pringles (Original) \n• Corona Beer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/tvOfferingName"
+            app:layout_constraintTop_toBottomOf="@id/tvOfferingName"/>
+
+    <ImageView
+            android:id="@+id/imgMore"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvOfferingName"
+            app:layout_constraintBottom_toBottomOf="@id/tvOfferingName"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/ic_add_quantity"/>
+
+    <TextView
+            android:id="@+id/tvQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toLeftOf="@id/imgMore"
+            app:layout_constraintTop_toTopOf="@id/tvOfferingName"
+            app:layout_constraintBottom_toBottomOf="@id/tvOfferingName"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            android:layout_marginRight="15dp"
+            tools:text="5"
+            android:layout_marginEnd="15dp" />
+
+    <ImageView
+            android:id="@+id/imgLess"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="15dp"
+            app:layout_constraintRight_toLeftOf="@id/tvQuantity"
+            app:layout_constraintTop_toTopOf="@id/tvOfferingName"
+            app:layout_constraintBottom_toBottomOf="@id/tvOfferingName"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            android:tint="@color/colorPrimary"
+            android:src="@drawable/ic_subtract_quantity"
+            android:layout_marginEnd="15dp" />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+                android:id="@+id/tvTotalPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLength="25"
+                tools:text="Total Price: \n 20.00 CAD" />
+
+        <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+        <Button
+                android:id="@+id/btnCheckout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/partner_offering_checkout_button_text" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

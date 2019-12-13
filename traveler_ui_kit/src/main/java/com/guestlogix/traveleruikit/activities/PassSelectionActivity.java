@@ -217,7 +217,7 @@ public class PassSelectionActivity extends AppCompatActivity implements
 
     private void onActionStripClick(View _view) {
         actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
-        List<Pass> flatPasses = new ArrayList<>();
+        List<ProductOffering> flatPasses = new ArrayList<>();
 
         for (Map.Entry<Pass, Integer> entry : passQuantities.entrySet()) {
             if (entry.getValue() != null && entry.getValue() > 0) {

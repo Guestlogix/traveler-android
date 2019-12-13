@@ -17,7 +17,6 @@ import com.guestlogix.travelercorekit.models.BookingItemSearchResult;
 import com.guestlogix.travelercorekit.models.BookingItemSort;
 import com.guestlogix.travelercorekit.models.BookingItemSortField;
 import com.guestlogix.travelercorekit.models.BookingItemSortOrder;
-import com.guestlogix.travelercorekit.models.Price;
 import com.guestlogix.travelercorekit.models.PriceRangeFilter;
 import com.guestlogix.travelercorekit.models.Range;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -151,17 +150,12 @@ public class BookingSearchResultActivity extends AppCompatActivity
         TextView textView = findViewById(R.id.booking_search_result_total);
         textView.setText(String.format(Locale.getDefault(), "%d items found", searchResult.getTotal()));
 
-        try {
-            this.currentPriceRangeFilter =
-                    new PriceRangeFilter(new Range<Double>(searchResult.getFacets().getMinPrice().getValue(TravelerUI.getPreferredCurrency()), searchResult.getFacets().getMaxPrice().getValue(TravelerUI.getPreferredCurrency())), TravelerUI.getPreferredCurrency());
-        } catch (Price.ExchangeException e) {
-            this.currentPriceRangeFilter =
-                    new PriceRangeFilter(new Range<Double>(searchResult.getFacets().getMinPrice().getValueInBaseCurrency(), searchResult.getFacets().getMaxPrice().getValueInBaseCurrency()), TravelerUI.getPreferredCurrency());
-        }
+        this.currentPriceRangeFilter =
+                new PriceRangeFilter(new Range<Double>(searchResult.getFacets().getMinPrice().getValue(TravelerUI.getPreferredCurrency()), searchResult.getFacets().getMaxPrice().getValue(TravelerUI.getPreferredCurrency())), TravelerUI.getPreferredCurrency());
+
 
         //only if its first time populate the initial price range
-        if(this.initialPriceRangeFilter == null)
-        {
+        if (this.initialPriceRangeFilter == null) {
             this.initialPriceRangeFilter = currentPriceRangeFilter;
         }
 

@@ -61,6 +61,14 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
+    // /menu/{id}/offerings
+    public static AuthenticatedUrlRequest fetchPartnerOfferings(Session session, String partnerOfferingId, Context context) {
+        return new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/menu/" + partnerOfferingId + "/offerings")
+                .build(session.getToken());
+    }
+
     // /flight?flight-number=xxx&departure-date=xxx
     public static AuthenticatedUrlRequest searchFlight(Session session, FlightQuery query, Context context) {
         return new RouteBuilder(context, session.getApiKey())
@@ -220,6 +228,14 @@ public class Router {
         return routeBuilder.build(session.getToken());
     }
 
+    // /menu/{id}/question
+    public static AuthenticatedUrlRequest partnerOfferingQuestions(Session session, Product product, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/menu/" + product.getId() + "/questions");
+        return routeBuilder.build(session.getToken());
+    }
+
     public static AuthenticatedUrlRequest createOrder(Session session, List<PurchaseForm> forms, Context context) {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.POST)
@@ -234,7 +250,7 @@ public class Router {
                             JSONArray passes = new JSONArray();
                             JSONArray answers = new JSONArray();
 
-                            for (Pass p : form.getPasses()) {
+                            for (ProductOffering p : form.getProductOfferings()) {
                                 passes.put(p.getId());
                             }
 

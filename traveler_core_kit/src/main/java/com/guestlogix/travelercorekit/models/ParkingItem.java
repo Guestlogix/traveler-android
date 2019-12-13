@@ -52,12 +52,12 @@ public class ParkingItem implements CatalogItem, Product {
     }
 
     @Override
-    public String getSubTitle() {
+    public String getSubtitle() {
         return subTitle;
     }
 
     @Override
-    public URL getImageURL() {
+    public URL getImageUrl() {
         return imageURL;
     }
 

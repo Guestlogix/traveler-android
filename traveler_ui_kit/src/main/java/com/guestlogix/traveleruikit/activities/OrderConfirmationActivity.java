@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.guestlogix.travelercorekit.models.BookingProduct;
 import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.ProductType;
 import com.guestlogix.travelercorekit.models.Receipt;
 import com.guestlogix.traveleruikit.R;
 
@@ -19,6 +19,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
     public static final String ARG_RECEIPT = "ARG_RECEIPT";
     public static final int RESULT_OK_ORDER_CONFIRMED = -2;
     public static final int REQUEST_CODE_ORDER_FLOW = 1;
+    private Receipt receipt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
             return;
         }
 
-        Receipt receipt = (Receipt) extras.getSerializable(ARG_RECEIPT);
+        receipt = (Receipt) extras.getSerializable(ARG_RECEIPT);
 
         if (receipt == null) {
             Log.e(TAG, "A receipt object is required to run this activity. See ARG_RECEIPT");
@@ -44,7 +45,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
         TextView titleTextView = findViewById(R.id.textView_orderConfirmation_title);
         TextView subTitleTextView = findViewById(R.id.textView_orderConfirmation_subtitle);
         TextView emailValueTextView = findViewById(R.id.textView_orderConfirmation_emailValue);
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener(){
+        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setResult(RESULT_OK_ORDER_CONFIRMED);
@@ -55,11 +56,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
         if (receipt.getOrder().getProducts().size() > 0) {
             Product product = receipt.getOrder().getProducts().get(0);
-
-            if(product instanceof BookingProduct){
-                BookingProduct bookingProduct = (BookingProduct) product;
-                titleTextView.setText(bookingProduct.getTitle());
-            }
+            titleTextView.setText(product.getTitle());
         }
         subTitleTextView.setText(receipt.getOrder().getReferenceNumber());
         emailValueTextView.setText(receipt.getOrder().getContact().getEmail());
@@ -67,9 +64,15 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(this, BookingItemDetailsActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        if (receipt.getOrder().getProducts().get(0).getProductType() == ProductType.PARTNER_OFFERING) {
+            setResult(RESULT_OK_ORDER_CONFIRMED);
+            finish();
+        }
+        else{
+            Intent i = new Intent(this, BookingItemDetailsActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+        }
     }
 
 }
