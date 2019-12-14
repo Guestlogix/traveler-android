@@ -7,7 +7,7 @@
         tools:context=".activities.BookingItemDetailsActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/parking_mapView_recyclerview"
+            android:id="@+id/recyclerview_parking_list_mapView"
             android:layout_width="match_parent"
             android:layout_height="186dp"
             android:layout_alignParentBottom="true"
@@ -15,14 +15,90 @@
             android:paddingTop="@dimen/margin_small"
             android:paddingBottom="@dimen/margin_small" />
 
+    <RelativeLayout
+            android:id="@+id/relativelayout_parking_search_header"
+            android:layout_width="match_parent"
+            android:minHeight="78dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/white"
+            android:padding="@dimen/margin_default">
+
+        <TextView
+                android:id="@+id/textView_parking_near_you_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@id/textView_parking_dateRange"
+                android:text="@string/change"
+                android:textColor="@color/colorPrimary" />
+
+        <ImageView
+                android:id="@+id/imageView_edit_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/textView_parking_near_you_change"
+                android:layout_marginEnd="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_xsmall"
+                android:layout_toStartOf="@id/textView_parking_near_you_change"
+                android:layout_toLeftOf="@id/textView_parking_near_you_change"
+                android:src="@drawable/ic_parking_map_unselected"
+                tools:ignore="ContentDescription" />
+
+        <TextView
+                android:id="@+id/textView_parking_near_you"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/imageView_edit_icon"
+                android:layout_toLeftOf="@id/imageView_edit_icon"
+                android:text="@string/parking_near_you"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/textView_parking_dateRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/textView_parking_near_you"
+                android:layout_alignStart="@id/textView_parking_near_you"
+                android:layout_below="@id/textView_parking_near_you"
+                android:layout_marginTop="@dimen/margin_small"
+                tools:text="10/12/2019 1:30AM - 10/19/2019 1:30AM"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+    </RelativeLayout>
+
     <fragment
             android:id="@+id/parking_details_map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/parking_mapView_recyclerview"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/recyclerview_parking_list_mapView"
+            android:layout_below="@id/relativelayout_parking_search_header"
             tools:context=".MapsActivity"
             tools:ignore="FragmentTagUsage" />
+    <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:id="@+id/retry_container"
+            android:layout_alignStart="@+id/parking_details_map"
+            android:layout_alignLeft="@+id/parking_details_map"
+            android:layout_alignTop="@+id/parking_details_map"
+            android:layout_alignEnd="@+id/parking_details_map"
+            android:layout_alignRight="@+id/parking_details_map"
+            android:layout_alignBottom="@+id/parking_details_map"
+        />
 
     <RelativeLayout
             android:id="@+id/relativeLayout_parking_map_search_overlay"
@@ -113,7 +189,7 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/parking_listView_recyclerview"
+            android:id="@+id/recyclerview_parking_list_listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/lightGray"
@@ -126,7 +202,7 @@
             android:id="@+id/linearLayout_parking_toggle"
             android:layout_width="210dp"
             android:layout_height="40dp"
-            android:layout_alignParentTop="true"
+            android:layout_alignTop="@id/parking_details_map"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_default"
             android:orientation="horizontal">

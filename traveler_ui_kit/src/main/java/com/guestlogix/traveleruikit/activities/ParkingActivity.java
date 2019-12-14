@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,14 +47,17 @@ import com.guestlogix.travelercorekit.models.ParkingItem;
 import com.guestlogix.travelercorekit.models.ParkingItemQuery;
 import com.guestlogix.travelercorekit.models.ParkingItemSearchResult;
 import com.guestlogix.travelercorekit.models.QueryItem;
+import com.guestlogix.travelercorekit.models.Range;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.adapters.ParkingSearchResultAdapter;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ParkingActivity extends AppCompatActivity implements
@@ -64,7 +68,8 @@ public class ParkingActivity extends AppCompatActivity implements
         ParkingSearchResultAdapter.OnParkingSearchItemClickListener {
     public static final String TAG = "ParkingActivity";
     public static final String ARG_PARKING_QUERY = "parkingQuery";
-    private static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 10;
+    public static final int FIND_PARKING_REQUESTCODE = 1;
     private static final int MARKER_MAX_FONT_SIZE = 18;
     private static final float MARKER_CENTER_X_DIVISOR = 2f;
     private static final float MARKER_CENTER_Y_DIVISOR = 2.5f;
@@ -81,8 +86,10 @@ public class ParkingActivity extends AppCompatActivity implements
     private LinearLayoutManager linearLayoutManager;
     private LinearLayout searchButtonLoadingLayout;
     private LinearLayout searchButtonReadyLayout;
+    private FrameLayout retryContainer;
     private TextView parkingToggleMapTextView;
     private TextView parkingToggleListTextView;
+    private TextView dateRangeTextView;
     private ImageButton searchButton;
 
     private ParkingSearchResultAdapter mapViewParkingSearchResultAdapter;
@@ -121,6 +128,10 @@ public class ParkingActivity extends AppCompatActivity implements
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.parking_details_map);
         Assertion.eval(mapFragment != null);
         mapFragment.getMapAsync(this);
+        setMapFragmentVisibility(View.INVISIBLE);
+
+        retryContainer = findViewById(R.id.retry_container);
+        setRetryContainerVisibility(View.INVISIBLE);
 
         parkingToggleMapTextView = findViewById(R.id.linearLayout_parking_toggle_map);
         parkingToggleMapTextView.setOnClickListener(new View.OnClickListener() {
@@ -139,8 +150,9 @@ public class ParkingActivity extends AppCompatActivity implements
 
         searchButtonLoadingLayout = findViewById(R.id.linearLayout_parking_searchButton_loading);
         searchButtonReadyLayout = findViewById(R.id.linearLayout_parking_searchButton_ready);
-        parkingSearchMapViewRecyclerView = findViewById(R.id.parking_mapView_recyclerview);
-        parkingSearchListViewRecyclerView = findViewById(R.id.parking_listView_recyclerview);
+        parkingSearchMapViewRecyclerView = findViewById(R.id.recyclerview_parking_list_mapView);
+        parkingSearchListViewRecyclerView = findViewById(R.id.recyclerview_parking_list_listView);
+        dateRangeTextView = findViewById(R.id.textView_parking_dateRange);
         searchButton = findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +168,14 @@ public class ParkingActivity extends AppCompatActivity implements
                         0, PAGE_SIZE);
                 searchButton.setTag(SEARCH_BUTTON_STATE_LOADING);
                 loadNewParkingItems(newSearchQuery);
+            }
+        });
+        findViewById(R.id.textView_parking_near_you_change).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ParkingActivity.this, FindParkingActivity.class);
+                intent.putExtra(ParkingActivity.ARG_PARKING_QUERY, previousSearchQuery);
+                startActivityForResult(intent, FIND_PARKING_REQUESTCODE);
             }
         });
 
@@ -175,10 +195,19 @@ public class ParkingActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == FIND_PARKING_REQUESTCODE && resultCode == RESULT_OK) {
+            previousSearchQuery = (ParkingItemQuery) data.getSerializableExtra(ARG_PARKING_QUERY);
+            loadNewParkingItems(previousSearchQuery);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMarkerClickListener(this);
-        showMapFragment();
     }
 
     @Override
@@ -206,20 +235,24 @@ public class ParkingActivity extends AppCompatActivity implements
 
     @Override
     public void onParkingSearchError(Error error) {
+        setRetryContainerVisibility(View.VISIBLE);
         Fragment fragment = new RetryFragment();
         FragmentTransaction transaction = transactionQueue.newTransaction();
-        transaction.replace(R.id.booking_item_details_container, fragment);
+        transaction.add(R.id.retry_container, fragment);
         transactionQueue.addTransaction(transaction);
         error.printStackTrace();
     }
 
     @Override
     public void onParkingSearchSuccess(ParkingItemSearchResult searchResult) {
-        LatLngBounds latLngBounds = boundingBoxToLatLngBounds(searchResult.getQuery().getBoundingBox());
-
-        showMapFragment();
+        setMapFragmentVisibility(View.VISIBLE);
+        setRetryContainerVisibility(View.INVISIBLE);
         setSearchButtonReadyState();
 
+        LatLngBounds latLngBounds = boundingBoxToLatLngBounds(searchResult.getQuery().getBoundingBox());
+        if (latLngBounds == null) {
+            latLngBounds = getBoundingBoxFromItems(searchResult.getItems());
+        }
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0), MAP_ANIMATION_DURATION_MS, null);
         map.clear();
         setMapMarkers(searchResult);
@@ -311,11 +344,15 @@ public class ParkingActivity extends AppCompatActivity implements
         searchButtonLoadingLayout.setVisibility(View.INVISIBLE);
     }
 
-    private void showMapFragment() {
+    private void setMapFragmentVisibility(int visibility) {
         View view = mapFragment.getView();
         if (view != null) {
-            view.setVisibility(View.VISIBLE);
+            view.setVisibility(visibility);
         }
+    }
+
+    private void setRetryContainerVisibility(int visibility) {
+        retryContainer.setVisibility(visibility);
     }
 
     private void loadNewParkingItems(ParkingItemQuery query) {
@@ -325,6 +362,7 @@ public class ParkingActivity extends AppCompatActivity implements
         ParkingItemQuery parkingItemQuery = new ParkingItemQuery(query.getAirportIATA(),
                 query.getDateRange(), query.getBoundingBox(), 0, PAGE_SIZE);
 
+        setDateRange(query.getDateRange());
         Traveler.searchParkingItems(parkingItemQuery, this);
     }
 
@@ -368,7 +406,9 @@ public class ParkingActivity extends AppCompatActivity implements
         return mutableBitmap;
     }
 
+    @Nullable
     private static LatLngBounds boundingBoxToLatLngBounds(BoundingBox boundingBox) {
+        if (boundingBox == null) return null;
         Coordinate topLeftCoordinate = boundingBox.getTopLeftCoordinate();
         Coordinate bottomRightCoordinate = boundingBox.getBottomRightCoordinate();
         LatLng southWest = new LatLng(bottomRightCoordinate.getLatitude(), topLeftCoordinate.getLongitude());
@@ -376,13 +416,43 @@ public class ParkingActivity extends AppCompatActivity implements
         return new LatLngBounds(southWest, northEast);
     }
 
+    @Nullable
     private static BoundingBox latLngBoundsToBoundingBox(LatLngBounds latLngBounds) {
+        if (latLngBounds == null) return null;
         LatLng southWest = latLngBounds.southwest;
         LatLng northEast = latLngBounds.northeast;
         Coordinate topLeftCoordinate = new Coordinate(northEast.latitude, southWest.longitude);
         Coordinate bottomRightCoordinate = new Coordinate(southWest.latitude, northEast.longitude);
         return new BoundingBox(topLeftCoordinate, bottomRightCoordinate);
     }
+
+    private LatLngBounds getBoundingBoxFromItems(List<ParkingItem> items) {
+        if (items == null || items.size() < 1) return null;
+
+        Double north = null;
+        Double south = null;
+        Double east = null;
+        Double west = null;
+        for (ParkingItem parkingItem : items) {
+            Double longtitude = parkingItem.getCoordinate().getLongitude();
+            Double latitude = parkingItem.getCoordinate().getLatitude();
+            if (north == null || latitude > north){
+                north = latitude;
+            }
+            if (south == null || latitude < south){
+                south = latitude;
+            }
+            if (east == null || longtitude > east){
+                east = longtitude;
+            }
+            if (west == null || longtitude < west){
+                west = longtitude;
+            }
+        }
+        LatLng southWest = new LatLng(south, west);
+        LatLng northEast = new LatLng(north, east);
+        return new LatLngBounds(southWest, northEast);
+    };
 
     private void setMapView() {
         parkingToggleMapTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
@@ -420,5 +490,13 @@ public class ParkingActivity extends AppCompatActivity implements
         parkingSearchListViewRecyclerView.setAnimation(animation);
         animation.setDuration(500);
         animation.start();
+    }
+
+    private void setDateRange(Range<Date> dateRange) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(DateHelper.formatToMonthDayYearTime(dateRange.getLower()));
+        stringBuilder.append('-');
+        stringBuilder.append(DateHelper.formatToMonthDayYearTime(dateRange.getUpper()));
+        dateRangeTextView.setText(stringBuilder.toString());
     }
 }

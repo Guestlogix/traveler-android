@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/e5Gray"
+        android:orientation="vertical"
+        tools:context=".activities.BookingItemDetailsActivity">
+
+    <TextView
+            android:id="@+id/textview_findParking_location_label"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:gravity="center"
+            android:text="@string/location"
+            android:textColor="@color/black"
+            tools:ignore="RtlSymmetry" />
+
+    <LinearLayout
+            android:id="@+id/linearLayout_findParking_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/textview_findParking_location_label"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_default"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_default"
+            android:paddingLeft="@dimen/margin_default"
+            android:paddingEnd="@dimen/margin_default"
+            android:paddingRight="@dimen/margin_default"
+            android:weightSum="2">
+
+        <TextView
+                android:id="@+id/linearLayout_findParking_toggle_nearMe"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_parking_button_left_selected"
+                android:gravity="center"
+                android:text="@string/near_me"
+                android:textColor="@color/off_white"
+                tools:ignore="RtlSymmetry" />
+
+        <TextView
+                android:id="@+id/linearLayout_findParking_toggle_nearAirport"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_parking_button_right_unselected"
+                android:gravity="center"
+                android:text="@string/near_airport"
+                android:textColor="@color/colorPrimary"
+                tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/textview_findParking_dropOffDateTime_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayout_findParking_toggle"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_default"
+            android:gravity="center"
+            android:text="@string/drop_off_date_and_time"
+            android:textColor="@color/black"
+            tools:ignore="RtlSymmetry" />
+
+
+    <LinearLayout
+            android:id="@+id/linearLayout_findParking_dropOff_DateTime"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/textview_findParking_dropOffDateTime_label"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_default"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_default"
+            android:paddingLeft="@dimen/margin_default"
+            android:paddingEnd="@dimen/margin_default"
+            android:paddingRight="@dimen/margin_default"
+            android:weightSum="2">
+
+        <TextView
+                android:id="@+id/textView_findParking_dropoff_date"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_border_black"
+                android:gravity="center"
+                android:textColor="@color/black"
+                tools:ignore="RtlSymmetry"
+                tools:text="10/12/2019" />
+
+        <TextView
+                android:id="@+id/textView_findParking_dropoff_time"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_border_black"
+                android:gravity="center"
+                android:textColor="@color/black"
+                tools:ignore="RtlSymmetry"
+                tools:text="10:30 AM" />
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/textview_findParking_pickupDateTime_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayout_findParking_dropOff_DateTime"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginTop="@dimen/margin_default"
+            android:text="@string/pickup_date_and_time"
+            android:textColor="@color/black"
+            tools:ignore="RtlSymmetry" />
+
+    <LinearLayout
+            android:id="@+id/linearLayout_findParking_pickup_DateTime"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/textview_findParking_pickupDateTime_label"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_default"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_default"
+            android:paddingLeft="@dimen/margin_default"
+            android:paddingEnd="@dimen/margin_default"
+            android:paddingRight="@dimen/margin_default"
+            android:weightSum="2">
+
+        <TextView
+                android:id="@+id/textView_findParking_pickup_date"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_border_black"
+                android:gravity="center"
+                android:textColor="@color/black"
+                tools:ignore="RtlSymmetry"
+                tools:text="10/12/2019" />
+
+        <TextView
+                android:id="@+id/textView_findParking_pickup_time"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_border_black"
+                android:gravity="center"
+                android:textColor="@color/black"
+                tools:ignore="RtlSymmetry"
+                tools:text="10:30 AM" />
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/button_find_parking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayout_findParking_pickup_DateTime"
+            android:layout_marginStart="@dimen/margin_default"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginTop="@dimen/padding_xxlarge"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="@dimen/padding_normal"
+            android:text="@string/find_parking"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:theme="@style/Widget.AppCompat.Button.Colored"
+            tools:ignore="RtlSymmetry" />
+</RelativeLayout>
