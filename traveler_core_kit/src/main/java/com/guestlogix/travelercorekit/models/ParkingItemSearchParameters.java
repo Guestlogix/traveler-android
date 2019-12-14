@@ -85,9 +85,12 @@ public class ParkingItemSearchParameters implements Serializable {
 
             Range<Date> dateRange = new Range<>(DateHelper.parseISO8601(startTime), DateHelper.parseISO8601(endTime));
 
-            Coordinate topLeftCoordinate = new Coordinate(topLeftLatitude, topLeftLongitude);
-            Coordinate bottomRightCoordinate = new Coordinate(bottomRightLatitude, bottomRightLongitude);
-            boundingBox = new BoundingBox(topLeftCoordinate, bottomRightCoordinate);
+            if (topLeftLatitude != null && topLeftLongitude != null &&
+                    bottomRightLatitude != null && bottomRightLongitude != null) {
+                Coordinate topLeftCoordinate = new Coordinate(topLeftLatitude, topLeftLongitude);
+                Coordinate bottomRightCoordinate = new Coordinate(bottomRightLatitude, bottomRightLongitude);
+                boundingBox = new BoundingBox(topLeftCoordinate, bottomRightCoordinate);
+            }
 
             return new ParkingItemSearchParameters(airportIATA, dateRange, boundingBox);
         }
