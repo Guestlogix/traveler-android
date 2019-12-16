@@ -58,6 +58,7 @@ dependencies {
     implementation "com.android.support:design:${android_support_version}"
     implementation "com.android.support:recyclerview-v7:${android_support_version}"
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation "android.arch.lifecycle:extensions:${android_lifecycle_extension_version}"
     implementation "android.arch.navigation:navigation-fragment:${android_navigation_controller_version}"
     implementation "android.arch.navigation:navigation-ui:${android_navigation_controller_version}"
