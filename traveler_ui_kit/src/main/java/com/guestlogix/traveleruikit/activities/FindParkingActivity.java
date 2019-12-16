@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -64,6 +66,8 @@ public class FindParkingActivity extends AppCompatActivity implements GoogleApiC
     private TextView dropOffTimeTextView;
     private TextView pickupDateTextView;
     private TextView pickupTimeTextView;
+    private LinearLayout findParkingLinearLayout;
+    private EditText airportCodeEditText;
 
     private String tabChoice;
     private ParkingItemQuery searchQuery;
@@ -93,20 +97,25 @@ public class FindParkingActivity extends AppCompatActivity implements GoogleApiC
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
 
-        findParkingToggleNearMeTextView = findViewById(R.id.linearLayout_findParking_toggle_nearMe);
+        findParkingLinearLayout = findViewById(R.id.linearLayout_findParking_airport_code);
+        airportCodeEditText = findViewById(R.id.editText_findParking_airport_code);
+
+        findParkingToggleNearMeTextView = findViewById(R.id.textView_findParking_toggle_nearMe);
         findParkingToggleNearMeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 initiateLocationPermission();
                 tabChoice = NEAR_ME;
+                findParkingLinearLayout.setVisibility(View.GONE);
                 setNearMeView();
             }
         });
-        findParkingToggleNearAirportTextView = findViewById(R.id.linearLayout_findParking_toggle_nearAirport);
+        findParkingToggleNearAirportTextView = findViewById(R.id.textView_findParking_toggle_nearAirport);
         findParkingToggleNearAirportTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tabChoice = NEAR_AIRPORT;
+                findParkingLinearLayout.setVisibility(View.VISIBLE);
                 setNearAirportView();
             }
         });
@@ -271,6 +280,7 @@ public class FindParkingActivity extends AppCompatActivity implements GoogleApiC
         Calendar upperTime = stringToHourMinute(pickupTimeTextView.getText().toString());
         Date upper = mergeDateTimeCalendars(upperDate, upperTime).getTime();
 
+        String airportCode = null;
         BoundingBox boundingBox = null;
         if (NEAR_ME.equals(tabChoice) && location != null) {
             double lattitude = location.getLatitude();
@@ -278,10 +288,12 @@ public class FindParkingActivity extends AppCompatActivity implements GoogleApiC
             Coordinate topLeft = new Coordinate(lattitude + BOUNDING_BOX_RADIUS, longitude - BOUNDING_BOX_RADIUS);
             Coordinate bottomRight = new Coordinate(lattitude - BOUNDING_BOX_RADIUS, longitude + BOUNDING_BOX_RADIUS);
             boundingBox = new BoundingBox(topLeft, bottomRight);
+        } else if (NEAR_AIRPORT.equals(tabChoice)) {
+            airportCode = airportCodeEditText.getText().toString();
         }
 
         ParkingItemQuery newQuery = new ParkingItemQuery(
-                "YYZ",//TODO ALVTG
+                airportCode,
                 new Range<>(lower, upper),
                 boundingBox,
                 0,

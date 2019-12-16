@@ -103,4 +103,6 @@
     <string name="drop_off_date_and_time">Drop-off date and time</string>
     <string name="pickup_date_and_time">Pickup date and time</string>
     <string name="find_parking">Find Parking</string>
+    <string name="search_by_airport_code">Search by Airport Code</string>
+    <string name="edittext_airport_code_hint">E.g. YYZ</string>
 </resources>
