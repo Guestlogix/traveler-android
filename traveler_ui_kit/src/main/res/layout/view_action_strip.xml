@@ -50,8 +50,9 @@
                 android:layout_gravity="center"
                 android:layout_weight="45">
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                     android:id="@+id/actionButton"
+                    android:background="@drawable/rounded_primary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="Next"/>

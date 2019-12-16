@@ -71,7 +71,7 @@
 
 
         <ImageView
-                android:src="@drawable/ic_edit"
+                android:src="@drawable/ic_edit_pencil"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:tint="@color/colorPrimary"

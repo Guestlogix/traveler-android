@@ -20,44 +20,46 @@
 
         <TextView
                 android:id="@+id/textView_parking_details_title"
-                style="@style/TitleOneTextView"
+                style="@style/title_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginLeft="@dimen/margin_default"
+                android:layout_marginTop="@dimen/margin_default"
                 android:layout_marginEnd="@dimen/margin_default"
                 android:layout_marginRight="@dimen/margin_default"
-                android:textStyle="bold"
                 tools:text="Park For U Valet Uncovered" />
 
         <TextView
                 android:id="@+id/textView_parking_details_address"
-                style="@style/TitleTwoTextView"
+                style="@style/text_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_default"
-                android:layout_marginLeft="@dimen/margin_default"
-                android:layout_marginEnd="@dimen/margin_default"
-                android:layout_marginRight="@dimen/margin_default"
+                android:layout_margin="@dimen/margin_default"
                 tools:text="6135 Viscount Road, Toronto, ON" />
 
         <TextView
                 android:id="@+id/textView_parking_details_hours"
-                style="@style/TitleTwoTextView"
+                style="@style/text_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginLeft="@dimen/margin_default"
                 android:layout_marginEnd="@dimen/margin_default"
                 android:layout_marginRight="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/margin_default"
                 tools:text="01/01/2020 - 08/01/2019 1:30AM" />
 
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_default"
+                android:layout_marginStart="@dimen/margin_default"
+                android:layout_marginLeft="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginEnd="@dimen/margin_default"
+                android:layout_marginRight="@dimen/margin_default"
                 android:background="@color/parking_list_bg"
-                android:minHeight="30dp">
+                tools:minHeight="30dp">
 
             <TextView
                     android:id="@+id/textView_parking_details_total_price"
@@ -66,7 +68,9 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:layout_margin="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_default"
+                    android:layout_marginLeft="@dimen/margin_default"
+                    android:layout_marginTop="@dimen/margin_default"
                     android:textColor="@color/black"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -74,14 +78,14 @@
 
             <TextView
                     android:id="@+id/textView_parking_details_total_price_label"
-                    style="@style/Heading"
+                    style="@style/text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/textView_parking_details_total_price"
                     android:layout_alignStart="@id/textView_parking_details_total_price"
                     android:layout_alignLeft="@id/textView_parking_details_total_price"
+                    android:layout_marginTop="@dimen/margin_xsmall"
                     android:layout_marginBottom="@dimen/margin_default"
-                    android:text="Total Price"
                     tools:text="Total Price (CAD)" />
 
             <View
@@ -90,23 +94,27 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/textView_parking_details_total_price"
                     android:layout_alignBottom="@+id/textView_parking_details_total_price_label"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/darkGray" />
+                    android:layout_marginStart="@dimen/margin_default"
+                    android:layout_marginLeft="@dimen/margin_default"
+                    android:layout_toEndOf="@id/textView_parking_details_total_price_label"
+                    android:layout_toRightOf="@id/textView_parking_details_total_price_label"
+                    android:background="@color/parking_list_divider" />
 
             <TextView
                     android:id="@+id/textView_parking_details_pay_online_label"
+                    style="@style/text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/textView_parking_details_total_price"
                     android:layout_marginStart="@dimen/margin_default"
                     android:layout_marginLeft="@dimen/margin_default"
-                    android:layout_marginTop="@dimen/margin_default"
                     android:layout_toEndOf="@id/textView_parking_details_divider"
                     android:layout_toRightOf="@id/textView_parking_details_divider"
-                    android:text="Pay today:" />
+                    android:text="@string/pay_today" />
 
             <TextView
                     android:id="@+id/textView_parking_details_pay_online"
+                    style="@style/text_2_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@id/textView_parking_details_pay_online_label"
@@ -118,19 +126,22 @@
 
             <TextView
                     android:id="@+id/textView_parking_details_balance_label"
+                    style="@style/text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textView_parking_details_pay_online_label"
                     android:layout_alignStart="@+id/textView_parking_details_pay_online_label"
                     android:layout_alignLeft="@+id/textView_parking_details_pay_online_label"
+                    android:layout_alignBaseline="@id/textView_parking_details_total_price_label"
                     android:layout_marginTop="@dimen/margin_default"
                     android:layout_toEndOf="@id/textView_parking_details_divider"
                     android:layout_toRightOf="@id/textView_parking_details_divider"
-                    android:text="ⓘ Balance:"
+                    android:text="@string/balance"
                     android:textColor="@color/colorPrimary" />
 
             <TextView
                     android:id="@+id/textView_parking_details_balance"
+                    style="@style/text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBaseline="@id/textView_parking_details_balance_label"
@@ -146,7 +157,11 @@
                 android:id="@+id/relativeLayout_parking_details_balance_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:layout_marginRight="@dimen/margin_default"
+                android:layout_marginLeft="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/margin_default"
+                android:visibility="gone"
+                tools:visibility="visible">
 
             <TextView
                     android:id="@+id/textView_parking_details_balance_desc_icon"
@@ -154,9 +169,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginStart="@dimen/margin_default"
-                    android:layout_marginLeft="@dimen/margin_default"
-                    android:layout_marginTop="@dimen/margin_default"
                     android:text="ⓘ"
                     android:textColor="@color/colorPrimary"
                     tools:ignore="HardcodedText" />
@@ -167,7 +179,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
                     android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_default"
                     android:layout_toEndOf="@id/textView_parking_details_balance_desc_icon"
                     android:layout_toRightOf="@id/textView_parking_details_balance_desc_icon"
                     android:text="@string/what_is_this"
@@ -184,7 +195,6 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_marginEnd="@dimen/margin_default"
                     android:layout_marginRight="@dimen/margin_default"
-                    android:layout_marginBottom="@dimen/margin_default"
                     android:text="@string/parking_balance_description"
                     android:textColor="@color/black" />
         </RelativeLayout>
@@ -194,9 +204,10 @@
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginLeft="@dimen/margin_default"
+                android:layout_marginTop="@dimen/margin_default"
                 android:layout_marginEnd="@dimen/margin_default"
                 android:layout_marginRight="@dimen/margin_default"
-                android:background="@color/darkGray" />
+                android:background="@color/parking_list_divider" />
 
 
         <RelativeLayout
@@ -206,36 +217,35 @@
 
             <TextView
                     android:id="@+id/textView_parking_details_general_information_label"
-                    style="@style/TitleOneTextView"
+                    style="@style/text_1_bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/margin_default"
                     android:layout_marginLeft="@dimen/margin_default"
+                    android:layout_marginTop="@dimen/margin_xxlarge"
                     android:layout_marginEnd="@dimen/margin_default"
                     android:layout_marginRight="@dimen/margin_default"
-                    android:textStyle="bold"
+                    android:layout_marginBottom="@dimen/margin_xxlarge"
                     android:text="@string/general_information" />
 
             <TextView
                     android:id="@+id/textView_parking_details_general_information_toggle"
-                    style="@style/TitleOneTextView"
+                    style="@style/text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@id/textView_parking_details_general_information_label"
+                    android:layout_alignBottom="@id/textView_parking_details_general_information_label"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/textView_parking_details_general_information_label"
-                    android:layout_toEndOf="@id/textView_parking_details_general_information_label"
                     android:layout_marginStart="@dimen/margin_default"
                     android:layout_marginLeft="@dimen/margin_default"
                     android:layout_marginEnd="@dimen/margin_default"
                     android:layout_marginRight="@dimen/margin_default"
+                    android:text="@string/show_more"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="13sp"
-                    android:text="@string/show_more"/>
+                    tools:ignore="RelativeOverlap" />
         </RelativeLayout>
 
         <LinearLayout
@@ -251,10 +261,9 @@
 
             <TextView
                     android:id="@+id/textView_parking_details_information_description"
+                    style="@style/text_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="13sp"
                     tools:text="Pull up to the curb, hand us your keys and step into the terminal. Valet Care is the fastest and most convenient way to park your car at Toronto Pearson. Drop-off and pick-up at the departures curb. Just steps to check-in counters and security screening. Price includes one-time $25 Valet Care Premium fee." />
 
             <RelativeLayout
@@ -273,18 +282,18 @@
 
                 <TextView
                         android:id="@+id/textView_parking_details_information_hours"
+                        style="@style/text_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_default"
                         android:layout_marginLeft="@dimen/margin_default"
                         android:layout_marginTop="@dimen/margin_default"
                         android:text=""
-                        android:textColor="@color/black"
-                        android:textSize="24sp"
                         tools:text="24/7" />
 
                 <TextView
                         android:id="@+id/textView_parking_details_information_hours_label"
+                        style="@style/text_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/textView_parking_details_information_hours"
@@ -292,11 +301,11 @@
                         android:layout_marginLeft="@dimen/margin_default"
                         android:layout_marginTop="@dimen/margin_default"
                         android:layout_marginBottom="@dimen/margin_default"
-                        android:text="@string/hours_of_operation"
-                        android:textColor="@color/black" />
+                        android:text="@string/hours_of_operation" />
 
                 <TextView
                         android:id="@+id/textView_parking_details_information_distance"
+                        style="@style/text_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignWithParentIfMissing="true"
@@ -330,17 +339,17 @@
 
         <TextView
                 android:id="@+id/textView_parking_details_contact_label"
+                style="@style/text_1_bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginLeft="@dimen/margin_default"
                 android:layout_marginTop="@dimen/margin_default"
-                android:text="@string/contact_parking_company"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:text="@string/contact_parking_company" />
 
         <TextView
                 android:id="@+id/textView_parking_details_contact"
+                style="@style/text_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_default"
@@ -348,9 +357,8 @@
                 android:layout_marginTop="@dimen/margin_default"
                 android:layout_marginEnd="@dimen/margin_default"
                 android:layout_marginRight="@dimen/margin_default"
-                android:layout_marginBottom="@dimen/margin_default"
+                android:layout_marginBottom="@dimen/margin_xxlarge"
                 android:autoLink="phone"
-                android:textColor="@color/black"
                 tools:text="647 000 0000" />
 
         <View
@@ -359,7 +367,7 @@
                 android:layout_height="1dp"
                 android:layout_marginStart="@dimen/margin_default"
                 android:layout_marginLeft="@dimen/margin_default"
-                android:background="@color/darkGray" />
+                android:background="@color/parking_list_divider" />
 
         <LinearLayout
                 android:layout_width="wrap_content"

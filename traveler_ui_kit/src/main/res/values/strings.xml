@@ -107,4 +107,8 @@
     <string name="edittext_airport_code_hint">E.g. YYZ</string>
     <string name="show_more">Show More</string>
     <string name="show_less">Show Less</string>
+    <string name="additional_parking_options">Looking for additional Parking options?</string>
+    <string name="move_around_map">Move around the map and select “search this area” to view available Parking options in the area.</string>
+    <string name="balance">ⓘ Balance:</string>
+    <string name="pay_today">Pay today:</string>
 </resources>

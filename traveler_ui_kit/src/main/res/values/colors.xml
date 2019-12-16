@@ -10,6 +10,8 @@
     <color name="separator">#C8C7CC</color>
     <color name="white">#FFFFFF</color>
     <color name="off_white">#EEEEEE</color>
+    <color name="bdGray">#BDBDBD</color>
+    <color name="cfGray">#CFCFCF</color>
     <color name="e5Gray">#E5E5E5</color>
     <color name="lightGray">#CECECE</color>
     <color name="gray">#9C9C9C</color>
@@ -26,4 +28,5 @@
 
     <color name="saveditem_remove_button_text_color">#0DA2D4</color>
     <color name="parking_list_bg">#F3F3F3</color>
+    <color name="parking_list_divider">@color/cfGray</color>
 </resources>

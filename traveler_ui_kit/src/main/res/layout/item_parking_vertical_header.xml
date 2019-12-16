@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/textView_parking_lot_count"
+        style="@style/text_1_bold"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical|start"
+        android:paddingStart="@dimen/padding_normal"
+        android:paddingLeft="@dimen/padding_normal"
+        android:paddingEnd="@dimen/padding_normal"
+        android:paddingRight="@dimen/padding_normal"
+        tools:text="23 Parking Lots Found" />

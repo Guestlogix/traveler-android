@@ -21,6 +21,7 @@ import com.guestlogix.traveleruikit.TravelerUI;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements ParkingSearchCallback {
@@ -28,6 +29,8 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     private final static String TAG = "ParkingSearchResultAdapter";
     private final static int PARKING_ITEM_VIEW_TYPE = 0;
     private final static int LOADING_VIEW_TYPE = 1;
+    private final static int HEADER_VIEW_TYPE = 2;
+    private final static int FOOTER_VIEW_TYPE = 3;
     private final static int PAGE_SIZE = 10;
     private HashSet<Integer> pagesLoading = new HashSet<>();
     private int layoutId;
@@ -35,6 +38,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     private ParkingItemSearchResult parkingItemSearchResult;
     private OnParkingSearchItemClickListener parkingSearchItemClickListener;
     private ParkingItem selectedParkingItem;
+    private int orientation;
 
     /**
      * @param orientation LinearLayoutManager.VERTICAL or LinearLayoutManager.HORIZONTAL
@@ -44,6 +48,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                                       int orientation) {
         this.parkingItemSearchResult = parkingItemSearchResult;
         this.parkingSearchItemClickListener = parkingSearchItemClickListener;
+        this.orientation = orientation;
         switch (orientation) {
             case LinearLayoutManager.VERTICAL:
                 this.layoutId = R.layout.item_parking_vertical;
@@ -68,6 +73,14 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                 View loadingView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_loading_order, parent, false);
                 return new LoadingItemViewHolder(loadingView);
+            case HEADER_VIEW_TYPE:
+                View headerView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_parking_vertical_header, parent, false);
+                return new HeaderViewHolder(headerView);
+            case FOOTER_VIEW_TYPE:
+                View footerView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_parking_horizontal_footer, parent, false);
+                return new FooterViewHolder(footerView);
             default:
                 throw new IllegalArgumentException(TAG + " unknown viewHolder type");
         }
@@ -77,12 +90,16 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case PARKING_ITEM_VIEW_TYPE:
+                if (orientation == LinearLayoutManager.VERTICAL) {
+                    // vertical carousel has a header view; posn 1 on recyclerview is mapped to itemIndex 0
+                    position -= 1;
+                }
                 ParkingSearchResultViewHolder itemHolder = (ParkingSearchResultViewHolder) holder;
                 ParkingItem parkingItem = parkingItemSearchResult.getItems().get(position);
 
                 itemHolder.title.setText(parkingItem.getTitle());
                 itemHolder.subtitle.setText(parkingItem.getSubTitle());
-                itemHolder.price.setText(parkingItem.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+                itemHolder.price.setText(parkingItem.getPrice().getValueWithBaseCurrencySuffix());
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -91,6 +108,7 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                 });
                 int indicatorColorInt = (selectedParkingItem == parkingItem ? R.color.colorPrimary : R.color.off_white);
                 @ColorInt int color = ContextCompat.getColor(itemHolder.selectionIndicator.getContext(), indicatorColorInt);
+                itemHolder.selectionIndicator.setBackgroundColor(color);
 
                 itemHolder.viewButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -99,6 +117,11 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                     }
                 });
                 break;
+            case HEADER_VIEW_TYPE:
+                HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+                headerHolder.textView.setText(String.format(Locale.getDefault(), "%d Parking Lots Found", parkingItemSearchResult.getItems().size()));
+                break;
+            case FOOTER_VIEW_TYPE:
             case LOADING_VIEW_TYPE:
                 break;
         }
@@ -107,17 +130,39 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemViewType(int position) {
         List itemsList = parkingItemSearchResult.getItems();
-        if (position >= itemsList.size() || itemsList.get(position) == null) {
-            this.onFetchItems(position);
-            return LOADING_VIEW_TYPE;
-        } else {
-            return PARKING_ITEM_VIEW_TYPE;
+        if (orientation == LinearLayoutManager.VERTICAL) {
+            if (position == 0) {
+                return HEADER_VIEW_TYPE;
+            } else {
+                int reindexedPosition = position - 1;
+                if (reindexedPosition >= itemsList.size() || itemsList.get(reindexedPosition) == null) {
+                    this.onFetchItems(reindexedPosition);
+                    return LOADING_VIEW_TYPE;
+                } else {
+                    return PARKING_ITEM_VIEW_TYPE;
+                }
+            }
+
+        } else if (orientation == LinearLayoutManager.HORIZONTAL) {
+            if (position >= itemsList.size()) {
+                return FOOTER_VIEW_TYPE;
+            } else {
+                if (itemsList.get(position) == null) {
+                    this.onFetchItems(position);
+                    return LOADING_VIEW_TYPE;
+                } else {
+                    return PARKING_ITEM_VIEW_TYPE;
+                }
+            }
         }
+        throw new IllegalArgumentException("unknown item type at position:" + position +
+                " in orientation:" + orientation);
     }
 
     @Override
     public int getItemCount() {
-        return parkingItemSearchResult != null ? parkingItemSearchResult.getTotal() : 0;
+        //adds one for header (vertical "23 parking lots found") or footer (horizontal "search more")
+        return 1 + (parkingItemSearchResult != null ? parkingItemSearchResult.getTotal() : 0);
     }
 
     public int setSelectedParkingItem(ParkingItem parkingItem) {
@@ -185,6 +230,21 @@ public class ParkingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
             price = itemView.findViewById(R.id.textView_parking_total);
             selectionIndicator = itemView.findViewById(R.id.view_parking_selected_indicator);
             viewButton = itemView.findViewById(R.id.textView_parking_view_label);
+        }
+    }
+
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+        private TextView textView;
+
+        HeaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textView = itemView.findViewById(R.id.textView_parking_lot_count);
+        }
+    }
+
+    private class FooterViewHolder extends RecyclerView.ViewHolder {
+        FooterViewHolder(@NonNull View itemView) {
+            super(itemView);
         }
     }
 

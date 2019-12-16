@@ -9,7 +9,7 @@
     <dimen name="text_view_xxsmall">12sp</dimen>
     <dimen name="text_view_xxxsmall">11sp</dimen>
 
-    <dimen name="margin_xxlarge">31dp</dimen>
+    <dimen name="margin_xxlarge">32dp</dimen>
     <dimen name="margin_xlarge">24dp</dimen>
     <dimen name="margin_large">22dp</dimen>
     <dimen name="margin_default">16dp</dimen>

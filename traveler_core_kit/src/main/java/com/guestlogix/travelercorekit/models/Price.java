@@ -38,8 +38,16 @@ public class Price implements Serializable {
         return new Price(0, Currency.USD, true, ExchangeRates.equalRates());
     }
 
+    public String getValueWithBaseCurrencySuffix() {
+        return (getValueInBaseCurrency() + " " + getBaseCurrencyCode());
+    }
+
     public String getLocalizedDescriptionInBaseCurrency() {
         return getLocalizedDescription(baseCurrency);
+    }
+
+    public String getBaseCurrencyCode() {
+        return Currency.getCode(baseCurrency);
     }
 
     public String getLocalizedDescription(Currency currency) {
