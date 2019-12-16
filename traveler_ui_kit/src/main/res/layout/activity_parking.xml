@@ -18,22 +18,22 @@
     <RelativeLayout
             android:id="@+id/relativelayout_parking_search_header"
             android:layout_width="match_parent"
-            android:minHeight="78dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:background="@color/white"
+            android:minHeight="78dp"
             android:padding="@dimen/margin_default">
 
         <TextView
                 android:id="@+id/textView_parking_near_you_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="top"
-
+                android:layout_alignBottom="@id/textView_parking_dateRange"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignBottom="@id/textView_parking_dateRange"
+                android:paddingTop="@dimen/padding_xsmall"
+                android:gravity="top"
                 android:text="@string/change"
                 android:textColor="@color/colorPrimary" />
 
@@ -42,16 +42,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/textView_parking_near_you_change"
+                android:layout_marginTop="@dimen/margin_xsmall"
                 android:layout_marginEnd="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_xsmall"
                 android:layout_toStartOf="@id/textView_parking_near_you_change"
                 android:layout_toLeftOf="@id/textView_parking_near_you_change"
-                android:src="@drawable/ic_parking_map_unselected"
+                android:src="@drawable/ic_edit_pencil"
                 tools:ignore="ContentDescription" />
 
         <TextView
                 android:id="@+id/textView_parking_near_you"
+                style="@style/title_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -59,23 +60,18 @@
                 android:layout_alignParentTop="true"
                 android:layout_toStartOf="@id/imageView_edit_icon"
                 android:layout_toLeftOf="@id/imageView_edit_icon"
-                android:text="@string/parking_near_you"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:text="@string/parking_near_you" />
 
         <TextView
                 android:id="@+id/textView_parking_dateRange"
+                style="@style/text_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/textView_parking_near_you"
-                android:layout_alignStart="@id/textView_parking_near_you"
                 android:layout_below="@id/textView_parking_near_you"
+                android:layout_alignStart="@id/textView_parking_near_you"
+                android:layout_alignLeft="@id/textView_parking_near_you"
                 android:layout_marginTop="@dimen/margin_small"
-                tools:text="10/12/2019 1:30AM - 10/19/2019 1:30AM"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                tools:text="10/12/2019 1:30AM - 10/19/2019 1:30AM" />
     </RelativeLayout>
 
     <fragment
@@ -87,18 +83,19 @@
             android:layout_below="@id/relativelayout_parking_search_header"
             tools:context=".MapsActivity"
             tools:ignore="FragmentTagUsage" />
+
     <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
             android:id="@+id/retry_container"
+            android:layout_width="wrap_content"
+            android:background="@color/white"
+            android:layout_height="wrap_content"
             android:layout_alignStart="@+id/parking_details_map"
             android:layout_alignLeft="@+id/parking_details_map"
             android:layout_alignTop="@+id/parking_details_map"
             android:layout_alignEnd="@+id/parking_details_map"
             android:layout_alignRight="@+id/parking_details_map"
             android:layout_alignBottom="@+id/parking_details_map"
-        />
+            android:visibility="invisible" />
 
     <RelativeLayout
             android:id="@+id/relativeLayout_parking_map_search_overlay"
@@ -144,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/margin_xsmall"
                     android:layout_marginRight="@dimen/margin_xsmall"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_search_magnifier"
                     tools:ignore="ContentDescription" />
 
             <TextView
@@ -191,6 +188,7 @@
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_parking_list_listView"
             android:layout_width="match_parent"
+            android:layout_alignTop="@id/parking_details_map"
             android:layout_height="match_parent"
             android:background="@color/lightGray"
             android:paddingTop="64dp"
@@ -209,6 +207,7 @@
 
         <TextView
                 android:id="@+id/linearLayout_parking_toggle_map"
+                style="@style/text_2"
                 android:layout_width="105dp"
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
@@ -226,6 +225,7 @@
 
         <TextView
                 android:id="@+id/linearLayout_parking_toggle_list"
+                style="@style/text_2"
                 android:layout_width="105dp"
                 android:layout_height="40dp"
                 android:layout_toEndOf="@id/linearLayout_parking_toggle_map"

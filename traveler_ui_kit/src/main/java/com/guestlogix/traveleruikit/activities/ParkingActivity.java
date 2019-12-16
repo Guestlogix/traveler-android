@@ -69,8 +69,8 @@ public class ParkingActivity extends AppCompatActivity implements
     public static final String TAG = "ParkingActivity";
     public static final String ARG_PARKING_QUERY = "parkingQuery";
     public static final int PAGE_SIZE = 10;
-    public static final int FIND_PARKING_REQUESTCODE = 1;
-    private static final int MARKER_MAX_FONT_SIZE = 18;
+    public static final int FIND_PARKING_REQUEST_CODE = 1;
+    private static final int MARKER_MAX_FONT_SIZE = 13;
     private static final float MARKER_CENTER_X_DIVISOR = 2f;
     private static final float MARKER_CENTER_Y_DIVISOR = 2.5f;
     private static final int SCROLL_SLOWDOWN_FACTOR = 2;
@@ -175,7 +175,7 @@ public class ParkingActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 Intent intent = new Intent(ParkingActivity.this, FindParkingActivity.class);
                 intent.putExtra(ParkingActivity.ARG_PARKING_QUERY, previousSearchQuery);
-                startActivityForResult(intent, FIND_PARKING_REQUESTCODE);
+                startActivityForResult(intent, FIND_PARKING_REQUEST_CODE);
             }
         });
 
@@ -196,7 +196,7 @@ public class ParkingActivity extends AppCompatActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == FIND_PARKING_REQUESTCODE && resultCode == RESULT_OK) {
+        if (requestCode == FIND_PARKING_REQUEST_CODE && resultCode == RESULT_OK) {
             previousSearchQuery = (ParkingItemQuery) data.getSerializableExtra(ARG_PARKING_QUERY);
             loadNewParkingItems(previousSearchQuery);
         } else {

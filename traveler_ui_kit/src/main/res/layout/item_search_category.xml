@@ -17,7 +17,7 @@
                 android:id="@+id/imgCategory"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                tools:src="@drawable/ic_search" />
+                tools:src="@drawable/ic_search_magnifier" />
 
 
         <TextView

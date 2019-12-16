@@ -127,11 +127,14 @@ public class ParkingItemDetailsFragment extends Fragment
 
     private void setPrice(View view) {
         ((TextView) view.findViewById(R.id.textView_parking_details_total_price))
-                .setText(parkingItemDetails.getPrice().getLocalizedDescriptionInBaseCurrency());
+                .setText(String.valueOf(parkingItemDetails.getPrice().getValueInBaseCurrency()));
+        ((TextView) view.findViewById(R.id.textView_parking_details_total_price_label))
+                .setText(String.format("Total Price(%s)", parkingItemDetails.getPrice().getBaseCurrencyCode()));
+
         ((TextView) view.findViewById(R.id.textView_parking_details_pay_online))
-                .setText(parkingItemDetails.getPriceToPayOnline().getLocalizedDescriptionInBaseCurrency());
+                .setText(parkingItemDetails.getPriceToPayOnline().getValueWithBaseCurrencySuffix());
         ((TextView) view.findViewById(R.id.textView_parking_details_balance))
-                .setText(parkingItemDetails.getPriceToPayOnsite().getLocalizedDescriptionInBaseCurrency());
+                .setText(parkingItemDetails.getPriceToPayOnsite().getValueWithBaseCurrencySuffix());
 
         int payOnsiteComponentsVisibility = parkingItemDetails.getPriceToPayOnsite().getValueInBaseCurrency() < 0.01D ? View.GONE : View.VISIBLE;
         view.findViewById(R.id.textView_parking_details_divider).setVisibility(payOnsiteComponentsVisibility);
