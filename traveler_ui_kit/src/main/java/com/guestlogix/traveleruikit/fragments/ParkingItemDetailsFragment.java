@@ -41,9 +41,10 @@ public class ParkingItemDetailsFragment extends Fragment
     private static final int ZOOM_LEVEL = 15;
 
     //TODO replace heavy map fragment with a static image
-    //private ImageView staticMapImageView;
     private ParkingItemDetails parkingItemDetails;
-    private ParkingItem parkingItem;
+    private LinearLayout infoLinearLayout;
+    private TextView seeMoreLessToggle;
+    private boolean isParkingExpanded = true;
 
     public static ParkingItemDetailsFragment newInstance(ParkingItem item, CatalogItemDetails details) {
         Bundle args = new Bundle();
@@ -70,13 +71,14 @@ public class ParkingItemDetailsFragment extends Fragment
             return null;
         }
 
-        parkingItem = (ParkingItem) args.get(ARG_PARKING_ITEM);
         parkingItemDetails = (ParkingItemDetails) args.get(ARG_PARKING_ITEM_DETAILS);
 
         if (parkingItemDetails == null) {
             Log.e(TAG, "No CatalogItemDetails");
             return view;
         }
+
+        infoLinearLayout = view.findViewById(R.id.linearLayout_parking_details_information);
 
         setTitle(view);
         setPhone(view);
@@ -85,6 +87,9 @@ public class ParkingItemDetailsFragment extends Fragment
         setDescription(view);
         setPrice(view);
         setMap(view);
+        setAttributes(view);
+        setSeeMoreToggle(view);
+
         return view;
     }
 
@@ -115,6 +120,7 @@ public class ParkingItemDetailsFragment extends Fragment
                 DateHelper.formatToMonthDayYearTime(upperDate);
         ((TextView) view.findViewById(R.id.textView_parking_details_hours)).setText(dateRangeString);
     }
+
     private void setDescription(View view){
         ((TextView) view.findViewById(R.id.textView_parking_details_information_description)).setText(parkingItemDetails.getDescription());
     }
@@ -142,9 +148,9 @@ public class ParkingItemDetailsFragment extends Fragment
         SupportMapFragment mapFragment = (SupportMapFragment) childFragmentManager.findFragmentById(R.id.parking_details_map);
         Assertion.eval(mapFragment != null);
         mapFragment.getMapAsync(this);
+    }
 
-        ((TextView) view.findViewById(R.id.textView_parking_details_information_description)).setText(parkingItemDetails.getDescription());
-        LinearLayout infoLinearLayout = view.findViewById(R.id.linearLayout_parking_details_information);
+    private void setAttributes(View view) {
         View hoursDistanceDivider = view.findViewById(R.id.textView_parking_details_information_divider);
         TextView hoursTextView = view.findViewById(R.id.textView_parking_details_information_hours);
         TextView hoursLabelTextView = view.findViewById(R.id.textView_parking_details_information_hours_label);
@@ -162,17 +168,7 @@ public class ParkingItemDetailsFragment extends Fragment
                 hasDistance = true;
                 distanceTextView.setText(attribute.getValue());
             } else {
-                // inflating views is lighter-weight than using a recyclerView/adapter.
-                LinearLayout attributeLinearLayout = (LinearLayout) LayoutInflater.from(getContext())
-                        .inflate(R.layout.item_attribute, infoLinearLayout, false);
-                ((TextView) attributeLinearLayout.findViewById(R.id.itemLabel)).setText(attribute.getLabel());
-                TextView valueTextView = attributeLinearLayout.findViewById(R.id.itemValue);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    valueTextView.setText(Html.fromHtml(attribute.getValue(), Html.FROM_HTML_MODE_COMPACT));
-                } else {
-                    valueTextView.setText(Html.fromHtml(attribute.getValue()));
-                }
+                LinearLayout attributeLinearLayout = createAttributeItemView(attribute);
                 infoLinearLayout.addView(attributeLinearLayout);
             }
         }
@@ -186,6 +182,38 @@ public class ParkingItemDetailsFragment extends Fragment
             distanceTextView.setVisibility(View.GONE);
             distanceLabelTextView.setVisibility(View.GONE);
         }
+    }
+
+    private LinearLayout createAttributeItemView(Attribute attribute) {
+        // inflating views is lighter-weight than using a recyclerView/adapter.
+        LinearLayout attributeLinearLayout = (LinearLayout) LayoutInflater.from(getContext())
+                .inflate(R.layout.item_attribute, infoLinearLayout, false);
+        ((TextView) attributeLinearLayout.findViewById(R.id.itemLabel)).setText(attribute.getLabel());
+        TextView valueTextView = attributeLinearLayout.findViewById(R.id.itemValue);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            valueTextView.setText(Html.fromHtml(attribute.getValue(), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            valueTextView.setText(Html.fromHtml(attribute.getValue()));
+        }
+        return attributeLinearLayout;
+    }
+
+    private void setSeeMoreToggle(View view) {
+        seeMoreLessToggle = view.findViewById(R.id.textView_parking_details_general_information_toggle);
+        seeMoreLessToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isParkingExpanded){
+                    seeMoreLessToggle.setText(getText(R.string.show_more));
+                    infoLinearLayout.setVisibility(View.GONE);
+
+                } else {
+                    seeMoreLessToggle.setText(getText(R.string.show_less));
+                    infoLinearLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
