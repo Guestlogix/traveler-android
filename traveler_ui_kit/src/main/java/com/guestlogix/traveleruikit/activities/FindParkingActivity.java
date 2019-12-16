@@ -1,19 +1,40 @@
 package com.guestlogix.traveleruikit.activities;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Task;
+import com.guestlogix.travelercorekit.models.BoundingBox;
+import com.guestlogix.travelercorekit.models.Coordinate;
 import com.guestlogix.travelercorekit.models.ParkingItemQuery;
 import com.guestlogix.travelercorekit.models.Range;
 import com.guestlogix.travelercorekit.utilities.Assertion;
@@ -23,9 +44,19 @@ import com.guestlogix.traveleruikit.R;
 import java.util.Calendar;
 import java.util.Date;
 
-public class FindParkingActivity extends AppCompatActivity {
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
+public class FindParkingActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     public static final String TAG = "ParkingActivity";
     public static final String ARG_PARKING_QUERY = "parkingQuery";
+    public static final String NEAR_ME = "near me";
+    public static final String NEAR_AIRPORT = "near airport";
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 2;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final long UPDATE_INTERVAL = 5000;
+    private static final long FASTEST_INTERVAL = 5000;
+    private static final double BOUNDING_BOX_RADIUS = 0.1d;
 
     private TextView findParkingToggleNearMeTextView;
     private TextView findParkingToggleNearAirportTextView;
@@ -34,7 +65,18 @@ public class FindParkingActivity extends AppCompatActivity {
     private TextView pickupDateTextView;
     private TextView pickupTimeTextView;
 
+    private String tabChoice;
     private ParkingItemQuery searchQuery;
+    private GoogleApiClient googleApiClient;
+    private Location location;
+    private LocationCallback locationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            super.onLocationResult(locationResult);
+            location = locationResult.getLastLocation();
+            Log.d(TAG, "location set to (" + location.getLatitude() + "," + location.getLongitude() + ")");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +97,8 @@ public class FindParkingActivity extends AppCompatActivity {
         findParkingToggleNearMeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                initiateLocationPermission();
+                tabChoice = NEAR_ME;
                 setNearMeView();
             }
         });
@@ -62,6 +106,7 @@ public class FindParkingActivity extends AppCompatActivity {
         findParkingToggleNearAirportTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tabChoice = NEAR_AIRPORT;
                 setNearAirportView();
             }
         });
@@ -101,12 +146,118 @@ public class FindParkingActivity extends AppCompatActivity {
             }
         });
         setQueryDateTimes();
+
+
+        if (!TextUtils.isEmpty(searchQuery.getAirportIATA())) {
+            // if we have airport code, show user the airport tab
+            findParkingToggleNearAirportTextView.performClick();
+        } else {
+            //otherwise we're looking at "near me", check for location.
+            tabChoice = NEAR_ME;
+            if (!isPlayServicesAvailable()) {
+                new AlertDialog.Builder(this)
+                        .setTitle("Error")
+                        .setMessage("Google Play Services Not Available")
+                        .create()
+                        .show();
+            } else {
+                initiateLocationPermission();
+            }
+        }
+
+        googleApiClient = new GoogleApiClient.Builder(this).
+                addApi(LocationServices.API).
+                addConnectionCallbacks(this).
+                addOnConnectionFailedListener(this).build();
+    }
+
+    private void initiateLocationPermission() {
+        // if we already have a location, we already have the permission.
+        if (location != null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            String[] permissionsToRequest = {Manifest.permission.ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION};
+            requestPermissions(permissionsToRequest, LOCATION_PERMISSION_REQUEST_CODE);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (!hasLocationPermissionsGranted() &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+                new AlertDialog.Builder(this).
+                        setMessage("This permission is needed to get your location.").
+                        setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String[] permissionsToRequest = {Manifest.permission.ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION};
+                                requestPermissions(permissionsToRequest, LOCATION_PERMISSION_REQUEST_CODE);
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create()
+                        .show();
+
+            } else if (googleApiClient != null) {
+                googleApiClient.connect();
+            }
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (!hasLocationPermissionsGranted()) {
+            return;
+        }
+
+        Task<Location> locationTask = LocationServices.getFusedLocationProviderClient(this).getLastLocation();
+        if (locationTask != null && locationTask.isComplete() && locationTask.getResult() != null) {
+            location = locationTask.getResult();
+            Log.d(TAG, "location set to (" + location.getLatitude() + "," + location.getLongitude() + ")");
+        } else {
+            // only start loc updates if location was null
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionSuspended");
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e(TAG, "onConnectionFailed due to: " + connectionResult.getErrorMessage());
+    }
+
+    private void startLocationUpdates() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(UPDATE_INTERVAL);
+        locationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        if (!hasLocationPermissionsGranted()) {
+            initiateLocationPermission();
+        } else {
+            LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+        }
+    }
+
+    private boolean hasLocationPermissionsGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
         }
         return true;
     }
@@ -120,10 +271,19 @@ public class FindParkingActivity extends AppCompatActivity {
         Calendar upperTime = stringToHourMinute(pickupTimeTextView.getText().toString());
         Date upper = mergeDateTimeCalendars(upperDate, upperTime).getTime();
 
+        BoundingBox boundingBox = null;
+        if (NEAR_ME.equals(tabChoice) && location != null) {
+            double lattitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            Coordinate topLeft = new Coordinate(lattitude + BOUNDING_BOX_RADIUS, longitude - BOUNDING_BOX_RADIUS);
+            Coordinate bottomRight = new Coordinate(lattitude - BOUNDING_BOX_RADIUS, longitude + BOUNDING_BOX_RADIUS);
+            boundingBox = new BoundingBox(topLeft, bottomRight);
+        }
+
         ParkingItemQuery newQuery = new ParkingItemQuery(
                 "YYZ",//TODO ALVTG
                 new Range<>(lower, upper),
-                null,
+                boundingBox,
                 0,
                 ParkingActivity.PAGE_SIZE);
         Intent resultIntent = new Intent();
@@ -232,7 +392,8 @@ public class FindParkingActivity extends AppCompatActivity {
 
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            Calendar calendar = Calendar.getInstance();if (hourOfDay < 12) {
+            Calendar calendar = Calendar.getInstance();
+            if (hourOfDay < 12) {
                 calendar.set(Calendar.AM_PM, Calendar.AM);
             } else {
                 calendar.set(Calendar.AM_PM, Calendar.PM);
@@ -243,6 +404,7 @@ public class FindParkingActivity extends AppCompatActivity {
             calendar.set(Calendar.SECOND, 0);
             textViewToUpdate.setText(DateHelper.formatToHourMinuteMeridian(calendar.getTime()));
         }
+
     }
 
     private static Calendar stringToHourMinute(String timeString) {
@@ -270,5 +432,17 @@ public class FindParkingActivity extends AppCompatActivity {
         calendar.set(Calendar.MONTH, Integer.valueOf(date[0]) - 1);
         calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(date[1]));
         return calendar;
+    }
+
+    private boolean isPlayServicesAvailable() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+            return false;
+        }
+        return true;
     }
 }
