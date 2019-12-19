@@ -107,6 +107,10 @@
                                android:id="@+id/imageView_catalogItemDetails_supplier"/>
                 </LinearLayout>
             </LinearLayout>
+            <View   android:id="@+id/container_catalogItemDetails_similarItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </RelativeLayout>
