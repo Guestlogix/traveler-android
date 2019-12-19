@@ -81,6 +81,10 @@ public class Router {
             routeBuilder.param("flight-ids", flight.getId());
         }
 
+        for (Product product : catalogQuery.getProducts()) {
+            routeBuilder.param("product-ids", product.getId());
+        }
+
         return routeBuilder.build(session.getToken());
     }
 
