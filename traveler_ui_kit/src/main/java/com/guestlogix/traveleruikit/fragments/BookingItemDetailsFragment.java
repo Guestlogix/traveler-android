@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -29,6 +30,7 @@ import com.guestlogix.travelercorekit.callbacks.WishlistRemoveCallback;
 import com.guestlogix.travelercorekit.models.BookingItem;
 import com.guestlogix.travelercorekit.models.BookingItemDetails;
 import com.guestlogix.travelercorekit.models.CatalogItemDetails;
+import com.guestlogix.travelercorekit.models.CatalogQuery;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.models.WishlistResult;
@@ -40,6 +42,9 @@ import com.guestlogix.traveleruikit.tools.AssetManager;
 import com.guestlogix.traveleruikit.tools.image.ImageLoader;
 import com.guestlogix.traveleruikit.widgets.CarouselView;
 import com.guestlogix.traveleruikit.widgets.WrapContentViewPager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BookingItemDetailsFragment extends Fragment implements WishlistAddCallback, WishlistRemoveCallback {
     static String ARG_BOOKING_ITEM = "ARG_BOOKING_ITEM";
@@ -179,6 +184,12 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
                 }
             }
         });
+
+        Fragment catalogFragment = CatalogFragment.newInstance(new CatalogQuery(new ArrayList<>(), new ArrayList<Product>(Arrays.asList(bookingItem))));
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.container_catalogItemDetails_similarItem, catalogFragment);
+        transaction.commit();
+
         return view;
     }
 
