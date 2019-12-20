@@ -464,7 +464,7 @@ public class Traveler {
     /**
      * Creates a purchase form for a parking
      */
-    public static void fetchParkingPurchaseForm(Product product, List<Pass> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
+    public static void fetchParkingPurchaseForm(Product product, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
         if (!isInitialized()) return;
 
         AuthenticatedUrlRequest request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
@@ -479,7 +479,7 @@ public class Traveler {
                     fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
                     Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
                 } else {
-                    fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, passes, fetchPurchaseFormTask.getResource()));
+                    fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, null, fetchPurchaseFormTask.getResource()));
                 }
             }
         };
@@ -542,7 +542,8 @@ public class Traveler {
             protected void main() {
                 if (null != processOrderTask.getError()) {
                     processOrderCallback.onOrderProcessError(processOrderTask.getError());
-                    Log.e(TAG, processOrderTask.getError().getMessage());
+                    String errorString = processOrderTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "unknown error");
                 } else {
                     Receipt receipt = new Receipt(processOrderTask.getResource(), payment);
                     processOrderCallback.onOrderProcessSuccess(receipt);

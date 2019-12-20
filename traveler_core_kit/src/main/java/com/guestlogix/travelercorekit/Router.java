@@ -241,8 +241,10 @@ public class Router {
                             JSONArray passes = new JSONArray();
                             JSONArray answers = new JSONArray();
 
-                            for (Pass p : form.getPasses()) {
-                                passes.put(p.getId());
+                            if (form.getPasses() != null) {
+                                for (Pass p : form.getPasses()) {
+                                    passes.put(p.getId());
+                                }
                             }
 
                             for (Answer a : form.getAnswers()) {
