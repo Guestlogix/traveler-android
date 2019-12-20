@@ -11,12 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.guestlogix.travelercorekit.models.BookingItem;
-import com.guestlogix.travelercorekit.models.ParkingItem;
 import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.models.ProductType;
 import com.guestlogix.traveleruikit.R;
-import com.guestlogix.traveleruikit.models.BookingContext;
 
 /**
  * Fragment to contain Action strip based on Purchased Strategy
@@ -39,7 +35,7 @@ public class ActionStripContainerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_action_strip_container, container, false);
 
         if (getArguments() == null || !getArguments().containsKey(ARG_ITEM)) {
-            Log.e(TAG, "No CatalogItem in arguments");
+            Log.e(TAG, "No Product in arguments");
             return view;
         }
 
@@ -48,15 +44,7 @@ public class ActionStripContainerFragment extends Fragment {
         Fragment fragment;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
-        if (product.getProductType() == ProductType.BOOKABLE) {
-            fragment = BookableActionStripFragment.newInstance(new BookingContext((BookingItem) product));
-        } else if (product.getProductType() == ProductType.PARKING) {
-            BookingItem bookingItem = ((ParkingItem) product).toBookingItem();
-            fragment = ParkingActionStripFragment.newInstance(new BookingContext(bookingItem));
-        } else {
-            // TODO: This is not done yet
-            fragment = new BuyableActionStripFragment();
-        }
+        fragment = PurchaseActionStripFragment.newInstance(product);
 
         transaction.replace(R.id.actionStripContainerFrameLayout, fragment);
         transaction.commit();
