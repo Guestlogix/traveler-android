@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.guestlogix.travelercorekit.models.BookingProduct;
-import com.guestlogix.travelercorekit.models.PartnerOfferingProduct;
+import com.guestlogix.travelercorekit.models.BookingPurchasedProduct;
+import com.guestlogix.travelercorekit.models.PartnerOfferingPurchasedProduct;
 import com.guestlogix.travelercorekit.models.Pass;
 import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.ProductOffering;
@@ -80,10 +80,11 @@ public class ProductSummaryFragment extends BaseFragment {
 
             holder.title.setText(product.getTitle());
             holder.subtitle.setVisibility(View.GONE); // TODO: We can't display the date for this product since we do have it in the model nor the payload.
+            //TODO: fix this after fixing pas and partner offering problem
             if (product.getProductType() == ProductType.BOOKABLE) {
-                holder.recyclerView.setAdapter(new PassAdapter((List<ProductOffering>)(List<?>)((BookingProduct) product).getPasses()));
+                holder.recyclerView.setAdapter(new PassAdapter((List<ProductOffering>)(List<?>)((BookingPurchasedProduct) product).getPasses()));
             } else if (product.getProductType() == ProductType.PARTNER_OFFERING) {
-                holder.recyclerView.setAdapter(new PassAdapter(((PartnerOfferingProduct) product).getProductOfferings()));
+                holder.recyclerView.setAdapter(new PassAdapter(((PartnerOfferingPurchasedProduct) product).getProductOfferings()));
             }
 
             LinearLayoutManager lm = new LinearLayoutManager(ProductSummaryFragment.this.getActivityContext());

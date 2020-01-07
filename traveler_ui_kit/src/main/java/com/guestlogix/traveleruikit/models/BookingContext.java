@@ -57,7 +57,7 @@ public class BookingContext implements PurchaseContext {
     @Nullable
     @Override
     public Price getPrice() {
-        return bookingItem != null ? bookingItem.getPrice() : null;
+        return bookingItem != null ? bookingItem.getItemResource().getPrice() : null;
     }
 
     @Override

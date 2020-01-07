@@ -100,36 +100,32 @@ public class AnyItemMappingFactory implements ObjectMappingFactory<CatalogItem> 
         switch (productType) {
             case BOOKABLE:
                 return new BookingItem(
-                        id,
                         title,
                         subTitle,
                         thumbnail,
-                        price,
-                        productType,
-                        categories,
-                        coordinate,
-                        providerTranslationAttribution,
-                        isAvailable,
-                        isWishlisted);
+                        new BookingProduct(id, title, price,
+                                productType,
+                                categories,
+                                coordinate,
+                                providerTranslationAttribution,
+                                isAvailable,
+                                isWishlisted));
             case PARKING:
                 return new ParkingItem(
-                        id,
                         title,
                         subTitle,
                         thumbnail,
-                        price,
-                        productType,
-                        coordinate,
-                        providerTranslationAttribution);
+                        new ParkingProduct(id, title, price, productType, coordinate, providerTranslationAttribution));
             case PARTNER_OFFERING:
                 return new PartnerOfferingItem(
-                        id,
                         title,
                         subTitle,
                         thumbnail,
-                        price,
-                        productType,
-                        isAvailable);
+                        new PartnerOfferingProduct(id,
+                                title,
+                                price,
+                                productType,
+                                isAvailable));
             default:
                 throw new RuntimeException("Unknown product type");
         }

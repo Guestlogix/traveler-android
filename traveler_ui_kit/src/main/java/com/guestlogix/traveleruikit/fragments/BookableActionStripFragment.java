@@ -63,7 +63,7 @@ public class BookableActionStripFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BookableActionStripFragment.this.getContext(), AvailabilityActivity.class);
-                intent.putExtra(AvailabilityActivity.ARG_PRODUCT, bookingContext.getBookingItem());
+                intent.putExtra(AvailabilityActivity.ARG_PRODUCT, bookingContext.getBookingItem().getItemResource());
                 startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
             }
         });

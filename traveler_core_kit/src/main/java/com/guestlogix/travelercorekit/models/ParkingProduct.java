@@ -1,50 +1,62 @@
 package com.guestlogix.travelercorekit.models;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Date;
-import java.util.List;
 
 public class ParkingProduct implements Product {
     private String id;
-    private Price price;
-    private ProductType productType = ProductType.PARKING;
     private String title;
-    private Date eventDate;
+    private Price price;
+    private ProductType productType;
+    private Coordinate coordinate;
+    private ProviderTranslationAttribution providerTranslationAttribution;
 
     ParkingProduct(
             @NonNull String id,
             String title,
-            @NonNull Price price,
-            @NonNull Date eventDate) {
+            Price price,
+            ProductType productType,
+            Coordinate coordinate,
+            ProviderTranslationAttribution providerTranslationAttribution) {
         this.id = id;
         this.title = title;
         this.price = price;
-        this.eventDate = eventDate;
+        this.productType = productType;
+        this.coordinate = coordinate;
+        this.providerTranslationAttribution = providerTranslationAttribution;
     }
+
 
     @Override
     public String getId() {
         return id;
     }
 
-    @Nullable
+    @Override
     public String getTitle() {
         return title;
     }
+
 
     @Override
     public Price getPrice() {
         return price;
     }
 
-    public Date getEventDate() {
-        return eventDate;
-    }
-
     @Override
     public ProductType getProductType() {
         return productType;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public ProviderTranslationAttribution getProviderTranslationAttribution() {
+        return providerTranslationAttribution;
+    }
+
+    public boolean isAvailable() {
+        // A ParkingItem that is seen is always available
+        return true;
     }
 }

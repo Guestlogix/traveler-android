@@ -2,23 +2,19 @@ package com.guestlogix.travelercorekit.models;
 
 import java.net.URL;
 
-public class PartnerOfferingItem implements CatalogItem, Product {
+public class PartnerOfferingItem implements CatalogItem<PartnerOfferingProduct> {
 
-    private String title, subtitle, id;
+    private String title, subtitle;
     private URL imageUrl;
-    private boolean isAvailable;
-    private Price price;
+    private PartnerOfferingProduct PartnerOfferingProduct;
 
-    public PartnerOfferingItem(String id, String title,
+    public PartnerOfferingItem(String title,
                                String subtitle, URL imageUrl,
-                               Price price, ProductType productType,
-                               boolean isAvailable) {
+                               PartnerOfferingProduct PartnerOfferingProduct) {
         this.title = title;
         this.subtitle = subtitle;
         this.imageUrl = imageUrl;
-        this.id = id;
-        this.isAvailable = isAvailable;
-        this.price = price;
+        this.PartnerOfferingProduct = PartnerOfferingProduct;
     }
 
     @Override
@@ -34,21 +30,8 @@ public class PartnerOfferingItem implements CatalogItem, Product {
         return imageUrl;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public boolean isAvailable() {
-        return isAvailable;
-    }
-
-    public Price getPrice() {
-        return price;
-    }
-
     @Override
-    public ProductType getProductType() {
-        return ProductType.PARTNER_OFFERING;
+    public PartnerOfferingProduct getItemResource() {
+        return PartnerOfferingProduct;
     }
-
 }

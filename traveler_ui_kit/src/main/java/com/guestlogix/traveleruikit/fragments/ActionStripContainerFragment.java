@@ -12,8 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.guestlogix.travelercorekit.models.BookingItem;
-import com.guestlogix.travelercorekit.models.Product;
-import com.guestlogix.travelercorekit.models.ProductType;
+import com.guestlogix.travelercorekit.models.CatalogItem;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.models.BookingContext;
 
@@ -24,10 +23,10 @@ public class ActionStripContainerFragment extends Fragment {
     public static final String ARG_ITEM = "ARG_ITEM";
     public static final String TAG = "ActionStripContainer";
 
-    public static ActionStripContainerFragment newInstance(Product product) {
+    public static ActionStripContainerFragment newInstance(BookingItem bookingItem) {
         ActionStripContainerFragment fragment = new ActionStripContainerFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_ITEM, product);
+        args.putSerializable(ARG_ITEM, bookingItem);
         fragment.setArguments(args);
 
         return fragment;
@@ -42,17 +41,18 @@ public class ActionStripContainerFragment extends Fragment {
             return view;
         }
 
-        Product product = (Product) getArguments().get(ARG_ITEM);
+        //TODO: remove the whole class and open BookableActionStripFragment directly becasue casting should not be needed
+        CatalogItem catalogItem = ((BookingItem) getArguments().get(ARG_ITEM));
+
 
         Fragment fragment;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
-        if (product.getProductType() == ProductType.BOOKABLE) {
-            fragment = BookableActionStripFragment.newInstance(new BookingContext((BookingItem) product));
-        } else {
-            // TODO: This is not done yet
-            fragment = new BuyableActionStripFragment();
-        }
+//        if (catalogItem.getProductType() == ProductType.BOOKABLE) {
+            fragment = BookableActionStripFragment.newInstance(new BookingContext((BookingItem) catalogItem));
+//        } else {
+//            fragment = new BuyableActionStripFragment();
+//        }
 
         transaction.replace(R.id.actionStripContainerFrameLayout, fragment);
         transaction.commit();

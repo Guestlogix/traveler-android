@@ -80,11 +80,11 @@ class AnyProductMappingFactory implements ObjectMappingFactory<Product> {
 
         switch (productType) {
             case BOOKABLE:
-                return new BookingProduct(id, title, price, passes, eventDate, categories, cancellationPolicy);
+                return new BookingPurchasedProduct(id, title, price, passes, eventDate, categories, cancellationPolicy);
             case PARKING:
-                return new ParkingProduct(id, title, price, eventDate);
+                return new ParkingPurchasedProduct(id, title, price, eventDate);
             case PARTNER_OFFERING:
-                return new PartnerOfferingProduct(id, title, price, (List<ProductOffering>) (List<?>) passes, cancellationPolicy);
+                return new PartnerOfferingPurchasedProduct(id, title, price, (List<ProductOffering>) (List<?>) passes, cancellationPolicy);
             default:
                 Log.e(TAG, "Product (title:" + title + " has unknown product type:" + productType);
                 return null;

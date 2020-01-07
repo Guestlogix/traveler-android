@@ -64,6 +64,7 @@ public class OrderConfirmationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        //todo: this must be removed. this is not neccesary they can both to home page or finish with a success result and be handled in previuos activities
         if (receipt.getOrder().getProducts().get(0).getProductType() == ProductType.PARTNER_OFFERING) {
             setResult(RESULT_OK_ORDER_CONFIRMED);
             finish();

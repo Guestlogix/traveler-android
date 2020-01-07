@@ -170,10 +170,10 @@ public class BookingItemDetailsFragment extends Fragment implements WishlistAddC
                 if (bookingItemDetails.isWishlisted()) {
                     //Traveler.addToWishlist(catalogItemDetails, CatalogItemDetailsFragment.this);
                     wishListToggleImageButton.setSelected(false);
-                    Traveler.wishlistRemove(bookingItem, null, BookingItemDetailsFragment.this);
+                    Traveler.wishlistRemove(bookingItem.getItemResource(), null, BookingItemDetailsFragment.this);
                 } else {
                     wishListToggleImageButton.setSelected(true);
-                    Traveler.addToWishlist(bookingItem, BookingItemDetailsFragment.this);
+                    Traveler.addToWishlist(bookingItem.getItemResource(), BookingItemDetailsFragment.this);
                 }
             }
         });

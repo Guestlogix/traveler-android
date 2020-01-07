@@ -1,6 +1,5 @@
 package com.guestlogix.traveleruikit.fragments;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -11,15 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.guestlogix.travelercorekit.callbacks.FetchAvailabilitiesCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.models.Availability;
+import com.guestlogix.travelercorekit.models.BookingProduct;
 import com.guestlogix.travelercorekit.models.Pass;
-import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.TravelerUI;
@@ -27,7 +28,13 @@ import com.guestlogix.traveleruikit.activities.PassSelectionActivity;
 import com.guestlogix.traveleruikit.calendarpicker.CalendarPicker;
 import com.guestlogix.traveleruikit.widgets.ActionStrip;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.REQUEST_CODE_ORDER_FLOW;
 import static com.guestlogix.traveleruikit.activities.OrderConfirmationActivity.RESULT_OK_ORDER_CONFIRMED;
@@ -37,7 +44,7 @@ public class AvailabilityFragment extends Fragment
     public static String ARG_PRODUCT = "ARG_PRODUCT";
     static String TAG = "AvailabilityFragment";
 
-    private Product product;
+    private BookingProduct bookingProduct;
     private CalendarPicker picker;
     private ProgressBar progressBar;
     private Map<Long, Availability> availabilities = new HashMap<>();
@@ -45,10 +52,10 @@ public class AvailabilityFragment extends Fragment
     private Availability selectedAvailability;
     private int containerId;
 
-    public static AvailabilityFragment getInstance(Product product) {
+    public static AvailabilityFragment getInstance(BookingProduct bookingProduct) {
         AvailabilityFragment fragment = new AvailabilityFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PRODUCT, product);
+        args.putSerializable(ARG_PRODUCT, bookingProduct);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,12 +74,12 @@ public class AvailabilityFragment extends Fragment
             return view;
         }
 
-        product = (Product) args.getSerializable(ARG_PRODUCT);
+        bookingProduct = (BookingProduct) args.getSerializable(ARG_PRODUCT);
 
         actionStrip = view.findViewById(R.id.actionStrip_availabilityFragment);
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
-        String localizedPrice = String.format(Locale.getDefault(), getContext().getString(R.string.label_price_per_person), product.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
+        String localizedPrice = String.format(Locale.getDefault(), getContext().getString(R.string.label_price_per_person), bookingProduct.getPrice().getLocalizedDescription(TravelerUI.getPreferredCurrency()));
         actionStrip.setValue(localizedPrice);
         actionStrip.setActionOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,12 +88,12 @@ public class AvailabilityFragment extends Fragment
                 if (selectedAvailability.getBookingOptionSet() == null) {
                     actionStrip.changeState(ActionStrip.ActionStripState.LOADING);
 
-                    Traveler.fetchPasses(product, selectedAvailability, null, AvailabilityFragment.this);
+                    Traveler.fetchPasses(bookingProduct, selectedAvailability, null, AvailabilityFragment.this);
 
 
                 } else {
                     // TODO: Use add transactions instead of holding on to container ids
-                    Fragment fragment = OptionsFragment.getInstance(product, selectedAvailability);
+                    Fragment fragment = OptionsFragment.getInstance(bookingProduct, selectedAvailability);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.replace(containerId, fragment);
                     transaction.addToBackStack(null);
@@ -132,7 +139,7 @@ public class AvailabilityFragment extends Fragment
 
         Date endDate = calendar.getTime();
 
-        Traveler.fetchAvailabilities(product, startDate, endDate, this);
+        Traveler.fetchAvailabilities(bookingProduct, startDate, endDate, this);
     }
 
     @Override
@@ -197,7 +204,7 @@ public class AvailabilityFragment extends Fragment
         // TODO: Use fragments for the rest of the flow
         Intent intent = new Intent(AvailabilityFragment.this.getContext(), PassSelectionActivity.class);
         intent.putExtra(PassSelectionActivity.EXTRA_PASSES, new ArrayList<>(pass));
-        intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, product);
+        intent.putExtra(PassSelectionActivity.EXTRA_PRODUCT, bookingProduct);
         getActivity().startActivityForResult(intent, REQUEST_CODE_ORDER_FLOW);
     }
 

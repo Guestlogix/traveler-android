@@ -77,7 +77,7 @@ public class CatalogResultFragment extends Fragment implements CatalogSectionAda
             startActivity(intent);
         } else if (item instanceof QueryItem && ((QueryItem) item).getType() == QueryType.BOOKING) {
             Intent searchIntent = new Intent(getContext(), BookingSearchActivity.class);
-            searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getSearchQuery());
+            searchIntent.putExtra(BookingSearchActivity.KEY_ITEM_QUERY, ((QueryItem) item).getItemResource());
             startActivity(searchIntent);
         } else if (item instanceof PartnerOfferingItem) {
             Intent partnerOfferingIntent = new Intent(getContext(), PartnerOfferingActivity.class);

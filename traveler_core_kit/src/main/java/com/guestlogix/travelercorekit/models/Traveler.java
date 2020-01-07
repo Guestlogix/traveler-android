@@ -126,8 +126,7 @@ public class Traveler {
         return isSandboxMode;
     }
 
-    public static void identify(String identifier)
-    {
+    public static void identify(String identifier) {
         if (!isInitialized()) return;
         localInstance.session.setIdentity(identifier);
     }
@@ -135,7 +134,7 @@ public class Traveler {
     public static void identify(String identifier, Map<String, Object> attributes) {
         identify(identifier);
 
-        if(attributes == null)
+        if (attributes == null)
             return;
 
         AuthenticatedUrlRequest request = Router.storeAttributes(localInstance.session, attributes, localInstance.applicationContext);
@@ -148,7 +147,7 @@ public class Traveler {
             @Override
             protected void main() {
                 if (null != storeAttributesTask.getError()) {
-                    Log.e(TAG,storeAttributesTask.getError().getMessage());
+                    Log.e(TAG, storeAttributesTask.getError().getMessage());
                 }
             }
         };
@@ -161,7 +160,7 @@ public class Traveler {
     /**
      * fetches all partner offerings
      *
-     * @param partnerOfferingId     the id for the partner offering
+     * @param partnerOfferingId the id for the partner offering
      */
     public static void fetchPartnerOfferings(String partnerOfferingId, PartnerOfferingFetchCallback partnerOfferingFetchCallback) {
         if (!isInitialized()) return;
@@ -332,6 +331,7 @@ public class Traveler {
         AuthenticatedUrlRequest request;
         AuthenticatedRemoteNetworkRequestTask<CatalogItemDetails> catalogItemDetailsTask = null;
 
+        //TODO: separate it into different methods
         switch (product.getProductType()) {
             case BOOKABLE:
                 request = Router.bookingItem(localInstance.session, product, localInstance.applicationContext);
@@ -459,33 +459,78 @@ public class Traveler {
      * Passes <b>can</b> be repeated. If a user selects 2 passes of type 'A' and one pass of type 'B', the list should be
      * of the form: [A, A, B].
      *
-     * @param product                  product for which to create a booking form
-     * @param passes                   selected passes
+     * @param product                   product for which to create a booking form
+     * @param passes                    selected passes
      * @param fetchPurchaseFormCallback callback methods which will be executed after creation is complete.
      */
-    public static void fetchPurchaseForm(Product product, List<ProductOffering> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
+    public static void fetchPurchaseForm(BookingProduct product, List<ProductOffering> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
         if (!isInitialized()) return;
 
         AuthenticatedUrlRequest request;
-        switch (product.getProductType()) {
-            case BOOKABLE:
-                if (passes.size() == 0) {
-                    fetchPurchaseFormCallback.onPurchaseFormFetchError(new PurchaseError(PurchaseError.Code.NO_PASSES));
-                    return;
-                }
-                //TODO: this is the sickest cast of my whole courier :D. this can be sent wrong. no type protection is happening here. remove this and make 3 different method for purchase form
-                request = Router.bookingQuestions(localInstance.session, product, (List<Pass>)(List<?>)  passes, localInstance.applicationContext);
-                break;
-            case PARKING:
-                request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
-                break;
-            case PARTNER_OFFERING:
-                request = Router.partnerOfferingQuestions(localInstance.session, product, localInstance.applicationContext);
-                break;
-            default:
-                Log.e(TAG, "fetchPurchaseForm called with product of unknown product type:" + product.getProductType());
-                return;
+
+        if (passes.size() == 0) {
+            fetchPurchaseFormCallback.onPurchaseFormFetchError(new PurchaseError(PurchaseError.Code.NO_PASSES));
+            return;
         }
+        //TODO: this is the sickest cast of my whole courier :D. this can be sent wrong. no type protection is happening here. remove this and make 3 different method for purchase form
+        request = Router.bookingQuestions(localInstance.session, product, (List<Pass>) (List<?>) passes, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
+
+        BlockTask fetchBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != fetchPurchaseFormTask.getError()) {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
+                    Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
+                } else {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, passes, fetchPurchaseFormTask.getResource()));
+                }
+            }
+        };
+
+        fetchBlockTask.addDependency(fetchPurchaseFormTask);
+        localInstance.taskManager.addTask(fetchPurchaseFormTask);
+        TaskManager.getMainTaskManager().addTask(fetchBlockTask);
+    }
+
+    public static void fetchPurchaseForm(ParkingProduct product, List<ProductOffering> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request;
+
+        request = Router.parkingQuestions(localInstance.session, product, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
+
+        BlockTask fetchBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != fetchPurchaseFormTask.getError()) {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
+                    Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
+                } else {
+                    fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, passes, fetchPurchaseFormTask.getResource()));
+                }
+            }
+        };
+
+        fetchBlockTask.addDependency(fetchPurchaseFormTask);
+        localInstance.taskManager.addTask(fetchPurchaseFormTask);
+        TaskManager.getMainTaskManager().addTask(fetchBlockTask);
+    }
+
+    public static void fetchPurchaseForm(PartnerOfferingProduct product, List<ProductOffering> passes, FetchPurchaseFormCallback fetchPurchaseFormCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request;
+
+        request = Router.partnerOfferingQuestions(localInstance.session, product, localInstance.applicationContext);
+
         AuthenticatedRemoteNetworkRequestTask<List<QuestionGroup>> fetchPurchaseFormTask =
                 new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
                         request, new ArrayMappingFactory<>(new QuestionGroup.QuestionGroupObjectMappingFactory()));
@@ -510,7 +555,7 @@ public class Traveler {
     /**
      * Creates an order using a booking form.
      *
-     * @param purchaseForm         A completed purchase form
+     * @param purchaseForm        A completed purchase form
      * @param orderCreateCallback callback methods which to be executed once the order creation is processed.
      */
     public static void createOrder(PurchaseForm purchaseForm, OrderCreateCallback orderCreateCallback) {
@@ -576,9 +621,9 @@ public class Traveler {
     /**
      * Fetches an `OrderResult` corresponding to the given `OrderQuery`.
      *
-     * @param query               The `OrderQuery` to filter
-     * @param identifier          An optional `int` identifying the request. This value is returned back in the callbacks. Use this to distinguish between different requests
-     * @param callback            Callback methods to be executed once the results are ready
+     * @param query      The `OrderQuery` to filter
+     * @param identifier An optional `int` identifying the request. This value is returned back in the callbacks. Use this to distinguish between different requests
+     * @param callback   Callback methods to be executed once the results are ready
      */
 
     public static void fetchOrders(OrderQuery query, int identifier, FetchOrdersCallback callback) {
@@ -752,13 +797,12 @@ public class Traveler {
     }
 
     /**
-     * @param item The `Product` that needs to be removed from the wishlist
+     * @param item           The `Product` that needs to be removed from the wishlist
      * @param originalResult a WishlistResult which should contain every item in productsToRemove
-     *
      * @return a nullable WishlistResult with productsToRemove eliminated from its item list.
-     *  This immediate return does not represent the state of the server; at a later time
-     *  onWishlistRemoveSuccess could be called to confirm the state; or an error callback
-     *  may be called with the original WishlistResult
+     * This immediate return does not represent the state of the server; at a later time
+     * onWishlistRemoveSuccess could be called to confirm the state; or an error callback
+     * may be called with the original WishlistResult
      */
     public static WishlistResult wishlistRemove(Product item, @Nullable WishlistResult originalResult, WishlistRemoveCallback callback) {
         if (!isInitialized()) return originalResult;
@@ -807,9 +851,9 @@ public class Traveler {
     /**
      * Fetches an `WishlistResult` corresponding to the given `WishlistQuery`.
      *
-     * @param query               The `WishlistQuery` to filter
-     * @param identifier          An optional `int` identifying the request. This value is returned back in the callbacks. Use this to distinguish between different requests
-     * @param callback            Callback methods to be executed once the results are ready
+     * @param query      The `WishlistQuery` to filter
+     * @param identifier An optional `int` identifying the request. This value is returned back in the callbacks. Use this to distinguish between different requests
+     * @param callback   Callback methods to be executed once the results are ready
      */
     public static void fetchWishlist(WishlistQuery query, int identifier, WishlistFetchCallback callback) {
         if (!isInitialized()) return;

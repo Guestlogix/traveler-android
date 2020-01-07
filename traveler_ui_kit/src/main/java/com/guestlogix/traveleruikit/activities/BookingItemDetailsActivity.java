@@ -64,7 +64,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
         transaction.replace(R.id.booking_item_details_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
-        Traveler.fetchProductDetails(bookingItem, this);
+        Traveler.fetchProductDetails(bookingItem.getItemResource(), this);
     }
 
     @Override

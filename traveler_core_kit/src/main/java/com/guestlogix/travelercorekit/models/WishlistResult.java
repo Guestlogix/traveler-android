@@ -1,7 +1,9 @@
 package com.guestlogix.travelercorekit.models;
 
 import android.util.JsonReader;
+
 import androidx.annotation.Nullable;
+
 import com.guestlogix.travelercorekit.utilities.*;
 
 import java.io.*;
@@ -13,7 +15,8 @@ import java.util.List;
 public class WishlistResult implements Serializable {
     private int skip;
     private int take;
-    @Nullable private Date fromDate;
+    @Nullable
+    private Date fromDate;
     private Date toDate;
     private int total;
     private List<BookingItem> items;
@@ -35,7 +38,8 @@ public class WishlistResult implements Serializable {
         return take;
     }
 
-    @Nullable public Date getFromDate() {
+    @Nullable
+    public Date getFromDate() {
         return fromDate;
     }
 
@@ -58,7 +62,8 @@ public class WishlistResult implements Serializable {
                 this.total == wishlistResult.total;
     }
 
-    public @Nullable WishlistResult merge(WishlistResult wishlistResult) {
+    public @Nullable
+    WishlistResult merge(WishlistResult wishlistResult) {
         if (!this.isResultEquivalentTo(wishlistResult)) {
             // Not mergable
             return null;
@@ -80,7 +85,7 @@ public class WishlistResult implements Serializable {
         int index = 0;
         while (iterator.hasNext()) {
             BookingItem item = iterator.next();
-            if (item.getId().equals(productId)) {
+            if (item.getItemResource().getId().equals(productId)) {
                 items.remove(item);
                 total--;
                 return index;
@@ -129,16 +134,13 @@ public class WishlistResult implements Serializable {
                         total = reader.nextInt();
                         break;
                     case "result":
-                        //TODO: fix this shit
-                        // Only bookable items can wishlisted; but AnyItemMappingFactory returns objects of
-                        // interface CatalogItem.
-                        List<? extends CatalogItem> items = new ArrayList<>(new ArrayMappingFactory<>(
-                                new AnyItemMappingFactory()).instantiate(reader));
                         try {
-                            bookingItems = (List<BookingItem>) items;
+                            bookingItems = new ArrayList<>(new ArrayMappingFactory<>(
+                                    new BookingItem.BookingItemObjectMappingFactory()).instantiate(reader));
+
                             for (BookingItem item : bookingItems) {
                                 // /traveler/{id}/wishlist API call doesn't return "isWishlisted" – it is implied
-                                item.setWishlisted(true);
+                                item.getItemResource().setWishlisted(true);
                             }
                         } catch (ClassCastException e) {
                             throw new IllegalStateException("WishlistResult items should only be of BookingItems!");

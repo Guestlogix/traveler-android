@@ -3,47 +3,27 @@ package com.guestlogix.travelercorekit.models;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
-import androidx.annotation.NonNull;
-
 import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.JsonReaderHelper;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.net.URL;
 
-public class ParkingItem implements CatalogItem, Product {
-    private String id;
+public class ParkingItem implements CatalogItem<ParkingProduct> {
     private String title;
     private String subTitle;
     private URL imageURL;
-    private Price price;
-    private ProductType productType;
-    private Coordinate coordinate;
-    private ProviderTranslationAttribution providerTranslationAttribution;
+    private ParkingProduct parkingProduct;
 
     ParkingItem(
-            @NonNull String id,
             String title,
             String subTitle,
             URL imageURL,
-            Price price,
-            ProductType productType,
-            Coordinate coordinate,
-            ProviderTranslationAttribution providerTranslationAttribution) {
-        this.id = id;
+            ParkingProduct parkingProduct) {
         this.title = title;
         this.subTitle = subTitle;
         this.imageURL = imageURL;
-        this.price = price;
-        this.productType = productType;
-        this.coordinate = coordinate;
-        this.providerTranslationAttribution = providerTranslationAttribution;
-    }
-
-
-    @Override
-    public String getId() {
-        return id;
+        this.parkingProduct = parkingProduct;
     }
 
     @Override
@@ -62,21 +42,8 @@ public class ParkingItem implements CatalogItem, Product {
     }
 
     @Override
-    public Price getPrice() {
-        return price;
-    }
-
-    @Override
-    public ProductType getProductType() {
-        return productType;
-    }
-
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public ProviderTranslationAttribution getProviderTranslationAttribution() {
-        return providerTranslationAttribution;
+    public ParkingProduct getItemResource() {
+        return parkingProduct;
     }
 
     public boolean isAvailable() {
@@ -147,14 +114,10 @@ public class ParkingItem implements CatalogItem, Product {
             Assertion.eval(price != null);
 
             return new ParkingItem(
-                    id,
                     title,
                     subTitle,
                     thumbnail,
-                    price,
-                    productType,
-                    coordinate,
-                    providerTranslationAttribution);
+                    new ParkingProduct(id, title, price, productType, coordinate, providerTranslationAttribution));
         }
     }
 }
