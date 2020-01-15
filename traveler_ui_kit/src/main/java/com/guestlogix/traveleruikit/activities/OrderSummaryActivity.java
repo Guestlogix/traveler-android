@@ -80,7 +80,7 @@ public class OrderSummaryActivity extends AppCompatActivity implements
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
 
-        if (null != getSupportActionBar()) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle(R.string.review_order);

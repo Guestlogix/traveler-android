@@ -10,11 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.models.PurchaseForm;
 import com.guestlogix.travelercorekit.callbacks.PaymentsFetchCallback;
@@ -74,8 +76,10 @@ public class QuestionsActivity extends AppCompatActivity implements OrderCreateC
         form.setLayoutManager(new LinearLayoutManager(this));
         form.setFormCompletedListener(this::onQuestionFormCompleted);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     private void onQuestionFormCompleted(PurchaseForm purchaseForm) {
