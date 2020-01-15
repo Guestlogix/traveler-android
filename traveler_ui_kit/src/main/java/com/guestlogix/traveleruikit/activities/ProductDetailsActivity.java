@@ -41,8 +41,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements Booking
 
         setTitle(product.getTitle());
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         this.transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
 

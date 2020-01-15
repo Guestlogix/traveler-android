@@ -45,8 +45,10 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
 
         setTitle(bookingItem.getTitle());
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         this.transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
 
@@ -110,7 +112,7 @@ public class BookingItemDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onItemWishlistStateChanged(CatalogItemDetails catalogItemDetails){
+    public void onItemWishlistStateChanged(CatalogItemDetails catalogItemDetails) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra(ARG_PRODUCT, catalogItemDetails);
         setResult(RESULT_OK, resultIntent);

@@ -44,8 +44,10 @@ public class ParkingItemDetailsActivity extends AppCompatActivity implements
 
         setTitle(parkingItem.getTitle());
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         this.transactionQueue = new FragmentTransactionQueue(getSupportFragmentManager());
 
