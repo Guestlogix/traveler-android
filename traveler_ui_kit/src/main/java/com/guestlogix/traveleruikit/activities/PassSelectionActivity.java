@@ -11,12 +11,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.models.*;
 import com.guestlogix.traveleruikit.R;
@@ -106,8 +108,10 @@ public class PassSelectionActivity extends AppCompatActivity implements
         form.setFormValueChangedListener(this);
         form.addItemDecoration(new PassItemDecoration(this));
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         if (flavourTitle != null) {
             TextView tv = findViewById(R.id.textView_passSelectionActivity_flavourTitle);
