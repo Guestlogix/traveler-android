@@ -322,7 +322,7 @@
         <item name="android:focusable">true</item>
     </style>
 
-    <style name="TabLayout" parent="Widget.MaterialComponents.TabLayout">
+    <style name="TabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/colorPrimary</item>
         <item name="tabSelectedTextColor">@color/darkGray</item>
         <item name="tabTextColor">@color/lightGray</item>
