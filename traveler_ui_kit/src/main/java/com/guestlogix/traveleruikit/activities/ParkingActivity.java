@@ -121,9 +121,9 @@ public class ParkingActivity extends AppCompatActivity implements
         setTitle(initialQueryItem.getTitle());
 
         ActionBar actionBar = getSupportActionBar();
-        Assertion.eval(actionBar != null);
+        if(actionBar != null){
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);}
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.parking_details_map);
         Assertion.eval(mapFragment != null);

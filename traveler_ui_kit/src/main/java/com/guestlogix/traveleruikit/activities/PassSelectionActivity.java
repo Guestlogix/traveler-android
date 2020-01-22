@@ -125,8 +125,6 @@ public class PassSelectionActivity extends AppCompatActivity implements
         actionStrip.changeState(ActionStrip.ActionStripState.DISABLED);
 
         calculatePrice();
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
