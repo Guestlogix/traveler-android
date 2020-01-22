@@ -93,9 +93,11 @@ public class FindParkingActivity extends AppCompatActivity implements GoogleApiC
         setTitle(getString(R.string.find_parking));
 
         ActionBar actionBar = getSupportActionBar();
-        Assertion.eval(actionBar != null);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
 
         findParkingLinearLayout = findViewById(R.id.linearLayout_findParking_airport_code);
         airportCodeEditText = findViewById(R.id.editText_findParking_airport_code);
