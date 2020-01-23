@@ -137,7 +137,6 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     // Traveler SDK
-    implementation project(path: ':traveler_core_kit')
     implementation project(path: ':traveler_ui_kit')
     implementation project(path: ':traveler_stripe_payment_provider')
 

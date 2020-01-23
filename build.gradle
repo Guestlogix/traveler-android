@@ -10,6 +10,7 @@ buildscript {
     ext.app_center_sdk_version = '1.11.0'
     ext.stripe_sdk_version = '10.4.6'
     ext.material_library_version = '1.0.0'
+    ext.traveler_core_version = '0.19.0'
 
     ext.junit_version = '4.12'
     ext.robolectric_version = '4.3'
