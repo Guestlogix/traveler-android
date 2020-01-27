@@ -211,8 +211,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
             String disclaimer = jsonObject.getNullableString("disclaimer");
             String termsAndConditions = jsonObject.getNullableString("termsAndConditions");
             Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceStartingAt").toString());
-            Price priceToPayOnline = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceToPayOnline").toString());
-            Price priceToPayOnsite = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceToPayOnsite").toString());
+            Price priceToPayOnline = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("payableOnline").toString());
+            Price priceToPayOnsite = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("payableOnsite").toString());
             ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
 
             //TODO: does parking even have category !!!!?

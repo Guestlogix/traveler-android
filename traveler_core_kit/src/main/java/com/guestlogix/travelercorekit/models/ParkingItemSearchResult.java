@@ -2,12 +2,10 @@ package com.guestlogix.travelercorekit.models;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
-import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
-
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ParkingItemSearchResult implements Serializable {
@@ -58,12 +56,6 @@ public class ParkingItemSearchResult implements Serializable {
 
 
             Assertion.eval(catalogItems != null);
-
-            //TODO: whats happening here ???
-            List<ParkingItem> indexedItems = new ArrayList<>();
-            for (int i = 0; i < catalogItems.size(); i++) {
-                indexedItems.add(i + offset, catalogItems.get(i));
-            }
 
             return new ParkingItemSearchResult(total, catalogItems, facets, query);
         }

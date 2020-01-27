@@ -6,7 +6,6 @@ import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookingItemSearchResult implements Serializable {
@@ -63,11 +62,6 @@ public class BookingItemSearchResult implements Serializable {
 
 
             Assertion.eval(catalogItems != null);
-
-            List<BookingItem> indexedItems = new ArrayList<>();
-            for (int i = 0; i < catalogItems.size(); i++) {
-                indexedItems.add(i + offset, catalogItems.get(i));
-            }
 
             items = catalogItems;
 
