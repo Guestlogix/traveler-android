@@ -30,7 +30,7 @@ public class TravelerApplication extends Application {
 //        TravelerPrefs.getInstance(this).save(TravelerPrefs.Key.TRAVELER_AUTH_ENDPOINT, DEV_AUTH_ENDPOINT);
 //        TravelerPrefs.getInstance(this).save(TravelerPrefs.Key.TRAVELER_SDK_ENDPOINT, DEV_ENDPOINT);
 
-        Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext());
+        Traveler.initialize(BuildConfig.TRAVELER_API_KEY, getApplicationContext(), true);
         TravelerUI.initialize(new StripePaymentProvider(), new StripePaymentManager(getApplicationContext()), Currency.USD);
     }
 }

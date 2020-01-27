@@ -10,6 +10,7 @@ android {
         versionCode 8
         versionName "0.0.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [googleMapApiKey: getGoogleMapAPIKey()]
     }
 
     signingConfigs {
@@ -129,6 +130,16 @@ def getTravelerAppDebugSigningKeyPassword() {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
     return properties.getProperty('traveler_app_debug_signing_keyPassword')
+}
+
+def getGoogleMapAPIKey() {
+    if (System.getenv("GOOGLE_MAP_API_KEY") != null) {
+        return System.getenv("GOOGLE_MAP_API_KEY")
+    } else {
+        Properties properties = new Properties()
+        properties.load(file('local.properties').newDataInputStream())
+        return properties.getProperty('google_map_api_key', '')
+    }
 }
 
 dependencies {
