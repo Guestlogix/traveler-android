@@ -38,7 +38,7 @@ public class PartnerOfferingActivity extends AppCompatActivity {
             throw new IllegalArgumentException("partner offering must be provided to the bundle of this activity");
         }
 
-        Traveler.fetchPartnerOfferings(partnerOfferingItem.getItemResource().getId(), new PartnerOfferingFetchCallback() {
+        Traveler.fetchPartnerOfferings(partnerOfferingItem.getItemResource(), new PartnerOfferingFetchCallback() {
             @Override
             public void onSuccess(List<PartnerOfferingGroup> lstPartnerOfferingGroups) {
                 Fragment loadingFragment = PartnerOfferingsFragment.newInstance(lstPartnerOfferingGroups, partnerOfferingItem);
