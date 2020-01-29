@@ -74,6 +74,39 @@
     </LinearLayout>
 
     <LinearLayout
+            android:id="@+id/llItinerary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal">
+
+        <ImageView
+                android:id="@+id/imgItineraryIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/padding_xlarge"
+                android:clickable="false"
+                android:contentDescription="@string/orders"
+                android:focusable="false"
+                android:src="@drawable/ic_shopping_cart_6a_24dp"/>
+
+        <TextView
+                android:id="@+id/tvItinerary"
+                style="@style/TextButton.Profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="false"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:text="@string/itinerary"
+                android:textSize="@dimen/text_view_small"/>
+    </LinearLayout>
+
+    <LinearLayout
             android:id="@+id/linearlayout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
