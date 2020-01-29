@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activities.CatalogItemDetailsActivity">
+        tools:context=".activities.ParkingActivity">
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_parking_list_mapView"
