@@ -14,9 +14,9 @@ public class ArrayMappingFactory<T> implements ObjectMappingFactory<List<T>> {
     }
 
     @Override
-    public List<T> instantiate(String jsonString) throws Exception {
+    public ArrayList<T> instantiate(String jsonString) throws Exception {
         JSONArray jsonArray = new JSONArray(jsonString);
-        List<T> resultList = new ArrayList<>();
+        ArrayList<T> resultList = new ArrayList<>();
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject item = jsonArray.getJSONObject(i);

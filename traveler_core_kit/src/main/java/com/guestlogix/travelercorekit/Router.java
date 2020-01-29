@@ -24,6 +24,7 @@ import com.guestlogix.travelercorekit.models.Coordinate;
 import com.guestlogix.travelercorekit.models.Currency;
 import com.guestlogix.travelercorekit.models.Flight;
 import com.guestlogix.travelercorekit.models.FlightQuery;
+import com.guestlogix.travelercorekit.models.ItineraryQuery;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderQuery;
 import com.guestlogix.travelercorekit.models.ParkingItemQuery;
@@ -35,6 +36,7 @@ import com.guestlogix.travelercorekit.models.Product;
 import com.guestlogix.travelercorekit.models.PurchaseError;
 import com.guestlogix.travelercorekit.models.PurchaseForm;
 import com.guestlogix.travelercorekit.models.PurchasePass;
+import com.guestlogix.travelercorekit.models.PurchasedProductQuery;
 import com.guestlogix.travelercorekit.models.Session;
 import com.guestlogix.travelercorekit.models.Token;
 import com.guestlogix.travelercorekit.models.Traveler;
@@ -91,6 +93,64 @@ public class Router {
 
                     return null;
                 });
+
+        return routeBuilder.build(session.getToken());
+    }
+
+    // /traveler/{id}/itinerary
+    public static AuthenticatedUrlRequest fetchItinerary(Session session, ItineraryQuery itineraryQuery, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/traveler/" + session.getIdentity() + "/itinerary");
+
+        if (itineraryQuery.getStartDate() != null) {
+            routeBuilder.param("from", DateHelper.formatDate(itineraryQuery.getStartDate()));
+        }
+        if (itineraryQuery.getEndDate() != null) {
+            routeBuilder.param("to", DateHelper.formatDate(itineraryQuery.getEndDate()));
+        }
+
+        if (itineraryQuery.getFlights() != null) {
+            for (Flight flight : itineraryQuery.getFlights()) {
+                routeBuilder.param("flight-ids", flight.getId());
+            }
+        }
+
+        return routeBuilder.build(session.getToken());
+    }
+
+    // /orderItemDetail/{OrderId}/booking/{ProductId})
+    public static AuthenticatedUrlRequest fetchPurchasedBookingProductDetails(Session session, PurchasedProductQuery purchasedProductQuery, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/orderItemDetail/" + purchasedProductQuery.getOrderId() + "/booking/" + purchasedProductQuery.getProductId());
+
+        return routeBuilder.build(session.getToken());
+    }
+
+    // /orderItemDetail/{OrderId}/booking/{ProductId})
+    public static AuthenticatedUrlRequest fetchPurchasedParkingProductDetails(Session session, PurchasedProductQuery purchasedProductQuery, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/orderItemDetail/" + purchasedProductQuery.getOrderId() + "/parking/" + purchasedProductQuery.getProductId());
+
+        return routeBuilder.build(session.getToken());
+    }
+
+    // /orderItemDetail/{OrderId}/booking/{ProductId})
+    public static AuthenticatedUrlRequest fetchPurchasedPartnerOfferingProductDetails(Session session, PurchasedProductQuery purchasedProductQuery, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/orderItemDetail/" + purchasedProductQuery.getOrderId() + "/menu/" + purchasedProductQuery.getProductId());
+
+        return routeBuilder.build(session.getToken());
+    }
+
+    // /orderItemDetail/{OrderId}/booking/{ProductId})
+    public static AuthenticatedUrlRequest fetchPurchasedTransportationProductDetails(Session session, PurchasedProductQuery purchasedProductQuery, Context context) {
+        RouteBuilder routeBuilder = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/orderItemDetail/" + purchasedProductQuery.getOrderId() + "/transportation/" + purchasedProductQuery.getProductId());
 
         return routeBuilder.build(session.getToken());
     }

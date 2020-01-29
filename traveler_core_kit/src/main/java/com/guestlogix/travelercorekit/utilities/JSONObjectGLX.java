@@ -33,4 +33,12 @@ public class JSONObjectGLX extends JSONObject {
             return super.getDouble(name);
         }
     }
+
+    public Integer getNullableInt(String name) throws JSONException {
+        if (!has(name) || get(name) == JSONObject.NULL) {
+            return null;
+        } else {
+            return super.getInt(name);
+        }
+    }
 }

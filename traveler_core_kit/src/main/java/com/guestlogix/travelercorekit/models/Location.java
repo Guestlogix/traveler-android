@@ -2,10 +2,8 @@ package com.guestlogix.travelercorekit.models;
 
 import androidx.annotation.NonNull;
 
-import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
-
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
 import java.io.Serializable;
 
@@ -39,11 +37,6 @@ public class Location implements Serializable {
             String address = jsonObject.getString("address");
             Double latitude = jsonObject.getDouble("latitude");
             Double longitude = jsonObject.getDouble("longitude");
-
-
-            Assertion.eval(address != null);
-            Assertion.eval(latitude != null);
-            Assertion.eval(longitude != null);
 
             return new Location(address, latitude, longitude);
         }
