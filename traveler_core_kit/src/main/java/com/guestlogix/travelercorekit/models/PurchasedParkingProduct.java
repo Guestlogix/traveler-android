@@ -3,7 +3,6 @@ package com.guestlogix.travelercorekit.models;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.guestlogix.travelercorekit.utilities.Assertion;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
@@ -16,6 +15,7 @@ public class PurchasedParkingProduct implements Product {
     private ProductType productType = ProductType.PARKING;
     private String title;
     private Date eventDate;
+    ParkingItemDetails parkingItemDetails;
 
     PurchasedParkingProduct(
             @NonNull String id,
@@ -52,21 +52,35 @@ public class PurchasedParkingProduct implements Product {
         return productType;
     }
 
+    private void setParkingItemDetails(ParkingItemDetails parkingItemDetails) {
+        this.parkingItemDetails = parkingItemDetails;
+    }
+
+    public ParkingItemDetails getParkingItemDetails() {
+        return parkingItemDetails;
+    }
+
     static class ParkingPurchasedProductObjectMappingFactory implements ObjectMappingFactory<PurchasedParkingProduct> {
         @Override
         public PurchasedParkingProduct instantiate(String rawResponse) throws Exception {
             JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
-            String id = jsonObject.getString("id");
-            String title = jsonObject.getNullableString( "title");
-            Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("price").toString());
-            Date eventDate = DateHelper.parseISO8601(jsonObject.getString("experienceDate"));
+            if (!jsonObject.isNull("orderProduct")) {
+                PurchasedParkingProduct purchasedParkingProduct = instantiate(jsonObject.getJSONObject("orderProduct").toString());
+                ParkingItemDetails parkingItemDetails = null;
+                if (!jsonObject.isNull("itemDetail")) {
+                    parkingItemDetails = new ParkingItemDetails.ParkingItemDetailsObjectMappingFactory().instantiate(jsonObject.getJSONObject("itemDetail").toString());
+                }
+                purchasedParkingProduct.setParkingItemDetails(parkingItemDetails);
+                return purchasedParkingProduct;
+            } else {
+                String id = jsonObject.getString("id");
+                String title = jsonObject.getString("title");
+                Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("price").toString());
+                Date eventDate = DateHelper.parseISO8601(jsonObject.getString("experienceDate"));
 
-            Assertion.eval(id != null);
-            Assertion.eval(title != null);
-            Assertion.eval(price != null);
-            Assertion.eval(eventDate != null);
+                return new PurchasedParkingProduct(id, title, price, eventDate);
+            }
 
-            return new PurchasedParkingProduct(id, title, price, eventDate);
         }
     }
 }

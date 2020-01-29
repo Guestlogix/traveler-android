@@ -8,10 +8,10 @@ import androidx.annotation.Nullable;
 
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.Router;
-import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.BookingSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.CancellationCallback;
 import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
+import com.guestlogix.travelercorekit.callbacks.CatalogItemDetailsCallback;
 import com.guestlogix.travelercorekit.callbacks.CatalogSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
 import com.guestlogix.travelercorekit.callbacks.EphemeralKeyFetchCallback;
@@ -20,10 +20,14 @@ import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchPassesCallback;
 import com.guestlogix.travelercorekit.callbacks.FetchPurchaseFormCallback;
 import com.guestlogix.travelercorekit.callbacks.FlightSearchCallback;
+import com.guestlogix.travelercorekit.callbacks.ItineraryFetchCallback;
 import com.guestlogix.travelercorekit.callbacks.OrderCreateCallback;
 import com.guestlogix.travelercorekit.callbacks.ParkingSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.PartnerOfferingFetchCallback;
 import com.guestlogix.travelercorekit.callbacks.ProcessOrderCallback;
+import com.guestlogix.travelercorekit.callbacks.PurchasedBookingProductDetailsFetchCallback;
+import com.guestlogix.travelercorekit.callbacks.PurchasedParkingProductDetailsFetchCallback;
+import com.guestlogix.travelercorekit.callbacks.PurchasedPartnerOfferProductDetailsFetchCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistAddCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistFetchCallback;
 import com.guestlogix.travelercorekit.callbacks.WishlistRemoveCallback;
@@ -160,12 +164,136 @@ public class Traveler {
     /**
      * fetches all partner offerings
      *
-     * @param partnerOfferingId the id for the partner offering
+     * @param itineraryQuery the query to get itinerary
      */
-    public static void fetchPartnerOfferings(String partnerOfferingId, PartnerOfferingFetchCallback partnerOfferingFetchCallback) {
+    public static void fetchItinerary(ItineraryQuery itineraryQuery, ItineraryFetchCallback itineraryFetchCallback) {
         if (!isInitialized()) return;
 
-        AuthenticatedUrlRequest request = Router.fetchPartnerOfferings(localInstance.session, partnerOfferingId, localInstance.applicationContext);
+        AuthenticatedUrlRequest request = Router.fetchItinerary(localInstance.session, itineraryQuery, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<ItineraryResult> itineraryFetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<ItineraryResult>(localInstance.session, localInstance.applicationContext, request, new ItineraryResult.ItineraryResultObjectMappingFactory());
+
+        BlockTask fetchItineraryBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != itineraryFetchTask.getError()) {
+                    itineraryFetchCallback.onError(itineraryFetchTask.getError());
+                    Log.e(TAG, itineraryFetchTask.getError().getMessage());
+                } else {
+                    itineraryFetchCallback.onSuccess(itineraryFetchTask.getResource());
+                }
+            }
+        };
+
+        fetchItineraryBlockTask.addDependency(itineraryFetchTask);
+
+        localInstance.taskManager.addTask(itineraryFetchTask);
+        TaskManager.getMainTaskManager().addTask(fetchItineraryBlockTask);
+    }
+
+    /**
+     * fetches purchased booking product details
+     *
+     * @param purchasedProductQuery the query to get details
+     */
+    public static void fetchPurchasedBookingProductDetails(PurchasedProductQuery purchasedProductQuery, PurchasedBookingProductDetailsFetchCallback purchasedBookingProductDetailsFetchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.fetchPurchasedBookingProductDetails(localInstance.session, purchasedProductQuery, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<PurchasedBookingProduct> productDetailsFetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<PurchasedBookingProduct>(localInstance.session, localInstance.applicationContext, request, new PurchasedBookingProduct.BookingPurchasedProductObjectMappingFactory());
+
+        BlockTask fetchPurchasedBookingProductBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != productDetailsFetchTask.getError()) {
+                    purchasedBookingProductDetailsFetchCallback.onError(productDetailsFetchTask.getError());
+                    Log.e(TAG, productDetailsFetchTask.getError().getMessage());
+                } else {
+                    purchasedBookingProductDetailsFetchCallback.onSuccess(productDetailsFetchTask.getResource());
+                }
+            }
+        };
+
+        fetchPurchasedBookingProductBlockTask.addDependency(productDetailsFetchTask);
+
+        localInstance.taskManager.addTask(productDetailsFetchTask);
+        TaskManager.getMainTaskManager().addTask(fetchPurchasedBookingProductBlockTask);
+    }
+
+    /**
+     * fetches purchased booking product details
+     *
+     * @param purchasedProductQuery the query to get details
+     */
+    public static void fetchPurchasedParkingProductDetails(PurchasedProductQuery purchasedProductQuery, PurchasedParkingProductDetailsFetchCallback purchasedParkingProductDetailsFetchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.fetchPurchasedParkingProductDetails(localInstance.session, purchasedProductQuery, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<PurchasedParkingProduct> productDetailsFetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<PurchasedParkingProduct>(localInstance.session, localInstance.applicationContext, request, new PurchasedParkingProduct.ParkingPurchasedProductObjectMappingFactory());
+
+        BlockTask fetchPurchasedParkingProductBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != productDetailsFetchTask.getError()) {
+                    purchasedParkingProductDetailsFetchCallback.onError(productDetailsFetchTask.getError());
+                    Log.e(TAG, productDetailsFetchTask.getError().getMessage());
+                } else {
+                    purchasedParkingProductDetailsFetchCallback.onSuccess(productDetailsFetchTask.getResource());
+                }
+            }
+        };
+
+        fetchPurchasedParkingProductBlockTask.addDependency(productDetailsFetchTask);
+
+        localInstance.taskManager.addTask(productDetailsFetchTask);
+        TaskManager.getMainTaskManager().addTask(fetchPurchasedParkingProductBlockTask);
+    }
+
+    /**
+     * fetches purchased booking product details
+     *
+     * @param purchasedProductQuery the query to get details
+     */
+    public static void fetchPurchasedPartnerOfferingProductDetails(PurchasedProductQuery purchasedProductQuery, PurchasedPartnerOfferProductDetailsFetchCallback purchasedPartnerOfferProductDetailsFetchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.fetchPurchasedParkingProductDetails(localInstance.session, purchasedProductQuery, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<PurchasedPartnerOfferingProduct> productDetailsFetchTask =
+                new AuthenticatedRemoteNetworkRequestTask<PurchasedPartnerOfferingProduct>(localInstance.session, localInstance.applicationContext, request, new PurchasedPartnerOfferingProduct.PartnerOfferingPurchasedProductObjectMappingFactory());
+
+        BlockTask fetchPurchasedPartnerOfferingProductBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != productDetailsFetchTask.getError()) {
+                    purchasedPartnerOfferProductDetailsFetchCallback.onError(productDetailsFetchTask.getError());
+                    Log.e(TAG, productDetailsFetchTask.getError().getMessage());
+                } else {
+                    purchasedPartnerOfferProductDetailsFetchCallback.onSuccess(productDetailsFetchTask.getResource());
+                }
+            }
+        };
+
+        fetchPurchasedPartnerOfferingProductBlockTask.addDependency(productDetailsFetchTask);
+
+        localInstance.taskManager.addTask(productDetailsFetchTask);
+        TaskManager.getMainTaskManager().addTask(fetchPurchasedPartnerOfferingProductBlockTask);
+    }
+
+    /**
+     * fetches all partner offerings
+     *
+     * @param partnerOfferingProduct the partner offering product
+     */
+    public static void fetchPartnerOfferings(PartnerOfferingProduct partnerOfferingProduct, PartnerOfferingFetchCallback partnerOfferingFetchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.fetchPartnerOfferings(localInstance.session, partnerOfferingProduct.getId(), localInstance.applicationContext);
 
         AuthenticatedRemoteNetworkRequestTask<List<PartnerOfferingGroup>> partnerOfferingFetchTask =
                 new AuthenticatedRemoteNetworkRequestTask<List<PartnerOfferingGroup>>(localInstance.session, localInstance.applicationContext, request, new ArrayMappingFactory<>(new PartnerOfferingGroup.PartnerOfferingGroupObjectMappingFactory()));

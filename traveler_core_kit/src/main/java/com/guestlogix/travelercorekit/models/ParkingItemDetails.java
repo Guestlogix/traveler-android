@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
@@ -21,7 +20,6 @@ public class ParkingItemDetails implements CatalogItemDetails {
     private String subTitle;
     private String description;
     private List<Attribute> information;
-    private URL thumbnailURL;
     private List<URL> imageURLs;
     private List<Location> locations;
     private ContactInfo contact;
@@ -32,11 +30,9 @@ public class ParkingItemDetails implements CatalogItemDetails {
     private Price priceToPayOnline;
     private Price priceToPayOnsite;
     private ProductType productType;
-    private List<BookingItemCategory> categories;
-    private boolean isWishlisted;
-    private ProviderTranslationAttribution providerTranslationAttribution;
     private Range<Date> dateRange;
     private Coordinate geolocation;
+    private ProviderTranslationAttribution providerTranslationAttribution;
 
     private ParkingItemDetails(
             @NonNull String id,
@@ -44,7 +40,6 @@ public class ParkingItemDetails implements CatalogItemDetails {
             String subTitle,
             String description,
             List<Attribute> information,
-            @NonNull URL thumbnailURL,
             @NonNull List<URL> imageURLs,
             @NonNull List<Location> locations,
             ContactInfo contact,
@@ -55,17 +50,14 @@ public class ParkingItemDetails implements CatalogItemDetails {
             @NonNull Price priceToPayOnline,
             @NonNull Price priceToPayOnsite,
             @NonNull ProductType productType,
-            @NonNull List<BookingItemCategory> categories,
-            @NonNull boolean isWishlisted,
-            ProviderTranslationAttribution providerTranslationAttribution,
             Range<Date> dateRange,
-            Coordinate geolocation) {
+            Coordinate geolocation,
+            ProviderTranslationAttribution providerTranslationAttribution) {
         this.id = id;
         this.title = title;
         this.subTitle = subTitle;
         this.description = description;
         this.information = information;
-        this.thumbnailURL = thumbnailURL;
         this.imageURLs = imageURLs;
         this.locations = locations;
         this.contact = contact;
@@ -76,11 +68,9 @@ public class ParkingItemDetails implements CatalogItemDetails {
         this.priceToPayOnline = priceToPayOnline;
         this.priceToPayOnsite = priceToPayOnsite;
         this.productType = productType;
-        this.categories = categories;
-        this.isWishlisted = isWishlisted;
-        this.providerTranslationAttribution = providerTranslationAttribution;
         this.dateRange = dateRange;
         this.geolocation = geolocation;
+
     }
 
     public String getId() {
@@ -106,13 +96,13 @@ public class ParkingItemDetails implements CatalogItemDetails {
         return information;
     }
 
-    public URL getThumbnailURL() {
-        return thumbnailURL;
-    }
-
     @Override
     public List<URL> getImageUrls() {
         return imageURLs;
+    }
+
+    public ProviderTranslationAttribution getProviderTranslationAttribution() {
+        return providerTranslationAttribution;
     }
 
     public List<Location> getLocations() {
@@ -155,20 +145,8 @@ public class ParkingItemDetails implements CatalogItemDetails {
         return productType;
     }
 
-    public List<BookingItemCategory> getCategories() {
-        return categories;
-    }
-
-    public boolean isWishlisted() {
-        return isWishlisted;
-    }
-
     public Coordinate getGeolocation() {
         return geolocation;
-    }
-
-    public ProviderTranslationAttribution getProviderTranslationAttribution() {
-        return providerTranslationAttribution;
     }
 
     public Range<Date> getDateRange() {
@@ -183,11 +161,6 @@ public class ParkingItemDetails implements CatalogItemDetails {
             String title = jsonObject.getNullableString("title");
             String subtitle = jsonObject.getNullableString("subTitle");
             String description = jsonObject.getNullableString("description");
-
-            URL thumbnailURL = null;
-            if (!jsonObject.isNull("thumbnail")) {
-                thumbnailURL = new URL(jsonObject.getString("thumbnail"));
-            }
 
             List<Attribute> information = new ArrayList<>();
             if (!jsonObject.isNull("information"))
@@ -215,20 +188,16 @@ public class ParkingItemDetails implements CatalogItemDetails {
             Price priceToPayOnsite = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("payableOnsite").toString());
             ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
 
-            //TODO: does parking even have category !!!!?
-            List<BookingItemCategory> categories = new ArrayList<>();
-            if (!jsonObject.isNull("categories"))
-                categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+            ProviderTranslationAttribution providerTranslationAttribution = null;
+            if (!jsonObject.isNull("providerTranslationAttribution"))
+                providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
+                        instantiate(jsonObject.getJSONObject("providerTranslationAttribution").toString());
 
-            boolean isWishlisted = jsonObject.getBoolean("isWishlisted");
-            ProviderTranslationAttribution providerTranslationAttribution = new ProviderTranslationAttribution.ProviderTranslationAttributionObjectMappingFactory().
-                    instantiate(jsonObject.getJSONObject("providerTranslationAttribution").toString());
             String startTime = jsonObject.getString("startTime");
             String endTime = jsonObject.getString("endTime");
             Coordinate coordinate = new Coordinate.CoordinateObjectMappingFactory().instantiate(jsonObject.getJSONObject("geoLocation").toString());
 
             Assertion.eval(id != null);
-            Assertion.eval(thumbnailURL != null);
             Assertion.eval(imageURLs != null);
             Assertion.eval(locations != null);
             Assertion.eval(supplier != null);
@@ -236,7 +205,6 @@ public class ParkingItemDetails implements CatalogItemDetails {
             Assertion.eval(priceToPayOnline != null);
             Assertion.eval(priceToPayOnsite != null);
             Assertion.eval(productType != null);
-            Assertion.eval(categories != null);
 
             Range<Date> dateRange = new Range<>(DateHelper.parseISO8601(startTime), DateHelper.parseISO8601(endTime));
 
@@ -246,7 +214,6 @@ public class ParkingItemDetails implements CatalogItemDetails {
                     subtitle,
                     description,
                     information,
-                    thumbnailURL,
                     imageURLs,
                     locations,
                     contact,
@@ -257,11 +224,9 @@ public class ParkingItemDetails implements CatalogItemDetails {
                     priceToPayOnline,
                     priceToPayOnsite,
                     productType,
-                    categories,
-                    isWishlisted,
-                    providerTranslationAttribution,
                     dateRange,
-                    coordinate);
+                    coordinate,
+                    providerTranslationAttribution);
         }
     }
 }

@@ -26,8 +26,8 @@ public class DateHelper {
         return new SimpleDateFormat(PRETTY_DATE_PATTERN, Locale.getDefault()).format(date);
     }
 
-    public static String formatToMonthDayYear(Date date) {
-        return new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(date);
+    public static String formatToDayNameMonthDayYear(Date date) {
+        return new SimpleDateFormat("EEE, dd MMM, yyyy", Locale.getDefault()).format(date);
     }
 
     public static String formatToMonthDayYearTime(Date date) {
