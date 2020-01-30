@@ -44,28 +44,29 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    /*
-    flavorDimensions 'brand', 'environment'
+
+    flavorDimensions "environment"
+
     productFlavors {
-        gCrew {
-            dimension = 'brand'
-            buildConfigField "String", "TRAVELER_API_KEY", traveler_key_debug
+
+        dev {
+            dimension "environment"
+            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev\""
+            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.dev.guestlogix.io/v1\""
         }
-        Traveler {
-            dimension = 'brand'
-            buildConfigField "String", "TRAVELER_API_KEY", traveler_key_debug
+
+        rc {
+            dimension "environment"
+            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://hklkg7c974.execute-api.ca-central-1.amazonaws.com/dev\""
+            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.rc.guestlogix.io/v1\""
         }
-        development {
-            dimension = 'environment'
-        }
-        staging {
-            dimension = 'environment'
-        }
-        production {
-            dimension = 'environment'
+
+        prod {
+            dimension "environment"
+            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://9th3dtgfg3.execute-api.ca-central-1.amazonaws.com/dev\""
+            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.guestlogix.io/v1\""
         }
     }
-    */
 }
 
 def getReleaseTravelerAPIKey() {
