@@ -26,10 +26,13 @@ android {
 
     buildTypes {
         release {
+            //TODO add signingConfig. doesn't work without it
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "TRAVELER_API_KEY", "\"" + getReleaseTravelerAPIKey() + "\"")
             buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\"" + getReleaseGoogleSignInClientID() + "\"")
+            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://9th3dtgfg3.execute-api.ca-central-1.amazonaws.com/dev\""
+            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.guestlogix.io/v1\""
         }
 
         debug {
@@ -37,35 +40,29 @@ android {
             multiDexEnabled true
             buildConfigField("String", "TRAVELER_API_KEY", "\"" + getDebugTravelerAPIKey() + "\"")
             buildConfigField("String", "GOOGL_SIGN_IN_CLIENT_ID", "\"" + getDebugGoogleSignInClientID() + "\"")
+            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev\""
+            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.dev.guestlogix.io/v1\""
+        }
+
+        staging {
+            initWith debug
+            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://hklkg7c974.execute-api.ca-central-1.amazonaws.com/dev\""
+            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.rc.guestlogix.io/v1\""
+            matchingFallbacks = ['debug', 'release']
+        }
+
+        prod {
+            //TODO remove in future when 'release' build type will be properly configured
+            initWith debug
+            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://9th3dtgfg3.execute-api.ca-central-1.amazonaws.com/dev\""
+            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.guestlogix.io/v1\""
+            matchingFallbacks = ['debug', 'release']
         }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    flavorDimensions "environment"
-
-    productFlavors {
-
-        dev {
-            dimension "environment"
-            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://r3p9qio0x7.execute-api.ca-central-1.amazonaws.com/dev\""
-            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.dev.guestlogix.io/v1\""
-        }
-
-        rc {
-            dimension "environment"
-            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://hklkg7c974.execute-api.ca-central-1.amazonaws.com/dev\""
-            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.rc.guestlogix.io/v1\""
-        }
-
-        prod {
-            dimension "environment"
-            buildConfigField "String", "AUTH_ENDPOINT_URL", "\"https://9th3dtgfg3.execute-api.ca-central-1.amazonaws.com/dev\""
-            buildConfigField "String", "SDK_ENDPOINT_URL", "\"https://traveler.guestlogix.io/v1\""
-        }
     }
 }
 
