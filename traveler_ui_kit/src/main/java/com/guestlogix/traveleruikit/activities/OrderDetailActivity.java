@@ -51,7 +51,7 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
         Button cancelButton = findViewById(R.id.button_orderDetail_cancel);
 
         titleTextView.setText(order.getId());
-        dateTextView.setText(DateHelper.formatToDayNameMonthDayYear(order.getCreatedDate()));
+        dateTextView.setText(DateHelper.formatToMonthDayYear(order.getCreatedDate()));
         priceTextView.setText(order.getTotal().getLocalizedDescriptionInBaseCurrency());
 
         OrderDetailActivity self = this;
@@ -69,7 +69,7 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
 
             if (product instanceof PurchasedBookingProduct) {
                 PurchasedBookingProduct purchasedBookingProduct = (PurchasedBookingProduct) product;
-                String date = DateHelper.formatToDayNameMonthDayYear(purchasedBookingProduct.getEventDate());
+                String date = DateHelper.formatToMonthDayYear(purchasedBookingProduct.getEventDate());
                 String dateTime = date + "\n" + DateHelper.formatTime(purchasedBookingProduct.getEventDate());
 
                 productDateTextView.setText(dateTime);

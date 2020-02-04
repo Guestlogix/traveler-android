@@ -30,7 +30,6 @@ import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 public class HomeActivity extends AppCompatActivity implements ProfileFetchCallback, FlightsSummaryAdapter.Listener {
@@ -102,7 +101,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
             case R.id.profile_action:
                 Intent profileIntent = new Intent(this, ProfileActivity.class);
                 profileIntent.putExtra(ProfileActivity.ARG_PROFILE, profile);
-                profileIntent.putExtra(ProfileActivity.ARG_FLIGHTS, this.flights);
                 startActivityForResult(profileIntent, REQUEST_CODE_PROFILE);
                 return true;
             case R.id.sign_in_action:
@@ -186,21 +184,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFetchCallb
     public void onProfileFetchSuccess(Profile profile) {
         this.profile = profile;
         profile.save(this);
-        HashMap<String, Object> presetKeys = new HashMap<>();
-        presetKeys.put("$title", "MR");
-        presetKeys.put("$firstName", "Amir");
-        presetKeys.put("$lastName", "Ziarati");
-        presetKeys.put("$email", "aziarati@guestlogix.fake");
-        presetKeys.put("$phone", "+1234567890");
-        presetKeys.put("Home phone", "+1234567890");
-        presetKeys.put("Mobile phone", "+1234567890");
-        presetKeys.put("Country", "Canada");
-        presetKeys.put("Nationality", "Iranian");
-        presetKeys.put("Cell phone country code", "+1");
-        presetKeys.put("Date of Birth", "1989/03/17");
-        presetKeys.put("Date of birth", "1989/03/17");
-        presetKeys.put("Passenger Heights", "170");
-        Traveler.identify(profile.getTravelerId(), presetKeys);
+        Traveler.identify(profile.getTravelerId());
         removeProgressDialogFragment();
         invalidateOptionsMenu();
         reloadCatalog();

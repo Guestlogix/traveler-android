@@ -123,14 +123,4 @@
     <string name="partner_offering_select_quantitiy_button_text">Select Quantity</string>
     <string name="partner_offering_expand_label">Read More</string>
     <string name="partner_offering_collapse_label">Read Less</string>
-
-
-    <string name="itinerary_category_title">Category</string>
-    <string name="itinerary_date_range">Date Range</string>
-    <string name="itinerary_start_date">Start</string>
-    <string name="itinerary_end_date">End</string>
-    <string name="label_terms_and_conditions">Terms and conditions</string>
-    <string name="itinerary_terms_and_conditions">Terms and conditions</string>
-
-
 </resources>

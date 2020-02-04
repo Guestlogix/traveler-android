@@ -34,12 +34,6 @@
         <activity android:name=".activities.SettingsActivity"
                   android:label="Settings">
         </activity>
-        <activity android:name="com.guestlogix.traveleruikit.itinerary.ItineraryActivity"
-                android:label="Settings">
-        </activity>
-        <activity android:name="com.guestlogix.traveleruikit.itinerary.ItineraryDetailActivity"
-                android:label="Settings">
-        </activity>
         <activity android:name=".activities.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -7,15 +7,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderResult;
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.activities.OrderDetailActivity;
 import com.guestlogix.traveleruikit.adapters.OrdersAdapter;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 public class OrdersFragment extends Fragment implements OrdersAdapter.OnItemClickListener {
     public static final String ARG_ORDER_RESULT = "ARG_ORDER_RESULT";

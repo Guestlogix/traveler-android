@@ -55,7 +55,4 @@
     <string name="unsaved_changes_lost">All unsaved changes will be lost.</string>
     <string name="saved_list">Saved List</string>
     <string name="log_out">Log out</string>
-
-    <string name="itinerary">Itinerary</string>
-
 </resources>
