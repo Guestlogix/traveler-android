@@ -243,7 +243,7 @@
                     android:layout_marginLeft="@dimen/margin_default"
                     android:layout_marginEnd="@dimen/margin_default"
                     android:layout_marginRight="@dimen/margin_default"
-                    android:text="@string/show_more"
+                    android:text="@string/show_less"
                     android:textColor="@color/colorPrimary"
                     tools:ignore="RelativeOverlap" />
         </RelativeLayout>

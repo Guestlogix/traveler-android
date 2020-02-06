@@ -210,11 +210,11 @@ public class ParkingItemDetailsFragment extends Fragment
                 if(isParkingExpanded){
                     seeMoreLessToggle.setText(getText(R.string.show_more));
                     infoLinearLayout.setVisibility(View.GONE);
-
                 } else {
                     seeMoreLessToggle.setText(getText(R.string.show_less));
                     infoLinearLayout.setVisibility(View.VISIBLE);
                 }
+                isParkingExpanded = !isParkingExpanded;
             }
         });
     }
