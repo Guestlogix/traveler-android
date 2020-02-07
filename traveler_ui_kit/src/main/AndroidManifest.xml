@@ -10,73 +10,73 @@
                 android:value="${googleMapApiKey}"/>
 
         <activity android:name=".activities.OrderDetailActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.OrderConfirmationActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.OrderSummaryActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.QuestionsActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.PassSelectionActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity
                 android:name=".activities.BookingItemDetailsActivity"
-                android:theme="@style/GLXAppTheme" />
+                android:theme="@style/glxAppTheme" />
 
         <activity
                 android:name=".activities.ParkingItemDetailsActivity"
-                android:theme="@style/GLXAppTheme"
+                android:theme="@style/glxAppTheme"
                 android:launchMode="singleTop" />
 
         <activity android:name=".activities.OrdersActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.WishlistActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.AvailabilityActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.ProductDetailsActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.CancelOrderActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.TermsAndConditionsActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.BookingSearchActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.BookingSearchResultActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".partneroffering.PartnerOfferingActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".partneroffering.PartnerOfferingSelectionActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.ParkingActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".activities.FindParkingActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".purchasedproduct.PurchasedBookingProductActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
 
         <activity android:name=".purchasedproduct.PurchasedParkingProductActivity"
-                android:theme="@style/GLXAppTheme"/>
+                android:theme="@style/glxAppTheme"/>
     </application>
 
 </manifest>

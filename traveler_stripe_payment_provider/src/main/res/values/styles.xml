@@ -1,8 +1,8 @@
 <resources>
-    <style name="GLXAppTheme.NoActionBar">
+    <style name="glxAppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="GLXAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-    <style name="GLXAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="glxAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="glxAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

@@ -46,15 +46,14 @@
 
         <FrameLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="match_parent"
                 android:layout_weight="45">
 
             <Button
                     android:id="@+id/actionButton"
-                    android:background="@drawable/rounded_primary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     tools:text="Next"/>
 
             <ProgressBar

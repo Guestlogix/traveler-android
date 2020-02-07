@@ -1,8 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <color name="glxBrand">#0DA2D4</color>
+
+    <color name="glxPrimaryScreenBackgroundLight">@color/glxWhite</color>
+    <color name="glxPrimaryScreenForegroundLight">@color/glxGray9</color>
+    <color name="glxPrimaryScreenForegroundLightTwo">@color/glxGray7</color>
+    <color name="glxPrimaryScreenForegroundLightThree">@color/glxGray5</color>
+    <color name="glxPrimaryButtonBackgroundLight">@color/glxAccent1</color>
+    <color name="glxPrimaryButtonBorderLight">@color/glxAccent1</color>
+    <color name="glxPrimaryButtonForegroundLight">@color/glxWhite</color>
+
+
+    <color name="glxPrimaryScreenBackgroundDark">@color/glxGray8</color>
+    <color name="glxPrimaryScreenForegroundDark">@color/glxWhite</color>
+    <color name="glxPrimaryScreenForegroundDarkTwo">@color/glxGray2</color>
+    <color name="glxPrimaryScreenForegroundDarkThree">@color/glxGray4</color>
+    <color name="glxPrimaryButtonBackgroundDark">@color/glxAccent1</color>
+    <color name="glxPrimaryButtonBorderDark">@color/glxAccent1</color>
+    <color name="glxPrimaryButtonForegroundDark">@color/glxWhite</color>
+
+
+    <color name="glxSecondaryScreenBackgroundLight">@color/glxGray1</color>
+    <color name="glxSecondaryScreenForegroundLight">@color/glxGray7</color>
+    <color name="glxSecondaryScreenForegroundLightTwo">@color/glxGray7</color>
+    <color name="glxSecondaryScreenForegroundLightThree">@color/glxGray5</color>
+    <color name="glxSecondaryButtonBackgroundLight">@color/glxAccent1</color>
+    <color name="glxSecondaryButtonBorderLight">@color/glxAccent1</color>
+    <color name="glxSecondaryButtonForegroundLight">@color/glxWhite</color>
+
+
+    <color name="glxSecondaryScreenBackgroundDark">@color/glxGray9</color>
+    <color name="glxSecondaryScreenForegroundDark">@color/white</color>
+    <color name="glxSecondaryScreenForegroundDark2">@color/glxGray2</color>
+    <color name="glxSecondaryScreenForegroundDark3">@color/glxGray4</color>
+    <color name="glxSecondaryButtonBackgroundDark">@color/glxAccent1</color>
+    <color name="glxSecondaryButtonBorderDark">@color/glxAccent1</color>
+    <color name="glxSecondaryButtonForegroundDark">@color/white</color>
+
+    <color name="glxPrimaryTintLight">@color/glxAccent1</color>
+    <color name="glxPrimaryTintLight2">@color/glxAccent2</color>
+    <color name="glxPrimaryBorderLight">@color/glxGray2</color>
+
+    <color name="glxPrimaryTintDark">@color/glxAccent1Plus30</color>
+    <color name="glxPrimaryTintDark2">@color/glxAccent2Plus30</color>
+    <color name="glxPrimaryBorderDark">@color/glxGray6</color>
+
+    <color name="glxInformLight">@color/glxGray6</color>
+    <color name="glxSuccessLight">@color/glxGray6</color>
+    <color name="glxErrorLight">@color/glxGray6</color>
+    <color name="glxWarningLight">@color/glxGray6</color>
+
+
+
+    <color name="glxInformDark">@color/glxGray6</color>
+
+
+    <color name="glxWhite">#FFFFFF</color>
+    <color name="glxGray1">#F1F1F1</color>
+    <color name="glxGray2">#DEDEDE</color>
+    <color name="glxGray3">#CBCBCB</color>
+    <color name="glxGray4">#B8B8B8</color>
+    <color name="glxGray5">#676767</color>
+    <color name="glxGray6">#525252</color>
+    <color name="glxGray7">#3D3D3D</color>
+    <color name="glxGray8">#272727</color>
+    <color name="glxGray9">#121212</color>
+    <color name="glxBlack">#000000</color>
+
+    <color name="glxAccent1">#0277BD</color>
+    <color name="glxAccent2">#FF9800</color>
+
+    <color name="glxAccent1Plus30">#4EA0D1</color>
+    <color name="glxAccent2Plus30">#F9A257</color>
+
+    <color name="glxInformational">#0277BD</color>
+    <color name="glxPositive">#43A047</color>
+    <color name="glxNegative">#C62828</color>
+    <color name="glxIdle">#FFC400</color>
+
+    <color name="glxInformationalPlus30">#4EA0D1</color>
+    <color name="glxPositivePlus30">#4EA0D1</color>
+    <color name="glxNegativePlus30">#D76868</color>
+    <color name="glxIdlePlus30">#FFC400</color>
+
+
+
+
     <color name="colorPrimary">#007AFF</color>
     <color name="colorPrimaryDark">#0074A1</color>
-    <color name="colorAccent">#69BB48</color>
+    <color name="colorAccent">#FF9800</color>
     <color name="colorSecondary">#FC9B44</color>
     <color name="colorWarn">#f44336</color>
     <color name="red">#E76C6B</color>
@@ -29,4 +116,8 @@
     <color name="saveditem_remove_button_text_color">#0DA2D4</color>
     <color name="parking_list_bg">#F3F3F3</color>
     <color name="parking_list_divider">@color/cfGray</color>
+
+    <color name="glxButtonBg">@color/colorPrimary</color>
+    <color name="glxButtonTextColor">@color/black</color>
+
 </resources>

@@ -1,33 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="GLXAppTheme" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionBarStyle">@style/ActionBarStyle</item>
+    <style name="glxAppTheme" parent="glxAppThemeDark">
+<!--        this is just a place holder and should not contain any attributes-->
+<!--        by default it will point to glxAppThemeLight. sdk Client can override this with same name style in their app pointing to glxAppThemeDark or even their own style-->
     </style>
 
-    <style name="TextAppearance" parent="GLXAppTheme">
+    <style name="glxAppThemeLight" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/glxBrand</item>
+        <item name="colorPrimaryDark">@color/glxBrand</item>
+        <item name="colorAccent">@color/glxAccent1</item>
+        <item name="android:windowBackground">@color/glxPrimaryScreenBackgroundLight</item>
+
+
+        <item name="buttonStyle">@style/glxButtonStyleLight</item>
+        <item name="editTextStyle">@style/glxTextViewStyleLight</item>
+        <item name="actionBarStyle">@style/ActionBarStyleLight</item>
+
+    </style>
+
+    <style name="glxAppThemeDark" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/glxBrand</item>
+        <item name="colorPrimaryDark">@color/glxBrand</item>
+        <item name="colorAccent">@color/glxAccent1</item>
+        <item name="android:windowBackground">@color/glxPrimaryScreenBackgroundDark</item>
+
+        <item name="buttonStyle">@style/glxButtonStyleDark</item>
+        <item name="editTextStyle">@style/glxTextViewStyleDark</item>
+        <item name="actionBarStyle">@style/ActionBarStyleDark</item>
+
+    </style>
+
+
+    <style name="glxButtonStyleLight" parent="glxAppThemeLight">
+        <item name="android:background">@drawable/rounded_primary</item>
+        <item name="android:tint">@color/glxPrimaryButtonBackgroundLight</item>
+        <item name="android:textColor">@color/glxWhite</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+    <style name="glxTextViewStyleLight" parent="glxAppThemeLight">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <style name="ActionBarStyleLight" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="titleTextStyle">@style/ActionBarTextStyle</item>
+    </style>
+
+
+
+
+    <style name="glxButtonStyleDark" parent="glxAppThemeLight">
+        <item name="android:background">@drawable/rounded_primary</item>
+        <item name="android:tint">@color/glxPrimaryButtonBackgroundDark</item>
+        <item name="android:textColor">@color/glxWhite</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+    <style name="glxTextViewStyleDark" parent="glxAppThemeLight">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <style name="ActionBarStyleDark" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="titleTextStyle">@style/ActionBarTextStyle</item>
+    </style>
+
+
+
+
+
+    <style name="TextAppearance" parent="glxAppThemeLight">
         <item name="android:paddingLeft">@dimen/padding_normal</item>
         <item name="android:paddingRight">@dimen/padding_normal</item>
     </style>
 
-    <style name="Separator" parent="GLXAppTheme">
+    <style name="Separator" parent="glxAppThemeLight">
         <item name="android:background">@color/lightGray</item>
         <item name="android:layout_marginTop">@dimen/margin_default</item>
         <item name="android:layout_marginBottom">@dimen/margin_default</item>
     </style>
 
-    <style name="ActionBarStyle" parent="@style/Widget.AppCompat.ActionBar.Solid">
-        <item name="titleTextStyle">@style/ActionBarTextStyle</item>
-    </style>
 
     <style name="ActionBarTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="DefaultTextView" parent="GLXAppTheme">
+    <style name="DefaultTextView" parent="glxAppThemeLight">
         <item name="android:textColor">@color/black</item>
     </style>
 
@@ -154,8 +226,7 @@
     </style>
 
     <!-- Base button style -->
-    <style name="Button" parent="@style/Widget.MaterialComponents.Button">
-    </style>
+    <style name="Button" parent="@style/Widget.MaterialComponents.Button"></style>
 
     <style name="Button.Primary">
         <item name="strokeColor">@color/colorPrimary</item>
@@ -187,8 +258,7 @@
     </style>
 
     <!-- Base TextButton style -->
-    <style name="TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
-    </style>
+    <style name="TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton"></style>
 
     <style name="TextButton.Primary">
         <item name="rippleColor">@color/colorPrimary</item>
@@ -267,7 +337,7 @@
         <item name="android:textSize">@dimen/text_view_default</item>
     </style>
 
-    <style name="ListItem" parent="GLXAppTheme">
+    <style name="ListItem" parent="glxAppThemeLight">
         <!-- Meant as a grouping mechanism -->
     </style>
 
@@ -311,7 +381,7 @@
         <item name="android:textSize">@dimen/text_view_large</item>
     </style>
 
-    <style name="Container" parent="GLXAppTheme">
+    <style name="Container" parent="glxAppThemeLight">
         <item name="android:paddingTop">@dimen/padding_large</item>
         <item name="android:paddingBottom">@dimen/padding_large</item>
     </style>
@@ -336,8 +406,7 @@
     </style>
 
     <!-- Base style for action bars -->
-    <style name="ActionBar" parent="TextAppearance">
-    </style>
+    <style name="ActionBar" parent="TextAppearance"></style>
 
     <style name="ActionBar.Subtitle">
         <item name="android:textSize">@dimen/text_view_xxsmall</item>
@@ -348,36 +417,44 @@
         <item name="android:textSize">@dimen/text_view_xlarge</item>
         <item name="android:textColor">@color/darkGray</item>
     </style>
-    <style name="GLXAppTheme.NoActionBar">
+
+    <style name="glxAppThemeLight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="GLXAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-    <style name="GLXAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="title_1">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="text_1">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="text_1_bold">
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="text_2">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">13sp</item>
     </style>
+
     <style name="text_2_bold">
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">13sp</item>
     </style>
+
     <style name="text_3">
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">24sp</item>
