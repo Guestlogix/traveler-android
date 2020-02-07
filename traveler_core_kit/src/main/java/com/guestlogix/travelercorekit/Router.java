@@ -1,6 +1,7 @@
 package com.guestlogix.travelercorekit;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -104,10 +105,10 @@ public class Router {
                 .path("/traveler/" + session.getIdentity() + "/itinerary");
 
         if (itineraryQuery.getStartDate() != null) {
-            routeBuilder.param("from", DateHelper.formatDate(itineraryQuery.getStartDate()));
+            routeBuilder.param("from", Uri.encode(DateHelper.formatDate(itineraryQuery.getStartDate())));
         }
         if (itineraryQuery.getEndDate() != null) {
-            routeBuilder.param("to", DateHelper.formatDate(itineraryQuery.getEndDate()));
+            routeBuilder.param("to", Uri.encode(DateHelper.formatDate(itineraryQuery.getEndDate())));
         }
 
         if (itineraryQuery.getFlights() != null) {
@@ -169,7 +170,7 @@ public class Router {
                 .method(NetworkTask.Route.Method.GET)
                 .path("/flight")
                 .param("flight-number", query.getNumber())
-                .param("departure-date", DateHelper.formatDateToISO8601(query.getDate()))
+                .param("departure-date", Uri.encode(DateHelper.formatDateToISO8601(query.getDate())))
                 .build(session.getToken());
     }
 
@@ -248,8 +249,8 @@ public class Router {
         RouteBuilder rb = new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
                 .path("/parking/")
-                .param("to", DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getUpper()))
-                .param("from", DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getLower()))
+                .param("to", Uri.encode(DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getUpper())))
+                .param("from", Uri.encode(DateHelper.formatDateToISO8601(parkingItemQuery.getDateRange().getLower())))
                 .param("skip", String.valueOf(parkingItemQuery.getOffset()))
                 .param("take", String.valueOf(parkingItemQuery.getLimit()));
 
@@ -299,8 +300,8 @@ public class Router {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.GET)
                 .path("/product/" + product.getId() + "/schedule")
-                .param("from", DateHelper.formatDateToISO8601(from))
-                .param("to", DateHelper.formatDateToISO8601(to))
+                .param("from", Uri.encode(DateHelper.formatDateToISO8601(from)))
+                .param("to", Uri.encode(DateHelper.formatDateToISO8601(to)))
                 .build(session.getToken());
     }
 
@@ -418,10 +419,10 @@ public class Router {
                 .path("/traveler/" + session.getIdentity() + "/order")
                 .param("skip", String.valueOf(query.getOffset()))
                 .param("take", String.valueOf(query.getLimit()))
-                .param("to", DateHelper.formatDateToISO8601(query.getToDate()));
+                .param("to", Uri.encode(DateHelper.formatDateToISO8601(query.getToDate())));
 
         if (query.getFromDate() != null)
-            rb.param("from", DateHelper.formatDateToISO8601(query.getFromDate()));
+            rb.param("from", Uri.encode(DateHelper.formatDateToISO8601(query.getFromDate())));
 
         return rb.build(session.getToken());
     }
@@ -494,10 +495,10 @@ public class Router {
                 .param("skip", String.valueOf(query.getOffset()))
                 .param("take", String.valueOf(query.getLimit()));
         if (null != (query.getToDate())) {
-            routeBuilder.param("to", DateHelper.formatDateToISO8601(query.getToDate()));
+            routeBuilder.param("to", Uri.encode(DateHelper.formatDateToISO8601(query.getToDate())));
         }
         if (null != (query.getFromDate())) {
-            routeBuilder.param("from", DateHelper.formatDateToISO8601(query.getFromDate()));
+            routeBuilder.param("from", Uri.encode(DateHelper.formatDateToISO8601(query.getFromDate())));
         }
 
         return routeBuilder.build(session.getToken());
