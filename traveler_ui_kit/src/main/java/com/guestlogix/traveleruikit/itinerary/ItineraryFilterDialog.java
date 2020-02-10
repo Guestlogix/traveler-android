@@ -84,6 +84,7 @@ public class ItineraryFilterDialog extends Dialog {
         List<ItineraryItemType> lstAvailableCategories = new ArrayList<>();
         lstAvailableCategories.add(ItineraryItemType.BOOKING);
         lstAvailableCategories.add(ItineraryItemType.PARKING);
+        lstAvailableCategories.add(ItineraryItemType.FLIGHT);
 
         ItineraryItemTypesAdapter itineraryItemTypesAdapter = new ItineraryItemTypesAdapter(lstAvailableCategories, currentFilter.getSelectedItineraryItemTypes());
         rvCategories.setAdapter(itineraryItemTypesAdapter);
