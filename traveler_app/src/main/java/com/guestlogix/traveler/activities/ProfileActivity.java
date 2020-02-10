@@ -68,8 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.llItinerary).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ItineraryActivity.class);
-                intent.putExtra(ItineraryActivity.ARG_ITINERARY_QUERY, new ItineraryQuery(flights, null, null));
+                Intent intent = ItineraryActivity.buildIntent(ProfileActivity.this, new ItineraryQuery(flights, null, null));
                 startActivity(intent);
             }
         });
