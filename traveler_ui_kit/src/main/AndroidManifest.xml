@@ -14,7 +14,7 @@
         <activity android:name=".activities.QuestionsActivity"/>
         <activity android:name=".activities.PassSelectionActivity"/>
         <activity
-                android:name=".activities.CatalogItemDetailsActivity">
+                android:name=".activities.BookingItemDetailsActivity">
         </activity>
         <activity
                 android:name=".activities.ParkingItemDetailsActivity"
@@ -33,6 +33,8 @@
         <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"/>
         <activity android:name=".activities.ParkingActivity"/>
         <activity android:name=".activities.FindParkingActivity"/>
+        <activity android:name=".purchasedproduct.PurchasedBookingProductActivity"/>
+        <activity android:name=".purchasedproduct.PurchasedParkingProductActivity"/>
     </application>
 
 </manifest>

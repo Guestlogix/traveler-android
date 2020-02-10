@@ -1,4 +1,4 @@
-package com.guestlogix.traveleruikit.activities;
+package com.guestlogix.traveleruikit.itinerary;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,21 +14,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
 import com.guestlogix.travelercorekit.callbacks.EmailOrderConfirmationCallback;
-import com.guestlogix.travelercorekit.models.PurchasedBookingProduct;
 import com.guestlogix.travelercorekit.models.CancellationQuote;
 import com.guestlogix.travelercorekit.models.Order;
 import com.guestlogix.travelercorekit.models.OrderStatus;
-import com.guestlogix.travelercorekit.models.PurchasedPartnerOfferingProduct;
 import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.PurchasedBookingProduct;
+import com.guestlogix.travelercorekit.models.PurchasedPartnerOfferingProduct;
 import com.guestlogix.travelercorekit.models.Traveler;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.activities.CancelOrderActivity;
+import com.guestlogix.traveleruikit.activities.ProductDetailsActivity;
 import com.guestlogix.traveleruikit.fragments.ProgressDialogFragment;
 
 import static com.guestlogix.travelercorekit.models.PurchasedBookingProduct.CANCELLATION_POLICY_NON_REFUNDABLE;
 
-public class OrderDetailActivity extends AppCompatActivity implements CancellationQuoteCallback, EmailOrderConfirmationCallback {
-    public static String ARG_ORDER = "ARG_ORDER";
+public class ItineraryDetailActivity extends AppCompatActivity implements CancellationQuoteCallback, EmailOrderConfirmationCallback {
+    public static String ARG_ORDER = "ARG_ITINERARY";
 
     private static int REQUEST_CODE_CANCEL = 1;
 
@@ -54,7 +56,7 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
         dateTextView.setText(DateHelper.formatToDayNameMonthDayYear(order.getCreatedDate()));
         priceTextView.setText(order.getTotal().getLocalizedDescriptionInBaseCurrency());
 
-        OrderDetailActivity self = this;
+        ItineraryDetailActivity self = this;
 
         // TODO: Set title?
 
@@ -116,7 +118,7 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
                         .getTransaction(getSupportFragmentManager())
                         .commit();
 
-                Traveler.emailOrderConfirmation(order, OrderDetailActivity.this);
+                Traveler.emailOrderConfirmation(order, ItineraryDetailActivity.this);
             }
         });
 
@@ -127,7 +129,7 @@ public class OrderDetailActivity extends AppCompatActivity implements Cancellati
                         .getTransaction(getSupportFragmentManager())
                         .commit();
 
-                Traveler.fetchCancellationQuote(order, OrderDetailActivity.this);
+                Traveler.fetchCancellationQuote(order, ItineraryDetailActivity.this);
             }
         });
 

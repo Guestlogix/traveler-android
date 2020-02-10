@@ -21,7 +21,7 @@ import com.guestlogix.traveleruikit.fragments.LoadingFragment;
 import com.guestlogix.traveleruikit.fragments.RetryFragment;
 import com.guestlogix.traveleruikit.utils.FragmentTransactionQueue;
 
-public class CatalogItemDetailsActivity extends AppCompatActivity implements
+public class BookingItemDetailsActivity extends AppCompatActivity implements
         CatalogItemDetailsCallback, RetryFragment.InteractionListener, WishlistItemChangedCallback {
 
     public static final String ARG_PRODUCT = "bookingItem";
