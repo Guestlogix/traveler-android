@@ -1,28 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.guestlogix.traveleruikit">
+        package="com.guestlogix.traveleruikit">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application>
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="${googleMapApiKey}"/>
+                android:value="${googleMapApiKey}" />
 
-        <activity android:name=".activities.OrderDetailActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.OrderDetailActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.OrderConfirmationActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.OrderConfirmationActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.OrderSummaryActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.OrderSummaryActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.QuestionsActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.QuestionsActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.PassSelectionActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.PassSelectionActivity"
+                android:theme="@style/glxAppTheme" />
 
         <activity
                 android:name=".activities.BookingItemDetailsActivity"
@@ -30,53 +36,75 @@
 
         <activity
                 android:name=".activities.ParkingItemDetailsActivity"
-                android:theme="@style/glxAppTheme"
-                android:launchMode="singleTop" />
+                android:launchMode="singleTop"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.OrdersActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.OrdersActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.WishlistActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.WishlistActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.AvailabilityActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.AvailabilityActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.ProductDetailsActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.ProductDetailsActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.CancelOrderActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.CancelOrderActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.TermsAndConditionsActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.TermsAndConditionsActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.BookingSearchActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.BookingSearchActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.BookingSearchResultActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.BookingSearchResultActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".partneroffering.PartnerOfferingActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".partneroffering.PartnerOfferingActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".partneroffering.PartnerOfferingSelectionActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".partneroffering.PartnerOfferingSelectionActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".partneroffering.PartnerOfferingQuantityActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.ParkingActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.ParkingActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".activities.FindParkingActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".activities.FindParkingActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".purchasedproduct.PurchasedBookingProductActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".purchasedproduct.PurchasedBookingProductActivity"
+                android:theme="@style/glxAppTheme" />
 
-        <activity android:name=".purchasedproduct.PurchasedParkingProductActivity"
-                android:theme="@style/glxAppTheme"/>
+        <activity
+                android:name=".purchasedproduct.PurchasedParkingProductActivity"
+                android:theme="@style/glxAppTheme" />
+        <activity
+                android:name="com.guestlogix.traveleruikit.itinerary.ItineraryActivity"
+                android:theme="@style/glxAppTheme" />
+        <activity
+                android:name="com.guestlogix.traveleruikit.itinerary.ItineraryDetailActivity"
+                android:theme="@style/glxAppTheme" />
+
     </application>
 
 </manifest>

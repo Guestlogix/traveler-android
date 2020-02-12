@@ -40,6 +40,7 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">center</item>
+        <item name="android:textColorHint">@color/glxGray5</item>
     </style>
 
 
@@ -65,6 +66,7 @@
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">center</item>
+        <item name="android:textColorHint">@color/glxGray5</item>
     </style>
 
 
@@ -78,6 +80,104 @@
     <style name="ActionBarStyleDark" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="titleTextStyle">@style/ActionBarTextStyle</item>
     </style>
+
+
+
+    <style name="glxAppBarLayout" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
+
+
+    <style name="glxToolbarButton">
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="glxToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+    </style>
+
+
+<!--    these styles only modify text sizes, padding, margin and should not alter coloring since these don't care about dark, light, branding -->
+    <style name="glxTextViewTitleLarge">
+        <item name="android:textSize">@dimen/text_view_large</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="glxDialogMessage">
+        <item name="android:paddingLeft">@dimen/padding_xxlarge</item>
+        <item name="android:paddingRight">@dimen/padding_xxlarge</item>
+        <item name="android:textSize">@dimen/text_view_small</item>
+        <item name="android:layout_marginBottom">@dimen/margin_xxlarge</item>
+    </style>
+
+
+    <style name="glxDialogTitle">
+        <item name="android:paddingLeft">@dimen/padding_xxlarge</item>
+        <item name="android:paddingRight">@dimen/padding_xxlarge</item>
+        <item name="android:textSize">@dimen/text_view_large</item>
+        <item name="android:layout_marginBottom">@dimen/margin_default</item>
+    </style>
+
+
+
+
+
+
+
+    <style name="ListItem" parent="glxAppThemeLight">
+        <!-- Meant as a grouping mechanism -->
+    </style>
+
+    <style name="ListItem.Separator" parent="Separator">
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+    </style>
+
+    <style name="ListItem.Text" parent="TextAppearance">
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ListItem.Text.Title">
+        <item name="android:textColor">@color/darkGray</item>
+        <item name="android:textSize">@dimen/text_view_default</item>
+    </style>
+
+    <style name="ListItem.Text.Subtitle">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">@dimen/text_view_small</item>
+    </style>
+
+    <style name="ListItem.Text.Value">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/text_view_default</item>
+    </style>
+
+    <style name="ListItem.Container">
+        <item name="android:paddingTop">@dimen/padding_normal</item>
+        <item name="android:paddingBottom">@dimen/padding_normal</item>
+    </style>
+
+    <style name="ListItem.Large">
+        <item name="android:paddingTop">@dimen/padding_xlarge</item>
+        <item name="android:paddingBottom">@dimen/padding_xlarge</item>
+    </style>
+
+    <style name="ListItem.Large.Text">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/text_view_large</item>
+    </style>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -197,22 +297,6 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/text_view_xlarge</item>
         <item name="android:gravity">center</item>
-    </style>
-
-    <style name="DialogTitle">
-        <item name="android:paddingLeft">@dimen/padding_xxlarge</item>
-        <item name="android:paddingRight">@dimen/padding_xxlarge</item>
-        <item name="android:textSize">@dimen/text_view_large</item>
-        <item name="android:textColor">@color/dialogTitle</item>
-        <item name="android:layout_marginBottom">@dimen/margin_default</item>
-    </style>
-
-    <style name="DialogMessage">
-        <item name="android:paddingLeft">@dimen/padding_xxlarge</item>
-        <item name="android:paddingRight">@dimen/padding_xxlarge</item>
-        <item name="android:textSize">@dimen/text_view_small</item>
-        <item name="android:textColor">@color/gray</item>
-        <item name="android:layout_marginBottom">@dimen/margin_xxlarge</item>
     </style>
 
     <style name="DialogActionLayout">
@@ -337,59 +421,9 @@
         <item name="android:textSize">@dimen/text_view_default</item>
     </style>
 
-    <style name="ListItem" parent="glxAppThemeLight">
-        <!-- Meant as a grouping mechanism -->
-    </style>
-
-    <style name="ListItem.Separator" parent="Separator">
-        <item name="android:layout_marginTop">@dimen/margin_small</item>
-        <item name="android:layout_marginBottom">@dimen/margin_small</item>
-    </style>
-
-    <style name="ListItem.Text" parent="TextAppearance">
-        <item name="android:lines">1</item>
-        <item name="android:ellipsize">end</item>
-    </style>
-
-    <style name="ListItem.Text.Title">
-        <item name="android:textColor">@color/darkGray</item>
-        <item name="android:textSize">@dimen/text_view_default</item>
-    </style>
-
-    <style name="ListItem.Text.Subtitle">
-        <item name="android:textColor">@color/gray</item>
-        <item name="android:textSize">@dimen/text_view_small</item>
-    </style>
-
-    <style name="ListItem.Text.Value">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/text_view_default</item>
-    </style>
-
-    <style name="ListItem.Container">
-        <item name="android:paddingTop">@dimen/padding_normal</item>
-        <item name="android:paddingBottom">@dimen/padding_normal</item>
-    </style>
-
-    <style name="ListItem.Large">
-        <item name="android:paddingTop">@dimen/padding_xlarge</item>
-        <item name="android:paddingBottom">@dimen/padding_xlarge</item>
-    </style>
-
-    <style name="ListItem.Large.Text">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">@dimen/text_view_large</item>
-    </style>
-
     <style name="Container" parent="glxAppThemeLight">
         <item name="android:paddingTop">@dimen/padding_large</item>
         <item name="android:paddingBottom">@dimen/padding_large</item>
-    </style>
-
-    <style name="ToolbarButton">
-        <item name="android:background">?selectableItemBackgroundBorderless</item>
-        <item name="android:clickable">true</item>
-        <item name="android:focusable">true</item>
     </style>
 
     <style name="TabLayout" parent="Widget.Design.TabLayout">

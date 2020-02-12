@@ -18,21 +18,18 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/textView_orderDetail_title"
                     android:text="OrderNumber (Status)"
-                    style="@style/BodyHeaderTextView"
                     android:textSize="@dimen/text_view_large"/>
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/textView_orderDetail_date"
                     android:text="Apr 18, 2019"
-                    style="@style/BodyLabelTextView"
                     android:textSize="@dimen/text_view_default"
                     android:layout_marginTop="@dimen/margin_small"/>
             <TextView android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="$484.65"
                     android:id="@+id/textView_orderDetail_price"
-                    style="@style/BodyHeaderTextView"
                     android:textSize="@dimen/text_view_xlarge"
                     android:layout_marginTop="@dimen/margin_large"/>
             <View android:layout_width="match_parent"
@@ -55,11 +52,9 @@
                     android:layout_height="wrap_content"
                     android:text="@string/label_billing_info"
                     android:layout_marginTop="@dimen/margin_xxlarge"
-                    style="@style/BodyHeaderTextView"
                     android:textSize="@dimen/text_view_large"/>
             <TextView android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/BodyLabelTextView"
                     android:text="Visa ending in 4242"
                     android:layout_marginTop="@dimen/margin_default"
                     android:layout_marginBottom="@dimen/margin_default"/>

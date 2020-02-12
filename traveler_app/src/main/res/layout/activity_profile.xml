@@ -29,12 +29,11 @@
 
         <TextView
                 android:id="@+id/textView_profile_saved_list_title"
-                style="@style/TextButton.Profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:focusable="false"
-                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
                 android:padding="@dimen/padding_small"
                 android:text="@string/saved_list"
                 android:textSize="@dimen/text_view_small"/>
@@ -62,13 +61,11 @@
 
         <TextView
                 android:id="@+id/textView_orders_title"
-                style="@style/TextButton.Profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:clickable="false"
                 android:focusable="false"
-                android:gravity="center_vertical"
                 android:text="@string/orders"
                 android:textSize="@dimen/text_view_small"/>
     </LinearLayout>
@@ -95,13 +92,11 @@
 
         <TextView
                 android:id="@+id/tvItinerary"
-                style="@style/TextButton.Profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:clickable="false"
                 android:focusable="false"
-                android:gravity="center_vertical"
                 android:text="@string/itinerary"
                 android:textSize="@dimen/text_view_small"/>
     </LinearLayout>
@@ -110,6 +105,7 @@
             android:id="@+id/linearlayout_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
         <ImageView
@@ -124,22 +120,19 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_large">
+                android:orientation="vertical">
             <TextView
                     android:id="@+id/textView_profileItem_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:text="@string/email"
-                    android:textColor="@color/profile_title_text_color"
                     android:textSize="@dimen/text_view_xsmall"/>
 
             <TextView
                     android:id="@+id/textView_profileItem_value"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textColor="@color/profile_subtitle_text_color"
                     android:textSize="@dimen/text_view_small"
                     tools:text="gorlami_forever@guestlogix.com"/>
         </LinearLayout>

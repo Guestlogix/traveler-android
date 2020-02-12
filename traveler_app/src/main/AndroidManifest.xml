@@ -17,14 +17,6 @@
                 android:name=".activities.ProfileActivity"
                 android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity
-                android:name="com.guestlogix.traveleruikit.activities.OrdersActivity"
-                android:label="Orders">
-        </activity>
-        <activity
-                android:name="com.guestlogix.traveleruikit.activities.WishlistActivity"
-                android:label="Saved Items">
-        </activity>
-        <activity
                 android:name=".activities.FlightSearchActivity"
                 android:label="Add Flight">
         </activity>
@@ -33,12 +25,6 @@
         </activity>
         <activity android:name=".activities.SettingsActivity"
                   android:label="Settings">
-        </activity>
-        <activity android:name="com.guestlogix.traveleruikit.itinerary.ItineraryActivity"
-                android:label="Settings">
-        </activity>
-        <activity android:name="com.guestlogix.traveleruikit.itinerary.ItineraryDetailActivity"
-                android:label="Settings">
         </activity>
         <activity android:name=".activities.HomeActivity">
             <intent-filter>

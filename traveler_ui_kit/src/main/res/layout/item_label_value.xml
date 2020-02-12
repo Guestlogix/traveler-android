@@ -7,7 +7,6 @@
         android:layout_height="wrap_content">
 
     <TextView
-            style="@style/BodyHeaderTextView"
             android:id="@+id/itemLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,7 +16,6 @@
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="Duration"/>
     <TextView
-            style="@style/CallOutTextView"
             android:id="@+id/itemValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
