@@ -107,11 +107,13 @@
 
     </LinearLayout>
 
+<!--    TODO:  unset the hardcoded background tint - this is a temp change to do the fast version of theming-->
     <Button
             android:id="@+id/btnApply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:backgroundTint="@color/colorPrimary"
             android:text="@string/apply_button_text" />
 
 </LinearLayout>

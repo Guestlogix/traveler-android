@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -180,6 +181,8 @@ public class FindParkingActivity extends AppCompatActivity implements GoogleApiC
                 addApi(LocationServices.API).
                 addConnectionCallbacks(this).
                 addOnConnectionFailedListener(this).build();
+
+        setNearMeView();
     }
 
     private void initiateLocationPermission() {
@@ -367,17 +370,21 @@ public class FindParkingActivity extends AppCompatActivity implements GoogleApiC
     private void setNearMeView() {
         findParkingToggleNearMeTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
         findParkingToggleNearMeTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_find_parking_left_selected));
+        ViewCompat.setBackgroundTintList(findParkingToggleNearMeTextView, ContextCompat.getColorStateList(this, R.color.colorPrimary));
 
         findParkingToggleNearAirportTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         findParkingToggleNearAirportTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_find_parking_right_unselected));
+        ViewCompat.setBackgroundTintList(findParkingToggleNearAirportTextView, ContextCompat.getColorStateList(this, R.color.off_white));
     }
 
     private void setNearAirportView() {
         findParkingToggleNearMeTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         findParkingToggleNearMeTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_find_parking_left_unselected));
+        ViewCompat.setBackgroundTintList(findParkingToggleNearMeTextView, ContextCompat.getColorStateList(this, R.color.off_white));
 
         findParkingToggleNearAirportTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
         findParkingToggleNearAirportTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_find_parking_right_selected));
+        ViewCompat.setBackgroundTintList(findParkingToggleNearAirportTextView, ContextCompat.getColorStateList(this, R.color.colorPrimary));
     }
 
     private static class DateSetListener implements DatePickerDialog.OnDateSetListener {

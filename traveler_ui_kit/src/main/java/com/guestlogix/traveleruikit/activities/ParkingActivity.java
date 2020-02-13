@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -25,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -121,9 +124,10 @@ public class ParkingActivity extends AppCompatActivity implements
         setTitle(initialQueryItem.getTitle());
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);}
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.parking_details_map);
         Assertion.eval(mapFragment != null);
@@ -134,6 +138,7 @@ public class ParkingActivity extends AppCompatActivity implements
         setRetryContainerVisibility(View.INVISIBLE);
 
         parkingToggleMapTextView = findViewById(R.id.linearLayout_parking_toggle_map);
+
         parkingToggleMapTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +184,7 @@ public class ParkingActivity extends AppCompatActivity implements
             }
         });
 
-        loadNewParkingItems((ParkingItemQuery) initialQueryItem.getItemResource()   );
+        loadNewParkingItems((ParkingItemQuery) initialQueryItem.getItemResource());
 
         smoothScroller = new LinearSmoothScroller(this) {
             @Override
@@ -192,6 +197,8 @@ public class ParkingActivity extends AppCompatActivity implements
                 return SCROLL_SLOWDOWN_FACTOR * super.calculateTimeForScrolling(dx);
             }
         };
+
+        setMapView();
     }
 
     @Override
@@ -436,16 +443,16 @@ public class ParkingActivity extends AppCompatActivity implements
         for (ParkingItem parkingItem : items) {
             Double longtitude = parkingItem.getItemResource().getCoordinate().getLongitude();
             Double latitude = parkingItem.getItemResource().getCoordinate().getLatitude();
-            if (north == null || latitude > north){
+            if (north == null || latitude > north) {
                 north = latitude;
             }
-            if (south == null || latitude < south){
+            if (south == null || latitude < south) {
                 south = latitude;
             }
-            if (east == null || longtitude > east){
+            if (east == null || longtitude > east) {
                 east = longtitude;
             }
-            if (west == null || longtitude < west){
+            if (west == null || longtitude < west) {
                 west = longtitude;
             }
         }
@@ -456,12 +463,18 @@ public class ParkingActivity extends AppCompatActivity implements
 
     private void setMapView() {
         parkingToggleMapTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_parking_map_selected);
+        drawable.setColorFilter(ContextCompat.getColor(this, R.color.off_white), PorterDuff.Mode.SRC_ATOP);
+        parkingToggleMapTextView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
         parkingToggleMapTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_left_selected));
-        parkingToggleMapTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_map_selected), null, null, null);
+        ViewCompat.setBackgroundTintList(parkingToggleMapTextView,ContextCompat.getColorStateList(this, R.color.colorPrimary));
 
         parkingToggleListTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        Drawable drawable1 = ContextCompat.getDrawable(this, R.drawable.ic_parking_list_unselected);
+        drawable1.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(drawable1, null, null, null);
         parkingToggleListTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_right_unselected));
-        parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_list_unselected), null, null, null);
+        ViewCompat.setBackgroundTintList(parkingToggleListTextView,ContextCompat.getColorStateList(this, R.color.off_white));
 
         TranslateAnimation animation = new TranslateAnimation(0F, 0F, 0F, mapFragment.getView().getMeasuredHeight());
         parkingSearchListViewRecyclerView.setAnimation(animation);
@@ -478,12 +491,18 @@ public class ParkingActivity extends AppCompatActivity implements
 
     private void setListView() {
         parkingToggleMapTextView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        Drawable drawable1 = ContextCompat.getDrawable(this, R.drawable.ic_parking_map_unselected);
+        drawable1.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        parkingToggleMapTextView.setCompoundDrawablesWithIntrinsicBounds(drawable1, null, null, null);
         parkingToggleMapTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_left_unselected));
-        parkingToggleMapTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_map_unselected), null, null, null);
+        ViewCompat.setBackgroundTintList(parkingToggleMapTextView,ContextCompat.getColorStateList(this, R.color.off_white));
 
         parkingToggleListTextView.setTextColor(ContextCompat.getColor(this, R.color.off_white));
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_parking_list_selected);
+        drawable.setColorFilter(ContextCompat.getColor(this, R.color.off_white), PorterDuff.Mode.SRC_ATOP);
+        parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
         parkingToggleListTextView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_parking_button_right_selected));
-        parkingToggleListTextView.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_parking_list_selected), null, null, null);
+        ViewCompat.setBackgroundTintList(parkingToggleListTextView,ContextCompat.getColorStateList(this, R.color.colorPrimary));
 
         parkingSearchListViewRecyclerView.setVisibility(View.VISIBLE);
         TranslateAnimation animation = new TranslateAnimation(0F, 0F, mapFragment.getView().getMeasuredHeight(), 0F);
