@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0097d1</color>
+    <!--    overrding primary color in SDK using brand_color-->
+    <!--    do not change these colors. change brnad_color if you need to change the theme-->
+    <color name="colorPrimary">@color/brand_color</color>
+    <color name="colorAccent">@color/brand_color</color>
+
     <color name="colorPrimaryDark">#0074a1</color>
-    <color name="colorAccent">@color/colorPrimary</color>
     <color name="colorLink">#1576f5</color>
     <color name="profile_gradient_start">#FFf3f1f1</color>
     <color name="profile_gradient_end">#FF898989</color>
