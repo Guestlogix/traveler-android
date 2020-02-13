@@ -28,8 +28,6 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setStyle(STYLE_NO_INPUT, R.style.AppTheme);
     }
 
     public FragmentTransaction getTransaction(FragmentManager manager) {

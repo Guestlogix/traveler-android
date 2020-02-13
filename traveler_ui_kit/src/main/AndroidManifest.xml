@@ -4,37 +4,79 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <application android:theme="@style/AppTheme">
+    <application>
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
                 android:value="${googleMapApiKey}"/>
-        <activity android:name=".activities.OrderDetailActivity"/>
-        <activity android:name=".activities.OrderConfirmationActivity"/>
-        <activity android:name=".activities.OrderSummaryActivity"/>
-        <activity android:name=".activities.QuestionsActivity"/>
-        <activity android:name=".activities.PassSelectionActivity"/>
+
+        <activity android:name=".activities.OrderDetailActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.OrderConfirmationActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.OrderSummaryActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.QuestionsActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.PassSelectionActivity"
+                android:theme="@style/GLXAppTheme"/>
+
         <activity
-                android:name=".activities.BookingItemDetailsActivity">
-        </activity>
+                android:name=".activities.BookingItemDetailsActivity"
+                android:theme="@style/GLXAppTheme" />
+
         <activity
                 android:name=".activities.ParkingItemDetailsActivity"
-                android:launchMode="singleTop">
-        </activity>
-        <activity android:name=".activities.OrdersActivity"/>
-        <activity android:name=".activities.WishlistActivity"/>
-        <activity android:name=".activities.AvailabilityActivity"/>
-        <activity android:name=".activities.ProductDetailsActivity"/>
-        <activity android:name=".activities.CancelOrderActivity"/>
-        <activity android:name=".activities.TermsAndConditionsActivity"/>
-        <activity android:name=".activities.BookingSearchActivity"/>
-        <activity android:name=".activities.BookingSearchResultActivity"/>
-        <activity android:name=".partneroffering.PartnerOfferingActivity"/>
-        <activity android:name=".partneroffering.PartnerOfferingSelectionActivity"/>
-        <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"/>
-        <activity android:name=".activities.ParkingActivity"/>
-        <activity android:name=".activities.FindParkingActivity"/>
-        <activity android:name=".purchasedproduct.PurchasedBookingProductActivity"/>
-        <activity android:name=".purchasedproduct.PurchasedParkingProductActivity"/>
+                android:theme="@style/GLXAppTheme"
+                android:launchMode="singleTop" />
+
+        <activity android:name=".activities.OrdersActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.WishlistActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.AvailabilityActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.ProductDetailsActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.CancelOrderActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.TermsAndConditionsActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.BookingSearchActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.BookingSearchResultActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".partneroffering.PartnerOfferingActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".partneroffering.PartnerOfferingSelectionActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".partneroffering.PartnerOfferingQuantityActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.ParkingActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".activities.FindParkingActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".purchasedproduct.PurchasedBookingProductActivity"
+                android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".purchasedproduct.PurchasedParkingProductActivity"
+                android:theme="@style/GLXAppTheme"/>
     </application>
 
 </manifest>
