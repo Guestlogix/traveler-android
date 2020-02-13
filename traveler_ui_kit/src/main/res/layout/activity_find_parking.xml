@@ -47,6 +47,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:background="@drawable/bg_find_parking_left_selected"
+                    android:backgroundTint="@color/colorPrimary"
                     android:gravity="center"
                     android:text="@string/near_me"
                     android:textColor="@color/off_white"

@@ -48,6 +48,7 @@
                 android:layout_toStartOf="@id/textView_parking_near_you_change"
                 android:layout_toLeftOf="@id/textView_parking_near_you_change"
                 android:src="@drawable/ic_edit_pencil"
+                android:tint="@color/colorPrimary"
                 tools:ignore="ContentDescription" />
 
         <TextView
@@ -213,6 +214,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:background="@drawable/bg_parking_button_left_selected"
+                android:backgroundTint="@color/colorPrimary"
+                android:drawableTint="@color/off_white"
+                android:textColor="@color/off_white"
                 android:drawableStart="@drawable/ic_parking_map_selected"
                 android:drawableLeft="@drawable/ic_parking_map_selected"
                 android:drawablePadding="@dimen/padding_small"
@@ -220,7 +224,6 @@
                 android:paddingStart="@dimen/padding_large"
                 android:paddingLeft="@dimen/padding_large"
                 android:text="@string/map_view"
-                android:textColor="@color/off_white"
                 tools:ignore="RtlSymmetry" />
 
         <TextView
@@ -233,12 +236,13 @@
                 android:background="@drawable/bg_parking_button_right_unselected"
                 android:drawableStart="@drawable/ic_parking_list_unselected"
                 android:drawableLeft="@drawable/ic_parking_list_unselected"
+                android:drawableTint="@color/colorPrimary"
+                android:textColor="@color/colorPrimary"
                 android:drawablePadding="@dimen/padding_small"
                 android:gravity="center_vertical"
                 android:paddingStart="@dimen/padding_large"
                 android:paddingLeft="@dimen/padding_large"
                 android:text="@string/list_view"
-                android:textColor="@color/colorPrimary"
                 tools:ignore="RtlSymmetry" />
     </RelativeLayout>
 </RelativeLayout>

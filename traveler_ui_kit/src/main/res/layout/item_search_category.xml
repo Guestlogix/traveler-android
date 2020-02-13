@@ -32,11 +32,13 @@
                 android:textSize="18sp"
                 tools:text="Tours" />
 
+        <!--    TODO:  unset the hardcoded tint - this is a temp change to do the fast version of theming-->
         <ImageView
                 android:id="@+id/imgCheck"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_check_selected" />
+                android:src="@drawable/ic_check_selected"
+                android:tint="@color/colorPrimary"/>
 
 
     </LinearLayout>
