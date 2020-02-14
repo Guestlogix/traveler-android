@@ -34,12 +34,11 @@
             android:text="@string/save_payment"
             android:layout_margin="@dimen/margin_default"/>
 
-    <com.google.android.material.button.MaterialButton
+    <Button
             android:id="@+id/button_orderSummary_addCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_default"
-            style="@style/OutlinedButton.Primary"
             android:text="@string/add_credit_card"
             app:icon="@android:drawable/ic_input_add"
             app:iconGravity="textStart"
