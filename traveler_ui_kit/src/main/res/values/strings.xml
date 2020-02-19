@@ -30,7 +30,6 @@
     <string name="book_now">Book Now</string>
     <string name="checkout">Checkout</string>
     <string name="required">This field is required.</string>
-    <string name="regex_mismatch">Incorrect pattern</string>
     <string name="label_price_per_person">%s per person</string>
     <string name="add_credit_card">Add Credit Card</string>
     <string name="billing_information">Billing Information</string>
@@ -38,7 +37,6 @@
     <string name="discard_order">Discard this order?</string>
     <string name="discard">discard</string>
     <string name="next">next</string>
-    <string name="bad_quantity">Bad quantity</string>
     <string name="view_tickets">View Tickets</string>
     <string name="confirmation_number">Confirmation number:</string>
     <string name="confirmation_email">Confirmation email:</string>
