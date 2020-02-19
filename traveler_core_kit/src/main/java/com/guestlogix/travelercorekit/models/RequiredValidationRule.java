@@ -3,7 +3,6 @@ package com.guestlogix.travelercorekit.models;
 import android.text.TextUtils;
 
 public class RequiredValidationRule extends ValidationRule {
-
     /**
      * Verifies whether the string to validate is present.
      *
@@ -13,10 +12,6 @@ public class RequiredValidationRule extends ValidationRule {
     @Override
     public boolean validate(Answer answer) {
         boolean isValid = answer != null && !TextUtils.isEmpty(answer.getCodedValue());
-
-        if (!isValid) {
-            error = ValidationError.REQUIRED;
-        }
 
         return isValid;
     }
