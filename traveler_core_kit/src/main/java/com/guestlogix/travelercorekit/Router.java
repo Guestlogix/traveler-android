@@ -180,12 +180,20 @@ public class Router {
                 .method(NetworkTask.Route.Method.GET)
                 .path("/catalog-group");
 
-        for (Flight flight : catalogQuery.getFlights()) {
-            routeBuilder.param("flight-ids", flight.getId());
+        if (catalogQuery.getFlights() != null) {
+            for (Flight flight : catalogQuery.getFlights()) {
+                routeBuilder.param("flight-ids", flight.getId());
+            }
         }
 
-        for (Product product : catalogQuery.getProducts()) {
-            routeBuilder.param("product-ids", product.getId());
+        if (catalogQuery.getProducts() != null) {
+            for (Product product : catalogQuery.getProducts()) {
+                routeBuilder.param("product-ids", product.getId());
+            }
+        }
+
+        if (catalogQuery.getCity() != null && !catalogQuery.getCity().isEmpty()) {
+            routeBuilder.param("city", catalogQuery.getCity());
         }
 
         return routeBuilder.build(session.getToken());
