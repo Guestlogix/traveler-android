@@ -8,6 +8,7 @@ public class CatalogQuery implements Serializable {
 
     private List<Flight> flights;
     private List<Product> products;
+    private String city;
 
     public CatalogQuery(List<Flight> flights) {
         this(flights, new ArrayList<>());
@@ -18,7 +19,13 @@ public class CatalogQuery implements Serializable {
         this.products = products;
     }
 
-    public CatalogQuery() { this(new ArrayList<>(), new ArrayList<>()); }
+    public CatalogQuery(String city) {
+        this.city = city;
+    }
+
+    public CatalogQuery() {
+        this(new ArrayList<>(), new ArrayList<>());
+    }
 
     public List<Flight> getFlights() {
         return flights;
@@ -28,7 +35,19 @@ public class CatalogQuery implements Serializable {
         this.flights = flights;
     }
 
-    public List<Product> getProducts() { return products; }
+    public List<Product> getProducts() {
+        return products;
+    }
 
-    public void setProducts(List<Product> products) { this.products = products; }
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
 }
