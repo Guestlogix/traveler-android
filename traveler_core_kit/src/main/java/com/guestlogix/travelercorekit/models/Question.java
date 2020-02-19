@@ -65,10 +65,15 @@ public class Question implements Serializable {
             String suggestedAnswerString = jsonObject.getNullableString("suggestedAnswer");
             SuggestedAnswer suggestedAnswer = null;
 
+//            List<ValidationRule> rules = new ArrayList<>();
+//            if (jsonObject.getBoolean("required")) {
+//                rules.add(new RequiredValidationRule());
+//            }
+
             List<ValidationRule> rules = new ArrayList<>();
-            if (jsonObject.getBoolean("required")) {
-                rules.add(new RequiredValidationRule());
-            }
+            if (!jsonObject.isNull("questionValidations"))
+                rules = new ArrayMappingFactory<>(new ValidationRule.ValidationRuleObjectMappingFactory()).instantiate(jsonObject.getJSONArray("questionValidations").toString());
+
 
             List<Choice> choices = new ArrayMappingFactory<>(new Choice.ChoiceObjectMappingFactory()).instantiate(jsonObject.getJSONArray("choices").toString());
             QuestionType type = null;

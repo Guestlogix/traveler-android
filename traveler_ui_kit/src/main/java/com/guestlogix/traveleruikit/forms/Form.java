@@ -5,13 +5,22 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.guestlogix.traveleruikit.R;
 import com.guestlogix.traveleruikit.forms.adapters.FormRecyclerViewAdapter;
-import com.guestlogix.traveleruikit.forms.cells.*;
+import com.guestlogix.traveleruikit.forms.cells.BaseCell;
+import com.guestlogix.traveleruikit.forms.cells.ButtonCell;
+import com.guestlogix.traveleruikit.forms.cells.DateCell;
+import com.guestlogix.traveleruikit.forms.cells.HeaderCell;
+import com.guestlogix.traveleruikit.forms.cells.MessageCell;
+import com.guestlogix.traveleruikit.forms.cells.QuantityCell;
+import com.guestlogix.traveleruikit.forms.cells.SpinnerCell;
+import com.guestlogix.traveleruikit.forms.cells.TextCell;
 import com.guestlogix.traveleruikit.forms.models.FormModel;
 import com.guestlogix.traveleruikit.forms.models.HeaderFormModel;
 
@@ -122,9 +131,22 @@ public class Form extends RecyclerView implements
     }
 
     /**
+     * Rebinds all non header items in the form. This can result in a structural change in the form.
+     */
+    public void reloadAllNonHeaders() {
+        for (int i = 0; i < nodes.size(); i++) {
+            FormNode t = nodes.get(i);
+            if (!t.isHeader) {
+                t.model = null;
+                getAdapter().notifyItemChanged(i);
+            }
+        }
+    }
+
+    /**
      * Notifies the form library to use a custom view type instead of the default cells.
      *
-     * @param type Which type to override
+     * @param type    Which type to override
      * @param adapter adapter for that type
      */
     public void setCustomViewsAdapter(FormFieldType type, CustomFormCellAdapter adapter) {
@@ -344,7 +366,7 @@ public class Form extends RecyclerView implements
         /**
          * Method which inflates a base cell with a custom view.
          *
-         * @param parent Where to inflate the view to
+         * @param parent  Where to inflate the view to
          * @param context Context of the form library
          * @return custom view holder
          */
@@ -387,7 +409,7 @@ public class Form extends RecyclerView implements
          * Returns the type of a field in the form. See {@link FormFieldType} for all available types.
          *
          * @param sectionId Section index
-         * @param fieldId Field index
+         * @param fieldId   Field index
          * @return type of the field at given indices
          */
         FormFieldType getFieldType(int sectionId, int fieldId);

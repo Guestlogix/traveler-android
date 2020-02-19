@@ -58,11 +58,11 @@ public class PurchaseForm implements Serializable {
      * Adds an answer for a question.
      *
      * @param answer answer for a question
-     * @throws PurchaseFormError if the answer does not relate to any question
+     * @throws java.security.InvalidParameterException if the answer does not relate to any question
      */
-    public void addAnswer(Answer answer) throws PurchaseFormError {
+    public void addAnswer(Answer answer) throws java.security.InvalidParameterException {
         if (!questionIds.contains(answer.questionId)) {
-            throw new PurchaseFormError(PurchaseFormErrorCode.INVALID_QUESTION);
+            throw new java.security.InvalidParameterException();
         }
 
         answers.put(answer.questionId, answer);
@@ -73,12 +73,12 @@ public class PurchaseForm implements Serializable {
      *
      * @param question question for which to get an answer
      * @return answer for a question if it exists, null otherwise
-     * @throws PurchaseFormError if the question is not part of the booking form
+     * @throws java.security.InvalidParameterException if the question is not part of the booking form
      */
     @Nullable
-    public Answer getAnswer(Question question) throws PurchaseFormError {
+    public Answer getAnswer(Question question) throws java.security.InvalidParameterException {
         if (!questionIds.contains(question.getId())) {
-            throw new PurchaseFormError(PurchaseFormErrorCode.INVALID_QUESTION);
+            throw new java.security.InvalidParameterException();
         }
 
         return answers.get(question.getId());
@@ -128,8 +128,8 @@ public class PurchaseForm implements Serializable {
      * @return ordered list of errors in the form
      */
     @NonNull
-    public List<PurchaseFormError> validate() {
-        List<PurchaseFormError> errors = new ArrayList<>();
+    public List<PurchaseFormInputError> validate() {
+        List<PurchaseFormInputError> errors = new ArrayList<>();
 
         for (int i = 0; i < questionGroups.size(); i++) {
             for (int j = 0; j < questionGroups.get(i).getQuestions().size(); j++) {
@@ -137,9 +137,9 @@ public class PurchaseForm implements Serializable {
                 Answer answer = answers.get(question.getId());
 
                 if (question.getValidationRules() != null) {
-                    for (ValidationRule r : question.getValidationRules()) {
-                        if (!r.validate(answer)) {
-                            errors.add(new PurchaseFormError(i, j, r.error));
+                    for (ValidationRule validationRule : question.getValidationRules()) {
+                        if (!validationRule.validate(answer)) {
+                            errors.add(new PurchaseFormInputError(i, j, validationRule));
                         }
                     }
                 }
@@ -149,32 +149,21 @@ public class PurchaseForm implements Serializable {
         return errors;
     }
 
-    /**
-     * Types of errors which can be encountered while validating the form.
-     */
-    public enum PurchaseFormErrorCode {
-        INVALID_QUESTION, INVALID_ANSWER
-    }
+
 
     /**
      * Purchase form errors.
      * Contains the relative position in the form of the question which contains errors.
      */
-    public class PurchaseFormError extends Error {
+    public class PurchaseFormInputError {
         private int groupId;
         private int questionId;
-        private ValidationError error;
-        private PurchaseFormErrorCode type;
+        private ValidationRule failedValidationRule;
 
-        private PurchaseFormError(int groupId, int questionId, ValidationError error) {
+        private PurchaseFormInputError(int groupId, int questionId, ValidationRule failedValidationRule) {
             this.groupId = groupId;
             this.questionId = questionId;
-            this.error = error;
-            type = PurchaseFormErrorCode.INVALID_ANSWER;
-        }
-
-        PurchaseFormError(PurchaseFormErrorCode type) {
-            this.type = type;
+            this.failedValidationRule = failedValidationRule;
         }
 
         public int getGroupId() {
@@ -185,12 +174,8 @@ public class PurchaseForm implements Serializable {
             return questionId;
         }
 
-        public ValidationError getError() {
-            return error;
-        }
-
-        public PurchaseFormErrorCode getType() {
-            return type;
+        public ValidationRule getFailedValidationRule() {
+            return failedValidationRule;
         }
     }
 }

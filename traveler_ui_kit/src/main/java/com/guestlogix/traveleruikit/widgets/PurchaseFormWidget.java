@@ -2,15 +2,33 @@ package com.guestlogix.traveleruikit.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.guestlogix.travelercorekit.models.*;
+
+import com.guestlogix.travelercorekit.models.Answer;
+import com.guestlogix.travelercorekit.models.Choice;
+import com.guestlogix.travelercorekit.models.DateAnswer;
+import com.guestlogix.travelercorekit.models.MultipleChoiceSelection;
+import com.guestlogix.travelercorekit.models.PatternValidationRule;
+import com.guestlogix.travelercorekit.models.PurchaseForm;
+import com.guestlogix.travelercorekit.models.QuantityAnswer;
+import com.guestlogix.travelercorekit.models.Question;
+import com.guestlogix.travelercorekit.models.QuestionGroup;
+import com.guestlogix.travelercorekit.models.QuestionType;
+import com.guestlogix.travelercorekit.models.RequiredValidationRule;
+import com.guestlogix.travelercorekit.models.TextualAnswer;
 import com.guestlogix.traveleruikit.R;
+import com.guestlogix.traveleruikit.forms.Form;
 import com.guestlogix.traveleruikit.forms.FormFieldType;
 import com.guestlogix.traveleruikit.forms.FormHeader;
 import com.guestlogix.traveleruikit.forms.FormMessage;
-import com.guestlogix.traveleruikit.forms.Form;
-import com.guestlogix.traveleruikit.forms.models.*;
+import com.guestlogix.traveleruikit.forms.models.ButtonFormModel;
+import com.guestlogix.traveleruikit.forms.models.DateFormModel;
+import com.guestlogix.traveleruikit.forms.models.FormModel;
+import com.guestlogix.traveleruikit.forms.models.QuantityFormModel;
+import com.guestlogix.traveleruikit.forms.models.SpinnerFormModel;
+import com.guestlogix.traveleruikit.forms.models.TextFormModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +46,7 @@ public class PurchaseFormWidget extends Form implements
 
     // Data
     private PurchaseForm purchaseForm;
-    private PurchaseForm.PurchaseFormError currentError;
+    private List<PurchaseForm.PurchaseFormInputError> lstCurrentErrors;
 
     /**
      * Listener used to dispatch PurchaseForm completion events.
@@ -143,25 +161,26 @@ public class PurchaseFormWidget extends Form implements
     @Nullable
     @Override
     public FormMessage getMessage(int sectionId, int fieldId) {
-        if (currentError != null && currentError.getGroupId() == sectionId && currentError.getQuestionId() == fieldId) {
-            String message;
+        if (lstCurrentErrors == null || lstCurrentErrors.isEmpty()) {
+            return null;
+        }
 
-            switch (currentError.getError()) {
-                case REGEX_MISMATCH:
-                    message = getContext().getString(R.string.regex_mismatch);
-                    break;
-                case REQUIRED:
+
+        for (int i = 0; i < lstCurrentErrors.size(); i++) {
+            PurchaseForm.PurchaseFormInputError currentError = lstCurrentErrors.get(i);
+            if (currentError.getGroupId() == sectionId && currentError.getQuestionId() == fieldId) {
+                String message;
+
+                if (currentError.getFailedValidationRule() instanceof RequiredValidationRule) {
                     message = getContext().getString(R.string.required);
-                    break;
-                case BAD_QUANTITY:
-                    message = getContext().getString(R.string.bad_quantity);
-                    break;
-                default:
+                } else if (currentError.getFailedValidationRule() instanceof PatternValidationRule) {
+                    message = currentError.getFailedValidationRule().getErrorMessage();
+                } else {
                     message = "";
-                    break;
-            }
+                }
 
-            return new FormMessage(message, FormMessage.FormMessageType.ALERT);
+                return new FormMessage(message, FormMessage.FormMessageType.ALERT);
+            }
         }
 
         return null;
@@ -221,25 +240,17 @@ public class PurchaseFormWidget extends Form implements
         }
 
         if (sectionId == purchaseForm.getQuestionGroups().size()) {
-            List<PurchaseForm.PurchaseFormError> errors = purchaseForm.validate();
+            lstCurrentErrors = purchaseForm.validate();
+            reloadAllNonHeaders();
 
-            if (!errors.isEmpty()) {
-                // Hide current error if its not null
-                if (currentError != null) {
-                    reload(currentError.getGroupId(), currentError.getQuestionId());
+            if (lstCurrentErrors.isEmpty()) {
+                if (null != formCompletedListener) {
+                    lstCurrentErrors = null;
+                    formCompletedListener.onFormCompleted(purchaseForm); // Notify activity form is done
                 }
-
-                currentError = errors.get(0);
-                reload(currentError.getGroupId(), currentError.getQuestionId());
-                smoothScrollToPosition(currentError.getGroupId(), currentError.getQuestionId());
-            } else if (null != formCompletedListener) {
-                // Hide errors if any
-                if (currentError != null) {
-                    reload(currentError.getGroupId(), currentError.getQuestionId());
-                    currentError = null;
-                }
-
-                formCompletedListener.onFormCompleted(purchaseForm); // Notify activity form is done
+            } else {
+                //scroll to first error
+                smoothScrollToPosition(lstCurrentErrors.get(0).getGroupId(), lstCurrentErrors.get(0).getQuestionId());
             }
         }
     }
