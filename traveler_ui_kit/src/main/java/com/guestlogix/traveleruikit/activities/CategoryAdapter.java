@@ -30,6 +30,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         this.context = context;
     }
 
+    public void setCategories(ArrayList<CategoryItem> lstCategories) {
+        this.lstCategories = lstCategories;
+    }
+
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
