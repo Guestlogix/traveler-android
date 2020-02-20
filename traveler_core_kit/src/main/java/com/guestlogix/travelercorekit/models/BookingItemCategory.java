@@ -1,41 +1,42 @@
 package com.guestlogix.travelercorekit.models;
 
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.io.Serializable;
 
-public enum BookingItemCategory implements Serializable {
-    ACTIVITY("Activity"),
-    TOUR("Tour"),
-    SHOW("Show"),
-    EVENT("Event"),
-    NIGHTLIFE("Nightlife"),
-    UNKNOWN("Unknown");
+public class BookingItemCategory implements Serializable {
 
-    private final String category;
+    private String id;
+    private String title;
 
-    BookingItemCategory(String category) {
-        this.category = category;
+    public BookingItemCategory(String id, String title) {
+        this.id = id;
+        this.title = title;
     }
 
-    public static BookingItemCategory fromString(String value) throws IllegalArgumentException {
-        switch (value) {
-            case "Activity":
-                return ACTIVITY;
-            case "Tour":
-                return TOUR;
-            case "Show":
-                return SHOW;
-            case "Event":
-                return EVENT;
-            case "Nightlife":
-                return NIGHTLIFE;
-            default:
-                return UNKNOWN;
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public static class CategoryObjectMappingFactory implements ObjectMappingFactory<BookingItemCategory> {
+        @Override
+        public BookingItemCategory instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            String id = jsonObject.getString("id");
+            String title = jsonObject.getString("label");
+
+            return new BookingItemCategory(id, title);
         }
     }
 
     @Override
     public String toString() {
-        return this.category;
+        return title;
     }
 }
-

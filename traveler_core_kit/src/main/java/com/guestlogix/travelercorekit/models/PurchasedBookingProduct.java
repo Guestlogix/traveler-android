@@ -3,7 +3,6 @@ package com.guestlogix.travelercorekit.models;
 import androidx.annotation.Nullable;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
-import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
@@ -106,7 +105,7 @@ public class PurchasedBookingProduct implements Product {
                 Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("price").toString());
                 List<Pass> passes = new ArrayMappingFactory<>(new Pass.PassObjectMappingFactory()).instantiate(jsonObject.getJSONArray("passes").toString());
                 Date eventDate = DateHelper.parseISO8601(jsonObject.getString("experienceDate"));
-                List<BookingItemCategory> categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+                List<BookingItemCategory> categories = new ArrayMappingFactory<>(new BookingItemCategory.CategoryObjectMappingFactory()).instantiate(jsonObject.getJSONArray("subCategories").toString());
                 String cancellationPolicy = jsonObject.getString("cancellationPolicy");
                 return new PurchasedBookingProduct(id, title, price, passes, eventDate, categories, cancellationPolicy);
             }

@@ -1,6 +1,6 @@
 package com.guestlogix.travelercorekit.models;
 
-import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
@@ -74,8 +74,9 @@ public class BookingItemSearchParameters implements Serializable {
             }
 
             List<BookingItemCategory> categories = new ArrayList<>();
-            if (!jsonObject.isNull("categories"))
-                categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+            if (!jsonObject.isNull("subCategories")) {
+                categories = new ArrayMappingFactory<>(new BookingItemCategory.CategoryObjectMappingFactory()).instantiate(jsonObject.getJSONArray("subCategories").toString());
+            }
 
             Double topLeftLatitude = jsonObject.getNullableDouble("topLeftLatitude");
             Double topLeftLongitude = jsonObject.getNullableDouble("topLeftLongitude");

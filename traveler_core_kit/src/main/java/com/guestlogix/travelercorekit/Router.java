@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.guestlogix.travelercorekit.models.Answer;
 import com.guestlogix.travelercorekit.models.Availability;
-import com.guestlogix.travelercorekit.models.BookingItemCategory;
 import com.guestlogix.travelercorekit.models.BookingItemQuery;
 import com.guestlogix.travelercorekit.models.BookingOption;
 import com.guestlogix.travelercorekit.models.BoundingBox;
@@ -21,6 +20,7 @@ import com.guestlogix.travelercorekit.models.CancellationQuote;
 import com.guestlogix.travelercorekit.models.CancellationReason;
 import com.guestlogix.travelercorekit.models.CancellationRequest;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
+import com.guestlogix.travelercorekit.models.BookingItemCategory;
 import com.guestlogix.travelercorekit.models.Coordinate;
 import com.guestlogix.travelercorekit.models.Currency;
 import com.guestlogix.travelercorekit.models.Flight;
@@ -34,6 +34,7 @@ import com.guestlogix.travelercorekit.models.Payment;
 import com.guestlogix.travelercorekit.models.PaymentError;
 import com.guestlogix.travelercorekit.models.PriceRangeFilter;
 import com.guestlogix.travelercorekit.models.Product;
+import com.guestlogix.travelercorekit.models.ProductType;
 import com.guestlogix.travelercorekit.models.PurchaseError;
 import com.guestlogix.travelercorekit.models.PurchaseForm;
 import com.guestlogix.travelercorekit.models.PurchasePass;
@@ -212,7 +213,7 @@ public class Router {
 
         if (bookingItemQuery.getCategories() != null)
             for (BookingItemCategory category : bookingItemQuery.getCategories()) {
-                rb.param("categories", category.toString());
+                rb.param("categories", category.getId());
             }
 
         if (bookingItemQuery.getPriceRangeFilter() != null) {
@@ -523,6 +524,16 @@ public class Router {
                 .param("api-version", version);
 
         return routeBuilder.build(session.getToken());
+    }
+
+    // /category
+    public static AuthenticatedUrlRequest fetchBookingItemCategories(Session session, ProductType productType, Context context) {
+        RouteBuilder rb = new RouteBuilder(context, session.getApiKey())
+                .method(NetworkTask.Route.Method.GET)
+                .path("/category/")
+                .param("purchaseStrategy", productType.toString());
+
+        return rb.build(session.getToken());
     }
 
     private static class RouteBuilder {
