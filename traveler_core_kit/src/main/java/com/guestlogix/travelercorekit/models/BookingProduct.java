@@ -2,8 +2,8 @@ package com.guestlogix.travelercorekit.models;
 
 import androidx.annotation.NonNull;
 
+import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 
@@ -95,7 +95,7 @@ public class BookingProduct implements Product {
             Price price = new Price.PriceObjectMappingFactory().instantiate(jsonObject.getJSONObject("priceStartingAt").toString());
             ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
 
-            List<BookingItemCategory> categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+            List<BookingItemCategory> categories = new ArrayMappingFactory<>(new BookingItemCategory.CategoryObjectMappingFactory()).instantiate(jsonObject.getJSONArray("subCategories").toString());
 
             Coordinate coordinate = new Coordinate.CoordinateObjectMappingFactory()
                     .instantiate(jsonObject.getJSONObject("geoLocation").toString());

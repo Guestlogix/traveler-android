@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.Assertion;
-import com.guestlogix.travelercorekit.utilities.BookingCategoryArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
 import com.guestlogix.travelercorekit.utilities.UrlArrayMappingFactory;
@@ -168,8 +167,8 @@ public class BookingItemDetails implements CatalogItemDetails {
             ProductType productType = ProductType.fromString(jsonObject.getString("purchaseStrategy"));
 
             List<BookingItemCategory> categories = new ArrayList<>();
-            if (!jsonObject.isNull("categories"))
-                categories = new BookingCategoryArrayMappingFactory().instantiate(jsonObject.getJSONArray("categories").toString());
+            if (!jsonObject.isNull("subCategories"))
+                categories = new ArrayMappingFactory<>(new BookingItemCategory.CategoryObjectMappingFactory()).instantiate(jsonObject.getJSONArray("subCategories").toString());
 
             boolean isWishlisted = false;
             if (!jsonObject.isNull("isWishlisted"))

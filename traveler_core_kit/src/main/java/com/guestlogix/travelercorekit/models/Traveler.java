@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import com.guestlogix.travelercorekit.AuthenticatedUrlRequest;
 import com.guestlogix.travelercorekit.Router;
+import com.guestlogix.travelercorekit.callbacks.BookingItemCategoriesSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.BookingSearchCallback;
 import com.guestlogix.travelercorekit.callbacks.CancellationCallback;
 import com.guestlogix.travelercorekit.callbacks.CancellationQuoteCallback;
@@ -1092,5 +1093,37 @@ public class Traveler {
 
         localInstance.taskManager.addTask(fetchTask);
         TaskManager.getMainTaskManager().addTask(blockTask);
+    }
+
+    /**
+     * Fetches booking item categories
+     *
+     * @param categoriesSearchCallback Callback methods which will be executed after the data is fetched.
+     */
+    public static void fetchBookingItemCategories(BookingItemCategoriesSearchCallback categoriesSearchCallback) {
+        if (!isInitialized()) return;
+
+        AuthenticatedUrlRequest request = Router.fetchBookingItemCategories(localInstance.session,
+                ProductType.BOOKABLE, localInstance.applicationContext);
+
+        AuthenticatedRemoteNetworkRequestTask<List<BookingItemCategory>> searchCategoriesTask =
+                new AuthenticatedRemoteNetworkRequestTask<>(localInstance.session, localInstance.applicationContext,
+                        request, new ArrayMappingFactory<>(new BookingItemCategory.CategoryObjectMappingFactory()));
+
+        BlockTask searchCategoriesBlockTask = new BlockTask() {
+            @Override
+            protected void main() {
+                if (null != searchCategoriesTask.getError()) {
+                    categoriesSearchCallback.onCategoriesSearchError(searchCategoriesTask.getError());
+                    Log.e(TAG, searchCategoriesTask.getError().getMessage());
+                } else {
+                    categoriesSearchCallback.onCategoriesSearchSuccess(searchCategoriesTask.getResource());
+                }
+            }
+        };
+
+        searchCategoriesBlockTask.addDependency(searchCategoriesTask);
+        localInstance.taskManager.addTask(searchCategoriesTask);
+        TaskManager.getMainTaskManager().addTask(searchCategoriesBlockTask);
     }
 }
