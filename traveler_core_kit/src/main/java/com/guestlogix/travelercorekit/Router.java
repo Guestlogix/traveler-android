@@ -46,6 +46,7 @@ import com.guestlogix.travelercorekit.models.WishlistQuery;
 import com.guestlogix.travelercorekit.tasks.NetworkTask;
 import com.guestlogix.travelercorekit.tasks.NetworkTaskError;
 import com.guestlogix.travelercorekit.utilities.DateHelper;
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.TravelerPrefs;
 
 import org.json.JSONArray;
@@ -686,29 +687,30 @@ public class Router {
             return error;
 
         try {
-            JSONObject json = new JSONObject(networkTaskError.getMessage());
-            int code = json.getInt("errorCode");
+            JSONObjectGLX jsonObject = new JSONObjectGLX(networkTaskError.getMessage());
+            int code = jsonObject.getInt("errorCode");
+            String message = jsonObject.getNullableString("errorMessage");
 
             switch (code) {
                 case 2006:
-                    return new PurchaseError(PurchaseError.Code.PASSES_UNAVAILABLE);
+                    return new PurchaseError(PurchaseError.Code.PASSES_UNAVAILABLE, message);
                 case 2007:
-                    return new PurchaseError(PurchaseError.Code.VERY_OLD_TRAVELER);
+                    return new PurchaseError(PurchaseError.Code.VERY_OLD_TRAVELER, message);
                 case 2012:
                 case 2013:
                 case 2014:
                     return new CancellationError(CancellationError.Code.NOT_CANCELLABLE);
                 case 2015:
-                    return new PurchaseError(PurchaseError.Code.ADULT_AGE_INVALID);
+                    return new PurchaseError(PurchaseError.Code.ADULT_AGE_INVALID, message);
                 case 2017:
-                    return new PurchaseError(PurchaseError.Code.BELOW_MIN_UNITS);
+                    return new PurchaseError(PurchaseError.Code.BELOW_MIN_UNITS, message);
                 case 2018:
-                    return new PurchaseError(PurchaseError.Code.UNACCOMPANIED_CHILDREN);
+                    return new PurchaseError(PurchaseError.Code.UNACCOMPANIED_CHILDREN, message);
                 case 2032:
                     return new NetworkTaskError(NetworkTaskError.Code.ITEM_UNAVAILABLE);
                 case 2027:
                     return new PaymentError(PaymentError.Code.CONFIRMATION_REQUIRED,
-                            json.getJSONObject("errorData")
+                            jsonObject.getJSONObject("errorData")
                                     .getString("confirmationKey"));
                 case 6001:
                     return new PaymentError(PaymentError.Code.PROCESSING_ERROR, null);

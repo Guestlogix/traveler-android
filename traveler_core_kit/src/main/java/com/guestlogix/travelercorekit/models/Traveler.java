@@ -606,7 +606,7 @@ public class Traveler {
         AuthenticatedUrlRequest request;
 
         if (passes.size() == 0) {
-            fetchPurchaseFormCallback.onPurchaseFormFetchError(new PurchaseError(PurchaseError.Code.NO_PASSES));
+            fetchPurchaseFormCallback.onPurchaseFormFetchError(new PurchaseError(PurchaseError.Code.NO_PASSES, null));
             return;
         }
         request = Router.bookingQuestions(localInstance.session, product, passes, localInstance.applicationContext);
