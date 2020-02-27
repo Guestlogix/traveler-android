@@ -198,6 +198,14 @@ public class Router {
             routeBuilder.param("city", catalogQuery.getCity());
         }
 
+        if (catalogQuery.getLocation() != null) {
+            Double latitude = catalogQuery.getLocation().getLatitude();
+            Double longitude = catalogQuery.getLocation().getLongitude();
+
+            routeBuilder.param("latidude", latitude.toString());
+            routeBuilder.param("longitude", longitude.toString());
+        }
+
         return routeBuilder.build(session.getToken());
     }
 
@@ -237,6 +245,13 @@ public class Router {
         if (bookingItemQuery.getBookingItemSort() != null) {
             rb.param("sort-field", bookingItemQuery.getBookingItemSort().getSortField().toString());
             rb.param("sort-order", bookingItemQuery.getBookingItemSort().getSortOrder().getSortValue());
+        }
+
+        if(bookingItemQuery.getLocation() != null) {
+            Double latitude = bookingItemQuery.getLocation().getLatitude();
+            Double longitude = bookingItemQuery.getLocation().getLongitude();
+            rb.param("latitude", latitude.toString());
+            rb.param("longitude", longitude.toString());
         }
 
         return rb.build(session.getToken());

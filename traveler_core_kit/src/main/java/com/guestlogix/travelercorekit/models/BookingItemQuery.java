@@ -1,5 +1,7 @@
 package com.guestlogix.travelercorekit.models;
 
+import android.graphics.CornerPathEffect;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class BookingItemQuery implements SearchQuery {
     private BookingItemSort bookingItemSort;
     private int offset;
     private int limit;
+    private Coordinate location;
 
     public BookingItemQuery(
             String queryText,
@@ -21,6 +24,7 @@ public class BookingItemQuery implements SearchQuery {
             List<BookingItemCategory> categories,
             BoundingBox boundingBox,
             BookingItemSort bookingItemSort,
+            Coordinate location,
             int offset,
             int limit) {
         this.queryText = queryText;
@@ -31,33 +35,9 @@ public class BookingItemQuery implements SearchQuery {
         this.limit = limit;
         this.city = city;
         this.bookingItemSort = bookingItemSort;
+        this.location = location;
     }
 
-    public BookingItemQuery(
-            String queryText,
-            String city,
-            List<BookingItemCategory> categories) {
-        this.queryText = queryText;
-        this.city = city;
-        this.categories = new ArrayList<>();
-        this.offset = 0;
-        this.limit = DEFAULT_PAGE_SIZE;
-        this.categories = categories;
-    }
-
-    public BookingItemQuery(
-            String queryText,
-            String city,
-            BookingItemSort bookingItemSort,
-            PriceRangeFilter priceRangeFilter) {
-        this.queryText = queryText;
-        this.city = city;
-        this.categories = new ArrayList<>();
-        this.offset = 0;
-        this.limit = DEFAULT_PAGE_SIZE;
-        this.bookingItemSort = bookingItemSort;
-        this.priceRangeFilter = priceRangeFilter;
-    }
 
     public BookingItemQuery(BookingItemSearchParameters parameters) {
         this.queryText = parameters.getSearchText();
@@ -112,4 +92,6 @@ public class BookingItemQuery implements SearchQuery {
     public int getLimit() {
         return limit;
     }
+
+    public Coordinate getLocation() { return location; }
 }
