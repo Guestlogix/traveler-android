@@ -13,6 +13,7 @@ public class BookingItemQuery implements SearchQuery {
     private BookingItemSort bookingItemSort;
     private int offset;
     private int limit;
+    private Coordinate location;
 
     public BookingItemQuery(
             String queryText,
@@ -21,6 +22,7 @@ public class BookingItemQuery implements SearchQuery {
             List<BookingItemCategory> categories,
             BoundingBox boundingBox,
             BookingItemSort bookingItemSort,
+            Coordinate location,
             int offset,
             int limit) {
         this.queryText = queryText;
@@ -31,11 +33,13 @@ public class BookingItemQuery implements SearchQuery {
         this.limit = limit;
         this.city = city;
         this.bookingItemSort = bookingItemSort;
+        this.location = location;
     }
 
     public BookingItemQuery(
             String queryText,
             String city,
+            Coordinate location,
             List<BookingItemCategory> categories) {
         this.queryText = queryText;
         this.city = city;
@@ -43,11 +47,13 @@ public class BookingItemQuery implements SearchQuery {
         this.offset = 0;
         this.limit = DEFAULT_PAGE_SIZE;
         this.categories = categories;
+        this.location = location;
     }
 
     public BookingItemQuery(
             String queryText,
             String city,
+            Coordinate location,
             BookingItemSort bookingItemSort,
             PriceRangeFilter priceRangeFilter) {
         this.queryText = queryText;
@@ -57,6 +63,7 @@ public class BookingItemQuery implements SearchQuery {
         this.limit = DEFAULT_PAGE_SIZE;
         this.bookingItemSort = bookingItemSort;
         this.priceRangeFilter = priceRangeFilter;
+        this.location = location;
     }
 
     public BookingItemQuery(BookingItemSearchParameters parameters) {
@@ -68,6 +75,15 @@ public class BookingItemQuery implements SearchQuery {
         this.offset = 0;
         this.limit = DEFAULT_PAGE_SIZE;
         this.city = parameters.getCity();
+        this.location = parameters.getLocation();
+    }
+
+    public Coordinate getLocation() {
+        return location;
+    }
+
+    public void setLocation(Coordinate location) {
+        this.location = location;
     }
 
     public String getCity() {
