@@ -15,6 +15,7 @@ public class BookingItemSearchParameters implements Serializable {
     private BoundingBox boundingBox;
     private BookingItemSort bookingItemSort;
     private String city;
+    private Coordinate location;
 
     private BookingItemSearchParameters(
             String searchText,
@@ -22,15 +23,24 @@ public class BookingItemSearchParameters implements Serializable {
             List<BookingItemCategory> categories,
             BoundingBox boundingBox,
             String city,
-            BookingItemSort bookingItemSort) {
+            BookingItemSort bookingItemSort,
+            Coordinate location) {
         this.searchText = searchText;
         this.priceRangeFilter = priceRangeFilter;
         this.categories = categories;
         this.boundingBox = boundingBox;
         this.city = city;
         this.bookingItemSort = bookingItemSort;
+        this.location = location;
     }
 
+    public Coordinate getLocation() {
+        return location;
+    }
+
+    public void setLocation(Coordinate location) {
+        this.location = location;
+    }
 
     public String getSearchText() {
         return searchText;
@@ -78,10 +88,15 @@ public class BookingItemSearchParameters implements Serializable {
                 categories = new ArrayMappingFactory<>(new BookingItemCategory.CategoryObjectMappingFactory()).instantiate(jsonObject.getJSONArray("subCategories").toString());
             }
 
+            //For bounding box coordinates
             Double topLeftLatitude = jsonObject.getNullableDouble("topLeftLatitude");
             Double topLeftLongitude = jsonObject.getNullableDouble("topLeftLongitude");
             Double bottomRightLatitude = jsonObject.getNullableDouble("bottomRightLatitude");
             Double bottomRightLongitude = jsonObject.getNullableDouble("bottomRightLongitude");
+
+            //For radius based coordinates (as of Feb 2020 radius is assumed in Backend so only lat long is received)
+            Double latitude = jsonObject.getNullableDouble("latitude");
+            Double longitude = jsonObject.getNullableDouble("longitude");
 
 
             BoundingBox boundingBox = null;
@@ -118,7 +133,11 @@ public class BookingItemSearchParameters implements Serializable {
                 bookingItemSort = new BookingItemSort(bookingItemSortField, bookingItemSortOrder);
             }
 
-            return new BookingItemSearchParameters(searchText, priceRangeFilter, categories, boundingBox, city, bookingItemSort);
+            Coordinate location = null;
+            if(latitude != null && longitude != null) {
+                location = new Coordinate(latitude, longitude);
+            }
+            return new BookingItemSearchParameters(searchText, priceRangeFilter, categories, boundingBox, city, bookingItemSort, location);
         }
     }
 

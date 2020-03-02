@@ -198,6 +198,11 @@ public class Router {
             routeBuilder.param("city", catalogQuery.getCity());
         }
 
+        if (catalogQuery.getLocation() != null) {
+            routeBuilder.param("latitude", String.valueOf(catalogQuery.getLocation().getLatitude()));
+            routeBuilder.param("longitude", String.valueOf(catalogQuery.getLocation().getLongitude()));
+        }
+
         return routeBuilder.build(session.getToken());
     }
 
@@ -238,6 +243,12 @@ public class Router {
             rb.param("sort-field", bookingItemQuery.getBookingItemSort().getSortField().toString());
             rb.param("sort-order", bookingItemQuery.getBookingItemSort().getSortOrder().getSortValue());
         }
+
+        if (bookingItemQuery.getLocation() != null) {
+            rb.param("latitude", String.valueOf(bookingItemQuery.getLocation().getLatitude()));
+            rb.param("longitude", String.valueOf(bookingItemQuery.getLocation().getLongitude()));
+        }
+
 
         return rb.build(session.getToken());
     }
