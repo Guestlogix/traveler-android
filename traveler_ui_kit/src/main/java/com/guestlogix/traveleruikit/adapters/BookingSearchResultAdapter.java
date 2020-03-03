@@ -134,6 +134,7 @@ public class BookingSearchResultAdapter extends RecyclerView.Adapter<RecyclerVie
                     currentQuery.getCategories(),
                     currentQuery.getBoundingBox(),
                     currentQuery.getBookingItemSort(),
+                    currentQuery.getLocation(),
                     DEFAULT_PAGE_SIZE * page,
                     DEFAULT_PAGE_SIZE);
             Traveler.searchBookingItems(query, this);

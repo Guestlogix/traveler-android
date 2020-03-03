@@ -139,7 +139,7 @@ public class BookingSearchResultActivity extends AppCompatActivity
         transaction.replace(R.id.booking_items_container, loadingFragment);
         transactionQueue.addTransaction(transaction);
 
-        BookingItemQuery query = new BookingItemQuery(searchText, searchCity, searchCategories);
+        BookingItemQuery query = new BookingItemQuery(searchText, searchCity, null, searchCategories);
         Traveler.searchBookingItems(query, this);
     }
 
@@ -182,7 +182,7 @@ public class BookingSearchResultActivity extends AppCompatActivity
     public void onSortAndFilterChanged(BookingItemSort bookingItemSort, PriceRangeFilter priceRangeFilter) {
         this.currentPriceRangeFilter = priceRangeFilter;
         this.currentBookingItemSort = bookingItemSort;
-        BookingItemQuery query = new BookingItemQuery(searchText, searchCity, bookingItemSort, priceRangeFilter);
+        BookingItemQuery query = new BookingItemQuery(searchText, searchCity, null,bookingItemSort, priceRangeFilter);
         Traveler.searchBookingItems(query, this);
     }
 }
