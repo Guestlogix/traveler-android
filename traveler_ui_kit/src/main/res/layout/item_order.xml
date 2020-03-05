@@ -23,26 +23,26 @@
                 android:orientation="horizontal">
 
             <TextView
-                    android:id="@+id/textView_orderItem_dateOrdered"
+                    android:id="@+id/tvTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     style="@style/BodyLabelTextView"
                     tools:text="Date"/>
             <TextView
-                    android:id="@+id/textView_orderItem_cancelled"
+                    android:id="@+id/tvStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cancelled"
                     android:textColor="@color/red"/>
         </LinearLayout>
         <TextView
-                android:id="@+id/textView_orderItem_products"
+                android:id="@+id/tvProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         <TextView
-                android:id="@+id/textView_orderItem_totalAmount"
+                android:id="@+id/tvTotal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"

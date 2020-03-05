@@ -62,7 +62,7 @@ public class OrdersFragment extends Fragment implements OrdersAdapter.OnItemClic
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView_ordersFragment_orders);
 
         if (orderResult != null) {
-            adapter = new OrdersAdapter(orderResult, this);
+            adapter = new OrdersAdapter(orderResult, this, getActivity());
             recyclerView.setAdapter(adapter);
         } else {
             Log.e(this.getClass().getName(), "No OrderResult");

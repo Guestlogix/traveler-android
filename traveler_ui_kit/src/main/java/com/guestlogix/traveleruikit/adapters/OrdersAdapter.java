@@ -1,5 +1,6 @@
 package com.guestlogix.traveleruikit.adapters;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.guestlogix.travelercorekit.callbacks.FetchOrdersCallback;
@@ -33,29 +35,31 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private OrderResult result;
+    private Context context;
     private OrderResult _volatileResult;
     private HashSet pagesLoading = new HashSet();
     private OnItemClickListener onItemClickListener;
 
     class OrderItemViewHolder extends RecyclerView.ViewHolder {
-        TextView titleTextView;
-        TextView totalTextView;
-        TextView productsTextView;
-        TextView cancelledTextView;
+        TextView tvTitle;
+        TextView tvTotal;
+        TextView tvProducts;
+        TextView tvStatus;
 
         OrderItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            titleTextView = itemView.findViewById(R.id.textView_orderItem_dateOrdered);
-            totalTextView = itemView.findViewById(R.id.textView_orderItem_totalAmount);
-            productsTextView = itemView.findViewById(R.id.textView_orderItem_products);
-            cancelledTextView = itemView.findViewById(R.id.textView_orderItem_cancelled);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
+            tvTotal = itemView.findViewById(R.id.tvTotal);
+            tvProducts = itemView.findViewById(R.id.tvProducts);
+            tvStatus = itemView.findViewById(R.id.tvStatus);
         }
     }
 
-    public OrdersAdapter(OrderResult result, OnItemClickListener listener) {
+    public OrdersAdapter(OrderResult result, OnItemClickListener listener, Context context) {
         this._volatileResult = this.result = result;
         this.onItemClickListener = listener;
+        this.context = context;
     }
 
     @NonNull
@@ -81,17 +85,23 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case ORDER_VIEW_TYPE:
                 OrderItemViewHolder itemHolder = (OrderItemViewHolder) holder;
                 Order order = result.getOrders().get(position);
-                itemHolder.titleTextView.setText(DateHelper.formatDate(order.getCreatedDate()));
-                itemHolder.totalTextView.setText(order.getTotal().getLocalizedDescriptionInBaseCurrency());
-                itemHolder.productsTextView.setText(order.getProductTitlesJoinedBy("\n"));
-                itemHolder.cancelledTextView.setVisibility(order.getStatus() instanceof OrderStatus.Cancelled ? View.VISIBLE : View.INVISIBLE);
-                itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (onItemClickListener != null)
-                            onItemClickListener.onOrderClick(order);
-                    }
-                });
+                itemHolder.tvTitle.setText(DateHelper.formatDate(order.getCreatedDate()));
+                itemHolder.tvTotal.setText(order.getTotal().getLocalizedDescriptionInBaseCurrency());
+                if (order.getStatus().getCode() != OrderStatus.Code.UNKNOWN) {
+                    itemHolder.tvProducts.setText(order.getProductTitlesJoinedBy("\n"));
+                    itemHolder.tvStatus.setText(order.getStatus().getText());
+                    itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (onItemClickListener != null)
+                                onItemClickListener.onOrderClick(order);
+                        }
+                    });
+                } else {
+                    itemHolder.tvProducts.setText(String.format("%s%s", context.getString(R.string.unknownOrderMessage), order.getId()));
+                    itemHolder.tvStatus.setText("");
+                }
+                itemHolder.tvStatus.setTextColor(order.getStatus() instanceof OrderStatus.Cancelled ? ContextCompat.getColor(context, R.color.red) : ContextCompat.getColor(context, R.color.black));
                 break;
             case LOADING_VIEW_TYPE:
                 // TODO: Add shimmer effect
@@ -109,7 +119,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int getItemViewType(int position) {
         if (result.getOrders().get(position) == null) {
             // TODO: Use a predictive method on RecyclerView to better prefetch items
-            this.onPrefetchItems(new int[] { position });
+            this.onPrefetchItems(new int[]{position});
             return LOADING_VIEW_TYPE;
         } else {
             return ORDER_VIEW_TYPE;
