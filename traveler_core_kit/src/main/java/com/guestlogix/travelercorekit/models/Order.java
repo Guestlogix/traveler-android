@@ -93,7 +93,7 @@ public final class Order implements Serializable {
             String last4DigitsString = jsonObject.getNullableString("last4Digits");
             List<Product> products = new PurchasedProductListMappingFactory().instantiate(jsonObject.getJSONArray("products").toString());
             Date createdDate = DateHelper.parseISO8601(jsonObject.getString("createdOn"));
-            CustomerContact contact =  new CustomerContact.CustomerContactObjectMappingFactory().instantiate(jsonObject.getString("customer"));
+            CustomerContact contact = new CustomerContact.CustomerContactObjectMappingFactory().instantiate(jsonObject.getString("customer"));
 
             OrderStatus status = null;
 
@@ -101,26 +101,27 @@ public final class Order implements Serializable {
 
             switch (statusString) {
                 case "Pending":
-                    status = new OrderStatus.Pending();
+                    status = new OrderStatus.Pending(statusString);
                     break;
                 case "Confirmed":
                     Assertion.eval(last4DigitsString != null);
-                    status = new OrderStatus.Confirmed(new PaymentInfo(last4DigitsString));
+                    status = new OrderStatus.Confirmed(statusString, new PaymentInfo(last4DigitsString));
                     break;
                 case "Declined":
                     Assertion.eval(last4DigitsString != null);
-                    status = new OrderStatus.Declined(new PaymentInfo(last4DigitsString));
+                    status = new OrderStatus.Declined(statusString,new PaymentInfo(last4DigitsString));
                     break;
                 case "UnderReview":
                     Assertion.eval(last4DigitsString != null);
-                    status = new OrderStatus.UnderReview(new PaymentInfo(last4DigitsString));
+                    status = new OrderStatus.UnderReview(statusString,new PaymentInfo(last4DigitsString));
                     break;
                 case "Cancelled":
                     Assertion.eval(last4DigitsString != null);
-                    status = new OrderStatus.Cancelled(new PaymentInfo(last4DigitsString));
+                    status = new OrderStatus.Cancelled(statusString,new PaymentInfo(last4DigitsString));
                     break;
                 default:
-                    throw new IllegalArgumentException("Unknown status");
+                    status = new OrderStatus.Unknown(statusString);
+                    break;
             }
 
             Assertion.eval(id != null);
