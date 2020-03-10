@@ -249,6 +249,16 @@ public class Router {
             rb.param("longitude", String.valueOf(bookingItemQuery.getLocation().getLongitude()));
         }
 
+        if (bookingItemQuery.getDateRangeFilter() != null) {
+            Date startDate = bookingItemQuery.getDateRangeFilter().getStartDate();
+            Date endDate = bookingItemQuery.getDateRangeFilter().getEndDate();
+            if (startDate != null) {
+                rb.param("availability-start", DateHelper.formatDateToISO8601(startDate));
+            }
+            if (endDate != null) {
+                rb.param("availability-end", DateHelper.formatDateToISO8601(endDate));
+            }
+        }
 
         return rb.build(session.getToken());
     }
