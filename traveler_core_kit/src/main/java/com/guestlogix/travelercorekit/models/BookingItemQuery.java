@@ -7,6 +7,7 @@ public class BookingItemQuery implements SearchQuery {
     public static final int DEFAULT_PAGE_SIZE = 10;
     private String queryText;
     private String city;
+    private DateRangeFilter dateRangeFilter;
     private PriceRangeFilter priceRangeFilter;
     private List<BookingItemCategory> categories;
     private BoundingBox boundingBox;
@@ -55,7 +56,8 @@ public class BookingItemQuery implements SearchQuery {
             String city,
             Coordinate location,
             BookingItemSort bookingItemSort,
-            PriceRangeFilter priceRangeFilter) {
+            PriceRangeFilter priceRangeFilter,
+            DateRangeFilter dateRangeFilter) {
         this.queryText = queryText;
         this.city = city;
         this.categories = new ArrayList<>();
@@ -64,6 +66,7 @@ public class BookingItemQuery implements SearchQuery {
         this.bookingItemSort = bookingItemSort;
         this.priceRangeFilter = priceRangeFilter;
         this.location = location;
+        this.dateRangeFilter = dateRangeFilter;
     }
 
     public BookingItemQuery(BookingItemSearchParameters parameters) {
@@ -104,6 +107,10 @@ public class BookingItemQuery implements SearchQuery {
 
     public BookingItemSort getBookingItemSort() {
         return bookingItemSort;
+    }
+
+    public DateRangeFilter getDateRangeFilter() {
+        return dateRangeFilter;
     }
 
     public void setOffset(int offset) {
