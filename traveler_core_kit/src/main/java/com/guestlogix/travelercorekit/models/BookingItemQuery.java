@@ -57,10 +57,11 @@ public class BookingItemQuery implements SearchQuery {
             Coordinate location,
             BookingItemSort bookingItemSort,
             PriceRangeFilter priceRangeFilter,
-            DateRangeFilter dateRangeFilter) {
+            DateRangeFilter dateRangeFilter,
+            List<BookingItemCategory> categories) {
         this.queryText = queryText;
         this.city = city;
-        this.categories = new ArrayList<>();
+        this.categories = categories;
         this.offset = 0;
         this.limit = DEFAULT_PAGE_SIZE;
         this.bookingItemSort = bookingItemSort;
