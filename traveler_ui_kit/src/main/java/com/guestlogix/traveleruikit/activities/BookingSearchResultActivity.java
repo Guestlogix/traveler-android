@@ -182,7 +182,7 @@ public class BookingSearchResultActivity extends AppCompatActivity
     public void onSortAndFilterChanged(BookingItemSort bookingItemSort, PriceRangeFilter priceRangeFilter) {
         this.currentPriceRangeFilter = priceRangeFilter;
         this.currentBookingItemSort = bookingItemSort;
-        BookingItemQuery query = new BookingItemQuery(searchText, searchCity, null,bookingItemSort, priceRangeFilter);
+        BookingItemQuery query = new BookingItemQuery(searchText, searchCity, null, bookingItemSort, priceRangeFilter, null, null);
         Traveler.searchBookingItems(query, this);
     }
 }
