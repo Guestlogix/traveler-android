@@ -249,9 +249,9 @@ public class Router {
             rb.param("longitude", String.valueOf(bookingItemQuery.getLocation().getLongitude()));
         }
 
-        if (bookingItemQuery.getDateRangeFilter() != null) {
-            Date startDate = bookingItemQuery.getDateRangeFilter().getStartDate();
-            Date endDate = bookingItemQuery.getDateRangeFilter().getEndDate();
+        if (bookingItemQuery.getDateRangeFilter() != null && bookingItemQuery.getDateRangeFilter().getDateRange() != null) {
+            Date startDate = bookingItemQuery.getDateRangeFilter().getDateRange().getLower();
+            Date endDate = bookingItemQuery.getDateRangeFilter().getDateRange().getUpper();
             if (startDate != null) {
                 rb.param("availability-start", DateHelper.formatDateToISO8601(startDate));
             }

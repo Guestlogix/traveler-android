@@ -1,28 +1,17 @@
 package com.guestlogix.travelercorekit.models;
 
-import androidx.annotation.Nullable;
-
 import java.io.Serializable;
 import java.util.Date;
 
 public class DateRangeFilter implements Serializable {
-    @Nullable
-    private Date startDate;
-    @Nullable
-    private Date endDate;
 
-    public DateRangeFilter(@Nullable Date startDate, @Nullable Date endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    private Range<Date> dateRange;
+
+    public DateRangeFilter(Range<Date> dateRange) {
+        this.dateRange = dateRange;
     }
 
-    @Nullable
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    @Nullable
-    public Date getEndDate() {
-        return endDate;
+    public Range<Date> getDateRange() {
+        return dateRange;
     }
 }
