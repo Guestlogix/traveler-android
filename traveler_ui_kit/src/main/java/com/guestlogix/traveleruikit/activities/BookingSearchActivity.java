@@ -60,6 +60,8 @@ public class BookingSearchActivity extends AppCompatActivity implements BookingI
             etLocation.setText(bookingItemQuery.getCity());
         }
 
+        categoryAdapter = new CategoryAdapter(BookingSearchActivity.this, new ArrayList<>());
+
 
         //TODO figure out how to compose categories list for this screen.
         ArrayList<CategoryAdapter.CategoryItem> lstCategories = new ArrayList<>();
@@ -73,8 +75,6 @@ public class BookingSearchActivity extends AppCompatActivity implements BookingI
             fetchCategories();
         }
 
-
-        categoryAdapter = new CategoryAdapter(BookingSearchActivity.this, new ArrayList<>());
         rvCategories.setAdapter(categoryAdapter);
         rvCategories.setLayoutManager(new LinearLayoutManager(BookingSearchActivity.this));
     }
