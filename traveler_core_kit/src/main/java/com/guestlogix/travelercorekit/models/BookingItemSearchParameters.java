@@ -72,8 +72,9 @@ public class BookingItemSearchParameters implements Serializable {
             JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
 
             String searchText = "";
-            if (!jsonObject.isNull("text"))
+            if (!jsonObject.isNull("text")) {
                 searchText = jsonObject.getString("text");
+            }
 
             Double minPrice = jsonObject.getNullableDouble("minPrice");
             Double maxPrice = jsonObject.getNullableDouble("maxPrice");
@@ -101,16 +102,19 @@ public class BookingItemSearchParameters implements Serializable {
 
             BoundingBox boundingBox = null;
             PriceRangeFilter priceRangeFilter = null;
-            String city = jsonObject.getString("city");
+            String city = "";
+            if (!jsonObject.isNull("city")) {
+                searchText = jsonObject.getString("city");
+            }
 
             BookingItemSortOrder bookingItemSortOrder = null;
-            String rawSortOrder = jsonObject.getString("sortOrder");
+            String rawSortOrder = jsonObject.getNullableString("sortOrder");
             if (rawSortOrder != null) {
                 bookingItemSortOrder = BookingItemSortOrder.fromString(rawSortOrder);
             }
 
             BookingItemSortField bookingItemSortField = null;
-            String rawSortField = jsonObject.getString("sortField");
+            String rawSortField = jsonObject.getNullableString("sortField");
             if (rawSortField != null) {
                 bookingItemSortField = BookingItemSortField.fromString(rawSortField);
             }
@@ -134,7 +138,7 @@ public class BookingItemSearchParameters implements Serializable {
             }
 
             Coordinate location = null;
-            if(latitude != null && longitude != null) {
+            if (latitude != null && longitude != null) {
                 location = new Coordinate(latitude, longitude);
             }
             return new BookingItemSearchParameters(searchText, priceRangeFilter, categories, boundingBox, city, bookingItemSort, location);
