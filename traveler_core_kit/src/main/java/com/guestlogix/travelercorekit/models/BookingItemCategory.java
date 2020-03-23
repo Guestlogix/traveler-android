@@ -15,6 +15,11 @@ public class BookingItemCategory implements Serializable {
         this.title = title;
     }
 
+    public BookingItemCategory(String id) {
+        this.id = id;
+        this.title = "";
+    }
+
     public String getId() {
         return id;
     }
