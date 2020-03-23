@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.guestlogix.travelercorekit.models.Answer;
 import com.guestlogix.travelercorekit.models.Availability;
+import com.guestlogix.travelercorekit.models.BookingItemCategory;
 import com.guestlogix.travelercorekit.models.BookingItemQuery;
 import com.guestlogix.travelercorekit.models.BookingOption;
 import com.guestlogix.travelercorekit.models.BoundingBox;
@@ -20,7 +21,6 @@ import com.guestlogix.travelercorekit.models.CancellationQuote;
 import com.guestlogix.travelercorekit.models.CancellationReason;
 import com.guestlogix.travelercorekit.models.CancellationRequest;
 import com.guestlogix.travelercorekit.models.CatalogQuery;
-import com.guestlogix.travelercorekit.models.BookingItemCategory;
 import com.guestlogix.travelercorekit.models.Coordinate;
 import com.guestlogix.travelercorekit.models.Currency;
 import com.guestlogix.travelercorekit.models.Flight;
@@ -219,7 +219,7 @@ public class Router {
 
         if (bookingItemQuery.getCategories() != null)
             for (BookingItemCategory category : bookingItemQuery.getCategories()) {
-                rb.param("categories", category.getId());
+                rb.param("sub_categories", category.getId());
             }
 
         if (bookingItemQuery.getPriceRangeFilter() != null) {

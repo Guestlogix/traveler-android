@@ -1,8 +1,8 @@
 package com.guestlogix.travelercorekit.models;
 
-import com.guestlogix.travelercorekit.utilities.ArrayMappingFactory;
 import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
 import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+import com.guestlogix.travelercorekit.utilities.StringArrayMappingFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,7 +86,10 @@ public class BookingItemSearchParameters implements Serializable {
 
             List<BookingItemCategory> categories = new ArrayList<>();
             if (!jsonObject.isNull("subCategories")) {
-                categories = new ArrayMappingFactory<>(new BookingItemCategory.CategoryObjectMappingFactory()).instantiate(jsonObject.getJSONArray("subCategories").toString());
+                List<String> categoriesIds = new StringArrayMappingFactory().instantiate(jsonObject.getJSONArray("subCategories").toString());
+                for (String categoryId: categoriesIds) {
+                    categories.add(new BookingItemCategory(categoryId));
+                }
             }
 
             //For bounding box coordinates
