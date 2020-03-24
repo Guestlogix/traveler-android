@@ -11,18 +11,21 @@ public class CatalogGroup implements Serializable {
     private boolean isFeatured;
     private CatalogItemType itemType;
     private List<CatalogItem> items;
+    private QueryItem seeAllQuery;
 
     CatalogGroup(
             String title,
             String subTitle,
             boolean isFeatured,
             CatalogItemType itemType,
-            @NonNull List<CatalogItem> items) {
+            @NonNull List<CatalogItem> items,
+            QueryItem seeAllQuery) {
         this.title = title;
         this.subTitle = subTitle;
         this.isFeatured = isFeatured;
         this.itemType = itemType;
         this.items = items;
+        this.seeAllQuery = seeAllQuery;
     }
 
     public String getTitle() {
