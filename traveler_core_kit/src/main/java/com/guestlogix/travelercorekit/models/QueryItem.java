@@ -1,5 +1,10 @@
 package com.guestlogix.travelercorekit.models;
 
+import android.util.Log;
+
+import com.guestlogix.travelercorekit.utilities.JSONObjectGLX;
+import com.guestlogix.travelercorekit.utilities.ObjectMappingFactory;
+
 import java.net.URL;
 
 public class QueryItem implements CatalogItem<SearchQuery> {
@@ -45,6 +50,46 @@ public class QueryItem implements CatalogItem<SearchQuery> {
 
     public QueryType getType() {
         return type;
+    }
+
+    /***
+     *returns null if the query type is unknown
+     */
+    static class QueryItemObjectMappingFactory implements ObjectMappingFactory<QueryItem> {
+        @Override
+        public QueryItem instantiate(String rawResponse) throws Exception {
+            JSONObjectGLX jsonObject = new JSONObjectGLX(rawResponse);
+
+            QueryType type = QueryType.fromString(jsonObject.getString("type"));
+            SearchQuery searchQuery = null;
+            switch (type) {
+                case BOOKING:
+                    BookingItemSearchParameters bookingItemSearchParameters =
+                            new BookingItemSearchParameters.BookingItemSearchParametersObjectMappingFactory()
+                                    .instantiate(jsonObject.getJSONObject("searchParams").toString());
+                    searchQuery = new BookingItemQuery(bookingItemSearchParameters);
+                    break;
+                case PARKING:
+                    ParkingItemSearchParameters parkingItemSearchParameters =
+                            new ParkingItemSearchParameters.ParkingItemSearchParametersObjectMappingFactory()
+                                    .instantiate(jsonObject.getJSONObject("searchParams").toString());
+                    searchQuery = new ParkingItemQuery(parkingItemSearchParameters);
+                    break;
+                default:
+                    Log.i("AnyQuery", "unknown query item skipped: " + jsonObject.getString("type"));
+                    // if you don't recognize the type return null
+                    return null;
+            }
+
+            String title = jsonObject.getNullableString("title");
+            String subTitle = jsonObject.getNullableString("subTitle");
+
+            URL thumbnail = null;
+            if (!jsonObject.isNull("thumbnail"))
+                thumbnail = new URL(jsonObject.getString("thumbnail"));
+
+            return new QueryItem(title, subTitle, thumbnail, type, searchQuery);
+        }
     }
 
 }

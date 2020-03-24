@@ -31,14 +31,21 @@ class CatalogGroupListMappingFactory implements ObjectMappingFactory<List<Catalo
                     items = new QueryItemListMappingFactory()
                             .instantiate(jsonObject.getJSONArray("items").toString());
                     break;
+                default:
+                    //skip this catalog group if the type is unknown
+                    continue;
             }
             String title = jsonObject.getNullableString("title");
             String subTitle = jsonObject.getNullableString("subTitle");
+            QueryItem seeAllQuery = null;
+            if (!jsonObject.isNull("groupSearch")) {
+                seeAllQuery = new QueryItem.QueryItemObjectMappingFactory().instantiate(jsonObject.getJSONObject("groupSearch").toString());
+            }
             boolean featured = jsonObject.getBoolean("featured");
 
             Assertion.eval(items != null);
 
-            catalogGroups.add(new CatalogGroup(title, subTitle, featured, itemType, items));
+            catalogGroups.add(new CatalogGroup(title, subTitle, featured, itemType, items, seeAllQuery));
         }
         return catalogGroups;
     }
