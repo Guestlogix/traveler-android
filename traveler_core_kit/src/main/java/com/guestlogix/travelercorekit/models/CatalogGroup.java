@@ -47,4 +47,8 @@ public class CatalogGroup implements Serializable {
     public List<CatalogItem> getItems() {
         return items;
     }
+
+    public QueryItem getSeeAllQuery() {
+        return seeAllQuery;
+    }
 }
