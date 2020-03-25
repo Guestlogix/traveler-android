@@ -21,8 +21,16 @@ public final class Order implements Serializable {
     private Date createdDate;
     private OrderStatus status;
     private CustomerContact contact;
+    private OrderDiscount discount;
 
-    Order(@NonNull String id, @NonNull Price total, String referenceNumber, @NonNull OrderStatus status, @NonNull List<Product> products, @NonNull Date createdDate, @NonNull CustomerContact contact) {
+    Order(@NonNull String id,
+          @NonNull Price total,
+          String referenceNumber,
+          @NonNull OrderStatus status,
+          @NonNull List<Product> products,
+          @NonNull Date createdDate,
+          @NonNull CustomerContact contact,
+          @Nullable OrderDiscount discount) {
         this.id = id;
         this.total = total;
         this.referenceNumber = referenceNumber;
@@ -30,6 +38,7 @@ public final class Order implements Serializable {
         this.createdDate = createdDate;
         this.status = status;
         this.contact = contact;
+        this.discount = discount;
     }
 
     public String getId() {
@@ -58,6 +67,11 @@ public final class Order implements Serializable {
 
     public CustomerContact getContact() {
         return contact;
+    }
+
+    @Nullable
+    public OrderDiscount getDiscount() {
+        return discount;
     }
 
     public String getProductTitlesJoinedBy(CharSequence delimiter) {
@@ -95,6 +109,11 @@ public final class Order implements Serializable {
             Date createdDate = DateHelper.parseISO8601(jsonObject.getString("createdOn"));
             CustomerContact contact = new CustomerContact.CustomerContactObjectMappingFactory().instantiate(jsonObject.getString("customer"));
 
+            OrderDiscount orderDiscount = null;
+            if (!jsonObject.isNull("discount")) {
+                orderDiscount = new OrderDiscount.OrderDiscountMappingFactory().instantiate(jsonObject.getJSONObject("discount").toString());
+            }
+
             OrderStatus status = null;
 
             Assertion.eval(statusString != null);
@@ -129,7 +148,7 @@ public final class Order implements Serializable {
             Assertion.eval(createdDate != null);
             Assertion.eval(contact != null);
 
-            return new Order(id, price, orderNumber, status, products, createdDate, contact);
+            return new Order(id, price, orderNumber, status, products, createdDate, contact, orderDiscount);
         }
     }
 }
