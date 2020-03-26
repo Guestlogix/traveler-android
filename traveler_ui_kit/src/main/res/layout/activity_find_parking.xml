@@ -217,9 +217,8 @@
                 tools:text="10:30 AM" />
     </LinearLayout>
 
-    <TextView
+    <Button
             android:id="@+id/button_find_parking"
-            style="@style/text_1_bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/linearLayout_findParking_pickup_DateTime"
@@ -232,6 +231,5 @@
             android:gravity="center"
             android:padding="@dimen/padding_normal"
             android:text="@string/find_parking"
-            android:theme="@style/Widget.AppCompat.Button.Colored"
             tools:ignore="RtlSymmetry" />
 </RelativeLayout>

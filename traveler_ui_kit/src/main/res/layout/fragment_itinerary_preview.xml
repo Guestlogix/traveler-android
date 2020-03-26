@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.guestlogix.traveleruikit.activities.OrdersActivity">
+        tools:context=".itinerary.ItineraryActivity">
 
     <!--    TODO:  unset the hardcoded background tint - this is a temp change to do the fast version of theming-->
     <Button
@@ -13,7 +13,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_margin="10dp"
+            android:background="@drawable/rounded_primary"
             android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/colorOnPrimary"
             android:text="Filters" />
 
     <FrameLayout

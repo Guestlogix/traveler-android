@@ -127,13 +127,15 @@
 
     </LinearLayout>
 
+    <!--    TODO:  unset the hardcoded background tint - this is a temp change to do the fast version of theming-->
     <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSearch"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@drawable/bordered_bg_primary_color"
+            android:background="@drawable/rounded_primary"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/colorOnPrimary"
             android:text="@string/booking_search_search_button_text"
-            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

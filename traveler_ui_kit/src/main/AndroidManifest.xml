@@ -77,6 +77,15 @@
 
         <activity android:name=".purchasedproduct.PurchasedParkingProductActivity"
                 android:theme="@style/GLXAppTheme"/>
+
+        <activity android:name=".itinerary.ItineraryActivity"
+                android:theme="@style/GLXAppTheme">
+        </activity>
+
+        <activity android:name=".itinerary.ItineraryDetailActivity"
+                android:theme="@style/GLXAppTheme">
+        </activity>
+
     </application>
 
 </manifest>

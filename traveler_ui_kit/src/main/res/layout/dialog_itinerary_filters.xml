@@ -113,7 +113,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:background="@drawable/rounded_primary"
             android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/colorOnPrimary"
             android:text="@string/apply_button_text" />
 
 </LinearLayout>
