@@ -440,7 +440,18 @@ public class Router {
         return new RouteBuilder(context, session.getApiKey())
                 .method(NetworkTask.Route.Method.PATCH)
                 .path("/order/" + order.getId())
-                .payload(payment::getSecurePayload)
+                .payload(() -> {
+                    try {
+                        JSONObject payload = new JSONObject(payment.getSecurePayload().toString());
+                        if (order.getDiscount() != null) {
+                            payload.put("discountToken", order.getDiscount().getDiscountToken());
+                        }
+                        return payload;
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Router.orderProcess() could not create JSONPayloadProvider");
+                    }
+                    return null;
+                })
                 .build(session.getToken());
     }
 
