@@ -3,8 +3,10 @@
 
     <style name="GLXAppTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
         <item name="actionBarStyle">@style/ActionBarStyle</item>
     </style>
 

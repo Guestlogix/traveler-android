@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="brand_color">#0097d1</color>
+    <color name="brand_text_color">#FFFFFF</color>
 </resources>
