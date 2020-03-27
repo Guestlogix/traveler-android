@@ -92,7 +92,8 @@ public class Traveler {
                     Traveler.this.session = null;
                     Traveler.this.applicationContext = null;
                     localInstance = null;
-                    Log.e(TAG, "Could not initialize TravelerSDK: " + authTokenFetchTask.getError().getLocalizedMessage());
+                    String errorString = authTokenFetchTask.getError().getLocalizedMessage();
+                    Log.e(TAG, "Could not initialize TravelerSDK: " + errorString != null ? errorString : "unknown error");
                 } else {
                     session.setToken(authTokenFetchTask.getAuthToken());
                 }
@@ -152,7 +153,8 @@ public class Traveler {
             @Override
             protected void main() {
                 if (null != storeAttributesTask.getError()) {
-                    Log.e(TAG, storeAttributesTask.getError().getMessage());
+                    String errorString = storeAttributesTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown identify error");
                 }
             }
         };
@@ -180,7 +182,8 @@ public class Traveler {
             protected void main() {
                 if (null != itineraryFetchTask.getError()) {
                     itineraryFetchCallback.onError(itineraryFetchTask.getError());
-                    Log.e(TAG, itineraryFetchTask.getError().getMessage());
+                    String errorString = itineraryFetchTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchItinerary error");
                 } else {
                     itineraryFetchCallback.onSuccess(itineraryFetchTask.getResource());
                 }
@@ -211,7 +214,8 @@ public class Traveler {
             protected void main() {
                 if (null != productDetailsFetchTask.getError()) {
                     purchasedBookingProductDetailsFetchCallback.onError(productDetailsFetchTask.getError());
-                    Log.e(TAG, productDetailsFetchTask.getError().getMessage());
+                    String errorString = productDetailsFetchTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPurchasedBookingProductDetails error");
                 } else {
                     purchasedBookingProductDetailsFetchCallback.onSuccess(productDetailsFetchTask.getResource());
                 }
@@ -242,7 +246,8 @@ public class Traveler {
             protected void main() {
                 if (null != productDetailsFetchTask.getError()) {
                     purchasedParkingProductDetailsFetchCallback.onError(productDetailsFetchTask.getError());
-                    Log.e(TAG, productDetailsFetchTask.getError().getMessage());
+                    String errorString = productDetailsFetchTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPurchasedParkingProductDetails error");
                 } else {
                     purchasedParkingProductDetailsFetchCallback.onSuccess(productDetailsFetchTask.getResource());
                 }
@@ -273,7 +278,8 @@ public class Traveler {
             protected void main() {
                 if (null != productDetailsFetchTask.getError()) {
                     purchasedPartnerOfferProductDetailsFetchCallback.onError(productDetailsFetchTask.getError());
-                    Log.e(TAG, productDetailsFetchTask.getError().getMessage());
+                    String errorString = productDetailsFetchTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPurchasedPartnerOfferingProductDetails error");
                 } else {
                     purchasedPartnerOfferProductDetailsFetchCallback.onSuccess(productDetailsFetchTask.getResource());
                 }
@@ -304,7 +310,8 @@ public class Traveler {
             protected void main() {
                 if (null != partnerOfferingFetchTask.getError()) {
                     partnerOfferingFetchCallback.onError(partnerOfferingFetchTask.getError());
-                    Log.e(TAG, partnerOfferingFetchTask.getError().getMessage());
+                    String errorString = partnerOfferingFetchTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPartnerOfferings error");
                 } else {
                     partnerOfferingFetchCallback.onSuccess(partnerOfferingFetchTask.getResource());
                 }
@@ -337,7 +344,8 @@ public class Traveler {
             protected void main() {
                 if (null != searchFlightTask.getError()) {
                     flightSearchCallback.onFlightSearchError(searchFlightTask.getError());
-                    Log.e(TAG, searchFlightTask.getError().getMessage());
+                    String errorString = searchFlightTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown flightSearch error");
                 } else {
                     flightSearchCallback.onFlightSearchSuccess(searchFlightTask.getResource());
                 }
@@ -372,7 +380,8 @@ public class Traveler {
             protected void main() {
                 if (null != searchGroupTask.getError()) {
                     catalogSearchCallback.onCatalogError(searchGroupTask.getError());
-                    Log.e(TAG, searchGroupTask.getError().getMessage());
+                    String errorString = searchGroupTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchCatalog error");
                 } else {
                     catalogSearchCallback.onCatalogSuccess(searchGroupTask.getResource());
                 }
@@ -404,7 +413,8 @@ public class Traveler {
             protected void main() {
                 if (null != searchBookingTask.getError()) {
                     bookingSearchCallback.onBookingSearchError(searchBookingTask.getError());
-                    Log.e(TAG, searchBookingTask.getError().getMessage());
+                    String errorString = searchBookingTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown searchBookingItems error");
                 } else {
                     bookingSearchCallback.onBookingSearchSuccess(searchBookingTask.getResource());
                 }
@@ -436,7 +446,8 @@ public class Traveler {
             protected void main() {
                 if (null != searchBookingTask.getError()) {
                     parkingSearchCallback.onParkingSearchError(searchBookingTask.getError());
-                    Log.e(TAG, searchBookingTask.getError().getMessage());
+                    String errorString = searchBookingTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown searchParkingItems error");
                 } else {
                     parkingSearchCallback.onParkingSearchSuccess(searchBookingTask.getResource());
                 }
@@ -494,7 +505,8 @@ public class Traveler {
             protected void main() {
                 if (null != finalCatalogItemDetailsTask.getError()) {
                     productDetailsCallback.onCatalogItemDetailsError(finalCatalogItemDetailsTask.getError());
-                    Log.e(TAG, finalCatalogItemDetailsTask.getError().getMessage());
+                    String errorString = finalCatalogItemDetailsTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchProductDetails error");
                 } else {
                     productDetailsCallback.onCatalogItemDetailsSuccess(finalCatalogItemDetailsTask.getResource());
                 }
@@ -542,7 +554,8 @@ public class Traveler {
             protected void main() {
                 if (null != fetchAvailabilitiesTask.getError()) {
                     checkAvailabilityCallback.onAvailabilityError(fetchAvailabilitiesTask.getError());
-                    Log.e(TAG, fetchAvailabilitiesTask.getError().getMessage());
+                    String errorString = fetchAvailabilitiesTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchAvailabilities error");
                 } else {
                     checkAvailabilityCallback.onAvailabilitySuccess(fetchAvailabilitiesTask.getResource());
                 }
@@ -578,7 +591,8 @@ public class Traveler {
             protected void main() {
                 if (null != fetchPassesTask.getError()) {
                     fetchPassesCallback.onPassFetchError(fetchPassesTask.getError());
-                    Log.e(TAG, fetchPassesTask.getError().getMessage());
+                    String errorString = fetchPassesTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPasses error");
                 } else {
                     fetchPassesCallback.onPassFetchSuccess(fetchPassesTask.getResource());
                 }
@@ -620,7 +634,8 @@ public class Traveler {
             protected void main() {
                 if (null != fetchPurchaseFormTask.getError()) {
                     fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
-                    Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
+                    String errorString = fetchPurchaseFormTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPurchaseForm (booking) error");
                 } else {
                     fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, Pass.toPurchasePassList(passes), fetchPurchaseFormTask.getResource()));
                 }
@@ -655,7 +670,8 @@ public class Traveler {
             protected void main() {
                 if (null != fetchPurchaseFormTask.getError()) {
                     fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
-                    Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
+                    String errorString = fetchPurchaseFormTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPurchaseForm (parking) error");
                 } else {
                     fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, null, fetchPurchaseFormTask.getResource()));
                 }
@@ -692,7 +708,8 @@ public class Traveler {
             protected void main() {
                 if (null != fetchPurchaseFormTask.getError()) {
                     fetchPurchaseFormCallback.onPurchaseFormFetchError(fetchPurchaseFormTask.getError());
-                    Log.e(TAG, fetchPurchaseFormTask.getError().getMessage());
+                    String errorString = fetchPurchaseFormTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchPurchaseForm (partner offering) error");
                 } else {
                     fetchPurchaseFormCallback.onPurchaseFormFetchSuccess(new PurchaseForm(product, PartnerOffering.toPurchasePassList(partnerOfferings), fetchPurchaseFormTask.getResource()));
                 }
@@ -725,7 +742,8 @@ public class Traveler {
             protected void main() {
                 if (null != createOrderTask.getError()) {
                     orderCreateCallback.onOrderCreateFailure(createOrderTask.getError());
-                    Log.e(TAG, createOrderTask.getError().getMessage());
+                    String errorString = createOrderTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown createOrder error");
                 } else {
                     orderCreateCallback.onOrderCreateSuccess(createOrderTask.getResource());
                 }
@@ -758,7 +776,7 @@ public class Traveler {
                 if (null != processOrderTask.getError()) {
                     processOrderCallback.onOrderProcessError(processOrderTask.getError());
                     String errorString = processOrderTask.getError().getMessage();
-                    Log.e(TAG, errorString != null ? errorString : "unknown error");
+                    Log.e(TAG, errorString != null ? errorString : "Unknown processOrder error");
                 } else {
                     Receipt receipt = new Receipt(processOrderTask.getResource(), payment);
                     processOrderCallback.onOrderProcessSuccess(receipt);
@@ -1115,7 +1133,8 @@ public class Traveler {
             protected void main() {
                 if (null != searchCategoriesTask.getError()) {
                     categoriesSearchCallback.onCategoriesSearchError(searchCategoriesTask.getError());
-                    Log.e(TAG, searchCategoriesTask.getError().getMessage());
+                    String errorString = searchCategoriesTask.getError().getMessage();
+                    Log.e(TAG, errorString != null ? errorString : "Unknown fetchBookingItemCategories error");
                 } else {
                     categoriesSearchCallback.onCategoriesSearchSuccess(searchCategoriesTask.getResource());
                 }
